@@ -24,16 +24,18 @@ public class Numberbox extends Controller {
 	 * do so for up, down as well as left and right.
 	 */
 	
-	int cnt;
+	protected int cnt;
 
-	boolean isActive;
+	protected boolean isActive;
 	
 	public static int LEFT = 0;
 	public static int UP = 1;
 	public static int RIGHT = 2;
 	public static int DOWN = 3;
 	
-	int _myNumberCount = UP;
+	protected int _myNumberCount = UP;
+	
+	protected float _myMultiplier = 1; 
 
 	/**
 	 * @invisible
@@ -66,6 +68,8 @@ public class Numberbox extends Controller {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 		_myValueLabel = new Label("" + _myValue, theWidth, 12, color.colorValue);
+		_myMin = -1000000;
+		_myMax = 1000000;
 	}
 
 	/**
@@ -76,7 +80,7 @@ public class Numberbox extends Controller {
 	        PApplet theApplet) {
 		if (isActive) {
 			if (!ControlP5.keyHandler.isAltDown) {
-				setValue(_myValue + _myControlWindow.mouseY - _myControlWindow.pmouseY);
+				setValue(_myValue + (_myControlWindow.mouseY - _myControlWindow.pmouseY)*_myMultiplier);
 			}
 		}
 	}
@@ -117,7 +121,14 @@ public class Numberbox extends Controller {
 	public void mouseReleasedOutside() {
 		mouseReleased();
 	}
-
+	
+	public void setMultiplier(float theMultiplier) {
+		_myMultiplier = theMultiplier;
+	}
+	
+	public float multiplier() {
+		return _myMultiplier;
+	}
 	/**
 	 * set the value of the numberbox.
 	 * 
@@ -127,6 +138,7 @@ public class Numberbox extends Controller {
 	public void setValue(
 	        float theValue) {
 		_myValue = theValue;
+		_myValue = Math.max(_myMin, Math.min(_myMax,_myValue));
 		broadcast(FLOAT);
 		_myValueLabel.set(adjustValue(_myValue));
 	}

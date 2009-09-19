@@ -1090,6 +1090,28 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public float min() {
 		return _myMin;
 	}
+	
+	/**
+	 * set the minimum level of the Controller.
+	 * 
+	 * @param theValue
+	 *            float
+	 */
+	public void setMin(
+	        float theValue) {
+		_myMin = theValue;
+	}
+
+	/**
+	 * set the maximum level of the Controller.
+	 * 
+	 * @param theValue
+	 *            float
+	 */
+	public void setMax(
+	        float theValue) {
+		_myMax = theValue;
+	}
 
 	public void setWidth(
 	        int theWidth) {
