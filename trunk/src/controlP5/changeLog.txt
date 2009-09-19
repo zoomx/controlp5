@@ -1,13 +1,16 @@
 changeLog:
-0.4.0
+0.4.1
+* numberbox added setMultiplier() and multiplier() to customize the value sensitivity.
+* toggle setLabelVisible() is now working.
 * adding setTitle, showCoordinates, hideCoordinates to ControlWindow. only applies to controlWindows of type PAppletWindow (external window).
 * adding Matrix.set
 * Controller.isInside() is public now
+* added ControlFont. does not support textarea and textfield yet.
 
 note: take a look at subversion changelog generator http://ch.tudelft.nl/~arthur/svn2cl/
 
 0.3.15
-* Texfield - textfield scrolls to the left if text is bigger than display area.
+* Texfield - textfield scrolls to the left if text is larger than display area.
 * Knob - knob setValue issue solved.
 
 *BitFontRenderer

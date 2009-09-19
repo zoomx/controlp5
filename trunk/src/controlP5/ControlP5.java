@@ -104,7 +104,7 @@ public class ControlP5 implements ControlP5Constants {
 	/**
 	 * @invisible
 	 */
-	public static final String VERSION = "0.4.0";
+	public static final String VERSION = "0.4.1";
 
 	/**
 	 * @invisible
@@ -1513,6 +1513,7 @@ public class ControlP5 implements ControlP5Constants {
 // new controllers
 // http://www.cambridgeincolour.com/tutorials/photoshop-curves.htm
 // http://images.google.com/images?q=synthmaker
+// http://en.wikipedia.org/wiki/Pie_menu
 // 
 // inspiration
 // http://www.explodingart.com/arb/Andrew_R._Brown/Code/Code.html
