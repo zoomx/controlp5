@@ -19,7 +19,7 @@ public class ControllerSprite {
 	protected boolean isMask;
 	protected int _myState;
 	
-	public ControllerSprite(PApplet thePApplet,
+	public ControllerSprite(ControlP5 theControlP5,
 	        PImage theImage,
 	        int theWidth,
 	        int theHeight) {
@@ -29,7 +29,7 @@ public class ControllerSprite {
 		wh = width*height;
 		_myState = 0;
 		display = new PImage(theWidth, theHeight);
-		display = thePApplet.createImage(theWidth, theHeight,PApplet.RGB);
+		display = theControlP5.papplet.createImage(theWidth, theHeight,PApplet.RGB);
 		update();
 
 	}
@@ -46,6 +46,7 @@ public class ControllerSprite {
 	}
 
 	public void update() {
+		display.loadPixels();
 		System.arraycopy(sprite.pixels,wh * _myState,display.pixels,0,wh);
 		display.updatePixels();
 	}

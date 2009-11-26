@@ -217,7 +217,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		_myHeight = theValue;
 		_myValueLabel.setHeight(_myHeight-2);
 		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.textHeight());
-		_myScrollbar.setHeight(_myHeight + _myValueLabel.style().paddingTop + _myValueLabel.style().paddingBottom);
+		_myScrollbar.setHeight((int)(_myHeight + _myValueLabel.style().paddingTop + _myValueLabel.style().paddingBottom));
 	}
 
 	/**

@@ -34,12 +34,12 @@ public class ControlFont {
 	}
 	
 	
-	public boolean isActive() {
+	protected boolean isActive() {
 		return isControlFont;
 	}
 	
-	public boolean setActive() {
-		isControlFont = false;
+	protected boolean setActive(boolean theFlag) {
+		isControlFont = theFlag;
 		return isControlFont;
 	}
 	

@@ -187,15 +187,17 @@ public class Textlabel extends Controller {
 		_myValueLabel.update();
 	}
 
-	public void setWidth(
+	public Controller setWidth(
 	        int theValue) {
 		_myValueLabel.setWidth(theValue);
 		_myValueLabel.update();
+		return this;
 	}
 
-	public void setHeight(
+	public Controller setHeight(
 	        int theValue) {
 		_myValueLabel.setHeight(theValue);
+		return this;
 	}
 
 	/**

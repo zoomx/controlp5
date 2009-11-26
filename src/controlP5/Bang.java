@@ -26,8 +26,8 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * a bang controller executes when pressed it can only be applied to a method
- * connected to it and not to fields. for a full documentation of this
+ * a bang controller triggers an event when pressed. It can only be applied to a method
+ * assigned to it and not to fields. for a full documentation of this
  * controller see the <a href="./controller_class_controller.htm">controller</a>
  * class.
  * 

@@ -65,7 +65,6 @@ public class Toggle extends Controller {
 			theApplet.fill(isOn ? color.colorActive : color.colorForeground);
 		}
 		theApplet.rect(0, 0, width, height);
-		System.out.println("dsf sdf");
 		if(isLabelVisible) {
 			_myCaptionLabel.draw(theApplet, 0, height + 4);
 		}

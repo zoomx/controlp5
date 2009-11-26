@@ -1,12 +1,12 @@
 <project name="controlP5" default="build" basedir="../">
     
 	<description>
-        processingLibs. ant build file.
+        ant build file for controlP5, a gui processing library.
     </description>
 
 	
 <!-- #### (1) where are your processing libraries located? edit location. #### -->
-	<property name="processing" location="../../Processing/libraries"/>
+	<property name="processing" location="/Users/andreasschlegel/Documents/Processing/libraries"/>
 
 
 <!-- #### (2) where are the jar files located that are required for compiling 
@@ -32,7 +32,7 @@
 				implemented ito the document automatically. #### -->	
 				
 <!-- #### (5) who is the author of this library?  edit value.  #### -->
-	<property name="author" value="yourNameHere"/>
+	<property name="author" value="Andreas Schlegel"/>
 	
 <!-- #### (6) which copyright?  edit value.  #### -->
 	<property name="copyright" value="(c) 2009"/>
@@ -41,7 +41,7 @@
 	<property name="libraryName"  value="controlP5"/>
 	
 <!-- #### (8) give your library a name. edit value.   #### -->
-	<property name="versionNumber"  value="0.4.0"/>
+	<property name="versionNumber"  value="0.4.2"/>
 	
 <!-- #### (9) your contact url. edit value. #### -->
 	<property name="yourLink"  value="http://www.sojamo.de" />
@@ -121,6 +121,11 @@
 				<path refid="library-classpath"/>
 			</classpath>
 		</javac>
+  		<!-- copy gif files to the bin -->
+  		<copy file="${src}/controlP5/standard56.gif" todir="${bin}/controlP5"/>
+  		 <copy file="${src}/controlP5/standard58.gif" todir="${bin}/controlP5"/>
+  		 <copy file="${src}/controlP5/synt24.gif" todir="${bin}/controlP5"/>
+  		 <copy file="${src}/controlP5/GrixelKyrou9.gif" todir="${bin}/controlP5"/>
   </target>
 
 	<!-- build the distribution of the library -->
