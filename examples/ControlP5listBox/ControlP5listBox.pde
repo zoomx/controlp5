@@ -1,3 +1,11 @@
+/**
+ * ControlP5 ListBox
+ * listBox operates the same way as a scrollList, but
+ * is optimized for many items (1000+). using a listBox
+ * over a scrollList is recommended
+ * by andreas schlegel, 2009
+ */
+ 
 import controlP5.*;
 
 ControlP5 controlP5;

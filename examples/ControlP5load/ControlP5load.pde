@@ -1,7 +1,8 @@
+
 /**
- * controlP5load by andreas schlegel <br />
+ * controlP5 Load
  * an example that show how to load a controller setup<br />
- * website at http://www.sojamo.de/libraries/controlP5<br />
+ * by andreas schlegel, 2009
  */
 
 import controlP5.*;

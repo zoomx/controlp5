@@ -1,3 +1,8 @@
+/**
+ * ControlP5 Knob
+ * by andreas schlegel, 2009
+ */
+ 
 import controlP5.*;
 
 
@@ -30,7 +35,6 @@ void draw() {
 void knob(int theValue) {
   myColorBackground = color(theValue);
   println("a knob event. setting background to "+theValue);
-//  myKnobB.setValue(theValue);
 }
 
 

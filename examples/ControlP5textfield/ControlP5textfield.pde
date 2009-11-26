@@ -1,10 +1,16 @@
+/**
+ * ControlP5 Textflied.
+ * 
+ * for a more advanced example see textfieldAdvanced which 
+ * demonstrates how to use keepFocus, setText, getText, getTextList,
+ * clear, setAutoClear, isAutoClear or submit.
+ * by andreas schlegel, 2009
+ */
+
 import controlP5.*;
 ControlP5 controlP5;
 
-// textfield example by andreas schlegel, 11.02.2009
-// for a more advanced example see textfieldAdvanced which 
-// demonstrates how to use keepFocus, setText, getText, getTextList,
-// clear, setAutoClear, isAutoClear or submit.
+
 
 String textValue = "";
 Textfield myTextfield;
@@ -33,4 +39,5 @@ public void texting(String theText) {
   // receiving text from controller texting
   println("a textfield event for controller 'texting': "+theText);
 }
+
 

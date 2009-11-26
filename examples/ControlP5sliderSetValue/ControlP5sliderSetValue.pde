@@ -1,3 +1,9 @@
+/**
+  * ControlP5 Slider.
+  *
+  * by andreas schlegel, 2009
+  */
+
 import controlP5.*;
 
 

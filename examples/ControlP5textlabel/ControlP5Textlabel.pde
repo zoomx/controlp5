@@ -1,49 +1,31 @@
+/**
+ * ControlP5 TextLabel
+ * by andreas schlegel, 2009
+ */
+
 import controlP5.*;
 
 ControlP5 controlP5;
 
-Textlabel myBigTextlabel;
-Textlabel mySmallTextlabel;
-boolean isDrawLabel = true;
+Textlabel myTextlabelA;
+Textlabel myTextlabelB;
 
 void setup() {
   size(400,400);
   frameRate(30);
-//  controlP5 = new ControlP5(this);
-//  PFont p = createFont("Georgia",20); 
-  controlP5.setPFont(p);
+  controlP5 = new ControlP5(this);
+  controlP5.setControlFont(new ControlFont(createFont("Georgia",20), 20));
 
-  mySmallTextlabel = controlP5.addTextlabel("label","A SINGLE TESTLABEL.",20,134);
-  mySmallTextlabel.setColorValue(0xffcccccc);
-  
-  myBigTextlabel = new Textlabel(this,"a single textlabel big stuff.",20,20,400,200);
-  myBigTextlabel.setLetterSpacing(2);
-  myBigTextlabel.setWidth(width);
+  myTextlabelA = controlP5.addTextlabel("label","A SINGLE TESTLABEL.",20,134);
+  myTextlabelA.setColorValue(0xffcccccc);
+
+  myTextlabelB = new Textlabel(this,"a single textlabel big stuff.",20,20,400,200);
 }
 
 
 
 void draw() {
   background(0);
-  if(keyPressed && key==' ') {
-    // change the display area of a textlabel.
-    myBigTextlabel.setWidth(mouseX);
-    myBigTextlabel.setHeight(mouseY);
-  }
-  if(isDrawLabel) {
-    myBigTextlabel.draw(this); 
-  }
-}
-
-
-void keyPressed() {
-  if(key=='t') {
-    if(isDrawLabel) {
-      println("adding myBigTextlabel to the drawable list of tab 'default'.\n"+
-      "myBigTextlabel.draw(this); in draw() is not required anymore.");
-      controlP5.tab("default").addDrawable(myBigTextlabel);
-      isDrawLabel = false;
-    }
-  }
+  myTextlabelB.draw(this); 
 }
 

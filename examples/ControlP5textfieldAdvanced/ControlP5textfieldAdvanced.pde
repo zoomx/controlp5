@@ -1,9 +1,14 @@
+/**
+ * ControlP5 textfield (advanced)
+ * textfield advanced example by andreas schlegel, 11.02.2009
+ * demonstrates how to use keepFocus, setText, getText, getTextList,
+ * clear, setAutoClear, isAutoClear and submit.
+ * by andreas schlegel, 2009
+ */
+
 import controlP5.*;
 ControlP5 controlP5;
 
-// textfield advanced example by andreas schlegel, 11.02.2009
-// demonstrates how to use keepFocus, setText, getText, getTextList,
-// clear, setAutoClear, isAutoClear and submit.
 String textValue = "";
 Textfield myTextfield;
 
@@ -23,7 +28,7 @@ void setup() {
   controlP5.addButton("performTextfieldActions",0,60,50,150,20);
   controlP5.addToggle("toggleAutoClear",true,220,50,100,20).setCaptionLabel("Auto Clear");
   controlP5.addToggle("toggleKeepFocus",true,330,50,100,20).setCaptionLabel("Keep Focus");
-  
+
   controlP5.addButton("submit",0,370,100,60,20);
 }
 
@@ -56,7 +61,8 @@ void controlEvent(ControlEvent theEvent) {
     ((Textfield)theEvent.controller()).setText("controlEvent: changing text.");
     if(((Textfield)theEvent.controller()).isAutoClear()==false) {
       println(" success!");
-    } else {
+    } 
+    else {
       println(" but Textfield.isAutoClear() is false, could not setText here.");
     }
   }
@@ -85,5 +91,6 @@ public void texting(String theText) {
   // receiving text from controller texting
   println("a textfield event for controller 'texting': "+theText);
 }
+
 
 

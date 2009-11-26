@@ -1,3 +1,13 @@
+/**
+ControlP5 behavior. 
+ControlBehavior is an abstract class that can be extended using your 
+custom control behaviors. What is a control behavior? Control Behaviors
+allow you to automate and dynamically change the state or value of a
+controller. One behavior per controller is currently supported. i case you
+need to use more that one bahavior, the implementation has to happen
+on your side - inside your control behavior.
+by andreas schlegel, 2009
+*/
 import controlP5.*;
 
 
