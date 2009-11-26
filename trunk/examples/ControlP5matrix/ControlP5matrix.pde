@@ -1,3 +1,11 @@
+/**
+ * ControlP5 Matrix
+ * click into the blue box, the matrix, to activate and deactivate
+ * cells of the matrix. A matrix can be used for example
+ * a sequencer, a drum machine.
+ *
+ * by andreas schlegel, 2009
+ */
 import controlP5.*;
 
 ControlP5 controlP5;

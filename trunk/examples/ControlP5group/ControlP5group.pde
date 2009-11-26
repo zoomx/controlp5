@@ -1,3 +1,7 @@
+/**
+ * ControlP5 Group
+ * by andreas schlegel, 2009
+ */
 import controlP5.*;
 
 ControlP5 controlP5;

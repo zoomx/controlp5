@@ -1,3 +1,9 @@
+/**
+ * ControlP5 Radio
+ * Radio is deprecated, use RadioButton or CheckBox
+ * by andreas schlegel, 2009
+ */
+
 import controlP5.*;
 
 ControlP5 controlP5;

@@ -1,3 +1,9 @@
+/**
+  * ControlP5 TextArea.
+  *
+  * by andreas schlegel, 2009
+  */
+
 import controlP5.*;
 
 ControlP5 controlP5;

@@ -1,3 +1,7 @@
+/**
+ * ControlP5 GroupCanvas
+ * by andreas schlegel, 2009
+ */
 import controlP5.*;
 
 /**

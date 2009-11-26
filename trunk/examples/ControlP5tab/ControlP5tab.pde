@@ -1,3 +1,9 @@
+/**
+  * ControlP5 Tab.
+  *
+  * by andreas schlegel, 2009
+  */
+
 import controlP5.*;
 
 
@@ -15,7 +21,10 @@ void setup() {
   controlP5.addButton("buttonValue",4,100,110,80,20);
   controlP5.addSlider("sliderValue",0,255,128,100,200,10,100);
   controlP5.addSlider("slider",100,200,128,100,160,100,10);
+  // tab global is a tab that lies on top of any other tab and
+  // is always visible
   controlP5.controller("slider").moveTo("global");
+  
   controlP5.controller("sliderValue").moveTo("extra");
   controlP5.tab("extra").setColorForeground(0xffff0000);
   controlP5.tab("extra").setColorBackground(0xff330000);

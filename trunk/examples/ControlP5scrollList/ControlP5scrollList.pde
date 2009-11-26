@@ -1,3 +1,10 @@
+/**
+  * ControlP5 scrollList.
+  * depricated, use listBox
+  *
+  * by andreas schlegel, 2009
+  */
+  
 import controlP5.*;
 
 ControlP5 controlP5;

@@ -1,4 +1,11 @@
+/**
+ * ControlP5 DIY controller
+ * this example shows how to create your own controller by extending and
+ * using the abstract class Controller, the base class for every controller.
+ * by andreas schlegel, 2009
+ */
 import controlP5.*;
+
 
 ControlPad cp;
 ControlP5 controlP5;
@@ -7,7 +14,7 @@ void setup() {
   size(400,400);
   frameRate(30);
   controlP5 = new ControlP5(this);
-  
+
   // create a new instance of the ControlPad controller.
   cp = new ControlPad(controlP5,"DIY",60,40,100,100);
   // register the newly created ControlPad with controlP5
@@ -32,7 +39,7 @@ class ControlPad extends Controller {
   // 4 fields for the 2D controller-handle
   int cWidth=10, cHeight=10; 
   float cX, cY;
-  
+
   ControlPad(ControlP5 theControlP5, String theName, int theX, int theY, int theWidth, int theHeight) {
     // the super class Controller needs to be initialized with the below parameters
     super(theControlP5,  (Tab)(theControlP5.getTab("default")), theName, theX, theY, theWidth, theWidth);
@@ -51,7 +58,7 @@ class ControlPad extends Controller {
       }
     }
   }
-  
+
   // overwrite the draw method for the controller's visual representation.
   public void draw(PApplet theApplet) {
     // use pushMatrix and popMatrix when drawing
@@ -66,7 +73,7 @@ class ControlPad extends Controller {
       theApplet.fill(100);
     }
     rect(0,0,width,height);
-    
+
     // draw the controller-handle
     fill(255);
     rect(cX,cY,cWidth,cHeight);
@@ -74,7 +81,7 @@ class ControlPad extends Controller {
     // they are generated automatically by the super class
     _myCaptionLabel.draw(theApplet, 0, height + 4);
     _myValueLabel.draw(theApplet, 40, height + 4);
-    
+
     theApplet.popMatrix();
   } 
 
@@ -86,18 +93,19 @@ class ControlPad extends Controller {
     _myArrayValue[1] = cY / ((float)(height-cHeight)/(float)height);
     // update the value label.
     _myValueLabel.set(adjustValue(_myArrayValue[0],0)+" / "+adjustValue(_myArrayValue[1],0));
-    
+
     // broadcast triggers a ControlEvent, updates are made to the sketch, 
     // controlEvent(ControlEvent) is called.
     // the parameter (FLOAT or STRING) indicates the type of 
     // value and the type of methods to call in the main sketch.
     broadcast(FLOAT);
   }
-  
+
   // needs to be implemented since it is an abstract method in controlP5.Controller
   // nothing needs to be set since this method is only relevant for saving 
   // controller settings and only applies to (most) default Controllers.
   public void addToXMLElement(ControlP5XMLElement theElement) {
   }
 }
+
 

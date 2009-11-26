@@ -1,3 +1,15 @@
+/**
+ControlP5 bitFont.
+this example shows you how to load your own pixel fonts into controlP5. Each letter is 
+separated by a red dot at the top of the source bit-font image. How a bit-font is created 
+and has to be formatted, see the examples fonts inside the data folder of this sketch.
+The following characters are supported (the first character is a SPACE). 
+ !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+ 
+Example sketch ControlLabelExtended shows you how to use PFont instead of a bitfont.
+by andreas schlegel, 2009
+*/
+
 import controlP5.*;
 
 
@@ -14,9 +26,11 @@ void setup() {
   label.position.x = 100;
   label.position.y = 100;
   label.toUpperCase(false);
+  // load a new font and apply it to the newly created label.
   int myBitFontIndex = label.bitFontRenderer.addBitFont(loadImage("myFontA.gif"));
   label.setFont(myBitFontIndex);
 
+  // apply the newly loaded bit font to the below textfield.
   myTextfield = controlP5.addTextfield("texting",100,160,200,20);
   myTextfield.setFocus(true);
   myTextfield.valueLabel().setFont(myBitFontIndex);
@@ -28,7 +42,9 @@ void draw() {
   label.draw(this);
 }
 
+
 void mousePressed() {
+  // change the font of our label when the mouse is pressed.
   if(label.getFont() == ControlP5.standard56) {
     label.setFont(ControlP5.standard58);
   } 
