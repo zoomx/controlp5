@@ -31,7 +31,7 @@ import java.awt.event.KeyEvent;
  */
 public interface ControlP5Constants {
 
-  public final static String _myEventMethod = "controlEvent";
+  public final static String eventMethod = "controlEvent";
 
   public final static boolean VERBOSE = false;
 

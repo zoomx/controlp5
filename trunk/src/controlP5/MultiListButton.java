@@ -118,10 +118,11 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theWidth
 	 *            int
 	 */
-	public void setWidth(
+	public Controller setWidth(
 	        int theWidth) {
 		width = theWidth;
 		updateLocation(0, 0);
+		return this;
 	}
 
 	/**
@@ -130,7 +131,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theHeight
 	 *            int
 	 */
-	public void setHeight(
+	public Controller setHeight(
 	        int theHeight) {
 		int difHeight = height;
 		height = theHeight;
@@ -143,6 +144,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 			}
 		}
 		updateLocation(0, 0);
+		return this;
 	}
 
 	/**

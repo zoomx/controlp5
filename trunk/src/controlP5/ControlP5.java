@@ -37,13 +37,15 @@ import java.util.Iterator;
  * @example ControlP5basics
  */
 public class ControlP5 implements ControlP5Constants {
-	
+
 	// projects using controlP5
 	// http://www.danielsauter.com/showreel.php?id=59
 	// http://www.raintone.com/2009/03/fractalwavetables-v2/
 	// http://www.flickr.com/photos/jrosenk/3631041263/
 	// http://www.gtdv.org/
-	
+	// http://0p0media.com/aurapixlab/
+	// http://www.introspector.be/index.php?/research/dook/
+
 	// @todo
 	// (1) registerPost does not draw the controller anymore. now changing to
 	// registerDraw, still draws controllers on top of the sketch.
@@ -90,7 +92,7 @@ public class ControlP5 implements ControlP5Constants {
 	 * @invisible
 	 */
 	public static final int grixel = 3;
-	
+
 	/**
 	 * @invisible
 	 */
@@ -104,7 +106,7 @@ public class ControlP5 implements ControlP5Constants {
 	/**
 	 * @invisible
 	 */
-	public static final String VERSION = "0.4.1";
+	public static final String VERSION = "0.4.2";
 
 	/**
 	 * @invisible
@@ -121,20 +123,22 @@ public class ControlP5 implements ControlP5Constants {
 	protected boolean isTabEventsActive;
 
 	protected boolean isUpdate;
-	
+
 	protected static boolean isControlFont;
-	
-	protected static ControlFont controlFont; 
-	
+
+	protected static ControlFont controlFont;
+
+	// use blockDraw to prevent controlp5 to draw any elements. this is useful
+	// when using clear() or load()
+	protected boolean blockDraw;
 
 	/**
 	 * instantiate controlP5.
 	 * 
 	 * @param theParent
-	 *            PApplet
+	 *        PApplet
 	 */
-	public ControlP5(
-	        final PApplet theParent) {
+	public ControlP5(final PApplet theParent) {
 		// gui addons inspiration.
 		// http://www.futureaudioworkshop.com/
 		// 
@@ -142,9 +146,8 @@ public class ControlP5 implements ControlP5Constants {
 		papplet = theParent;
 		init();
 	}
-	
-	public ControlP5(
-	        final PApplet theParent, ControlFont theControlFont) {
+
+	public ControlP5(final PApplet theParent, ControlFont theControlFont) {
 		// gui addons inspiration.
 		// http://www.futureaudioworkshop.com/
 		// 
@@ -153,8 +156,7 @@ public class ControlP5 implements ControlP5Constants {
 		setControlFont(theControlFont);
 		init();
 	}
-	
-	
+
 	protected void init() {
 		welcome();
 		isTabEventsActive = false;
@@ -170,12 +172,13 @@ public class ControlP5 implements ControlP5Constants {
 	}
 
 	private void welcome() {
-		System.out.println("ControlP5 " + VERSION + " "
-		        + "infos, comments, questions at http://www.sojamo.de/libraries/controlP5");
+		System.out.println("ControlP5 "
+			+ VERSION
+			+ " "
+			+ "infos, comments, questions at http://www.sojamo.de/libraries/controlP5");
 	}
 
-	public void setTabEventsActive(
-	        boolean theFlag) {
+	public void setTabEventsActive(boolean theFlag) {
 		isTabEventsActive = theFlag;
 	}
 
@@ -188,10 +191,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * before creating any controller.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
-	public void setAutoInitialization(
-	        boolean theFlag) {
+	public void setAutoInitialization(boolean theFlag) {
 		isAutoInitialization = theFlag;
 	}
 
@@ -204,10 +206,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * the sketch.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
-	public void setAutoDraw(
-	        boolean theFlag) {
+	public void setAutoDraw(boolean theFlag) {
 		if (isAutoDraw() && theFlag == false) {
 			controlWindow.papplet().unregisterDraw(controlWindow);
 		}
@@ -240,23 +241,18 @@ public class ControlP5 implements ControlP5Constants {
 	 * window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @return Tasaveb
 	 */
-	public Tab addTab(
-	        String theName) {
+	public Tab addTab(String theName) {
 		return addTab(controlWindow, theName);
 	}
 
-	public Tab addTab(
-	        PApplet theWindow,
-	        String theName) {
+	public Tab addTab(PApplet theWindow, String theName) {
 		return addTab(controlWindow, theName);
 	}
 
-	public Tab addTab(
-	        ControlWindow theWindow,
-	        String theName) {
+	public Tab addTab(ControlWindow theWindow, String theName) {
 		for (int i = 0; i < theWindow.tabs().size(); i++) {
 			if (theWindow.tabs().get(i).name().equals(theName)) {
 				return (Tab) theWindow.tabs().get(i);
@@ -271,11 +267,10 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a tab by name.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @return Tab
 	 */
-	public Tab tab(
-	        String theName) {
+	public Tab tab(String theName) {
 		return getTab(theName);
 	}
 
@@ -283,11 +278,10 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a tab by name.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @return Tab
 	 */
-	public Tab getTab(
-	        String theName) {
+	public Tab getTab(String theName) {
 		for (int j = 0; j < _myControlWindowList.size(); j++) {
 			for (int i = 0; i < ((ControlWindow) _myControlWindowList.get(j)).tabs().size(); i++) {
 				if (((Tab) ((ControlWindow) _myControlWindowList.get(j)).tabs().get(i)).name().equals(theName)) {
@@ -303,14 +297,12 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a tab by name from a specific controlwindow.
 	 * 
 	 * @param theWindow
-	 *            ControlWindow
+	 *        ControlWindow
 	 * @param theName
-	 *            String
+	 *        String
 	 * @return Tab
 	 */
-	public Tab tab(
-	        ControlWindow theWindow,
-	        String theName) {
+	public Tab tab(ControlWindow theWindow, String theName) {
 		return getTab(theWindow, theName);
 	}
 
@@ -318,14 +310,12 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a tab by name from a specific controlwindow.
 	 * 
 	 * @param theWindow
-	 *            ControlWindow
+	 *        ControlWindow
 	 * @param theName
-	 *            String
+	 *        String
 	 * @return Tab
 	 */
-	public Tab getTab(
-	        ControlWindow theWindow,
-	        String theName) {
+	public Tab getTab(ControlWindow theWindow, String theName) {
 		for (int i = 0; i < theWindow.tabs().size(); i++) {
 			if (((Tab) theWindow.tabs().get(i)).name().equals(theName)) {
 				return (Tab) theWindow.tabs().get(i);
@@ -341,28 +331,35 @@ public class ControlP5 implements ControlP5Constants {
 	 * the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theValue
-	 *            float
+	 *        float
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theW
-	 *            int
+	 *        int
 	 * @param theH
-	 *            int
+	 *        int
 	 * @return Button
 	 */
 	public Button addButton(
-	        final String theName,
-	        final float theValue,
-	        final int theX,
-	        final int theY,
-	        final int theW,
-	        final int theH) {
-		Button myController = new Button(this, (ControllerGroup) controlWindow.tabs().get(1), theName, theValue, theX,
-		        theY, theW, theH);
+		final String theName,
+		final float theValue,
+		final int theX,
+		final int theY,
+		final int theW,
+		final int theH) {
+		Button myController = new Button(
+			this,
+			(ControllerGroup) controlWindow.tabs().get(1),
+			theName,
+			theValue,
+			theX,
+			theY,
+			theW,
+			theH);
 		register(myController);
 		return myController;
 	}
@@ -372,23 +369,18 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return Bang
 	 */
-	public Bang addBang(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
+	public Bang addBang(final String theName, final int theX, final int theY, final int theWidth, final int theHeight) {
 		Bang myController = new Bang(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY, theWidth, theHeight);
 		register(myController);
 		return myController;
@@ -399,28 +391,29 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theDefaultValue
-	 *            boolean
+	 *        boolean
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return Toggle
 	 */
 	public Toggle addToggle(
-	        final String theName,
-	        final boolean theDefaultValue,
-	        final float theX,
-	        final float theY,
-	        final int theWidth,
-	        final int theHeight) {
-		Toggle myController = new Toggle(this, (Tab) controlWindow.tabs().get(1), theName,
-		        (theDefaultValue == true) ? 1f : 0f, theX, theY, theWidth, theHeight);
+		final String theName,
+		final boolean theDefaultValue,
+		final float theX,
+		final float theY,
+		final int theWidth,
+		final int theHeight) {
+		Toggle myController = new Toggle(this, (Tab) controlWindow.tabs().get(1), theName, (theDefaultValue == true)
+			? 1f
+			: 0f, theX, theY, theWidth, theHeight);
 		register(myController);
 		return myController;
 
@@ -431,43 +424,58 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theDefaultValue
-	 *            boolean
+	 *        boolean
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return Toggle
 	 * @related Toggle
 	 */
 	public Toggle addToggle(
-	        final String theName,
-	        final float theX,
-	        final float theY,
-	        final int theWidth,
-	        final int theHeight) {
-		Toggle myController = new Toggle(this, (Tab) controlWindow.tabs().get(1), theName, Float.NaN, theX, theY,
-		        theWidth, theHeight);
+		final String theName,
+		final float theX,
+		final float theY,
+		final int theWidth,
+		final int theHeight) {
+		Toggle myController = new Toggle(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			Float.NaN,
+			theX,
+			theY,
+			theWidth,
+			theHeight);
 		register(myController);
 		return myController;
 
 	}
 
 	public Matrix addMatrix(
-	        final String theName,
-	        final int theCellX,
-	        final int theCellY,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
-		Matrix myController = new Matrix(this, (Tab) controlWindow.tabs().get(1), theName, theCellX, theCellY, theX,
-		        theY, theWidth, theHeight);
+		final String theName,
+		final int theCellX,
+		final int theCellY,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight) {
+		Matrix myController = new Matrix(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			theCellX,
+			theCellY,
+			theX,
+			theY,
+			theWidth,
+			theHeight);
 		register(myController);
 		return myController;
 	}
@@ -477,34 +485,43 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theMin
-	 *            float
+	 *        float
 	 * @param theMax
-	 *            float
+	 *        float
 	 * @param theDefaultValue
-	 *            float
+	 *        float
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theW
-	 *            int
+	 *        int
 	 * @param theH
-	 *            int
+	 *        int
 	 * @return Slider
 	 */
 	public Slider addSlider(
-	        String theName,
-	        float theMin,
-	        float theMax,
-	        float theDefaultValue,
-	        int theX,
-	        int theY,
-	        int theW,
-	        int theH) {
-		Slider myController = new Slider(this, (ControllerGroup) controlWindow.tabs().get(1), theName, theMin, theMax,
-		        theDefaultValue, theX, theY, theW, theH);
+		String theName,
+		float theMin,
+		float theMax,
+		float theDefaultValue,
+		int theX,
+		int theY,
+		int theW,
+		int theH) {
+		Slider myController = new Slider(
+			this,
+			(ControllerGroup) controlWindow.tabs().get(1),
+			theName,
+			theMin,
+			theMax,
+			theDefaultValue,
+			theX,
+			theY,
+			theW,
+			theH);
 		register(myController);
 		return myController;
 	}
@@ -514,44 +531,54 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theMin
-	 *            float
+	 *        float
 	 * @param theMax
-	 *            float
+	 *        float
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return Slider
 	 */
 	public Slider addSlider(
-	        final String theName,
-	        final float theMin,
-	        final float theMax,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
+		final String theName,
+		final float theMin,
+		final float theMax,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight) {
 		return addSlider(theName, theMin, theMax, Float.NaN, theX, theY, theWidth, theHeight);
 	}
 
 	public Range addRange(
-	        String theName,
-	        float theMin,
-	        float theMax,
-	        float theDefaultMinValue,
-	        float theDefaultMaxValue,
-	        int theX,
-	        int theY,
-	        int theW,
-	        int theH) {
-		Range myController = new Range(this, (ControllerGroup) controlWindow.tabs().get(1), theName, theMin, theMax,
-		        theDefaultMinValue, theDefaultMaxValue, theX, theY, theW, theH);
+		String theName,
+		float theMin,
+		float theMax,
+		float theDefaultMinValue,
+		float theDefaultMaxValue,
+		int theX,
+		int theY,
+		int theW,
+		int theH) {
+		Range myController = new Range(
+			this,
+			(ControllerGroup) controlWindow.tabs().get(1),
+			theName,
+			theMin,
+			theMax,
+			theDefaultMinValue,
+			theDefaultMaxValue,
+			theX,
+			theY,
+			theW,
+			theH);
 		register(myController);
 		return myController;
 	}
@@ -561,29 +588,29 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theMin
-	 *            float
+	 *        float
 	 * @param theMax
-	 *            float
+	 *        float
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return Slider
 	 */
 	public Range addRange(
-	        final String theName,
-	        final float theMin,
-	        final float theMax,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
+		final String theName,
+		final float theMin,
+		final float theMax,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight) {
 		return addRange(theName, theMin, theMax, theMin, theMax, theX, theY, theWidth, theHeight);
 	}
 
@@ -592,24 +619,24 @@ public class ControlP5 implements ControlP5Constants {
 	 * tab of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return Numberbox
 	 * @related Numberbox
 	 */
 	public Numberbox addNumberbox(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
+		final String theName,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight) {
 		return addNumberbox(theName, Float.NaN, theX, theY, theWidth, theHeight);
 	}
 
@@ -618,29 +645,36 @@ public class ControlP5 implements ControlP5Constants {
 	 * tab of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theDefaultValue
-	 *            int
+	 *        int
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return Numberbox
 	 * @related Numberbox
 	 */
 	public Numberbox addNumberbox(
-	        final String theName,
-	        final float theDefaultValue,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
-		Numberbox myController = new Numberbox(this, (Tab) controlWindow.tabs().get(1), theName, theDefaultValue, theX,
-		        theY, theWidth, theHeight);
+		final String theName,
+		final float theDefaultValue,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight) {
+		Numberbox myController = new Numberbox(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			theDefaultValue,
+			theX,
+			theY,
+			theWidth,
+			theHeight);
 		register(myController);
 		return myController;
 	}
@@ -649,38 +683,44 @@ public class ControlP5 implements ControlP5Constants {
 	 * add a knob to your controlP5 setup.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theMin
-	 *            float
+	 *        float
 	 * @param theMax
-	 *            float
+	 *        float
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 * @param theDiameter
-	 *            int
+	 *        int
 	 * @return Knob
 	 * @related Knob
 	 */
 	public Knob addKnob(
-	        final String theName,
-	        final float theMin,
-	        final float theMax,
-	        final int theX,
-	        final int theY,
-	        final int theDiameter) {
+		final String theName,
+		final float theMin,
+		final float theMax,
+		final int theX,
+		final int theY,
+		final int theDiameter) {
 		return addKnob(theName, theMin, theMax, Float.NaN, theX, theY, theDiameter);
 	}
 
 	public MultiList addMultiList(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
-		MultiList myMultiList = new MultiList(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY, theWidth,
-		        theHeight);
+		final String theName,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight) {
+		MultiList myMultiList = new MultiList(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			theX,
+			theY,
+			theWidth,
+			theHeight);
 		register(myMultiList);
 		return myMultiList;
 	}
@@ -690,32 +730,40 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theMin
-	 *            float
+	 *        float
 	 * @param theMax
-	 *            float
+	 *        float
 	 * @param theDefaultValue
-	 *            float
+	 *        float
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 * @param theDiameter
-	 *            int
+	 *        int
 	 * @return Knob
 	 * @related Knob
 	 */
 	public Knob addKnob(
-	        final String theName,
-	        final float theMin,
-	        final float theMax,
-	        final float theDefaultValue,
-	        final int theX,
-	        final int theY,
-	        final int theDiameter) {
-		Knob myController = new Knob(this, (Tab) controlWindow.tabs().get(1), theName, theMin, theMax, theDefaultValue,
-		        theX, theY, theDiameter);
+		final String theName,
+		final float theMin,
+		final float theMax,
+		final float theDefaultValue,
+		final int theX,
+		final int theY,
+		final int theDiameter) {
+		Knob myController = new Knob(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			theMin,
+			theMax,
+			theDefaultValue,
+			theX,
+			theY,
+			theDiameter);
 		register(myController);
 		return myController;
 	}
@@ -725,37 +773,40 @@ public class ControlP5 implements ControlP5Constants {
 	 * tab of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theText
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theW
-	 *            int
+	 *        int
 	 * @param theH
-	 *            int
+	 *        int
 	 * @return Textlabel
 	 */
 	public Textarea addTextarea(
-	        final String theName,
-	        final String theText,
-	        final int theX,
-	        final int theY,
-	        final int theW,
-	        final int theH) {
-		Textarea myController = new Textarea(this, (Tab) controlWindow.tabs().get(1), theName, theText, theX, theY,
-		        theW, theH);
+		final String theName,
+		final String theText,
+		final int theX,
+		final int theY,
+		final int theW,
+		final int theH) {
+		Textarea myController = new Textarea(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			theText,
+			theX,
+			theY,
+			theW,
+			theH);
 		register(myController);
 		return myController;
 	}
 
-	public Textlabel addTextlabel(
-	        final String theName,
-	        final String theText,
-	        final int theX,
-	        final int theY) {
+	public Textlabel addTextlabel(final String theName, final String theText, final int theX, final int theY) {
 		Textlabel myController = new Textlabel(this, (Tab) controlWindow.tabs().get(1), theName, theText, theX, theY);
 		register(myController);
 		return myController;
@@ -766,25 +817,27 @@ public class ControlP5 implements ControlP5Constants {
 	 * tab of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theW
-	 *            int
+	 *        int
 	 * @param theH
-	 *            int
+	 *        int
 	 * @return Textfield
 	 */
-	public Textfield addTextfield(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theW,
-	        final int theH) {
-		Textfield myController = new Textfield(this, (Tab) controlWindow.tabs().get(1), theName, "", theX, theY, theW,
-		        theH);
+	public Textfield addTextfield(final String theName, final int theX, final int theY, final int theW, final int theH) {
+		Textfield myController = new Textfield(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			"",
+			theX,
+			theY,
+			theW,
+			theH);
 		register(myController);
 		return myController;
 	}
@@ -794,49 +847,46 @@ public class ControlP5 implements ControlP5Constants {
 	 * tab of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @return Radio
 	 */
-	public Radio addRadio(
-	        final String theName,
-	        final int theX,
-	        final int theY) {
+	public Radio addRadio(final String theName, final int theX, final int theY) {
 		Radio myController = new Radio(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY);
 		register(myController);
 		return myController;
 	}
 
 	public Radio addRadio(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight,
-	        final int theLineSpacing) {
-		Radio myController = new Radio(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY, theWidth,
-		        theHeight, theLineSpacing);
+		final String theName,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight,
+		final int theLineSpacing) {
+		Radio myController = new Radio(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			theX,
+			theY,
+			theWidth,
+			theHeight,
+			theLineSpacing);
 		register(myController);
 		return myController;
 	}
-	
-	
-	public RadioButton addRadioButton(
-	        final String theName,
-	        final int theX,
-	        final int theY) {
+
+	public RadioButton addRadioButton(final String theName, final int theX, final int theY) {
 		RadioButton myController = new RadioButton(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY);
 		register(myController);
 		return myController;
 	}
-	
-	public CheckBox addCheckBox(
-	        final String theName,
-	        final int theX,
-	        final int theY) {
+
+	public CheckBox addCheckBox(final String theName, final int theX, final int theY) {
 		CheckBox myController = new CheckBox(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY);
 		register(myController);
 		return myController;
@@ -847,38 +897,32 @@ public class ControlP5 implements ControlP5Constants {
 	 * default tab of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theW
-	 *            int
+	 *        int
 	 * @param theH
-	 *            int
+	 *        int
 	 * @return ScrollList
 	 */
-	public ScrollList addScrollList(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theW,
-	        final int theH) {
-		ScrollList myController = new ScrollList(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY, theW,
-		        theH);
+	public ScrollList addScrollList(final String theName, final int theX, final int theY, final int theW, final int theH) {
+		ScrollList myController = new ScrollList(
+			this,
+			(Tab) controlWindow.tabs().get(1),
+			theName,
+			theX,
+			theY,
+			theW,
+			theH);
 		register(myController);
 		return myController;
 	}
-	
-	
-	public ListBox addListBox(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theW,
-	        final int theH) {
-		ListBox myController = new ListBox(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY, theW,
-		        theH);
+
+	public ListBox addListBox(final String theName, final int theX, final int theY, final int theW, final int theH) {
+		ListBox myController = new ListBox(this, (Tab) controlWindow.tabs().get(1), theName, theX, theY, theW, theH);
 		register(myController);
 		return myController;
 	}
@@ -888,38 +932,36 @@ public class ControlP5 implements ControlP5Constants {
 	 * of the main window.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @return ControlGroup
 	 */
-	public ControlGroup addGroup(
-	        String theName,
-	        int theX,
-	        int theY,
-	        int theW) {
-		ControlGroup myController = new ControlGroup(this, (ControllerGroup) controlWindow.tabs().get(1), theName,
-		        theX, theY, theW, 9);
+	public ControlGroup addGroup(String theName, int theX, int theY, int theW) {
+		ControlGroup myController = new ControlGroup(
+			this,
+			(ControllerGroup) controlWindow.tabs().get(1),
+			theName,
+			theX,
+			theY,
+			theW,
+			9);
 		register(myController);
 		return myController;
 	}
 
-	public ControlGroup addGroup(
-	        String theName,
-	        int theX,
-	        int theY) {
+	public ControlGroup addGroup(String theName, int theX, int theY) {
 		return addGroup(theName, theX, theY, 99);
 	}
 
 	/**
 	 * @invisible
 	 * @param theController
-	 *            ControllerInterface
+	 *        ControllerInterface
 	 */
-	public void register(
-	        ControllerInterface theController) {
+	public void register(ControllerInterface theController) {
 		checkName(theController.name());
 		_myControllerMap.put(theController.name(), theController);
 		theController.init();
@@ -946,24 +988,25 @@ public class ControlP5 implements ControlP5Constants {
 	 * @invisible
 	 */
 	protected void clear() {
-		for (int i = 0; i < _myControlWindowList.size(); i++) {
+		for (int i = _myControlWindowList.size() - 1; i >= 0; i--) {
 			((ControlWindow) _myControlWindowList.get(i)).clear();
 		}
-		for (int i = 1; i < _myControlWindowList.size(); i++) {
+
+		for (int i = _myControlWindowList.size() - 1; i >= 0; i--) {
 			_myControlWindowList.remove(i);
 		}
+
 		_myControllerMap.clear();
-		controlWindow.init();
+		// controlWindow.init();
 	}
 
 	/**
 	 * remove a controlWindow and all its contained controllers.
 	 * 
 	 * @param theWindow
-	 *            ControlWindow
+	 *        ControlWindow
 	 */
-	protected void remove(
-	        ControlWindow theWindow) {
+	protected void remove(ControlWindow theWindow) {
 		theWindow.remove();
 		_myControlWindowList.remove(theWindow);
 	}
@@ -972,10 +1015,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * remove a controller by instance.
 	 * 
 	 * @param theController
-	 *            ControllerInterface
+	 *        ControllerInterface
 	 */
-	protected void remove(
-	        ControllerInterface theController) {
+	protected void remove(ControllerInterface theController) {
 		_myControllerMap.remove(theController.name());
 	}
 
@@ -983,10 +1025,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * remove a controlP5 element such as a controller, group, or tab by name.
 	 * 
 	 * @param theString
-	 *            String
+	 *        String
 	 */
-	public void remove(
-	        String theString) {
+	public void remove(String theString) {
 		if (controller(theString) != null) {
 			controller(theString).remove();
 		}
@@ -1009,11 +1050,10 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a controller by name. you will have to cast the controller.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @return Controller
 	 */
-	public Controller controller(
-	        String theName) {
+	public Controller controller(String theName) {
 		if (_myControllerMap.containsKey(theName)) {
 			if (_myControllerMap.get(theName) instanceof Controller) {
 				return (Controller) _myControllerMap.get(theName);
@@ -1026,11 +1066,10 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a group by name
 	 * 
 	 * @param theGroupName
-	 *            String
+	 *        String
 	 * @return ControllerGroup
 	 */
-	public ControllerGroup group(
-	        String theGroupName) {
+	public ControllerGroup group(String theGroupName) {
 		return getGroup(theGroupName);
 	}
 
@@ -1038,11 +1077,10 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a group by name.
 	 * 
 	 * @param theGroupName
-	 *            String
+	 *        String
 	 * @return ControllerGroup
 	 */
-	public ControllerGroup getGroup(
-	        String theGroupName) {
+	public ControllerGroup getGroup(String theGroupName) {
 		if (_myControllerMap.containsKey(theGroupName)) {
 			if (_myControllerMap.get(theGroupName) instanceof ControllerGroup) {
 				return (ControllerGroup) _myControllerMap.get(theGroupName);
@@ -1052,44 +1090,43 @@ public class ControlP5 implements ControlP5Constants {
 	}
 
 	public void draw() {
-		controlWindow.draw();
+		if (blockDraw == false) {
+			controlWindow.draw();
+		}
 	}
 
 	/**
 	 * create a new ControlWindow.
 	 * 
 	 * @param theWindowName
-	 *            String
+	 *        String
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return ControlWindow
 	 * @related ControlWindow
 	 */
-	public ControlWindow addControlWindow(
-	        final String theWindowName,
-	        final int theWidth,
-	        final int theHeight) {
+	public ControlWindow addControlWindow(final String theWindowName, final int theWidth, final int theHeight) {
 		return addControlWindow(theWindowName, 400, 200, theWidth, theHeight, "", 15);
 	}
 
 	public ControlWindow addControlWindow(
-	        final String theWindowName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
+		final String theWindowName,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight) {
 		return addControlWindow(theWindowName, theX, theY, theWidth, theHeight, "", 15);
 	}
 
 	public ControlWindow addControlWindow(
-	        final String theWindowName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight,
-	        final int theFrameRate) {
+		final String theWindowName,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight,
+		final int theFrameRate) {
 		return addControlWindow(theWindowName, theX, theY, theWidth, theHeight, "", theFrameRate);
 	}
 
@@ -1097,34 +1134,42 @@ public class ControlP5 implements ControlP5Constants {
 	 * create a new ControlWindow.
 	 * 
 	 * @param theWindowName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @return ControlWindow
 	 * @related ControlWindow
 	 */
 	public ControlWindow addControlWindow(
-	        final String theWindowName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight,
-	        String theRenderer,
-	        int theFrameRate) {
+		final String theWindowName,
+		final int theX,
+		final int theY,
+		final int theWidth,
+		final int theHeight,
+		String theRenderer,
+		int theFrameRate) {
 		for (int i = 0; i < _myControlWindowList.size(); i++) {
 			if (((ControlWindow) _myControlWindowList.get(i)).name().equals(theWindowName)) {
-				System.out.println("### WARNING ###\n" + "### ControlWindow with name " + theWindowName
-				        + " already exists. overwritten!");
+				System.out.println("### WARNING ###\n"
+					+ "### ControlWindow with name "
+					+ theWindowName
+					+ " already exists. overwritten!");
 			}
 		}
-		PAppletWindow myPAppletWindow = new PAppletWindow(theWindowName, theX, theY, theWidth, theHeight, theRenderer,
-		        theFrameRate);
+		PAppletWindow myPAppletWindow = new PAppletWindow(
+			theWindowName,
+			theX,
+			theY,
+			theWidth,
+			theHeight,
+			theRenderer,
+			theFrameRate);
 		myPAppletWindow.setParent(this);
 		myPAppletWindow.setMode(PAppletWindow.ECONOMIC);
 		ControlWindow myControlWindow = new ControlWindow(this, myPAppletWindow);
@@ -1132,8 +1177,7 @@ public class ControlP5 implements ControlP5Constants {
 		return myControlWindow;
 	}
 
-	public ControlWindow window(
-	        PApplet theApplet) {
+	public ControlWindow window(PApplet theApplet) {
 		if (theApplet.equals(papplet)) {
 			return controlWindow;
 		}
@@ -1146,27 +1190,28 @@ public class ControlP5 implements ControlP5Constants {
 	 * get a ControlWindow by name.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 * @return ControlWindow
 	 * @related ControlWindow
 	 */
-	public ControlWindow window(
-	        String theWindowName) {
+	public ControlWindow window(String theWindowName) {
 		for (int i = 0; i < _myControlWindowList.size(); i++) {
 			if (((ControlWindow) _myControlWindowList.get(i)).name().equals(theWindowName)) {
 				return (ControlWindow) _myControlWindowList.get(i);
 			}
 		}
-		System.out.println("### WARNING ###\n" + "### ControlWindow " + theWindowName
-		        + " does not exist. returning null.");
+		System.out.println("### WARNING ###\n"
+			+ "### ControlWindow "
+			+ theWindowName
+			+ " does not exist. returning null.");
 		return null;
 	}
 
-	private boolean checkName(
-	        String theName) {
+	private boolean checkName(String theName) {
 		if (_myControllerMap.containsKey(theName)) {
-			System.out.println("### WARNING. controller with name \"" + theName
-			        + "\" already exists. overwriting reference of existing controller.");
+			System.out.println("### WARNING. controller with name \""
+				+ theName
+				+ "\" already exists. overwriting reference of existing controller.");
 			return true;
 		}
 		return false;
@@ -1177,14 +1222,13 @@ public class ControlP5 implements ControlP5Constants {
 	 * saved to.
 	 * 
 	 * @param theFilename
-	 *            String
+	 *        String
 	 * @related setUrlPath ( )
 	 * @related save ( )
 	 * @related load ( )
 	 * @related loadUrl ( )
 	 */
-	public void setFilePath(
-	        String theFilePath) {
+	public void setFilePath(String theFilePath) {
 		if (theFilePath == null) {
 			theFilePath = "";
 		}
@@ -1196,14 +1240,13 @@ public class ControlP5 implements ControlP5Constants {
 	 * save your controlP5 setup to.
 	 * 
 	 * @param theUrlPath
-	 *            String
+	 *        String
 	 * @related setFilePath ( )
 	 * @related loadUrl ( )
 	 * @related load ( )
 	 * @related save ( )
 	 */
-	public void setUrlPath(
-	        String theUrlPath) {
+	public void setUrlPath(String theUrlPath) {
 		setUrlPath(theUrlPath, "controlP5.xml");
 	}
 
@@ -1212,18 +1255,16 @@ public class ControlP5 implements ControlP5Constants {
 	 * save your controlP5 setup to.
 	 * 
 	 * @param theUrlPath
-	 *            String
+	 *        String
 	 * @param theFilename
-	 *            String
+	 *        String
 	 * @related setFilePath ( )
 	 * @related loadUrl ( )
 	 * @related load ( )
 	 * @related save ( )
 	 * 
 	 */
-	public void setUrlPath(
-	        String theUrlPath,
-	        String theFilename) {
+	public void setUrlPath(String theUrlPath, String theFilename) {
 		if (theUrlPath == null) {
 			theUrlPath = "";
 			return;
@@ -1231,7 +1272,8 @@ public class ControlP5 implements ControlP5Constants {
 		theUrlPath = _myControlP5IOHandler.replace(theUrlPath, "&amp;", "&");
 		if (theUrlPath.indexOf('?') == -1) {
 			theUrlPath += '?';
-		} else {
+		}
+		else {
 			if (!theUrlPath.endsWith("&") && !theUrlPath.endsWith("?")) {
 				theUrlPath += "&";
 			}
@@ -1263,10 +1305,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * set the active state color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorActive(
-	        int theColor) {
+	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
 		for (Enumeration e = _myControlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
@@ -1278,10 +1319,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * set the foreground color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorForeground(
-	        int theColor) {
+	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
 		for (Enumeration e = _myControlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
@@ -1293,10 +1333,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * set the backgorund color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorBackground(
-	        int theColor) {
+	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
 		for (Enumeration e = _myControlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
@@ -1308,10 +1347,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * set the label color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorLabel(
-	        int theColor) {
+	public void setColorLabel(int theColor) {
 		color.colorLabel = theColor;
 		for (Enumeration e = _myControlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
@@ -1323,10 +1361,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * set the value color of controllers.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorValue(
-	        int theColor) {
+	public void setColorValue(int theColor) {
 		color.colorValue = theColor;
 		for (Enumeration e = _myControlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
@@ -1364,7 +1401,7 @@ public class ControlP5 implements ControlP5Constants {
 	 * @shortdesc save controlP5 settings to your local disk or to a remote
 	 *            server.
 	 * @param theFilename
-	 *            String
+	 *        String
 	 * @return boolean
 	 * @related setFilePath ( )
 	 * @related setUrlPath ( )
@@ -1375,8 +1412,7 @@ public class ControlP5 implements ControlP5Constants {
 	 *       in application mode one would have to use the inputstreamreader
 	 *       used before switching to loadStrings.
 	 */
-	public boolean save(
-	        String theFilePath) {
+	public boolean save(String theFilePath) {
 		return _myControlP5IOHandler.save(this, theFilePath);
 	}
 
@@ -1397,7 +1433,8 @@ public class ControlP5 implements ControlP5Constants {
 	public boolean save() {
 		if (_myFilePath != null) {
 			return _myControlP5IOHandler.save(this, _myFilePath);
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -1407,8 +1444,9 @@ public class ControlP5 implements ControlP5Constants {
 	 * 
 	 * @param theFileName
 	 */
-	public boolean load(
-	        String theFileName) {
+	public boolean load(String theFileName) {
+		blockDraw = true;
+		clear();
 		System.out.println("loading.." + theFileName);
 		String[] myStrings = papplet.loadStrings(theFileName);
 		String myString = "";
@@ -1418,12 +1456,13 @@ public class ControlP5 implements ControlP5Constants {
 		if (myString.length() == 0) {
 			return false;
 		}
-		clear();
+
 		try {
 			Thread.sleep(200);
-		} catch (Exception e) {
 		}
+		catch (Exception e) {}
 		_myControlP5IOHandler.parse(myString);
+		blockDraw = false;
 		return true;
 	}
 
@@ -1466,8 +1505,7 @@ public class ControlP5 implements ControlP5Constants {
 		return isUpdate;
 	}
 
-	public void setUpdate(
-	        boolean theFlag) {
+	public void setUpdate(boolean theFlag) {
 		isUpdate = theFlag;
 		for (Enumeration e = _myControlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
@@ -1490,20 +1528,35 @@ public class ControlP5 implements ControlP5Constants {
 			}
 		}
 	}
-	 
-	
+
 	public boolean setControlFont(ControlFont theControlFont) {
 		controlFont = theControlFont;
 		isControlFont = true;
+		updateFont(controlFont);
 		return isControlFont;
 	}
-	
+
 	public boolean setControlFont(PFont thePFont, int theFontSize) {
 		controlFont = new ControlFont(thePFont, theFontSize);
 		isControlFont = true;
+		updateFont(controlFont);
 		return isControlFont;
 	}
 	
+	public boolean setControlFont(PFont thePFont) {
+		controlFont = new ControlFont(thePFont, thePFont.size);
+		isControlFont = true;
+		updateFont(controlFont);
+		return isControlFont;
+	}
+
+	protected void updateFont(ControlFont theControlFont) {
+		for (Enumeration e = _myControlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+			myControlWindow.updateFont(theControlFont);
+		}
+	}
+
 	public static ControlFont getControlFont() {
 		return controlFont;
 	}

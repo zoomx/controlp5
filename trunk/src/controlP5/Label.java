@@ -430,6 +430,10 @@ public class Label implements CDrawable {
 		isControlFont = true;
 		return _myControlFont;
 	}
+	
+	protected void updateFont(ControlFont theControlFont) {
+		setControlFont(theControlFont);
+	}
 
 	public ControlFont getControlFont() {
 		return _myControlFont;

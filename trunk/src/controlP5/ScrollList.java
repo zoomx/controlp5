@@ -144,7 +144,7 @@ public class ScrollList extends ControlGroup implements ControlListener {
 	public void setItemHeight(int theHeight) {
 		_myItemHeight = theHeight;
 		_myAdjustedListHeight = (((int) (_myListHeight / _myItemHeight)) * _myItemHeight + 1) - 2;
-		_myScrollbar.setHeight(_myAdjustedListHeight);
+		_myScrollbar.setHeight((int)_myAdjustedListHeight);
 		
 	}
 	/**

@@ -82,33 +82,29 @@ public abstract class ControllerGroup implements ControllerInterface {
 	protected boolean isUpdate;
 
 	protected Vector _myControlCanvas;
-	
+
 	protected float _myValue;
-	
+
 	protected String _myStringValue;
-	
+
 	protected float[] _myArrayValue;
-	
+
 	protected boolean isBarToggle = true;
+
 	/**
 	 * @invisible
 	 * @param theControlP5
-	 *            ControlP5
+	 *        ControlP5
 	 * @param theParent
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 */
-	public ControllerGroup(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theX,
-	        float theY) {
+	public ControllerGroup(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY) {
 		position = new CVector3f(theX, theY, 0);
 		controlP5 = theControlP5;
 		color.set((theParent == null) ? controlP5.color : theParent.color);
@@ -119,9 +115,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 		setParent((theParent == null) ? this : theParent);
 	}
 
-	protected ControllerGroup(
-	        int theX,
-	        int theY) {
+	protected ControllerGroup(int theX, int theY) {
 		position = new CVector3f(theX, theY, 0);
 		controllers = new ControllerList();
 		_myControlCanvas = new Vector();
@@ -130,15 +124,15 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 */
-	public void init() {}
+	public void init() {
+	}
 
 	/**
 	 * @invisible
 	 * @param theParent
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 */
-	void setParent(
-	        ControllerGroup theParent) {
+	void setParent(ControllerGroup theParent) {
 		if (_myParent != null && _myParent != this) {
 			_myParent.remove(this);
 		}
@@ -156,7 +150,8 @@ public abstract class ControllerGroup implements ControllerInterface {
 		for (int i = 0; i < controllers.size(); i++) {
 			if (controllers.get(i) instanceof Controller) {
 				((Controller) controllers.get(i))._myControlWindow = _myControlWindow;
-			} else {
+			}
+			else {
 				((ControllerGroup) controllers.get(i))._myControlWindow = _myControlWindow;
 			}
 		}
@@ -166,19 +161,17 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the group of the controller.
 	 * 
 	 * @param theGroup
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 */
-	public void setGroup(
-	        ControllerGroup theGroup) {
+	public void setGroup(ControllerGroup theGroup) {
 		setParent(theGroup);
 	}
 
 	/**
 	 * @param theName
-	 *            String
+	 *        String
 	 */
-	public void setGroup(
-	        String theName) {
+	public void setGroup(String theName) {
 		setParent(controlP5.getGroup(theName));
 	}
 
@@ -186,16 +179,13 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * move the group.
 	 * 
 	 * @param theGroup
-	 *            ControlGroup
+	 *        ControlGroup
 	 * @param theTab
-	 *            Tab
+	 *        Tab
 	 * @param theControlWindow
-	 *            ControlWindow
+	 *        ControlWindow
 	 */
-	public void moveTo(
-	        ControlGroup theGroup,
-	        Tab theTab,
-	        ControlWindow theControlWindow) {
+	public void moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theControlWindow) {
 		if (theGroup != null) {
 			setGroup(theGroup);
 			return;
@@ -208,31 +198,23 @@ public abstract class ControllerGroup implements ControllerInterface {
 		setTab(theControlWindow, theTab.name());
 	}
 
-	public void moveTo(
-	        ControlGroup theGroup) {
+	public void moveTo(ControlGroup theGroup) {
 		moveTo(theGroup, null, null);
 	}
-	
-	
-	public void moveTo(
-	        Tab theTab) {
+
+	public void moveTo(Tab theTab) {
 		moveTo(null, theTab, null);
 	}
 
-	public void moveTo(
-	        ControlWindow theControlWindow) {
+	public void moveTo(ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab("default"), theControlWindow);
 	}
 
-	public void moveTo(
-	        String theTabName,
-	        ControlWindow theControlWindow) {
+	public void moveTo(String theTabName, ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab(theTabName), theControlWindow);
 	}
 
-	public void moveTo(
-	        Tab theTab,
-	        ControlWindow theControlWindow) {
+	public void moveTo(Tab theTab, ControlWindow theControlWindow) {
 		moveTo(null, theTab, theControlWindow);
 	}
 
@@ -240,16 +222,13 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the tab of the controller.
 	 * 
 	 * @param theName
-	 *            String
+	 *        String
 	 */
-	public void setTab(
-	        String theName) {
+	public void setTab(String theName) {
 		setParent(controlP5.getTab(theName));
 	}
 
-	public void setTab(
-	        ControlWindow theWindow,
-	        String theName) {
+	public void setTab(ControlWindow theWindow, String theName) {
 		setParent(controlP5.getTab(theWindow, theName));
 	}
 
@@ -257,10 +236,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the tab of the controller.
 	 * 
 	 * @param theTab
-	 *            Tab
+	 *        Tab
 	 */
-	public void setTab(
-	        Tab theTab) {
+	public void setTab(Tab theTab) {
 		setParent(theTab);
 	}
 
@@ -277,6 +255,21 @@ public abstract class ControllerGroup implements ControllerInterface {
 			return (Tab) _myParent;
 		}
 		return _myParent.getTab();
+	}
+
+	protected void updateFont(ControlFont theControlFont) {
+		_myLabel.updateFont(theControlFont);
+		if (_myValueLabel != null) {
+			_myValueLabel.updateFont(theControlFont);
+		}
+		for (int i = 0; i < controllers.size(); i++) {
+			if (controllers.get(i) instanceof Controller) {
+				((Controller) controllers.get(i)).updateFont(theControlFont);
+			}
+			else {
+				((ControllerGroup) controllers.get(i)).updateFont(theControlFont);
+			}
+		}
 	}
 
 	/**
@@ -299,13 +292,11 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the position of this controller.
 	 * 
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 */
-	public void setPosition(
-	        float theX,
-	        float theY) {
+	public void setPosition(float theX, float theY) {
 		position.set((int) theX, (int) theY);
 		positionBuffer.set(position);
 		updateAbsolutePosition();
@@ -348,10 +339,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * enable or disable the update function of a controller.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
-	public void setUpdate(
-	        boolean theFlag) {
+	public void setUpdate(boolean theFlag) {
 		isUpdate = theFlag;
 		for (int i = 0; i < controllers.size(); i++) {
 			((ControllerInterface) controllers.get(i)).setUpdate(theFlag);
@@ -384,17 +374,20 @@ public abstract class ControllerGroup implements ControllerInterface {
 					if (ControlP5.keyHandler.isShiftDown) {
 						position.x = ((int) (positionBuffer.x) / 10) * 10;
 						position.y = ((int) (positionBuffer.y) / 10) * 10;
-					} else {
+					}
+					else {
 						position.set(positionBuffer);
 					}
 					updateAbsolutePosition();
-				} else {
+				}
+				else {
 					if (inside()) {
 						if (!isInside) {
 							isInside = true;
 							onEnter();
 						}
-					} else {
+					}
+					else {
 						if (isInside && !isMousePressed) {
 							onLeave();
 							isInside = false;
@@ -409,16 +402,15 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * @see ControllerInterface.updateInternalEvents
 	 * @invisible
 	 */
-	public void updateInternalEvents(
-	        PApplet theApplet) {}
+	public void updateInternalEvents(PApplet theApplet) {
+	}
 
 	/**
 	 * @invisible
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 */
-	public void draw(
-	        PApplet theApplet) {
+	public void draw(PApplet theApplet) {
 		if (isVisible) {
 			theApplet.pushMatrix();
 			theApplet.translate(position.x(), position.y());
@@ -428,7 +420,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 			theApplet.popMatrix();
 		}
 	}
-	
+
 	protected void drawControllers(PApplet theApplet) {
 		if (isOpen) {
 
@@ -455,12 +447,12 @@ public abstract class ControllerGroup implements ControllerInterface {
 			}
 		}
 	}
-	
-	protected void preDraw(
-	        PApplet theApplet) {}
 
-	protected void postDraw(
-	        PApplet theApplet) {}
+	protected void preDraw(PApplet theApplet) {
+	}
+
+	protected void postDraw(PApplet theApplet) {
+	}
 
 	/**
 	 * add a canvas to a controllerGroup such as a tab or group. use regular
@@ -468,8 +460,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * 
 	 * @param theCanvas
 	 */
-	public void addCanvas(
-	        ControlCanvas theCanvas) {
+	public void addCanvas(ControlCanvas theCanvas) {
 		_myControlCanvas.add(theCanvas);
 	}
 
@@ -478,8 +469,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * 
 	 * @param theCanvas
 	 */
-	public void removeCanvas(
-	        ControlCanvas theCanvas) {
+	public void removeCanvas(ControlCanvas theCanvas) {
 		_myControlCanvas.remove(theCanvas);
 	}
 
@@ -487,10 +477,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * @invisible add a controller to the group, but use Controller.setGroup()
 	 *            instead.
 	 * @param theElement
-	 *            ControllerInterface
+	 *        ControllerInterface
 	 */
-	public void add(
-	        ControllerInterface theElement) {
+	public void add(ControllerInterface theElement) {
 		controllers.add(theElement);
 	}
 
@@ -498,31 +487,28 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * @invisible remove a controller from the group, but use
 	 *            Controller.setGroup() instead.
 	 * @param theElement
-	 *            ControllerInterface
+	 *        ControllerInterface
 	 */
 
-	public void remove(
-	        ControllerInterface theElement) {
+	public void remove(ControllerInterface theElement) {
 		controllers.remove(theElement);
 	}
 
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            CDrawable
+	 *        CDrawable
 	 */
-	public void addDrawable(
-	        CDrawable theElement) {
+	public void addDrawable(CDrawable theElement) {
 		controllers.addDrawable(theElement);
 	}
 
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            CDrawable
+	 *        CDrawable
 	 */
-	public void remove(
-	        CDrawable theElement) {
+	public void remove(CDrawable theElement) {
 		controllers.removeDrawable(theElement);
 	}
 
@@ -568,10 +554,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theEvent
-	 *            KeyEvent
+	 *        KeyEvent
 	 */
-	public void keyEvent(
-	        KeyEvent theEvent) {
+	public void keyEvent(KeyEvent theEvent) {
 		for (int i = 0; i < controllers.size(); i++) {
 			((ControllerInterface) controllers.get(i)).keyEvent(theEvent);
 		}
@@ -580,11 +565,10 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theStatus
-	 *            boolean
+	 *        boolean
 	 * @return boolean
 	 */
-	public boolean setMousePressed(
-	        boolean theStatus) {
+	public boolean setMousePressed(boolean theStatus) {
 		if (!isVisible) {
 			return false;
 		}
@@ -599,7 +583,8 @@ public abstract class ControllerGroup implements ControllerInterface {
 				mousePressed();
 				return true;
 			}
-		} else {
+		}
+		else {
 			if (isMousePressed == true) {
 				isMousePressed = false;
 				mouseReleased();
@@ -608,21 +593,24 @@ public abstract class ControllerGroup implements ControllerInterface {
 		return false;
 	}
 
-	void mousePressed() {}
+	void mousePressed() {
+	}
 
-	void mouseReleased() {}
+	void mouseReleased() {
+	}
 
-	void onEnter() {}
+	void onEnter() {
+	}
 
-	void onLeave() {}
+	void onLeave() {
+	}
 
 	/**
 	 * @invisible
 	 * @param theId
-	 *            int
+	 *        int
 	 */
-	public void setId(
-	        int theId) {
+	public void setId(int theId) {
 		_myId = theId;
 	}
 
@@ -638,10 +626,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the color for the group when active.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorActive(
-	        int theColor) {
+	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
 		for (int i = 0; i < controllers.size(); i++) {
 			((ControllerInterface) controllers.get(i)).setColorActive(theColor);
@@ -652,10 +639,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the foreground color of the group.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorForeground(
-	        int theColor) {
+	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
 		for (int i = 0; i < controllers.size(); i++) {
 			((ControllerInterface) controllers.get(i)).setColorForeground(theColor);
@@ -666,10 +652,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the background color of the group.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorBackground(
-	        int theColor) {
+	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
 		for (int i = 0; i < controllers.size(); i++) {
 			((ControllerInterface) controllers.get(i)).setColorBackground(theColor);
@@ -680,10 +665,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the color of the text label of the group.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorLabel(
-	        int theColor) {
+	public void setColorLabel(int theColor) {
 		color.colorLabel = theColor;
 		if (_myLabel != null) {
 			_myLabel.set(_myLabel.toString(), color.colorLabel);
@@ -697,10 +681,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the color of the value label.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorValue(
-	        int theColor) {
+	public void setColorValue(int theColor) {
 		color.colorValue = theColor;
 		if (_myValueLabel != null) {
 			_myValueLabel.set(_myValueLabel.toString(), color.colorValue);
@@ -714,10 +697,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the label of the group.
 	 * 
 	 * @param theLabel
-	 *            String
+	 *        String
 	 */
-	public void setLabel(
-	        String theLabel) {
+	public void setLabel(String theLabel) {
 		_myLabel.setFixedSize(false);
 		_myLabel.set(theLabel);
 		_myLabel.setFixedSize(true);
@@ -736,10 +718,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the group's visibility.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
-	public void setVisible(
-	        boolean theFlag) {
+	public void setVisible(boolean theFlag) {
 		isVisible = theFlag;
 	}
 
@@ -761,10 +742,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the moveable status of the group.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
-	public void setMoveable(
-	        boolean theFlag) {
+	public void setMoveable(boolean theFlag) {
 		isMoveable = theFlag;
 	}
 
@@ -780,10 +760,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
-	public void setOpen(
-	        boolean theFlag) {
+	public void setOpen(boolean theFlag) {
 		isOpen = theFlag;
 		if (_myValueLabel != null) {
 			_myValueLabel.set(isOpen ? "-" : "+");
@@ -819,12 +798,11 @@ public abstract class ControllerGroup implements ControllerInterface {
 	public CColor color() {
 		return color;
 	}
-	
+
 	public CColor getColor() {
 		return color;
 	}
-	
-	
+
 	/**
 	 * !!! experimental, have to check if this spoils anything.
 	 * implemented for ScrollList and MultiList to forward values to
@@ -833,40 +811,40 @@ public abstract class ControllerGroup implements ControllerInterface {
 	public float value() {
 		return _myValue;
 	}
-	
+
 	public String stringValue() {
 		return _myStringValue;
 	}
-	
+
 	public float[] arrayValue() {
 		return _myArrayValue;
 	}
+
 	/**
 	 * get a controller of the group.
 	 * 
 	 * @param theController
-	 *            String
+	 *        String
 	 * @return Controller
 	 */
-	public Controller controller(
-	        String theController) {
+	public Controller controller(String theController) {
 		return controlP5.controller(theController);
 	}
-	
+
 	public Label captionLabel() {
 		return _myLabel;
 	}
-	
+
 	public Label valueLabel() {
 		return _myValueLabel;
 	}
-	
+
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
-		        && _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
-		        && _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() - _myHeight && _myControlWindow.mouseY < position
-		        .y()
-		        + _myParent.absolutePosition().y());
+			&& _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
+			&& _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() - _myHeight && _myControlWindow.mouseY < position
+			.y()
+			+ _myParent.absolutePosition().y());
 	}
 
 	/**

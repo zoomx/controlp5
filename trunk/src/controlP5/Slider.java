@@ -233,10 +233,11 @@ public class Slider extends Controller {
 	 * @param theValue
 	 *            int
 	 */
-	public void setWidth(
+	public Controller setWidth(
 	        int theValue) {
 		width = theValue;
 		setSliderMode(_mySliderMode);
+		return this;
 	}
 
 	/**
@@ -245,10 +246,11 @@ public class Slider extends Controller {
 	 * @param theValue
 	 *            int
 	 */
-	public void setHeight(
+	public Controller setHeight(
 	        int theValue) {
 		height = theValue;
 		setSliderMode(_mySliderMode);
+		return this;
 	}
 
 	/**

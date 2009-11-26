@@ -28,17 +28,18 @@ import processing.core.PApplet;
 /**
  * Tab extends ControllerGroup, for more available methods
  * see the ControllerGroup documentation.
- *
+ * 
  * @example ControlP5tab
  * @nosuperclasses ControllerGroup
  * @related ControllerGroup
  */
 public class Tab extends ControllerGroup {
-	
-	/*@todo
+
+	/*
+	 * @todo
 	 * enable positioning of tabs.
 	 */
-	
+
 	protected int _myOffsetX = -1000;
 
 	protected int _myOffsetY = -1000;
@@ -52,16 +53,14 @@ public class Tab extends ControllerGroup {
 	protected String _myStringValue = "";
 
 	protected int _myRightBorder = 4;
+
 	/**
 	 * @invisible
 	 * @param theControlP5 ControlP5
 	 * @param theControlWindow ControlWindow
 	 * @param theName String
 	 */
-	public Tab(
-	        ControlP5 theControlP5,
-	        ControlWindow theControlWindow,
-	        String theName) {
+	public Tab(ControlP5 theControlP5, ControlWindow theControlWindow, String theName) {
 		super(theControlP5, null, theName, 0, 0);
 		_myControlWindow = theControlWindow;
 
@@ -75,9 +74,7 @@ public class Tab extends ControllerGroup {
 		_myWidth = _myLabel.width() + _myRightBorder;
 	}
 
-	protected void setOffset(
-	        int theValueX,
-	        int theValueY) {
+	protected void setOffset(int theValueX, int theValueY) {
 		_myOffsetX = theValueX;
 		_myOffsetY = theValueY;
 	}
@@ -85,34 +82,32 @@ public class Tab extends ControllerGroup {
 	protected int height() {
 		return _myHeight;
 	}
-	
+
 	protected boolean updateLabel() {
 		isInside = inside();
 		return _myControlWindow.tabs().size() > 2;
 	}
-	
-	protected void drawLabel(
-	        PApplet theApplet) {
-			theApplet.pushMatrix();
-			theApplet.fill(isInside ? color.colorForeground : color.colorBackground);
-			if (isActive) {
-				theApplet.fill(color.colorActive);
-			}
-			theApplet.rect(_myOffsetX, _myOffsetY, _myWidth - 1 + _myRightBorder, _myHeight);
-			_myLabel.draw(theApplet, _myOffsetX + 4, _myOffsetY + 5);
-			theApplet.popMatrix();
+
+	protected void drawLabel(PApplet theApplet) {
+		theApplet.pushMatrix();
+		theApplet.fill(isInside ? color.colorForeground : color.colorBackground);
+		if (isActive) {
+			theApplet.fill(color.colorActive);
+		}
+		theApplet.rect(_myOffsetX, _myOffsetY, _myWidth - 1 + _myRightBorder, _myHeight);
+		_myLabel.draw(theApplet, _myOffsetX + 4, _myOffsetY + 5);
+		theApplet.popMatrix();
 	}
 
 	/**
 	 * set the label of the group.
-	 * TODO overwriting COntrollerGroup.setLabel to set the Width of a tab 
+	 * TODO overwriting COntrollerGroup.setLabel to set the Width of a tab
 	 * after renaming. this should be temporary and fixed in the future.
 	 * 
 	 * @param theLabel
-	 *            String
+	 *        String
 	 */
-	public void setLabel(
-	        String theLabel) {
+	public void setLabel(String theLabel) {
 		_myLabel.setFixedSize(false);
 		_myLabel.set(theLabel);
 		_myLabel.setFixedSize(true);
@@ -122,16 +117,26 @@ public class Tab extends ControllerGroup {
 	protected int width() {
 		return _myWidth + _myRightBorder;
 	}
-
-	public void setWidth(
-	        int theWidth) {
+	
+	/**
+	 * @param theWidth
+	 * @return
+	 */
+	public Tab setWidth(int theWidth) {
 		_myWidth = theWidth + _myRightBorder;
+		return this;
 	}
+	
+	public Tab setHeight(int theHeight) {
+		_myHeight = theHeight;
+		return this;
+	}
+	
 
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > _myOffsetX
-		        && _myControlWindow.mouseX < _myOffsetX + _myWidth + _myRightBorder
-		        && _myControlWindow.mouseY > _myOffsetY && _myControlWindow.mouseY < _myOffsetY + _myHeight);
+			&& _myControlWindow.mouseX < _myOffsetX + _myWidth + _myRightBorder
+			&& _myControlWindow.mouseY > _myOffsetY && _myControlWindow.mouseY < _myOffsetY + _myHeight);
 	}
 
 	/**
@@ -148,8 +153,7 @@ public class Tab extends ControllerGroup {
 	 * @invisible
 	 * @param theFlag boolean
 	 */
-	public void setActive(
-	        boolean theFlag) {
+	public void setActive(boolean theFlag) {
 		isActive = theFlag;
 	}
 
@@ -161,18 +165,17 @@ public class Tab extends ControllerGroup {
 		return isActive;
 	}
 
-	public void moveTo(
-	        ControlWindow theWindow) {
+	public void moveTo(ControlWindow theWindow) {
 		_myControlWindow.removeTab(this);
 		setTab(theWindow, name());
 	}
 
 	/**
 	 * activate or deactivate the Event status of a tab.
+	 * 
 	 * @param theFlag boolean
 	 */
-	public Tab activateEvent(
-	        boolean theFlag) {
+	public Tab activateEvent(boolean theFlag) {
 		isEventActive = theFlag;
 		return this;
 	}
@@ -181,8 +184,7 @@ public class Tab extends ControllerGroup {
 	 * @invisible
 	 * @param theElement ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
+	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setName("tab");
 		theElement.setAttribute("name", name());
 		theElement.setAttribute("id", new Integer(id()));
@@ -193,6 +195,7 @@ public class Tab extends ControllerGroup {
 
 	/**
 	 * get the string value of the tab.
+	 * 
 	 * @return String
 	 */
 	public String stringValue() {
@@ -201,6 +204,7 @@ public class Tab extends ControllerGroup {
 
 	/**
 	 * get the value of the tab.
+	 * 
 	 * @return float
 	 */
 	public float value() {
@@ -209,19 +213,19 @@ public class Tab extends ControllerGroup {
 
 	/**
 	 * set the value of the tab.
+	 * 
 	 * @param theValue float
 	 */
-	public void setValue(
-	        float theValue) {
+	public void setValue(float theValue) {
 		_myValue = theValue;
 	}
 
 	/**
 	 * set the string value of the tab.
+	 * 
 	 * @param theValue String
 	 */
-	public void setStringValue(
-	        String theValue) {
+	public void setStringValue(String theValue) {
 		_myStringValue = theValue;
 	}
 
