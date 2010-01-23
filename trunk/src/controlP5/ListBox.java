@@ -138,7 +138,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	        int theHeight) {
 		_myItemHeight = theHeight;
 		_myAdjustedListHeight = (((int) (_myBackgroundHeight / _myItemHeight)) * _myItemHeight + spacing) - 2;
-		_myScrollbar.setHeight(_myAdjustedListHeight + 1);
+		_myScrollbar.setHeight((int)(_myAdjustedListHeight + 1));
 		for (int i = 1; i < controllers.size(); i++) {
 			((Button) controllers.get(i)).height = theHeight - 1;
 			((Button) controllers.get(i)).position.y = (theHeight + spacing) * (i - 1);

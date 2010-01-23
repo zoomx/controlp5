@@ -141,7 +141,7 @@ public class Slider extends Controller {
 			theApplet.fill(color.colorBackground);
 			theApplet.noStroke();
 			theApplet.rect(0, 0, width, height);
-			theApplet.fill(isInside ? color.colorActive : color.colorForeground);
+			theApplet.fill(getIsInside() ? color.colorActive : color.colorForeground);
 			if (_myDirection == HORIZONTAL) {
 				if (_mySliderMode == FIX) {
 					theApplet.rect(0, 0, _myValuePosition, height);
@@ -263,6 +263,14 @@ public class Slider extends Controller {
 		theElement.setAttribute("type", "slider");
 		theElement.setAttribute("min", new Float(min()));
 		theElement.setAttribute("max", new Float(max()));
+	}
+	
+	public void onEnter() {
+		System.out.println("Enter");
+	}
+	
+	public void onLeave() {
+		System.out.println("Leave");
 	}
 
 }

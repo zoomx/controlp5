@@ -19,6 +19,9 @@ public class ControlFont {
 	protected boolean isControlFont;
 	protected boolean isSmooth;
 	
+	// textorize, a Ruby-based font rasterizer command line utility for Mac OS X
+	// http://textorize.org/
+	
 	/**
 	 * create a controlFont and pass a reference to
 	 * a PFont. fontsize needs to be defined as second parameter.

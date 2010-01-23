@@ -126,7 +126,7 @@ public class Matrix extends Controller {
 			}
 		}
 
-		if (isInside) {
+		if (getIsInside()) {
 			if (isPressed) {
 				int tX = (int) ((theApplet.mouseX - position.x) / stepX);
 				int tY = (int) ((theApplet.mouseY - position.y) / stepY);
@@ -192,8 +192,8 @@ public class Matrix extends Controller {
 	 * @invisible
 	 */
 	public void mousePressed() {
-		isActive = isInside;
-		if (isInside) {
+		isActive = getIsInside();
+		if (getIsInside()) {
 			isPressed = true;
 		}
 	}

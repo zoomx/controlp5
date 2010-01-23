@@ -82,7 +82,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	protected ControlWindow _myControlWindow;
 
-	protected boolean isInside = false;
+	private boolean isInside = false;
 
 	protected boolean isMousePressed = false;
 
@@ -209,7 +209,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		setValue(_myDefaultValue);
 		isInit = true;
 	}
-	
+
 	protected void updateFont(ControlFont theControlFont) {
 		_myCaptionLabel.updateFont(theControlFont);
 		_myValueLabel.updateFont(theControlFont);
@@ -431,14 +431,14 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 				}
 				if (inside()) {
 					if (!isInside) {
-						isInside = true;
+						setIsInside(true);
 						onEnter();
 					}
 				}
 				else {
 					if (isInside && !isMousePressed) {
 						onLeave();
-						isInside = false;
+						setIsInside(false);
 					}
 				}
 			}
@@ -791,12 +791,20 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 				}
 			}
 			if (!inside()) {
-				isInside = false;
+				setIsInside(false);
 				isMousePressed = false;
 				mouseReleasedOutside();
 			}
 		}
 		return false;
+	}
+
+	protected void setIsInside(boolean theFlag) {
+		isInside = theFlag;
+	}
+
+	protected boolean getIsInside() {
+		return isInside;
 	}
 
 	/**

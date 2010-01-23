@@ -45,13 +45,15 @@ public class ControlP5 implements ControlP5Constants {
 	// http://www.gtdv.org/
 	// http://0p0media.com/aurapixlab/
 	// http://www.introspector.be/index.php?/research/dook/
+	// http://createdigitalmotion.com/2009/11/29/processing-beats-keyframing-typestar-karaoke-machine-generates-kinetic-lyrics/
+	// http://www.yonaskolb.com/predray
+	// http://www.creativeapplications.net/processing/cop15-identity-processing/
 
 	// @todo
-	// (1) registerPost does not draw the controller anymore. now changing to
-	// registerDraw, still draws controllers on top of the sketch.
-	// (2) enable positioning of tabs
-	// (3) file dialog:
+	// (1) file dialog:
 	// http://java.sun.com/j2se/1.5.0/docs/api/java/awt/FileDialog.html
+	// (2) add ControlIcon for custom icons with PImage
+	
 
 	public ControlWindow controlWindow;
 
@@ -106,7 +108,7 @@ public class ControlP5 implements ControlP5Constants {
 	/**
 	 * @invisible
 	 */
-	public static final String VERSION = "0.4.2";
+	public static final String VERSION = "0.4.3";
 
 	/**
 	 * @invisible
@@ -139,10 +141,6 @@ public class ControlP5 implements ControlP5Constants {
 	 *        PApplet
 	 */
 	public ControlP5(final PApplet theParent) {
-		// gui addons inspiration.
-		// http://www.futureaudioworkshop.com/
-		// 
-		// add ControlIcon for custom icons with PImage
 		papplet = theParent;
 		init();
 	}
@@ -151,7 +149,6 @@ public class ControlP5 implements ControlP5Constants {
 		// gui addons inspiration.
 		// http://www.futureaudioworkshop.com/
 		// 
-		// add ControlIcon for custom icons with PImage
 		papplet = theParent;
 		setControlFont(theControlFont);
 		init();
