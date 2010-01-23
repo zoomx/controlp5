@@ -132,7 +132,7 @@ public class Range extends Controller {
 	        PApplet theApplet) {
 		if (isVisible) {
 			float p = _myControlWindow.mouseX - (absolutePosition().x());
-			if (!isMousePressed && isInside) {
+			if (!isMousePressed && getIsInside()) {
 				float hh1 = minHandle + handleSize;
 				float hh2 = maxHandle + handleSize;
 				isMinHandle = (p > minHandle && p < hh1) ? true : false;

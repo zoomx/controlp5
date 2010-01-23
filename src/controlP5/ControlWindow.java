@@ -1,11 +1,14 @@
 package controlP5;
 
-import processing.core.PApplet;
-import java.awt.event.MouseEvent;
+import java.awt.Component;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.awt.Component;
+
+import processing.core.PApplet;
 
 /**
  * the purpose of a control window is to outsource controllers so that they dont
@@ -15,25 +18,27 @@ import java.awt.Component;
  * 
  * @example ControlP5window
  */
-public class ControlWindow {
+public class ControlWindow implements MouseWheelListener {
 
-	int mouseX;
+	protected ControlP5 controlP5;
 
-	int mouseY;
+	protected int mouseX;
 
-	int pmouseX;
+	protected int mouseY;
 
-	int pmouseY;
+	protected int pmouseX;
 
-	boolean mousePressed;
+	protected int pmouseY;
 
-	ControlP5 controlP5;
+	protected boolean mousePressed;
 
-	boolean mouselock;
+	protected boolean mouselock;
+
+	protected Controller isControllerActive;
 
 	public int background = 0x00000000;
 
-	CColor color = new CColor();
+	protected CColor color = new CColor();
 
 	private String _myName = "main";
 
@@ -41,41 +46,44 @@ public class ControlWindow {
 
 	private boolean isPAppletWindow;
 
-	ControllerList _myTabs;
+	protected ControllerList _myTabs;
 
-	boolean isVisible = true;
+	protected boolean isVisible = true;
 
-	boolean isInit = false;
+	protected boolean isInit = false;
 
-	boolean isRemove = false;
+	protected boolean isRemove = false;
 
-	CDrawable _myDrawable;
+	protected CDrawable _myDrawable;
 
 	protected boolean isAutoDraw;
 
-	boolean isUpdate;
+	protected boolean isUpdate;
 
 	public final static int NORMAL = PAppletWindow.NORMAL;
 
 	public final static int ECONOMIC = PAppletWindow.ECONOMIC;
 
-	Vector _myControlWindowCanvas;
+	protected Vector _myControlWindowCanvas;
 
-	Vector _myControlCanvas;
+	protected Vector _myControlCanvas;
 
 	protected boolean isMouseOver;
+
+	protected boolean isDrawBackground = true;
 
 	/**
 	 * @invisible
 	 * @param theControlP5
-	 *            ControlP5
+	 *        ControlP5
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 */
 	public ControlWindow(final ControlP5 theControlP5, final PApplet theApplet) {
 		controlP5 = theControlP5;
 		_myApplet = theApplet;
 		_myApplet.registerMouseEvent(this);
+		_myApplet.addMouseWheelListener(this);
 		isAutoDraw = true;
 		init();
 	}
@@ -97,7 +105,8 @@ public class ControlWindow {
 		if (isInit == false) {
 			if (_myApplet instanceof PAppletWindow) {
 				_myApplet.registerKeyEvent(new ControlWindowKeyListener(this));
-			} else {
+			}
+			else {
 				controlP5.keyHandler.update(this);
 			}
 		}
@@ -112,14 +121,14 @@ public class ControlWindow {
 		 * draw method has been finished.
 		 */
 		if (_myApplet.g.getClass().getName().indexOf("PGraphics2D") > -1
-				|| _myApplet.g.getClass().getName().indexOf("PGraphics3D") > -1) {
-			System.out
-					.println("### INFO you are using renderer "
-							+ _myApplet.g.getClass().getName()
-							+ "\n"
-							+ "to draw controlP5 you have to call the controlP5.draw() method inside of\n"
-							+ "your processing sketch draw() method.");
-		} else {
+			|| _myApplet.g.getClass().getName().indexOf("PGraphics3D") > -1) {
+			System.out.println("### INFO you are using renderer "
+				+ _myApplet.g.getClass().getName()
+				+ "\n"
+				+ "to draw controlP5 you have to call the controlP5.draw() method inside of\n"
+				+ "your processing sketch draw() method.");
+		}
+		else {
 			if (isInit == false) {
 				_myApplet.registerPre(this);
 				// _myApplet.registerPost(this);
@@ -147,7 +156,7 @@ public class ControlWindow {
 	 * activate a tab of a control window.
 	 * 
 	 * @param theTab
-	 *            String
+	 *        String
 	 */
 	public void activateTab(String theTab) {
 		for (int i = 1; i < _myTabs.size(); i++) {
@@ -161,7 +170,7 @@ public class ControlWindow {
 	 * remove a tab from a control window.
 	 * 
 	 * @param theTab
-	 *            Tab
+	 *        Tab
 	 */
 	public void removeTab(Tab theTab) {
 		_myTabs.remove(theTab);
@@ -171,7 +180,7 @@ public class ControlWindow {
 	 * add a tab to the control window.
 	 * 
 	 * @param theTab
-	 *            Tab
+	 *        Tab
 	 * @return Tab
 	 */
 	public Tab add(Tab theTab) {
@@ -186,13 +195,14 @@ public class ControlWindow {
 	/**
 	 * @invisible
 	 * @param theTab
-	 *            Tab
+	 *        Tab
 	 */
 	protected void activateTab(Tab theTab) {
 		for (int i = 1; i < _myTabs.size(); i++) {
 			if (_myTabs.get(i) == theTab) {
 				((Tab) _myTabs.get(i)).setActive(true);
-			} else {
+			}
+			else {
 				((Tab) _myTabs.get(i)).setActive(false);
 			}
 		}
@@ -210,7 +220,7 @@ public class ControlWindow {
 	 * get a tab by name of a control window
 	 * 
 	 * @param theTabName
-	 *            String
+	 *        String
 	 * @return Tab
 	 */
 	public Tab tab(String theTabName) {
@@ -235,6 +245,8 @@ public class ControlWindow {
 	public void clear() {
 		remove();
 		if (_myApplet instanceof PAppletWindow) {
+			_myApplet.unregisterMouseEvent(this);
+			_myApplet.removeMouseWheelListener(this);
 			_myApplet.stop();
 			((PAppletWindow) _myApplet).dispose();
 			_myApplet = null;
@@ -242,7 +254,7 @@ public class ControlWindow {
 		}
 
 	}
-	
+
 	protected void updateFont(ControlFont theControlFont) {
 		for (int i = 0; i < _myTabs.size(); i++) {
 			((Tab) _myTabs.get(i)).updateFont(theControlFont);
@@ -257,8 +269,7 @@ public class ControlWindow {
 		((ControllerInterface) _myTabs.get(0)).updateEvents();
 		for (int i = 1; i < _myTabs.size(); i++) {
 			((Tab) _myTabs.get(i)).continuousUpdateEvents();
-			if (((Tab) _myTabs.get(i)).isActive()
-					&& ((Tab) _myTabs.get(i)).isVisible()) {
+			if (((Tab) _myTabs.get(i)).isActive() && ((Tab) _myTabs.get(i)).isVisible()) {
 				((ControllerInterface) _myTabs.get(i)).updateEvents();
 			}
 		}
@@ -271,6 +282,7 @@ public class ControlWindow {
 	 * @return
 	 */
 	public boolean isMouseOver() {
+		// TODO it doesnt work for groups yet, implement.
 		return isMouseOver;
 	}
 
@@ -289,7 +301,7 @@ public class ControlWindow {
 	 * enable or disable the update function of a control window.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
 	public void setUpdate(boolean theFlag) {
 		isUpdate = theFlag;
@@ -323,7 +335,9 @@ public class ControlWindow {
 		if (isVisible) {
 
 			if (isPAppletWindow) {
-				_myApplet.background(background);
+				if (isDrawBackground) {
+					_myApplet.background(background);
+				}
 			}
 		}
 	}
@@ -345,10 +359,8 @@ public class ControlWindow {
 				}
 
 				for (int i = 0; i < _myControlWindowCanvas.size(); i++) {
-					if (((ControlWindowCanvas) _myControlWindowCanvas.get(i))
-							.mode() == ControlWindowCanvas.PRE) {
-						((ControlWindowCanvas) _myControlWindowCanvas.get(i))
-								.draw(_myApplet);
+					if (((ControlWindowCanvas) _myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.PRE) {
+						((ControlWindowCanvas) _myControlWindowCanvas.get(i)).draw(_myApplet);
 					}
 				}
 
@@ -365,8 +377,7 @@ public class ControlWindow {
 						if (myHeight < ((Tab) _myTabs.get(i)).height()) {
 							myHeight = ((Tab) _myTabs.get(i)).height();
 						}
-						if (myOffsetX > component().getWidth()
-								- ((Tab) _myTabs.get(i)).width()) {
+						if (myOffsetX > component().getWidth() - ((Tab) _myTabs.get(i)).width()) {
 							myOffsetY += myHeight + 1;
 							myOffsetX = 0;
 							myHeight = 0;
@@ -385,10 +396,8 @@ public class ControlWindow {
 				((ControllerInterface) _myTabs.get(0)).draw(_myApplet);
 
 				for (int i = 0; i < _myControlWindowCanvas.size(); i++) {
-					if (((ControlWindowCanvas) _myControlWindowCanvas.get(i))
-							.mode() == ControlWindowCanvas.POST) {
-						((ControlWindowCanvas) _myControlWindowCanvas.get(i))
-								.draw(_myApplet);
+					if (((ControlWindowCanvas) _myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.POST) {
+						((ControlWindowCanvas) _myControlWindowCanvas.get(i)).draw(_myApplet);
 					}
 				}
 
@@ -403,7 +412,7 @@ public class ControlWindow {
 	/**
 	 * @invisible
 	 * @param theDrawable
-	 *            CDrawable
+	 *        CDrawable
 	 */
 	public void setContext(CDrawable theDrawable) {
 		_myDrawable = theDrawable;
@@ -421,7 +430,7 @@ public class ControlWindow {
 	/**
 	 * @invisible
 	 * @param theMouseEvent
-	 *            MouseEvent
+	 *        MouseEvent
 	 */
 	public void mouseEvent(MouseEvent theMouseEvent) {
 		mouseX = theMouseEvent.getX();
@@ -430,8 +439,7 @@ public class ControlWindow {
 			if (theMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
 				mousePressed = true;
 				for (int i = 0; i < _myTabs.size(); i++) {
-					if (((ControllerInterface) _myTabs.get(i))
-							.setMousePressed(true)) {
+					if (((ControllerInterface) _myTabs.get(i)).setMousePressed(true)) {
 						mouselock = true;
 						if (controlP5.DEBUG) {
 							System.out.println("### mouselock = " + mouselock);
@@ -445,11 +453,22 @@ public class ControlWindow {
 				mousePressed = false;
 				mouselock = false;
 				for (int i = 0; i < _myTabs.size(); i++) {
-					((ControllerInterface) _myTabs.get(i))
-							.setMousePressed(false);
+					((ControllerInterface) _myTabs.get(i)).setMousePressed(false);
 				}
 			}
 		}
+	}
+
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		String message;
+		int notches = e.getWheelRotation();
+		if (notches < 0) {
+			message = "Mouse wheel moved UP " + -notches + " notch";
+		}
+		else {
+			message = "Mouse wheel moved DOWN " + notches + " notch";
+		}
+//		System.out.println(message);
 	}
 
 	public void multitouch(int[][] theCoordinates) {
@@ -460,12 +479,10 @@ public class ControlWindow {
 				if (theCoordinates[n][2] == MouseEvent.MOUSE_PRESSED) {
 					mousePressed = true;
 					for (int i = 0; i < _myTabs.size(); i++) {
-						if (((ControllerInterface) _myTabs.get(i))
-								.setMousePressed(true)) {
+						if (((ControllerInterface) _myTabs.get(i)).setMousePressed(true)) {
 							mouselock = true;
 							if (controlP5.DEBUG) {
-								System.out.println("### mouselock = "
-										+ mouselock);
+								System.out.println("### mouselock = " + mouselock);
 							}
 							return;
 						}
@@ -476,8 +493,7 @@ public class ControlWindow {
 					mousePressed = false;
 					mouselock = false;
 					for (int i = 0; i < _myTabs.size(); i++) {
-						((ControllerInterface) _myTabs.get(i))
-								.setMousePressed(false);
+						((ControllerInterface) _myTabs.get(i)).setMousePressed(false);
 					}
 				}
 			}
@@ -491,7 +507,7 @@ public class ControlWindow {
 	/**
 	 * @invisible
 	 * @param theKeyEvent
-	 *            KeyEvent
+	 *        KeyEvent
 	 */
 	public void keyEvent(KeyEvent theKeyEvent) {
 		for (int i = 0; i < _myTabs.size(); i++) {
@@ -504,7 +520,7 @@ public class ControlWindow {
 	 * 
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
 	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
@@ -518,7 +534,7 @@ public class ControlWindow {
 	 * 
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
 	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
@@ -532,7 +548,7 @@ public class ControlWindow {
 	 * 
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
 	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
@@ -546,7 +562,7 @@ public class ControlWindow {
 	 * 
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
 	public void setColorLabel(int theColor) {
 		color.colorLabel = theColor;
@@ -559,7 +575,7 @@ public class ControlWindow {
 	 * set the color of the values.
 	 * 
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
 	public void setColorValue(int theColor) {
 		color.colorValue = theColor;
@@ -572,7 +588,7 @@ public class ControlWindow {
 	 * set the background color of the control window.
 	 * 
 	 * @param theValue
-	 *            int
+	 *        int
 	 */
 	public void setBackground(int theValue) {
 		background = theValue;
@@ -680,6 +696,27 @@ public class ControlWindow {
 	}
 
 	/**
+	 * by default the background of a controlWindow is filled with a backgorund
+	 * color every frame. to enable or disable the background from drawing, use
+	 * setDrawBackgorund(true/false).
+	 * 
+	 * @param theFlag
+	 */
+	public void setDrawBackground(boolean theFlag) {
+		isDrawBackground = theFlag;
+	}
+
+	/**
+	 * returns a boolean indicating if the background is drawn automatically or
+	 * not.
+	 * 
+	 * @return
+	 */
+	public boolean isDrawBackground() {
+		return isDrawBackground;
+	}
+
+	/**
 	 * check if the content of the control window is visible.
 	 * 
 	 * @return boolean
@@ -688,16 +725,25 @@ public class ControlWindow {
 		return isVisible;
 	}
 
+	protected boolean isControllerActive2(Controller theController) {
+		if (isControllerActive == null) {
+			return false;
+		}
+		return isControllerActive.equals(theController);
+	}
+
+	protected void setControllerActive2(Controller theController) {
+		isControllerActive = theController;
+	}
+
 	protected ControlP5XMLElement getAsXML() {
-		ControlP5XMLElement myXMLElement = new ControlP5XMLElement(
-				new Hashtable(), true, false);
+		ControlP5XMLElement myXMLElement = new ControlP5XMLElement(new Hashtable(), true, false);
 		myXMLElement.setName("window");
 		myXMLElement.setAttribute("class", _myApplet.getClass().getName());
 		myXMLElement.setAttribute("name", name());
 		myXMLElement.setAttribute("width", "" + _myApplet.width);
 		myXMLElement.setAttribute("height", "" + _myApplet.height);
-		myXMLElement.setAttribute("background", ControlP5IOHandler
-				.intToString(background));
+		myXMLElement.setAttribute("background", ControlP5IOHandler.intToString(background));
 		if (_myApplet.getClass().getName().indexOf("controlP5.PAppletWindow") != -1) {
 			myXMLElement.setAttribute("x", "" + ((PAppletWindow) _myApplet).x);
 			myXMLElement.setAttribute("y", "" + ((PAppletWindow) _myApplet).y);

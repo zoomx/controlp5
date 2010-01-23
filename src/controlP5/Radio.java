@@ -28,8 +28,9 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 /**
- * a radio button implementation.
+ * deprecated, use RadioButton instead.
  * 
+ * @deprecated use RadioButton or CheckBox instead
  * @related ControlP5
  * @related Bang
  * @related Button
@@ -46,12 +47,6 @@ import java.util.Hashtable;
  * @related Controller
  */
 public class Radio extends Controller {
-	
-	/*
-	 * @todo
-	 * add multiple choice option.
-	 * add option to activate and deactivate when radio button is clicked.
-	 */
 	
 	Vector _myRadioButtons;
 
@@ -377,7 +372,7 @@ public class Radio extends Controller {
 		 */
 		public void updateInternalEvents(
 		        PApplet theApplet) {
-			if (isInside) {
+			if (getIsInside()) {
 				if (insideRadioButton()) {
 					if (isMousePressed && current() != this) {
 						setValue(value);
@@ -399,7 +394,7 @@ public class Radio extends Controller {
 			} else {
 				theApplet.fill(color.colorForeground);
 			}
-			if (isInside) {
+			if (getIsInside()) {
 				if (insideRadioButton()) {
 					theApplet.fill(color.colorActive);
 				}

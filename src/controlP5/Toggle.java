@@ -132,13 +132,17 @@ public class Toggle extends Controller {
 		_myValue = (isOn == false) ? 0 : 1;
 	}
 	
-	protected void toggle() {
+	/**
+	 * switch the state of a toggle.
+	 */
+	public void toggle() {
 		if(isOn) {
-			deactivate();
+			setState(false);
 		} else {
-			activate();
+			setState(true);
 		}
 	}
+	
 	/**
 	 * @invisible
 	 * @param theElement

@@ -44,46 +44,46 @@ public class Button extends Controller {
 
 	/**
 	 * @param theControlP5
-	 *            ControlP5
+	 *        ControlP5
 	 * @param theParent
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theDefaultValue
-	 *            float
+	 *        float
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @invisible
 	 */
 	protected Button(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theDefaultValue,
-	        int theX,
-	        int theY,
-	        int theWidth,
-	        int theHeight) {
+		ControlP5 theControlP5,
+		ControllerGroup theParent,
+		String theName,
+		float theDefaultValue,
+		int theX,
+		int theY,
+		int theWidth,
+		int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 	}
 
 	protected Button(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theDefaultValue,
-	        int theX,
-	        int theY,
-	        int theWidth,
-	        int theHeight,
-	        boolean theBroadcastFlag) {
+		ControlP5 theControlP5,
+		ControllerGroup theParent,
+		String theName,
+		float theDefaultValue,
+		int theX,
+		int theY,
+		int theWidth,
+		int theHeight,
+		boolean theBroadcastFlag) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 	}
@@ -92,40 +92,40 @@ public class Button extends Controller {
 		super(null, null, null, 0, 0, 1, 1);
 	}
 
-	public Button(
-	        ControlP5 theControlP5,
-	        String theName) {
+	public Button(ControlP5 theControlP5, String theName) {
 		super(theControlP5, theControlP5.tab("default"), theName, 0, 0, 1, 1);
 	}
-
 
 	/**
 	 * @invisible
 	 * @example ControlP5button
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 */
-	public void draw(
-	        PApplet theApplet) {
+	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
 		theApplet.translate(position.x, position.y);
 		if (!isSprite) {
-			if (isInside || isOn) {
+			if (getIsInside() || isOn) {
 				theApplet.fill(color.colorActive);
-			} else {
+			}
+			else {
 				theApplet.fill(color.colorBackground);
 			}
 
 			theApplet.rect(0, 0, width, height);
 			_myCaptionLabel.draw(theApplet, 4, height / 2 - 3);
-		} else {
+		}
+		else {
 			if (isActive) {
 				if (isPressed) {
 					sprite.setState(2);
-				} else {
+				}
+				else {
 					sprite.setState(1);
 				}
-			} else {
+			}
+			else {
 				sprite.setState(0);
 			}
 			theApplet.fill(0);
@@ -146,7 +146,7 @@ public class Button extends Controller {
 	 * @invisible
 	 */
 	public void mousePressed() {
-		isActive = isInside;
+		isActive = getIsInside();
 		isPressed = true;
 	}
 
@@ -157,9 +157,11 @@ public class Button extends Controller {
 		isPressed = false;
 		if (isActive) {
 			isActive = false;
-			// added. if a tab changes due to a mousePressed
-			// and tab changes, 'isInside' has to be set to false
-			isInside = false;
+			// added. if a tab changes due to a mousePressed, 'isInside' has to
+			// be set to false
+			if(parent() instanceof Tab) {
+				setIsInside(false);
+			}
 			setValue(_myValue);
 		}
 	}
@@ -172,10 +174,9 @@ public class Button extends Controller {
 	 * set the value of the button controller.
 	 * 
 	 * @param theValue
-	 *            float
+	 *        float
 	 */
-	public void setValue(
-	        float theValue) {
+	public void setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 	}
@@ -190,10 +191,9 @@ public class Button extends Controller {
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            ControlP5XMLElement
+	 *        ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
+	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "button");
 	}
 

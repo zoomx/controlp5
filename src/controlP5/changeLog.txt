@@ -1,4 +1,17 @@
 changeLog:
+0.4.3
+* Controller.isInside is private now. use setIsInside(true/false) and getIsInside() to access this boolean field.
+* trying to solve the problem of overlapping described here:
+http://processing.org/discourse/yabb2/YaBB.pl?num=1259885420/0#0
+yet not successful, but loops managing the mouseEvents have been reversed from i++ to i--
+* adding activateAll, activate, deactivate, getState to CheckBox and RadioButton to be able to control individual items by code.
+* adding toggle() to CheckBox to be able to toggle individual items of a checkBox.
+* adding  setItemHeight(), setItemWidth() to radioButton and checkBox
+* adding toggle() to Toggle
+ 
+0.4.2
+-
+
 0.4.1
 * controller, added changeValue() to change the float value of a controller without broadcasting its change as a event. 
 * numberbox added setMultiplier() and multiplier() to customize the value sensitivity.

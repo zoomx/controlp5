@@ -318,7 +318,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * @invisible
 	 */
 	public void continuousUpdateEvents() {
-		for (int i = 0; i < controllers.size(); i++) {
+		for (int i = controllers.size() - 1; i >= 0; i--) {
 			((ControllerInterface) controllers.get(i)).continuousUpdateEvents();
 		}
 	}
@@ -328,7 +328,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * controller.
 	 */
 	public void update() {
-		for (int i = 0; i < controllers.size(); i++) {
+		for (int i = controllers.size() - 1; i >= 0; i--) {
 			if (((ControllerInterface) controllers.get(i)).isUpdate()) {
 				((ControllerInterface) controllers.get(i)).update();
 			}
@@ -361,12 +361,14 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * @invisible
 	 */
 	public void updateEvents() {
+
 		if (isOpen) {
-			for (int i = 0; i < controllers.size(); i++) {
+			for (int i = controllers.size()-1; i >= 0 ; i--) {
 				((ControllerInterface) controllers.get(i)).updateEvents();
 			}
 		}
 		if (isVisible) {
+
 			if ((isMousePressed == _myControlWindow.mouselock)) {
 				if (isMousePressed && ControlP5.keyHandler.isAltDown && isMoveable) {
 					positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
@@ -572,7 +574,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 		if (!isVisible) {
 			return false;
 		}
-		for (int i = 0; i < controllers.size(); i++) {
+		for (int i = controllers.size()-1; i >=0; i--) {
 			if (((ControllerInterface) controllers.get(i)).setMousePressed(theStatus)) {
 				return true;
 			}
