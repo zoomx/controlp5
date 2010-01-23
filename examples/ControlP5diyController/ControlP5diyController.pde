@@ -50,7 +50,7 @@ class ControlPad extends Controller {
 
   // overwrite the updateInternalEvents method to handle mouse and key inputs.
   public void updateInternalEvents(PApplet theApplet) {
-    if(isInside) {
+    if(getIsInside()) {
       if(isMousePressed && !controlP5.keyHandler.isAltDown) {
         cX = constrain(mouseX-position.x(),0,width-cWidth);
         cY = constrain(mouseY-position.y(),0,height-cHeight);
@@ -66,7 +66,7 @@ class ControlPad extends Controller {
     theApplet.pushMatrix();
     theApplet.translate(position().x(), position().y());
     // draw the background of the controller.
-    if(isInside) {
+    if(getIsInside()) {
       theApplet.fill(150);
     } 
     else {
