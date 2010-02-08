@@ -108,7 +108,7 @@ public class ControlP5 implements ControlP5Constants {
 	/**
 	 * @invisible
 	 */
-	public static final String VERSION = "0.4.3";
+	public static final String VERSION = "0.4.6";
 
 	/**
 	 * @invisible

@@ -209,7 +209,11 @@ public abstract class ControllerGroup implements ControllerInterface {
 	public void moveTo(ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab("default"), theControlWindow);
 	}
-
+	
+	public void moveTo(String theTabName) {
+		moveTo(null, controlP5.controlWindow.tab(theTabName),controlP5.controlWindow);
+	}
+	
 	public void moveTo(String theTabName, ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab(theTabName), theControlWindow);
 	}

@@ -347,6 +347,8 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	public String text() {
 		return stringValue();
 	}
+	
+	
 
 	/**
 	 * @invisible
