@@ -276,7 +276,6 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	public void mouseReleased() {
-		System.out.println("ROOT released");
 	}
 
 	/**

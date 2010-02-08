@@ -213,7 +213,7 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 //			System.out.println("default renderer");
 		} else {
 			size(width, height, _myRenderer);
-//			System.out.println("using renderer " + _myRenderer);
+//			System.out.println("ControlWindow: using renderer " + _myRenderer);
 		}
 		try {
 			Thread.sleep(100);

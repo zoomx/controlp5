@@ -266,11 +266,9 @@ public class Slider extends Controller {
 	}
 	
 	public void onEnter() {
-		System.out.println("Enter");
 	}
 	
 	public void onLeave() {
-		System.out.println("Leave");
 	}
 
 }

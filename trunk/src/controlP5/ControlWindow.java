@@ -349,11 +349,14 @@ public class ControlWindow implements MouseWheelListener {
 		if (controlP5.blockDraw == false) {
 			updateEvents();
 			if (isVisible) {
+				
 				int myRectMode = _myApplet.g.rectMode;
 				int myEllipseMode = _myApplet.g.ellipseMode;
+				int myImageMode = _myApplet.g.imageMode;
 				_myApplet.rectMode(_myApplet.CORNER);
 				_myApplet.ellipseMode(_myApplet.CORNER);
-
+				_myApplet.imageMode(_myApplet.CORNER);
+				
 				if (_myDrawable != null) {
 					_myDrawable.draw(_myApplet);
 				}
@@ -405,6 +408,7 @@ public class ControlWindow implements MouseWheelListener {
 				pmouseY = mouseY;
 				_myApplet.rectMode(myRectMode);
 				_myApplet.ellipseMode(myEllipseMode);
+				_myApplet.imageMode(myImageMode);
 			}
 		}
 	}
