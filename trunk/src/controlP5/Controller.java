@@ -1265,7 +1265,11 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		height = sprite.height();
 		isSprite = true;
 	}
-
+	
+	public ControllerSprite getSprite() {
+		return sprite;
+	}
+	
 	public void enableSprite() {
 		if (sprite != null) {
 			isSprite = true;

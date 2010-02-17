@@ -1,3 +1,9 @@
+2010-02-16  Andreas Schlegel
+      * version 0.4.7
+      * ControlWindow: adding setUndecorated(), isUndecorated(), toggleUndecorated()
+      * ControllerSprite: sprites are now clone-able and state management has been improved, thanks to c.a. church. http://processing.org/discourse/yabb2/YaBB.pl?num=1265905257
+      * Controller: adding getSprite() 
+       	  
 2010-02-06  Andreas Schlegel
       * version 0.4.6 
       * ControlWindow: imageMode was not set back to CENTER/CORNER correctly, now fixed.
@@ -16,7 +22,7 @@
       * CheckBox,RadioButton: adding activateAll, activate, deactivate, getState to CheckBox and RadioButton to be able to control individual items by code.
       * CheckBox: adding toggle() to CheckBox to be able to toggle individual items of a checkBox.
       * CheckBox,RadioButton: adding  setItemHeight(), setItemWidth() to radioButton and checkBox
-      * Toggle: adding toggle() to Toggle
+      * Toggle: adding toggle()
  
 0.4.2
 -
