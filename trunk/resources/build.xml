@@ -41,7 +41,7 @@
 	<property name="libraryName"  value="controlP5"/>
 	
 <!-- #### (8) give your library a name. edit value.   #### -->
-	<property name="versionNumber"  value="0.4.6"/>
+	<property name="versionNumber"  value="0.5.1"/>
 	
 <!-- #### (9) your contact url. edit value. #### -->
 	<property name="yourLink"  value="http://www.sojamo.de" />
@@ -111,12 +111,14 @@
 	<tstamp> 
 		<format property="date" pattern="MM/dd/yyyy" offset="0" unit="hour"/>
 	</tstamp>
+	<delete dir="${bin}"/>
+	<mkdir dir="${bin}"/>	
 	<mkdir dir="${dist}"/>
   </target>
   
 	<!-- compile the library -->
   <target name="compile" depends="init" description="compile the source" >  	
-		<javac srcdir="${src}" destdir="${bin}" source="${javaVersion}">
+		<javac srcdir="${src}" destdir="${bin}" source="${javaVersion}" target="${javaVersion}">
 			<classpath>
 				<path refid="library-classpath"/>
 			</classpath>
