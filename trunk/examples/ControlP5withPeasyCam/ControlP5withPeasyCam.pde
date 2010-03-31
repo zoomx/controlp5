@@ -1,9 +1,8 @@
 /**
- * ControlP5 with PeasyCam support
+ * ControlP5 with PeasyCam support. tested with peasy 0.8.2
  *
- * source:
+ * by jeffg 2009
  * http://processing.org/discourse/yabb2/YaBB.pl?num=1234988194/30#30
- *
  */
  
 import peasy.*;
@@ -17,6 +16,8 @@ PGraphics3D g3;
 
 int buttonValue = 1;
 
+int myColor = color(255,0,0);
+
 void setup() {
   size(400,400,OPENGL);
   g3 = (PGraphics3D)g;
@@ -29,7 +30,7 @@ void setup() {
 void draw() {
   
   background(0);
-  fill(255,0,0);
+  fill(myColor);
   box(30);
   pushMatrix();
   translate(0,0,20);
@@ -53,6 +54,7 @@ void controlEvent(ControlEvent theEvent) {
 }
 
 void button(float theValue) {
+  myColor = color(random(255),random(255),random(255));
   println("a button event. "+theValue);
 }
  

@@ -51,5 +51,17 @@ void keyPressed() {
   if(key=='.') controlP5.window("controlP5window").show();
   // controlWindow = controlP5.addControlWindow("controlP5window2",600,100,400,200);
   // controlP5.controller("sliderValue1").moveTo(controlWindow);
+  
+  // since version 0.5.0, a controlWindow can be set undecorated.
+  if(key=='d') {
+    if(controlWindow.isUndecorated()) {
+      controlWindow.setUndecorated(false);
+    } else {
+      controlWindow.setUndecorated(true);
+    }
+  }
+  if(key=='t') {
+    controlWindow.toggleUndecorated();
+  }
 }
 

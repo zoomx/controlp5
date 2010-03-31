@@ -21,7 +21,7 @@ void setup() {
   smooth();
   controlP5 = new ControlP5(this);
   myKnobA = controlP5.addKnob("knob",0,360,0,100,160,40);
-  //myKnobB = controlP5.addKnob("knobValues",100,200,128,100,240,40);
+  myKnobB = controlP5.addKnob("knobValue",100,200,128,100,240,40);
   myKnobA.setOffsetAngle(-HALF_PI);
 }
 

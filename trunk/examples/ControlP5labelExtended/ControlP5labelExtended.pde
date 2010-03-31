@@ -26,6 +26,7 @@ void setup() {
   controlP5.Label label = s.valueLabel();
   label.setColor(color(255,128));
   label.style().marginTop = -10;
+  
   label = s.captionLabel();
   label.toUpperCase(false);
   
