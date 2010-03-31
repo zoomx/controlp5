@@ -12,7 +12,7 @@ public class ControlClassLoader extends ClassLoader {
 	public ControlClassLoader() {
 		super(ControlClassLoader.class.getClassLoader());
 		System.out.println(getPackages().length);
-		for(int i=0;i<getPackages().length;i++) {
+		for (int i = 0; i < getPackages().length; i++) {
 			System.out.println(getPackages()[i]);
 		}
 	}
@@ -31,19 +31,18 @@ public class ControlClassLoader extends ClassLoader {
 
 		try {
 			return findSystemClass(className);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e);
 		}
 		try {
-			String classPath = ((String) ClassLoader.getSystemResource(
-				className.replace('.', File.separatorChar) + ".class").getFile()).substring(1);
+			String classPath = ((String) ClassLoader
+			  .getSystemResource(className.replace('.', File.separatorChar) + ".class")
+			  .getFile()).substring(1);
 			classByte = loadClassData(classPath);
 			result = defineClass(className, classByte, 0, classByte.length, null);
 			classes.put(className, result);
 			return result;
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println(e);
 			return null;
 		}

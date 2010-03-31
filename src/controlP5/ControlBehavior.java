@@ -23,81 +23,80 @@ package controlP5;
  *
  */
 
-
 /**
  * control behavior is an abstract class and can be extended, update() has to be
- * implemented. how to use ControlBehavior please see the ControlP5behavior example in the
+ * implemented. how to use ControlBehavior please see the ControlP5behavior
+ * example in the
  * examples folder.
+ * 
  * @example ControlP5behavior
  */
 public abstract class ControlBehavior {
 
-  protected Controller _myController;
+	protected Controller _myController;
 
-  protected float value;
+	protected float value;
 
-  protected boolean isActive = true;
+	protected boolean isActive = true;
 
+	protected void init(Controller theController) {
+		_myController = theController;
+	}
 
-  protected void init(Controller theController) {
-    _myController = theController;
-  }
+	/**
+	 * returns the controller this behavior is connected to.
+	 * 
+	 * @return Controller
+	 */
+	public Controller controller() {
+		return _myController;
+	}
 
+	protected float getValue() {
+		return value;
+	}
 
-  /**
-   * returns the controller this behavior is connected to.
-   * @return Controller
-   */
-  public Controller controller() {
-    return _myController;
-  }
+	/**
+	 * set the value of the controller.
+	 * 
+	 * @param theValue float
+	 */
+	public void setValue(float theValue) {
+		value = theValue;
+		_myController.setValue(value);
+	}
 
+	/**
+	 * get the value of the controller this behavior is connected to.
+	 * 
+	 * @return float
+	 */
 
-  protected float getValue() {
-    return value;
-  }
+	public float value() {
+		return value;
+	}
 
+	/**
+	 * when extending ControlBehavior, update() has to be overwritten.
+	 */
+	public abstract void update();
 
-  /**
-   * set the value of the controller.
-   * @param theValue float
-   */
-  public void setValue(float theValue) {
-    value = theValue;
-    _myController.setValue(value);
-  }
+	/**
+	 * (de)activate the behavior.
+	 * 
+	 * @param theFlag boolean
+	 */
+	public void setActive(boolean theFlag) {
+		isActive = theFlag;
+	}
 
-
-  /**
-   * get the value of the controller this behavior is connected to.
-   * @return float
-   */
-
-  public float value() {
-    return value;
-  }
-
-  /**
-   * when extending ControlBehavior, update() has to be overwritten.
-   */
-  public abstract void update();
-
-
-  /**
-   * (de)activate the behavior.
-   * @param theFlag boolean
-   */
-  public void setActive(boolean theFlag) {
-    isActive = theFlag;
-  }
-
-
-  /**
-   * check if the behavior is active or not.
-   * @return boolean
-   */
-  public boolean isActive() {
-    return isActive;
-  }
+	/**
+	 * check if the behavior is active or not.
+	 * 
+	 * @return boolean
+	 */
+	public boolean isActive() {
+		return isActive;
+	}
 
 }

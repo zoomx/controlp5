@@ -1,8 +1,20 @@
+2010-03-26  Andreas Schlegel
+      * version 0.5.0
+      * making transition to 1.5+, no more java 1.4 support.
+      * compiling against processing 1.1
+      * Toggle: when inactive, the color refers to colorBackground instead of colorForeground now.
+      * ControlFont: smooth related functions have been disabled and deprecated due to processing 1.1 changes.
+      * Slider: use alignValueLabel() to position the value label of a slider on TOP, CENTER, or BOTTOM
+      * ControlP5quick example: new, ControlP5quick shows how to quickly add Controllers with auto-arrangement.
+      * ControlP5: added disableKeys() and enableKeys(), suggested in the discourse. 
+            
 2010-02-16  Andreas Schlegel
       * version 0.4.7
+      * Slider: adding TickMarks and replacing steps with snapToTickMarks().
       * ControlWindow: adding setUndecorated(), isUndecorated(), toggleUndecorated()
       * ControllerSprite: sprites are now clone-able and state management has been improved, thanks to c.a. church. http://processing.org/discourse/yabb2/YaBB.pl?num=1265905257
       * Controller: adding getSprite() 
+      * BitFontRenderer: adding warning for character that are not supported by the BitFontRenderer.
        	  
 2010-02-06  Andreas Schlegel
       * version 0.4.6 

@@ -23,11 +23,11 @@ public class CheckBox extends RadioButton {
 	 * @param theY
 	 */
 	public CheckBox(
-		final ControlP5 theControlP5,
-		final ControllerGroup theParent,
-		final String theName,
-		final int theX,
-		final int theY) {
+	  final ControlP5 theControlP5,
+	  final ControllerGroup theParent,
+	  final String theName,
+	  final int theX,
+	  final int theY) {
 		super(theControlP5, theParent, theName, theX, theY);
 		isMultipleChoice = true;
 	}
@@ -65,8 +65,7 @@ public class CheckBox extends RadioButton {
 			Toggle t = ((Toggle) _myRadioToggles.get(theIndex));
 			if (t.getState() == true) {
 				t.deactivate();
-			}
-			else {
+			} else {
 				t.activate();
 			}
 			updateValues();
@@ -81,8 +80,7 @@ public class CheckBox extends RadioButton {
 
 				if (t.getState() == true) {
 					t.deactivate();
-				}
-				else {
+				} else {
 					t.activate();
 				}
 				updateValues();

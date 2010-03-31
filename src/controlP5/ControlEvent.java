@@ -42,18 +42,19 @@ public class ControlEvent {
 	protected boolean isController;
 
 	protected boolean isGroup;
-	
+
 	public static final int PRESSED = 0;
 	public static final int ENTER = 1;
 	public static final int LEAVE = 2;
 	public static final int RELEASED = 3;
 	public static final int RELEASEDOUTSIDE = 3;
-	
+
 	protected int myAction;
+
 	/**
 	 * @invisible
 	 * @param theController
-	 *            Controller
+	 *        Controller
 	 */
 	protected ControlEvent(Controller theController) {
 		_myController = theController;
@@ -65,7 +66,7 @@ public class ControlEvent {
 	/**
 	 * @invisible
 	 * @param theController
-	 *            Controller
+	 *        Controller
 	 */
 	public ControlEvent(Tab theController) {
 		_myController = theController;
@@ -77,7 +78,7 @@ public class ControlEvent {
 	/**
 	 * @invisible
 	 * @param theController
-	 *            Controller
+	 *        Controller
 	 */
 	public ControlEvent(ControllerGroup theController) {
 		_myController = theController;

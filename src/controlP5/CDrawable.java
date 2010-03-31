@@ -1,6 +1,5 @@
 package controlP5;
 
-
 /**
  * controlP5 is a processing and java library for creating simple control GUIs.
  *
@@ -31,9 +30,9 @@ import processing.core.PApplet;
  */
 public interface CDrawable {
 
-    /**
-     * @invisible
-     * @param theApplet PApplet
-     */
-    public void draw(PApplet theApplet);
+	/**
+	 * @invisible
+	 * @param theApplet PApplet
+	 */
+	public void draw(PApplet theApplet);
 }

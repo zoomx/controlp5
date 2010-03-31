@@ -17,7 +17,13 @@ public class Toggle extends Controller {
 	protected boolean isOn = false;
 
 	protected float internalValue = -1;
-
+	
+	protected static int autoWidth = 20;
+		
+	protected static int autoHeight = 20;
+	
+	protected CVector3f autoSpacing = new CVector3f(10, 20, 0);
+	
 	/**
 	 * @invisible
 	 * @param theControlP5
@@ -62,7 +68,7 @@ public class Toggle extends Controller {
 		if (isActive) {
 			theApplet.fill(color.colorActive);
 		} else {
-			theApplet.fill(isOn ? color.colorActive : color.colorForeground);
+			theApplet.fill(isOn ? color.colorActive : color.colorBackground);
 		}
 		theApplet.rect(0, 0, width, height);
 		if(isLabelVisible) {
@@ -168,5 +174,9 @@ public class Toggle extends Controller {
 	public float internalValue() {
 		return internalValue;
 	}
-
+	
+	public Controller linebreak() {
+		controlP5.linebreak(this, true, autoWidth, autoHeight,autoSpacing);
+		return this;
+	}
 }

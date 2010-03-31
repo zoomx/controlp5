@@ -26,8 +26,8 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * a bang controller triggers an event when pressed. It can only be applied to a method
- * assigned to it and not to fields. for a full documentation of this
+ * a bang controller triggers an event when pressed. It can only be applied to a
+ * method assigned to it and not to fields. for a full documentation of this
  * controller see the <a href="./controller_class_controller.htm">controller</a>
  * class.
  * 
@@ -39,34 +39,33 @@ public class Bang extends Controller {
 
 	protected int cnt;
 
-	
 	protected int triggerId = PRESSED;
 
 	/**
 	 * @param theControlP5
-	 *            ControlP5
+	 *        ControlP5
 	 * @param theParent
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 * @invisible
 	 */
 	protected Bang(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theX,
-	        float theY,
-	        int theWidth,
-	        int theHeight) {
+	  ControlP5 theControlP5,
+	  ControllerGroup theParent,
+	  String theName,
+	  float theX,
+	  float theY,
+	  int theWidth,
+	  int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = 1;
 	}
@@ -74,10 +73,9 @@ public class Bang extends Controller {
 	/**
 	 * @invisible
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 */
-	public void draw(
-	        PApplet theApplet) {
+	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
 		theApplet.translate(position.x, position.y);
 
@@ -133,26 +131,25 @@ public class Bang extends Controller {
 			update();
 		}
 	}
-	
+
 	protected void mouseReleasedOutside() {
 		// if _myTriggerId==RELEASE, the event is not
 		// triggered when mouse is released outside, since
 		// the event would be triggered for any mouse
 		// release even though the controller is not acitve.
-		// therefore mouseReleased() is not called in here. 
+		// therefore mouseReleased() is not called in here.
 		onLeave();
-	} 
+	}
 
 	/**
 	 * by default a bang is triggered when the mouse is pressed. use
 	 * setTriggerEvent(Bang.PRESSED) or
 	 * setTriggerEvent(Bang.RELEASE) to define the action for triggering
-	 * a bang. currently only Bang.PRESSED and Bang.RELEASE are supported. 
+	 * a bang. currently only Bang.PRESSED and Bang.RELEASE are supported.
 	 * 
 	 * @param theEventID
 	 */
-	public void setTriggerEvent(
-	        int theEventID) {
+	public void setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
 	}
 
@@ -161,10 +158,9 @@ public class Bang extends Controller {
 	 * false=0 and true=1
 	 * 
 	 * @param theValue
-	 *            float
+	 *        float
 	 */
-	public void setValue(
-	        float theValue) {
+	public void setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 	}
@@ -179,10 +175,9 @@ public class Bang extends Controller {
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            ControlP5XMLElement
+	 *        ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
+	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "bang");
 	}
 

@@ -45,13 +45,11 @@ public interface ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theX
-	 *            float
+	 *        float
 	 * @param theY
-	 *            float
+	 *        float
 	 */
-	public void setPosition(
-	        float theX,
-	        float theY);
+	public void setPosition(float theX, float theY);
 
 	/**
 	 * @invisible
@@ -72,8 +70,7 @@ public interface ControllerInterface {
 	/**
 	 * @invisible
 	 */
-	public void setUpdate(
-	        boolean theFlag);
+	public void setUpdate(boolean theFlag);
 
 	/**
 	 * @invisible
@@ -103,26 +100,23 @@ public interface ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 */
-	public void draw(
-	        PApplet theApplet);
+	public void draw(PApplet theApplet);
 
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            ControllerInterface
+	 *        ControllerInterface
 	 */
-	public void add(
-	        ControllerInterface theElement);
+	public void add(ControllerInterface theElement);
 
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            ControllerInterface
+	 *        ControllerInterface
 	 */
-	public void remove(
-	        ControllerInterface theElement);
+	public void remove(ControllerInterface theElement);
 
 	/**
 	 * @invisible
@@ -150,27 +144,24 @@ public interface ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theStatus
-	 *            boolean
+	 *        boolean
 	 * @return boolean
 	 */
-	public boolean setMousePressed(
-	        boolean theStatus);
+	public boolean setMousePressed(boolean theStatus);
 
 	/**
 	 * @invisible
 	 * @param theEvent
-	 *            KeyEvent
+	 *        KeyEvent
 	 */
-	public void keyEvent(
-	        KeyEvent theEvent);
+	public void keyEvent(KeyEvent theEvent);
 
 	/**
 	 * @invisible
 	 * @param theValue
-	 *            int
+	 *        int
 	 */
-	public void setId(
-	        int theValue);
+	public void setId(int theValue);
 
 	/**
 	 * @invisible
@@ -181,60 +172,53 @@ public interface ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theString
-	 *            String
+	 *        String
 	 */
-	public void setLabel(
-	        String theString);
+	public void setLabel(String theString);
 
 	/**
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorActive(
-	        int theColor);
+	public void setColorActive(int theColor);
 
 	/**
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorForeground(
-	        int theColor);
+	public void setColorForeground(int theColor);
 
 	/**
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorBackground(
-	        int theColor);
+	public void setColorBackground(int theColor);
 
 	/**
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorLabel(
-	        int theColor);
+	public void setColorLabel(int theColor);
 
 	/**
 	 * @invisible
 	 * @param theColor
-	 *            int
+	 *        int
 	 */
-	public void setColorValue(
-	        int theColor);
+	public void setColorValue(int theColor);
 
 	public CColor color();
 
 	/**
 	 * @invisible
 	 * @param theXMLElement
-	 *            ControlP5XMLElement
+	 *        ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theXMLElement);
+	public void addToXMLElement(ControlP5XMLElement theXMLElement);
 
 	/**
 	 * @invisible
@@ -261,16 +245,13 @@ public interface ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theGroup
-	 *            ControlGroup
+	 *        ControlGroup
 	 * @param theTab
-	 *            Tab
+	 *        Tab
 	 * @param theWindow
-	 *            ControlWindow
+	 *        ControlWindow
 	 */
-	public void moveTo(
-	        ControlGroup theGroup,
-	        Tab theTab,
-	        ControlWindow theWindow);
+	public void moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theWindow);
 
 	public float value();
 

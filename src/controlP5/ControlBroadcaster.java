@@ -33,7 +33,7 @@ import java.util.Vector;
  */
 public class ControlBroadcaster {
 
-	private Vector _myControllerPlugList;
+	private Vector<ControllerPlug> _myControllerPlugList;
 
 	private int _myControlEventType = ControlP5Constants.INVALID;
 
@@ -51,7 +51,7 @@ public class ControlBroadcaster {
 	protected ControlBroadcaster(
 	        ControlP5 theControlP5) {
 		_myControlP5 = theControlP5;
-		_myControllerPlugList = new Vector();
+		_myControllerPlugList = new Vector<ControllerPlug>();
 		plug("", _myEventMethod);
 	}
 
@@ -66,7 +66,7 @@ public class ControlBroadcaster {
 	        final String theControllerName,
 	        final String theTargetMethod) {
 		if (theTargetMethod.equals(_myEventMethod)) {
-			_myControlEventPlug = checkObject(_myControlP5.papplet, _myEventMethod, new Class[] { ControlEvent.class });
+			_myControlEventPlug = checkObject(ControlP5.papplet, _myEventMethod, new Class[] { ControlEvent.class });
 			if (_myControlEventPlug != null) {
 				_myControlEventType = ControlP5Constants.METHOD;
 			}
@@ -77,9 +77,9 @@ public class ControlBroadcaster {
 
 		if (myController != null) {
 			myController.setTarget(theTargetMethod);
-			myController.setTargetObject(_myControlP5.papplet);
+			myController.setTargetObject(ControlP5.papplet);
 
-			ControllerPlug myControllerPlug = checkObject(_myControlP5.papplet, theTargetMethod,
+			ControllerPlug myControllerPlug = checkObject(ControlP5.papplet, theTargetMethod,
 			        ControlP5Constants.acceptClassList);
 			if (myControllerPlug != null) {
 				if (myController.controllerPlug() == null) {

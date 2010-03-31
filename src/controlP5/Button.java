@@ -42,6 +42,11 @@ public class Button extends Controller {
 
 	protected boolean isOn;
 
+	protected static int autoWidth = 50;
+
+	protected static int autoHeight = 20;
+
+
 	/**
 	 * @param theControlP5
 	 *        ControlP5
@@ -62,28 +67,28 @@ public class Button extends Controller {
 	 * @invisible
 	 */
 	protected Button(
-		ControlP5 theControlP5,
-		ControllerGroup theParent,
-		String theName,
-		float theDefaultValue,
-		int theX,
-		int theY,
-		int theWidth,
-		int theHeight) {
+	  ControlP5 theControlP5,
+	  ControllerGroup theParent,
+	  String theName,
+	  float theDefaultValue,
+	  int theX,
+	  int theY,
+	  int theWidth,
+	  int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 	}
 
 	protected Button(
-		ControlP5 theControlP5,
-		ControllerGroup theParent,
-		String theName,
-		float theDefaultValue,
-		int theX,
-		int theY,
-		int theWidth,
-		int theHeight,
-		boolean theBroadcastFlag) {
+	  ControlP5 theControlP5,
+	  ControllerGroup theParent,
+	  String theName,
+	  float theDefaultValue,
+	  int theX,
+	  int theY,
+	  int theWidth,
+	  int theHeight,
+	  boolean theBroadcastFlag) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 	}
@@ -108,24 +113,20 @@ public class Button extends Controller {
 		if (!isSprite) {
 			if (getIsInside() || isOn) {
 				theApplet.fill(color.colorActive);
-			}
-			else {
+			} else {
 				theApplet.fill(color.colorBackground);
 			}
 
 			theApplet.rect(0, 0, width, height);
 			_myCaptionLabel.draw(theApplet, 4, height / 2 - 3);
-		}
-		else {
+		} else {
 			if (isActive) {
 				if (isPressed) {
 					sprite.setState(2);
-				}
-				else {
+				} else {
 					sprite.setState(1);
 				}
-			}
-			else {
+			} else {
 				sprite.setState(0);
 			}
 			theApplet.fill(0);
@@ -159,7 +160,7 @@ public class Button extends Controller {
 			isActive = false;
 			// added. if a tab changes due to a mousePressed, 'isInside' has to
 			// be set to false
-			if(parent() instanceof Tab) {
+			if (parent() instanceof Tab) {
 				setIsInside(false);
 			}
 			setValue(_myValue);

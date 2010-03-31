@@ -26,25 +26,25 @@ import java.awt.event.KeyEvent;
 
 /**
  * @invisible
- *
+ * 
  */
 public class ControlWindowKeyListener {
 
-    private final boolean isMasterWindow;
+	private final boolean isMasterWindow;
 
-    private final ControlWindow _myControlWindow;
+	private final ControlWindow _myControlWindow;
 
-    public ControlWindowKeyListener(ControlWindow theControlWindow) {
-        _myControlWindow = theControlWindow;
-        isMasterWindow = false;
-    }
+	public ControlWindowKeyListener(ControlWindow theControlWindow) {
+		_myControlWindow = theControlWindow;
+		isMasterWindow = false;
+	}
 
-    public ControlWindowKeyListener(ControlP5 theControlP5) {
-        _myControlWindow = theControlP5.controlWindow;
-        isMasterWindow = true;
-    }
+	public ControlWindowKeyListener(ControlP5 theControlP5) {
+		_myControlWindow = theControlP5.controlWindow;
+		isMasterWindow = true;
+	}
 
-    public void keyEvent(KeyEvent theKeyEvent) {
-        ControlP5.keyHandler.keyEvent(theKeyEvent, _myControlWindow,isMasterWindow);
-    }
+	public void keyEvent(KeyEvent theKeyEvent) {
+		ControlP5.keyHandler.keyEvent(theKeyEvent, _myControlWindow, isMasterWindow);
+	}
 }

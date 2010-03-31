@@ -1,6 +1,5 @@
 package controlP5;
 
-
 /**
  * controlP5 is a processing and java library for creating simple control GUIs.
  *
@@ -28,72 +27,69 @@ package controlP5;
  * @invisible
  */
 public class CVector3f {
-    public float x = 0, y = 0, z = 0;
-    public CVector3f() {
-        x = 0;
-        y = 0;
-        z = 0;
-    }
+	public float x = 0, y = 0, z = 0;
 
-    public CVector3f(float theX, float theY, float theZ) {
-        x = theX;
-        y = theY;
-        z = theZ;
-    }
+	public CVector3f() {
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 
-    public CVector3f(CVector3f theVector3f) {
-        x = theVector3f.x();
-        y = theVector3f.y();
-        z = theVector3f.z();
-    }
+	public CVector3f(float theX, float theY, float theZ) {
+		x = theX;
+		y = theY;
+		z = theZ;
+	}
 
-    public float x() {
-        return x;
-    }
+	public CVector3f(CVector3f theVector3f) {
+		x = theVector3f.x();
+		y = theVector3f.y();
+		z = theVector3f.z();
+	}
 
+	public float x() {
+		return x;
+	}
 
-    public float y() {
-        return y;
-    }
+	public float y() {
+		return y;
+	}
 
-    public float z() {
-        return z;
-    }
+	public float z() {
+		return z;
+	}
 
+	public void set(float theX, float theY) {
+		x = theX;
+		y = theY;
+	}
 
-    public void set(float theX, float theY) {
-        x = theX;
-        y = theY;
-    }
+	public void set(CVector3f theVector) {
+		x = theVector.x();
+		y = theVector.y();
+		z = theVector.z();
+	}
 
-    public void set(CVector3f theVector) {
-        x = theVector.x();
-        y = theVector.y();
-        z = theVector.z();
-    }
+	public void set(float theX, float theY, float theZ) {
+		x = theX;
+		y = theY;
+		z = theZ;
+	}
 
+	public void add(CVector3f theVector) {
+		x += theVector.x;
+		y += theVector.y;
+		z += theVector.z;
+	}
 
-    public void set(float theX, float theY, float theZ) {
-        x = theX;
-        y = theY;
-        z = theZ;
-    }
+	public void sub(CVector3f theVector) {
+		x -= theVector.x;
+		y -= theVector.y;
+		z -= theVector.z;
+	}
 
-    public void add(CVector3f theVector) {
-      x += theVector.x;
-      y += theVector.y;
-      z += theVector.z;
-    }
-
-    public void sub(CVector3f theVector) {
-      x -= theVector.x;
-      y -= theVector.y;
-      z -= theVector.z;
-    }
-
-
-    public String toString() {
-        return x + " " + y + " " + z;
-    }
+	public String toString() {
+		return x + " " + y + " " + z;
+	}
 
 }

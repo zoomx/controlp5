@@ -3,7 +3,7 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * be warned, for now ControlWindowCanvas and ControlCanvas are EXPERIMENTAL and 
+ * be warned, for now ControlWindowCanvas and ControlCanvas are EXPERIMENTAL and
  * will undergo changes in the future!
  * 
  * use a controlWindowCanvas to draw your own content into a control window.
@@ -24,16 +24,14 @@ public abstract class ControlWindowCanvas {
 	 * extended by your class. draw(PApplet theApplet) is the only method that
 	 * needs to be overwritten.
 	 */
-	public abstract void draw(
-	        PApplet theApplet);
+	public abstract void draw(PApplet theApplet);
 
 	/**
 	 * move a canvas to another controlWindow
 	 * 
 	 * @param theControlWindow
 	 */
-	public void moveTo(
-	        ControlWindow theControlWindow) {
+	public void moveTo(ControlWindow theControlWindow) {
 		if (_myControlWindow != null) {
 			_myControlWindow.removeCanvas(this);
 		}
@@ -67,8 +65,7 @@ public abstract class ControlWindowCanvas {
 	 * @invisible
 	 * @param theMode
 	 */
-	public final void setMode(
-	        int theMode) {
+	public final void setMode(int theMode) {
 		if (theMode == PRE) {
 			_myMode = PRE;
 		} else {
@@ -76,13 +73,12 @@ public abstract class ControlWindowCanvas {
 		}
 	}
 
-	protected final void setControlWindow(
-	        ControlWindow theControlWindow) {
+	protected final void setControlWindow(ControlWindow theControlWindow) {
 		_myControlWindow = theControlWindow;
 	}
 
 	public final ControlWindow window() {
 		return _myControlWindow;
 	}
-	
+
 }
