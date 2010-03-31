@@ -1,5 +1,7 @@
 package controlP5;
 
+import java.util.Vector;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -26,12 +28,12 @@ public class Range extends Controller {
 
 	public final static int FLEXIBLE = 0;
 
-	protected int _mySliderMode = FIX;
+	protected int _mySliderMode = FLEXIBLE;
 
 	protected float _myValuePosition;
 
 	protected boolean isDragging;
-	
+
 	protected boolean isDraggable = true;
 
 	protected boolean isFirstClick;
@@ -54,44 +56,62 @@ public class Range extends Controller {
 
 	protected float maxHandle = 0;
 
+	protected Vector<TickMark> _myTickMarks;
+
+	protected boolean isShowTickMarks;
+
+	protected boolean isSnapToTickMarks;
+
+	protected static int autoWidth = 200;
+
+	protected static int autoHeight = 10;
+
+	protected static CVector3f autoSpacing = new CVector3f(0, 5, 0);
+
+	public int alignValueLabel = CENTER;
+
+	public int valueLabelPositioning = FIX;
+
 	/**
 	 * @invisible
 	 * @param theControlP5
-	 *            ControlP5
+	 *        ControlP5
 	 * @param theParent
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theMin
-	 *            float
+	 *        float
 	 * @param theMax
-	 *            float
+	 *        float
 	 * @param theDefaultValue
-	 *            float
+	 *        float
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theWidth
-	 *            int
+	 *        int
 	 * @param theHeight
-	 *            int
+	 *        int
 	 */
 	public Range(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theMin,
-	        float theMax,
-	        float theDefaultMinValue,
-	        float theDefaultMaxValue,
-	        int theX,
-	        int theY,
-	        int theWidth,
-	        int theHeight) {
+	  ControlP5 theControlP5,
+	  ControllerGroup theParent,
+	  String theName,
+	  float theMin,
+	  float theMax,
+	  float theDefaultMinValue,
+	  float theDefaultMaxValue,
+	  int theX,
+	  int theY,
+	  int theWidth,
+	  int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel = new Label(theName, color.colorLabel);
-		_myArrayValue = new float[] { theDefaultMinValue, theDefaultMaxValue };
+		_myArrayValue = new float[] {
+		  theDefaultMinValue, theDefaultMaxValue
+		};
 
 		_myMin = theMin;
 		_myMax = theMax;
@@ -109,6 +129,8 @@ public class Range extends Controller {
 
 		_myValue = theDefaultMinValue;
 
+		_myTickMarks = new Vector<TickMark>();
+
 		setSliderMode(FIX);
 		// _myDirection = (width > height) ? HORIZONTAL : VERTICAL;
 		_myDirection = HORIZONTAL;
@@ -119,17 +141,16 @@ public class Range extends Controller {
 	/**
 	 * 
 	 * @param theMode
-	 *            int
+	 *        int
 	 */
-	public void setSliderMode(
-	        int theMode) {}
+	public void setSliderMode(int theMode) {
+	}
 
 	/**
 	 * @see ControllerInterfalce.updateInternalEvents
 	 * @invisible
 	 */
-	public void updateInternalEvents(
-	        PApplet theApplet) {
+	public void updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
 			float p = _myControlWindow.mouseX - (absolutePosition().x());
 			if (!isMousePressed && getIsInside()) {
@@ -140,14 +161,13 @@ public class Range extends Controller {
 			}
 
 			if (isMousePressed && !ControlP5.keyHandler.isAltDown) {
-				if (_myControlWindow.mouseX != _myControlWindow.pmouseX
-				        || _myControlWindow.mouseY != _myControlWindow.pmouseY) {
+				if (_myControlWindow.mouseX != _myControlWindow.pmouseX || _myControlWindow.mouseY != _myControlWindow.pmouseY) {
 					float h1 = minHandle + handleSize;
 					float h2 = maxHandle + handleSize;
 					if (!isDragging) {
 						isMinHandle = (p > minHandle && p < h1) ? true : false;
 						isMaxHandle = (p > maxHandle && p < h2) ? true : false;
-						isMoveHandle = (isDraggable) ? ((p > h1 && p < maxHandle) ? true : false):false;
+						isMoveHandle = (isDraggable) ? ((p > h1 && p < maxHandle) ? true : false) : false;
 						isDragging = (isMinHandle || isMaxHandle || isMoveHandle) ? true : false;
 					}
 					if (isDragging) {
@@ -159,8 +179,7 @@ public class Range extends Controller {
 						} else if (isMaxHandle) {
 							maxHandle += pdif;
 							maxHandle = PApplet.constrain(maxHandle, h1, width - handleSize);
-							setHighValue(_myMin
-							        + ((maxHandle - handleSize) / ((width - handleSize * 2)) * _myValueRange));
+							setHighValue(_myMin + ((maxHandle - handleSize) / ((width - handleSize * 2)) * _myValueRange));
 						} else if (isMoveHandle) {
 							float mpdif = (pdif * (_myValueRange / width));
 							if (_myArrayValue[0] + mpdif >= _myMin && _myArrayValue[1] + mpdif <= _myMax) {
@@ -181,10 +200,9 @@ public class Range extends Controller {
 	/**
 	 * @invisible
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 */
-	public void draw(
-	        PApplet theApplet) {
+	public void draw(PApplet theApplet) {
 		if (isVisible) {
 			theApplet.pushMatrix();
 			theApplet.translate(position().x(), position().y());
@@ -193,12 +211,21 @@ public class Range extends Controller {
 			theApplet.rect(0, 0, width, height);
 			// if(isInside) {
 			theApplet.fill(color.colorForeground);
-			theApplet.rect(minHandle, 0, maxHandle - minHandle, height);
 
-			theApplet.fill((isMinHandle) ? color.colorActive : color.colorForeground);
-			theApplet.rect(minHandle, 0, handleSize, height);
-			theApplet.fill((isMaxHandle) ? color.colorActive : color.colorForeground);
-			theApplet.rect(maxHandle, 0, handleSize, height);
+			if (isShowTickMarks) {
+				theApplet.rect(minHandle + handleSize / 2, 0, maxHandle - minHandle, height);
+				theApplet.fill((isMinHandle) ? color.colorActive : color.colorForeground);
+				theApplet.triangle(minHandle, 0, minHandle + handleSize, 0, minHandle + handleSize / 2, height);
+				theApplet.fill((isMaxHandle) ? color.colorActive : color.colorForeground);
+				theApplet.triangle(maxHandle, 0, maxHandle + handleSize, 0, maxHandle + handleSize / 2, height);
+			} else {
+				theApplet.rect(minHandle, 0, maxHandle - minHandle, height);
+				theApplet.fill((isMinHandle) ? color.colorActive : color.colorForeground);
+				theApplet.rect(minHandle, 0, handleSize, height);
+				theApplet.fill((isMaxHandle) ? color.colorActive : color.colorForeground);
+				theApplet.rect(maxHandle, 0, handleSize, height);
+
+			}
 
 			if (isLabelVisible) {
 				// if (_myDirection == HORIZONTAL) {
@@ -211,6 +238,20 @@ public class Range extends Controller {
 			}
 			// }
 
+			if (isShowTickMarks) {
+				theApplet.pushStyle();
+				theApplet.pushMatrix();
+
+				theApplet.translate((_mySliderMode == FIX) ? 0 : 5, getHeight());
+				float x = (getWidth() - ((_mySliderMode == FIX) ? 0 : 10)) / (_myTickMarks.size() - 1);
+				for (TickMark tm : _myTickMarks) {
+					tm.draw(theApplet);
+					theApplet.translate(x, 0);
+				}
+				theApplet.popMatrix();
+				theApplet.popStyle();
+			}
+
 			theApplet.popMatrix();
 		}
 	}
@@ -219,10 +260,9 @@ public class Range extends Controller {
 	 * set the value of the slider.
 	 * 
 	 * @param theValue
-	 *            float
+	 *        float
 	 */
-	public void setValue(
-	        float theValue) {
+	public void setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(ARRAY);
 	}
@@ -234,13 +274,12 @@ public class Range extends Controller {
 		_myValueLabel.set(adjustValue(_myArrayValue[0]));
 		setValue(_myValue);
 	}
-	
+
 	public void setDraggable(boolean theFlag) {
 		isDraggable = theFlag;
-		isDragging = (theFlag==false) ? false:isDragging;
+		isDragging = (theFlag == false) ? false : isDragging;
 	}
-	
-	
+
 	public float[] arrayValue() {
 		return _myArrayValue;
 	}
@@ -249,10 +288,9 @@ public class Range extends Controller {
 	 * set the minimum value of the slider.
 	 * 
 	 * @param theValue
-	 *            float
+	 *        float
 	 */
-	public void setMin(
-	        float theValue) {
+	public void setMin(float theValue) {
 		_myMin = theValue;
 		update();
 	}
@@ -261,10 +299,9 @@ public class Range extends Controller {
 	 * set the maximum value of the slider.
 	 * 
 	 * @param theValue
-	 *            float
+	 *        float
 	 */
-	public void setMax(
-	        float theValue) {
+	public void setMax(float theValue) {
 		_myMax = theValue;
 		update();
 	}
@@ -277,14 +314,12 @@ public class Range extends Controller {
 		return _myArrayValue[1];
 	}
 
-	public void setLowValue(
-	        float theValue) {
+	public void setLowValue(float theValue) {
 		_myArrayValue[0] = theValue;
 		update();
 	}
 
-	public void setHighValue(
-	        float theValue) {
+	public void setHighValue(float theValue) {
 		_myArrayValue[1] = theValue;
 		update();
 	}
@@ -293,10 +328,9 @@ public class Range extends Controller {
 	 * set the width of the slider.
 	 * 
 	 * @param theValue
-	 *            int
+	 *        int
 	 */
-	public Controller setWidth(
-	        int theValue) {
+	public Controller setWidth(int theValue) {
 		width = theValue;
 		setSliderMode(_mySliderMode);
 		return this;
@@ -306,10 +340,9 @@ public class Range extends Controller {
 	 * set the height of the slider.
 	 * 
 	 * @param theValue
-	 *            int
+	 *        int
 	 */
-	public Controller setHeight(
-	        int theValue) {
+	public Controller setHeight(int theValue) {
 		height = theValue;
 		setSliderMode(_mySliderMode);
 		return this;
@@ -328,13 +361,40 @@ public class Range extends Controller {
 		isMaxHandle = false;
 	}
 
+	protected void setTickMarks() {
+
+	}
+
+	public void setNumberOfTickMarks(int theNumber) {
+		int n = theNumber - _myTickMarks.size();
+		if (n <= theNumber) {
+			for (int i = 0; i < n; i++) {
+				_myTickMarks.add(new TickMark(this));
+			}
+		}
+		showTickMarks(true);
+		snapToTickMarks(true);
+	}
+
+	public void showTickMarks(boolean theFlag) {
+		isShowTickMarks = theFlag;
+	}
+
+	public void snapToTickMarks(boolean theFlag) {
+		isSnapToTickMarks = theFlag;
+	}
+
+	// set the label of a tick.
+	public TickMark getTickMark() {
+		return null;
+	}
+
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            ControlP5XMLElement
+	 *        ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
+	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "range");
 		theElement.setAttribute("min", new Float(min()));
 		theElement.setAttribute("max", new Float(max()));

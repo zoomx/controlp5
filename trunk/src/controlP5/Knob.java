@@ -10,56 +10,53 @@ import processing.core.PApplet;
  * @related Controller
  */
 public class Knob extends Controller {
-	
+
 	/*
-	 * @todo
-	 * make it look like a synthesizer knob.
-	 * add option for only-one-cyle and multi-cycle.
+	 * @todo make it look like a synthesizer knob. add option for only-one-cyle
+	 * and multi-cycle.
 	 */
-	
-	int cnt;
 
-	float _myDiameter;
+	protected int cnt;
 
-	float _myRadius;
-	
-	float _myOffsetAngle = PI;
-	
-	float _myAngle = _myOffsetAngle;
-	
-	
+	protected float _myDiameter;
+
+	protected float _myRadius;
+
+	protected float _myOffsetAngle = PI;
+
+	protected float _myAngle = _myOffsetAngle;
 
 	/**
 	 * @invisible
 	 * @param theControlP5
-	 *            ControlP5
+	 *        ControlP5
 	 * @param theParent
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theMin
-	 *            float
+	 *        float
 	 * @param theMax
-	 *            float
+	 *        float
 	 * @param theDefaultValue
-	 *            float
+	 *        float
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 * @param theWidth
-	 *            int
+	 *        int
 	 */
 	public Knob(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theMin,
-	        float theMax,
-	        float theDefaultValue,
-	        int theX,
-	        int theY,
-	        int theWidth) {
+	  ControlP5 theControlP5,
+	  ControllerGroup theParent,
+	  String theName,
+	  float theMin,
+	  float theMax,
+	  float theDefaultValue,
+	  int theX,
+	  int theY,
+	  int theWidth) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theWidth);
 		_myValue = theDefaultValue;
 		setMin(theMin);
@@ -73,13 +70,13 @@ public class Knob extends Controller {
 	 * @see ControllerInterfalce.updateInternalEvents
 	 * @invisible
 	 */
-	public void updateInternalEvents(
-	        PApplet theApplet) {
-		if (isMousePressed && !controlP5.keyHandler.isAltDown) {
-			_myAngle = (float) Math.atan2(_myControlWindow.mouseY - _myRadius - _myParent.absolutePosition().y()
-			        - position.y(), _myControlWindow.mouseX - _myRadius - _myParent.absolutePosition().x()
-			        - position.x());
-			setValue(((_myAngle + _myOffsetAngle) * _myUnit)+_myMin);
+	public void updateInternalEvents(PApplet theApplet) {
+		if (isMousePressed && !ControlP5.keyHandler.isAltDown) {
+			_myAngle = (float) Math.atan2(_myControlWindow.mouseY
+			  - _myRadius
+			  - _myParent.absolutePosition().y()
+			  - position.y(), _myControlWindow.mouseX - _myRadius - _myParent.absolutePosition().x() - position.x());
+			setValue(((_myAngle + _myOffsetAngle) * _myUnit) + _myMin);
 		}
 
 	}
@@ -87,10 +84,9 @@ public class Knob extends Controller {
 	/**
 	 * @invisible
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 */
-	public void draw(
-	        PApplet theApplet) {
+	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
 		theApplet.translate(position().x() + _myRadius, position().y() + _myRadius);
 		theApplet.fill(color.colorBackground);
@@ -115,7 +111,7 @@ public class Knob extends Controller {
 		_myCaptionLabel.draw(theApplet, 4, height + 4);
 		theApplet.popMatrix();
 		theApplet.popMatrix();
-		theApplet.strokeWeight(myPreviousStrokeWeight );
+		theApplet.strokeWeight(myPreviousStrokeWeight);
 	}
 
 	protected void onEnter() {
@@ -129,7 +125,8 @@ public class Knob extends Controller {
 	/**
 	 * @invisible
 	 */
-	public void mousePressed() {}
+	public void mousePressed() {
+	}
 
 	/**
 	 * @invisible
@@ -143,10 +140,9 @@ public class Knob extends Controller {
 	 * set the minimum level of the knob.
 	 * 
 	 * @param theValue
-	 *            float
+	 *        float
 	 */
-	public void setMin(
-	        float theValue) {
+	public void setMin(float theValue) {
 		_myMin = theValue;
 	}
 
@@ -154,16 +150,14 @@ public class Knob extends Controller {
 	 * set the maximum level of the knob.
 	 * 
 	 * @param theValue
-	 *            float
+	 *        float
 	 */
-	public void setMax(
-	        float theValue) {
+	public void setMax(float theValue) {
 		_myMax = theValue;
 	}
 
-	public void setValue(
-	        float theValue) {
-		_myAngle = ((theValue-_myMin) / _myUnit) - _myOffsetAngle;
+	public void setValue(float theValue) {
+		_myAngle = ((theValue - _myMin) / _myUnit) - _myOffsetAngle;
 		_myValue = theValue;
 		broadcast(FLOAT);
 	}
@@ -171,17 +165,17 @@ public class Knob extends Controller {
 	public void update() {
 		setValue(_myValue);
 	}
-	
+
 	public void setOffsetAngle(float theValue) {
 		_myOffsetAngle = theValue;
 	}
+
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            ControlP5XMLElement
+	 *        ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
+	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "knob");
 		theElement.setAttribute("min", new Float(min()));
 		theElement.setAttribute("max", new Float(max()));

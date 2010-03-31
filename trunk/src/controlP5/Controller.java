@@ -25,7 +25,6 @@ package controlP5;
 
 import java.awt.event.KeyEvent;
 import java.util.Hashtable;
-import java.util.Observer;
 import java.util.Vector;
 
 import processing.core.PApplet;
@@ -118,7 +117,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	protected boolean isInit = false;
 
-	protected Vector _myControlListener;
+	protected Vector<ControlListener> _myControlListener;
 
 	protected CColor color = new CColor();
 
@@ -140,7 +139,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	protected boolean isXMLsavable = true;
 
-	protected Vector subelements;
+	protected Vector<Controller> subelements;
 
 	protected int myBroadcastType = FLOAT;
 
@@ -157,6 +156,12 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	protected ControllerSprite sprite;
 
 	protected boolean isSprite;
+	
+	protected int autoWidth = 50;
+
+	protected int autoHeight = 20;
+
+	protected CVector3f autoSpacing = new CVector3f(10, 10, 0);
 
 	/**
 	 * @todo add distribution options for MOVE, RELEASE, and PRESSED.
@@ -164,13 +169,13 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 *       the point
 	 */
 	protected Controller(
-		final ControlP5 theControlP5,
-		final ControllerGroup theParent,
-		final String theName,
-		final float theX,
-		final float theY,
-		final int theWidth,
-		final int theHeight) {
+	  final ControlP5 theControlP5,
+	  final ControllerGroup theParent,
+	  final String theName,
+	  final float theX,
+	  final float theY,
+	  final int theWidth,
+	  final int theHeight) {
 		controlP5 = theControlP5;
 		if (controlP5 == null) {
 			isBroadcast = false;
@@ -181,16 +186,15 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		setParent(theParent);
 		if (theParent != null) {
 			color.set(theParent.color);
-		}
-		else {
+		} else {
 			color.set(controlP5.color);
 		}
 		width = theWidth;
 		height = theHeight;
 		_myCaptionLabel = new Label(theName, color.colorLabel);
 		_myValueLabel = new Label("");
-		_myControlListener = new Vector();
-		subelements = new Vector();
+		_myControlListener = new Vector<ControlListener>();
+		subelements = new Vector<Controller>();
 		_myArrayValue = new float[0];
 	}
 
@@ -291,8 +295,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 			if (Float.isNaN(defaultValue())) {
 				if (controllerPlug().value() == null) {
 					setDefaultValue(min());
-				}
-				else {
+				} else {
 					float myInitValue = 0;
 					if (controllerPlug().value() instanceof Boolean) {
 						// ESCA-JAVA0278:
@@ -300,21 +303,17 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 						// ESCA-JAVA0081:
 						myInitValue = (myBoolean == true) ? 1f : 0f;
 
-					}
-					else if (controllerPlug().value() instanceof Float) {
+					} else if (controllerPlug().value() instanceof Float) {
 						myInitValue = (new Float(controllerPlug().value().toString())).floatValue();
-					}
-					else if (controllerPlug().value() instanceof Integer) {
+					} else if (controllerPlug().value() instanceof Integer) {
 						myInitValue = (new Integer(controllerPlug().value().toString())).intValue();
-					}
-					else if (controllerPlug().value() instanceof String) {
+					} else if (controllerPlug().value() instanceof String) {
 						_myStringValue = controllerPlug().value().toString();
 					}
 					setDefaultValue(myInitValue);
 				}
 			}
-		}
-		else {
+		} else {
 			if (Float.isNaN(defaultValue())) {
 				setDefaultValue(min());
 			}
@@ -414,18 +413,16 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public final void updateEvents() {
 		if (isVisible && (isMousePressed == _myControlWindow.mouselock)) {
-			if (isMousePressed && controlP5.keyHandler.isAltDown && isMoveable) {
+			if (isMousePressed && ControlP5.keyHandler.isAltDown && isMoveable) {
 				positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
 				positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
-				if (controlP5.keyHandler.isShiftDown) {
+				if (ControlP5.keyHandler.isShiftDown) {
 					position.x = ((int) (positionBuffer.x) / 10) * 10;
 					position.y = ((int) (positionBuffer.y) / 10) * 10;
-				}
-				else {
+				} else {
 					position.set(positionBuffer);
 				}
-			}
-			else {
+			} else {
 				if (isInside) {
 					_myControlWindow.isMouseOver = true;
 				}
@@ -434,8 +431,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 						setIsInside(true);
 						onEnter();
 					}
-				}
-				else {
+				} else {
 					if (isInside && !isMousePressed) {
 						onLeave();
 						setIsInside(false);
@@ -461,8 +457,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public void draw(final PApplet theApplet) {
 		if (inside()) {
 			theApplet.fill(255, 0, 0);
-		}
-		else {
+		} else {
 			theApplet.fill(255);
 		}
 
@@ -519,8 +514,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void moveTo(final String theTabName) {
 		setTab(theTabName);
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).moveTo(theTabName);
+		for (Controller c : subelements) {
+			c.moveTo(theTabName);
 		}
 	}
 
@@ -531,8 +526,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void moveTo(final Tab theTab) {
 		setTab(theTab.getWindow(), theTab.name());
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).moveTo(theTab);
+		for (Controller c : subelements) {
+			c.moveTo(theTab);
 		}
 	}
 
@@ -543,8 +538,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void moveTo(final PApplet theApplet) {
 		setTab("default");
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).moveTo(theApplet);
+		for (Controller c : subelements) {
+			c.moveTo(theApplet);
 		}
 	}
 
@@ -556,8 +551,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void moveTo(final PApplet theApplet, final String theTabName) {
 		setTab(theTabName);
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).moveTo(theApplet, theTabName);
+		for (Controller c : subelements) {
+			c.moveTo(theApplet, theTabName);
 		}
 	}
 
@@ -569,21 +564,21 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void moveTo(final ControlWindow theControlWindow) {
 		setTab(theControlWindow, "default");
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).moveTo(theControlWindow);
+		for (Controller c : subelements) {
+			c.moveTo(theControlWindow);
 		}
 	}
 
 	public void moveTo(final ControlWindow theControlWindow, final String theTabName) {
 		setTab(theControlWindow, theTabName);
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).moveTo(theControlWindow, theTabName);
+		for (Controller c : subelements) {
+			c.moveTo(theControlWindow, theTabName);
 		}
 	}
 
 	public void moveTo(final ControlGroup theGroup, final Tab theTab, ControlWindow theControlWindow) {
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).moveTo(theGroup, theTab, theControlWindow);
+		for (Controller c : subelements) {
+			c.moveTo(theGroup, theTab, theControlWindow);
 		}
 
 		if (theGroup != null) {
@@ -614,15 +609,15 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void setTab(final String theName) {
 		setParent(controlP5.getTab(theName));
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).setTab(theName);
+		for (Controller c : subelements) {
+			c.setTab(theName);
 		}
 	}
 
 	public void setTab(final ControlWindow theWindow, final String theName) {
 		setParent(controlP5.getTab(theWindow, theName));
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).setTab(theWindow, theName);
+		for (Controller c : subelements) {
+			c.setTab(theWindow, theName);
 		}
 	}
 
@@ -634,15 +629,15 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void setGroup(final String theName) {
 		setParent(controlP5.getGroup(theName));
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).setGroup(theName);
+		for (Controller c : subelements) {
+			c.setGroup(theName);
 		}
 	}
 
 	public void setGroup(final ControllerGroup theGroup) {
 		setParent(theGroup);
-		for (int i = 0; i < subelements.size(); i++) {
-			((Controller) subelements.get(i)).setGroup(theGroup);
+		for (Controller c : subelements) {
+			c.setGroup(theGroup);
 		}
 	}
 
@@ -723,11 +718,11 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
-			&& _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + width
-			&& _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() && _myControlWindow.mouseY < position
-			.y()
-			+ _myParent.absolutePosition().y()
-			+ height);
+		  && _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + width
+		  && _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() && _myControlWindow.mouseY < position
+		  .y()
+		  + _myParent.absolutePosition().y()
+		  + height);
 	}
 
 	/**
@@ -777,16 +772,15 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		if (theStatus == true) {
 			if (isInside) {
 				isMousePressed = true;
-				if (!controlP5.keyHandler.isAltDown) {
+				if (!ControlP5.keyHandler.isAltDown) {
 					mousePressed();
 				}
 				return true;
 			}
-		}
-		else {
+		} else {
 			if (isMousePressed == true && inside()) {
 				isMousePressed = false;
-				if (!controlP5.keyHandler.isAltDown) {
+				if (!ControlP5.keyHandler.isAltDown) {
 					mouseReleased();
 				}
 			}
@@ -1027,8 +1021,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	protected void broadcast(int theType) {
 		theType = myBroadcastType;
 		final ControlEvent myEvent = new ControlEvent(this);
-		for (int i = 0; i < listenerSize(); i++) {
-			((ControlListener) _myControlListener.get(i)).controlEvent(myEvent);
+		for (ControlListener cl : _myControlListener) {
+			cl.controlEvent(myEvent);
 		}
 		if (isBroadcast && isInit) {
 			controlP5.controlbroadcaster().broadcast(myEvent, theType);
@@ -1197,10 +1191,12 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	public void setDecimalPrecision(int theValue) {
 		_myDecimalPoints = theValue;
-		_myValueLabel = new Label(""
-			+ (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length())
-				? adjustValue(_myMax)
-				: adjustValue(_myMin)), color.colorValue);
+		_myValueLabel = new Label(
+		  ""
+		    + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length())
+		      ? adjustValue(_myMax)
+		      : adjustValue(_myMin)),
+		  color.colorValue);
 		_myValueLabel.set("" + adjustValue(_myValue));
 	}
 
@@ -1235,8 +1231,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 			if (theFloatPrecision == 0) {
 				myIndex--;
 			}
-			myLabelValue = myLabelValue.substring(0, (int) Math.min(myLabelValue.length(), myIndex
-				+ myFloatNumberLength));
+			myLabelValue = myLabelValue.substring(0, (int) Math.min(myLabelValue.length(), myIndex + myFloatNumberLength));
 
 			final int n = (myLabelValue.length() - myIndex);
 			if (n < myFloatNumberLength) {
@@ -1244,8 +1239,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 					myLabelValue += "0";
 				}
 			}
-		}
-		else {
+		} else {
 			myLabelValue += ".";
 			for (int i = 0; i < myFloatNumberLength; i++) {
 				myLabelValue += "0";
@@ -1265,11 +1259,11 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		height = sprite.height();
 		isSprite = true;
 	}
-	
+
 	public ControllerSprite getSprite() {
 		return sprite;
 	}
-	
+
 	public void enableSprite() {
 		if (sprite != null) {
 			isSprite = true;
@@ -1287,7 +1281,13 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public boolean isXMLsavable() {
 		return isXMLsavable;
 	}
-
+	
+	
+	public Controller linebreak() {
+		controlP5.linebreak(this, true, autoWidth, autoHeight, autoSpacing);
+		return this;
+	}
+	
 	/**
 	 * @invisible
 	 * @return ControlP5XMLElement

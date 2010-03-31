@@ -28,17 +28,11 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theRoot
 	 *            MultiList
 	 */
-	protected MultiListButton(
-	        ControlP5 theControlP5,
-	        String theName,
-	        float theValue,
-	        int theX,
-	        int theY,
-	        int theWidth,
-	        int theHeight,
-	        MultiListInterface theParent,
-	        MultiList theRoot) {
-		super(theControlP5, (ControllerGroup) theRoot.parent(), theName, theValue, theX, theY, theWidth, theHeight);
+	protected MultiListButton(ControlP5 theControlP5, String theName,
+			float theValue, int theX, int theY, int theWidth, int theHeight,
+			MultiListInterface theParent, MultiList theRoot) {
+		super(theControlP5, (ControllerGroup) theRoot.parent(), theName,
+				theValue, theX, theY, theWidth, theHeight);
 		parent = theParent;
 		root = theRoot;
 		isXMLsavable = false;
@@ -51,7 +45,8 @@ public class MultiListButton extends Button implements MultiListInterface {
 			if (((MultiListButton) parent.subelements().get(i)) == this) {
 				myYoffset = height + 1;
 			}
-			((MultiListButton) parent.subelements().get(i)).updateLocation(0, -myYoffset);
+			((MultiListButton) parent.subelements().get(i)).updateLocation(0,
+					-myYoffset);
 		}
 
 		if (_myParent != null) {
@@ -86,11 +81,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theH
 	 *            float
 	 */
-	public void updateRect(
-	        float theX,
-	        float theY,
-	        float theW,
-	        float theH) {
+	public void updateRect(float theX, float theY, float theW, float theH) {
 		_myRect = new CRect(theX, theY, theW, theH);
 	}
 
@@ -101,14 +92,13 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theY
 	 *            float
 	 */
-	public void updateLocation(
-	        float theX,
-	        float theY) {
+	public void updateLocation(float theX, float theY) {
 		position().x += theX;
 		position().y += theY;
 		updateRect(position().x, position().y, width, height);
 		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListInterface) subelements.get(i)).updateLocation(theX, theY);
+			((MultiListInterface) subelements.get(i))
+					.updateLocation(theX, theY);
 		}
 	}
 
@@ -118,8 +108,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theWidth
 	 *            int
 	 */
-	public Controller setWidth(
-	        int theWidth) {
+	public Controller setWidth(int theWidth) {
 		width = theWidth;
 		updateLocation(0, 0);
 		return this;
@@ -131,14 +120,14 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theHeight
 	 *            int
 	 */
-	public Controller setHeight(
-	        int theHeight) {
+	public Controller setHeight(int theHeight) {
 		int difHeight = height;
 		height = theHeight;
 		difHeight = height - difHeight;
 		int myYoffset = 0;
 		for (int i = 0; i < parent.subelements().size(); i++) {
-			((MultiListButton) parent.subelements().get(i)).updateLocation(0, myYoffset);
+			((MultiListButton) parent.subelements().get(i)).updateLocation(0,
+					myYoffset);
 			if (((MultiListButton) parent.subelements().get(i)) == this) {
 				myYoffset = difHeight;
 			}
@@ -156,22 +145,23 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 *            int
 	 * @return MultiListButton
 	 */
-	public MultiListButton add(
-	        String theName,
-	        float theValue) {
+	public MultiListButton add(String theName, float theValue) {
 		int myHeight = -(height + 1);
 		for (int i = 0; i < subelements().size(); i++) {
 			myHeight += ((MultiListButton) subelements().get(i)).height + 1;
 		}
 
-		MultiListButton b = new MultiListButton(controlP5, theName, theValue, (int) position().x + (width + 1),
-		        (int) position().y + (height + 1) + myHeight, (int) width, (int) height, this, root);
+		MultiListButton b = new MultiListButton(controlP5, theName, theValue,
+				(int) position().x + (width + 1), (int) position().y
+						+ (height + 1) + myHeight, (int) width, (int) height,
+				this, root);
 		b.isMoveable = false;
 		b.hide();
 		controlP5.register(b);
 		b.addListener(root);
 		subelements.add(b);
-		updateRect(position().x() + (width + 1), position().y(), width, (height + 1) + myHeight);
+		updateRect(position().x() + (width + 1), position().y(), width,
+				(height + 1) + myHeight);
 		return b;
 	}
 
@@ -187,25 +177,23 @@ public class MultiListButton extends Button implements MultiListInterface {
 			open();
 		}
 	}
-	
-	
+
 	/**
 	 * @invisible
 	 */
 	protected void onLeave() {
-		if (!parent.observe() && !root.isUpdateLocation && root.mostRecent == this) {
+		if (!parent.observe() && !root.isUpdateLocation
+				&& root.mostRecent == this) {
 			isActive = false;
 			root.occupied(false);
 		}
 	}
 
-
-
 	public void mouseReleasedOutside() {
 		// !!! other than in the Button class,
-		// calling mouseReleased here conflicts with 
+		// calling mouseReleased here conflicts with
 		// 
-		//mouseReleased(); 
+		// mouseReleased();
 	}
 
 	/**
@@ -215,7 +203,8 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @return boolean
 	 */
 	public boolean observe() {
-		return CRect.inside(_myRect, _myControlWindow.mouseX, _myControlWindow.mouseY);
+		return CRect.inside(_myRect, _myControlWindow.mouseX,
+				_myControlWindow.mouseY);
 	}
 
 	/**
@@ -223,8 +212,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theInterface
 	 *            MultiListInterface
 	 */
-	public void close(
-	        MultiListInterface theInterface) {
+	public void close(MultiListInterface theInterface) {
 		for (int i = 0; i < subelements.size(); i++) {
 			if (theInterface != (MultiListInterface) subelements.get(i)) {
 				((MultiListInterface) subelements.get(i)).close();
@@ -257,15 +245,16 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theElement
 	 *            ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
-		ControlP5XMLElement myXMLElement = new ControlP5XMLElement(new Hashtable(), true, false);
+	public void addToXMLElement(ControlP5XMLElement theElement) {
+		ControlP5XMLElement myXMLElement = new ControlP5XMLElement(
+				new Hashtable(), true, false);
 		myXMLElement.setName("mlbutton");
 		myXMLElement.setAttribute("name", name());
 		myXMLElement.setAttribute("parent", parent.name());
 		theElement.addChild(myXMLElement);
 		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListInterface) subelements.get(i)).addToXMLElement(theElement);
+			((MultiListInterface) subelements.get(i))
+					.addToXMLElement(theElement);
 		}
 	}
 }

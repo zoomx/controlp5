@@ -27,21 +27,21 @@ package controlP5;
  * ControlListener is an interface that can be implemented by
  * a custom class. add the controlListener to a controller
  * with addListner()
- *
+ * 
  * @related Controller
  * @example ControlP5listener
  */
 public interface ControlListener {
 
-    /**
-     * ControlListener is an interface that can be implemented by
-     * a custom class. add the controlListener to a controller
-     * with Controller.addListner()
-     *
-     * @param theEvent ControlEvent
-     * @related Controller
-     * @example ControlP5listener
-     */
-    public void controlEvent(ControlEvent theEvent);
+	/**
+	 * ControlListener is an interface that can be implemented by
+	 * a custom class. add the controlListener to a controller
+	 * with Controller.addListner()
+	 * 
+	 * @param theEvent ControlEvent
+	 * @related Controller
+	 * @example ControlP5listener
+	 */
+	public void controlEvent(ControlEvent theEvent);
 
 }

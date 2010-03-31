@@ -30,59 +30,57 @@ import java.util.Vector;
  */
 public class ControllerList {
 
-  Vector _myControllers;
+	protected Vector<ControllerInterface> controllers;
 
-  Vector _myDrawables;
+	protected Vector<CDrawable> drawables;
 
-  public ControllerList() {
-    _myControllers = new Vector();
-    _myDrawables = new Vector();
-  }
+	public ControllerList() {
+		controllers = new Vector<ControllerInterface>();
+		drawables = new Vector<CDrawable>();
+	}
 
-  public void add(ControllerInterface theController) {
-    if(_myControllers.indexOf(theController)<0) {
-      _myControllers.add(theController);
-    }
-  }
+	public void add(ControllerInterface theController) {
+		if (controllers.indexOf(theController) < 0) {
+			controllers.add(theController);
+		}
+	}
 
-  protected void remove(ControllerInterface theController) {
-    _myControllers.remove(theController);
-  }
+	protected void remove(ControllerInterface theController) {
+		controllers.remove(theController);
+	}
 
-  protected void addDrawable(CDrawable theController) {
-    if(_myDrawables.indexOf(theController)<0) {
-      _myDrawables.add(theController);
-    }
-  }
+	protected void addDrawable(CDrawable theController) {
+		if (drawables.indexOf(theController) < 0) {
+			drawables.add(theController);
+		}
+	}
 
-  protected void removeDrawable(CDrawable theController) {
-    _myDrawables.remove(theController);
-  }
+	protected void removeDrawable(CDrawable theController) {
+		drawables.remove(theController);
+	}
 
+	public ControllerInterface get(int theIndex) {
+		return (ControllerInterface) controllers.get(theIndex);
+	}
 
-  public ControllerInterface get(int theIndex) {
-    return (ControllerInterface)_myControllers.get(theIndex);
-  }
+	public CDrawable getDrawable(int theIndex) {
+		return (CDrawable) drawables.get(theIndex);
+	}
 
-  public CDrawable getDrawable(int theIndex) {
-    return (CDrawable)_myDrawables.get(theIndex);
-  }
+	public int sizeDrawable() {
+		return drawables.size();
+	}
 
-  public int sizeDrawable() {
-    return  _myDrawables.size();
-  }
+	public int size() {
+		return controllers.size();
+	}
 
-  public int size() {
-    return _myControllers.size();
-  }
+	protected void clear() {
+		controllers.clear();
+	}
 
-  protected void clear() {
-    _myControllers.clear();
-  }
-
-  protected void clearDrawable() {
-    _myDrawables.clear();
-  }
-
+	protected void clearDrawable() {
+		drawables.clear();
+	}
 
 }

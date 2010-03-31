@@ -81,7 +81,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 	protected boolean isUpdate;
 
-	protected Vector _myControlCanvas;
+	protected Vector<ControlCanvas> _myControlCanvas;
 
 	protected float _myValue;
 
@@ -110,7 +110,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 		color.set((theParent == null) ? controlP5.color : theParent.color);
 		_myName = theName;
 		controllers = new ControllerList();
-		_myControlCanvas = new Vector();
+		_myControlCanvas = new Vector<ControlCanvas>();
 		_myLabel = new Label(_myName, color.colorLabel);
 		setParent((theParent == null) ? this : theParent);
 	}
@@ -118,7 +118,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	protected ControllerGroup(int theX, int theY) {
 		position = new CVector3f(theX, theY, 0);
 		controllers = new ControllerList();
-		_myControlCanvas = new Vector();
+		_myControlCanvas = new Vector<ControlCanvas>();
 	}
 
 	/**
@@ -150,8 +150,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 		for (int i = 0; i < controllers.size(); i++) {
 			if (controllers.get(i) instanceof Controller) {
 				((Controller) controllers.get(i))._myControlWindow = _myControlWindow;
-			}
-			else {
+			} else {
 				((ControllerGroup) controllers.get(i))._myControlWindow = _myControlWindow;
 			}
 		}
@@ -209,11 +208,11 @@ public abstract class ControllerGroup implements ControllerInterface {
 	public void moveTo(ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab("default"), theControlWindow);
 	}
-	
+
 	public void moveTo(String theTabName) {
-		moveTo(null, controlP5.controlWindow.tab(theTabName),controlP5.controlWindow);
+		moveTo(null, controlP5.controlWindow.tab(theTabName), controlP5.controlWindow);
 	}
-	
+
 	public void moveTo(String theTabName, ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab(theTabName), theControlWindow);
 	}
@@ -269,8 +268,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 		for (int i = 0; i < controllers.size(); i++) {
 			if (controllers.get(i) instanceof Controller) {
 				((Controller) controllers.get(i)).updateFont(theControlFont);
-			}
-			else {
+			} else {
 				((ControllerGroup) controllers.get(i)).updateFont(theControlFont);
 			}
 		}
@@ -367,7 +365,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	public void updateEvents() {
 
 		if (isOpen) {
-			for (int i = controllers.size()-1; i >= 0 ; i--) {
+			for (int i = controllers.size() - 1; i >= 0; i--) {
 				((ControllerInterface) controllers.get(i)).updateEvents();
 			}
 		}
@@ -380,20 +378,17 @@ public abstract class ControllerGroup implements ControllerInterface {
 					if (ControlP5.keyHandler.isShiftDown) {
 						position.x = ((int) (positionBuffer.x) / 10) * 10;
 						position.y = ((int) (positionBuffer.y) / 10) * 10;
-					}
-					else {
+					} else {
 						position.set(positionBuffer);
 					}
 					updateAbsolutePosition();
-				}
-				else {
+				} else {
 					if (inside()) {
 						if (!isInside) {
 							isInside = true;
 							onEnter();
 						}
-					}
-					else {
+					} else {
 						if (isInside && !isMousePressed) {
 							onLeave();
 							isInside = false;
@@ -578,7 +573,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 		if (!isVisible) {
 			return false;
 		}
-		for (int i = controllers.size()-1; i >=0; i--) {
+		for (int i = controllers.size() - 1; i >= 0; i--) {
 			if (((ControllerInterface) controllers.get(i)).setMousePressed(theStatus)) {
 				return true;
 			}
@@ -589,8 +584,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 				mousePressed();
 				return true;
 			}
-		}
-		else {
+		} else {
 			if (isMousePressed == true) {
 				isMousePressed = false;
 				mouseReleased();
@@ -847,10 +841,10 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
-			&& _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
-			&& _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() - _myHeight && _myControlWindow.mouseY < position
-			.y()
-			+ _myParent.absolutePosition().y());
+		  && _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
+		  && _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() - _myHeight && _myControlWindow.mouseY < position
+		  .y()
+		  + _myParent.absolutePosition().y());
 	}
 
 	/**

@@ -56,24 +56,24 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 * 
 	 * @invisible
 	 * @param theControlP5
-	 *            ControlP5
+	 *        ControlP5
 	 * @param theParent
-	 *            ControllerGroup
+	 *        ControllerGroup
 	 * @param theName
-	 *            String
+	 *        String
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 */
 	public ControlGroup(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        int theX,
-	        int theY,
-	        int theW,
-	        int theH) {
+	  ControlP5 theControlP5,
+	  ControllerGroup theParent,
+	  String theName,
+	  int theX,
+	  int theY,
+	  int theW,
+	  int theH) {
 		super(theControlP5, theParent, theName, theX, theY);
 		_myValueLabel = new Label("-");
 		_myWidth = theW;
@@ -100,10 +100,9 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 * activate or deactivate the Event status of a tab.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
-	public ControlGroup activateEvent(
-	        boolean theFlag) {
+	public ControlGroup activateEvent(boolean theFlag) {
 		isEventActive = theFlag;
 		return this;
 	}
@@ -112,31 +111,26 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		return _myBackgroundHeight;
 	}
 
-	public void setBackgroundHeight(
-	        int theHeight) {
+	public void setBackgroundHeight(int theHeight) {
 		_myBackgroundHeight = theHeight;
 	}
 
-	public void setBackgroundColor(
-	        int theColor) {
+	public void setBackgroundColor(int theColor) {
 		_myBackgroundColor = theColor;
 	}
 
-	public void setBarHeight(
-	        int theHeight) {
+	public void setBarHeight(int theHeight) {
 		_myHeight = theHeight;
 	}
 
-	protected void preDraw(
-	        PApplet theApplet) {
+	protected void preDraw(PApplet theApplet) {
 		if (isOpen) {
 			theApplet.fill(_myBackgroundColor);
 			theApplet.rect(0, 0, _myWidth, _myBackgroundHeight);
 		}
 	}
 
-	protected void postDraw(
-	        PApplet theApplet) {
+	protected void postDraw(PApplet theApplet) {
 		if (isBarVisible) {
 			theApplet.fill(isInside ? color.colorForeground : color.colorBackground);
 			theApplet.rect(0, -1, _myWidth, -_myHeight);
@@ -148,10 +142,9 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	/**
 	 * @invisible
 	 * @param theElement
-	 *            ControlP5XMLElement
+	 *        ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
+	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setName("group");
 		theElement.setAttribute("width", new Integer(_myWidth));
 		theElement.setAttribute("height", new Integer(_myHeight));
@@ -198,10 +191,9 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	/**
 	 * @invisible
 	 * @param theEvent
-	 *            ControlEvent
+	 *        ControlEvent
 	 */
-	public void controlEvent(
-	        ControlEvent theEvent) {
+	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.controller().name().equals(name() + "close")) {
 			hide();
 		}
@@ -231,8 +223,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		return _myArrayValue;
 	}
 
-	protected void setArrayValue(
-	        float[] theArray) {
+	protected void setArrayValue(float[] theArray) {
 		_myArrayValue = theArray;
 	}
 }

@@ -4,7 +4,7 @@ package controlP5;
  * 
  */
 public class ControllerStyle {
-	
+
 	public int paddingTop = 0;
 	public int paddingRight = 0;
 	public int paddingBottom = 0;
@@ -17,7 +17,7 @@ public class ControllerStyle {
 	public int backgroundWidth = -1;
 	public int backgroundHeight = -1;
 	public int color;
-	
+
 	/*
 	 * 
 	 */
@@ -27,7 +27,7 @@ public class ControllerStyle {
 		marginBottom = theValue;
 		marginLeft = theValue;
 	}
-	
+
 	/*
 	 * 
 	 */
@@ -37,7 +37,7 @@ public class ControllerStyle {
 		paddingBottom = theValue;
 		paddingLeft = theValue;
 	}
-	
+
 	/*
 	 * 
 	 */
@@ -47,7 +47,7 @@ public class ControllerStyle {
 		marginBottom = theBottom;
 		marginLeft = theLeft;
 	}
-	
+
 	/*
 	 * 
 	 */
@@ -57,7 +57,7 @@ public class ControllerStyle {
 		paddingBottom = theBottom;
 		paddingLeft = theLeft;
 	}
-	
+
 	/*
 	 * 
 	 */
@@ -67,7 +67,7 @@ public class ControllerStyle {
 		marginBottom += theBottom;
 		marginLeft += theLeft;
 	}
-	
+
 	/*
 	 * 
 	 */
