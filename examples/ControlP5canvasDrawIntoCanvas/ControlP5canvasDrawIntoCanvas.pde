@@ -3,6 +3,10 @@ ControlP5 controlP5;
 ControlWindow controlWindow;
 ControlWindowCanvas cc;
 
+// this example demonstrates how to use a ControlWindowCanvas 
+// which can from different windows.
+// click the mouse in both windows to see the effect.
+
 // your controlWindowCanvas class
 class MyCanvas extends ControlWindowCanvas {
   

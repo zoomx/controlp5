@@ -1,6 +1,5 @@
 /**
-  * ControlP5 scrollList.
-  * depricated, use listBox
+  * ControlP5 scrollList. depricated, use listBox.
   *
   * by andreas schlegel, 2009
   */

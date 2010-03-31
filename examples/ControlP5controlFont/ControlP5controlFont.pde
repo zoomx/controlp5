@@ -1,11 +1,14 @@
 /**
- * ControlP5 button.
+ * ControlP5 controlFont. 
+ * (this example only works with processing version 1.1+ 
+ * due to changes in PFont.)
+ *
  * this example showshow to create a button with controlP5 (1), how to
  * load and use a PFont with controlP5 (2), apply a ControlFont to
  * the caption label of a button (3), and adjust the location of a
  * caption label using the style() property of a controller.
  * 
- * by andreas schlegel, 2009
+ * by andreas schlegel, 2010
  */
 import controlP5.*;
 
@@ -31,10 +34,15 @@ void setup() {
   b.setHeight(200);
   
   // (2)
-  // load a new font.
-  // ControlFont is a wrapper for processing's PFont
-  font = new ControlFont(createFont("Times",20),20);
-  font.setSmooth(true);
+  // load a new font. ControlFont is a wrapper for processing's PFont
+  // with processing 1.1 ControlFont.setSmooth() is not supported anymore.
+  // to display a font as smooth or non-smooth, use true/false as 3rd parameter
+  // when creating a PFont:
+  PFont pfont = createFont("Times",20,true); // use true/false for smooth/no-smooth
+  font = new ControlFont(pfont);
+  
+  // font.setSmooth(true); // font.setSmooth() is deprecated, see comments above.
+  
 
   // (3)
   // change the font and content of the captionlabels 

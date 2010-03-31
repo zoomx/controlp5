@@ -11,7 +11,7 @@ void setup() {
   Tab t = controlP5.addTab(this,"new");
   controlP5.addTab(this,"new2");
   for(int i=0;i<4;i++) {
-    controlP5.addBang("bang"+i,100,40+i*30,20,20).setTab("new");
+    controlP5.addBang("bang"+i,100,40+i*40,20,20).setTab("new");
   }
   controlP5.addBang("defaultBang",100,100,20,20);
 }

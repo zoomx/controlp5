@@ -14,7 +14,7 @@ void setup() {
   frameRate(30);
   controlP5 = new ControlP5(this);
   c = new ControlTimer();
-  t = new Textlabel(this,"--",10,10);
+  t = new Textlabel(this,"--",100,100);
   c.setSpeedOfTime(1);
 }
 

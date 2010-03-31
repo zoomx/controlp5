@@ -79,8 +79,8 @@ class ControlPad extends Controller {
     rect(cX,cY,cWidth,cHeight);
     // draw the caption- and value-label of the controller
     // they are generated automatically by the super class
-    _myCaptionLabel.draw(theApplet, 0, height + 4);
-    _myValueLabel.draw(theApplet, 40, height + 4);
+    captionLabel().draw(theApplet, 0, height + 4);
+    valueLabel().draw(theApplet, 40, height + 4);
 
     theApplet.popMatrix();
   } 
@@ -92,7 +92,7 @@ class ControlPad extends Controller {
     _myArrayValue[0] = cX / ((float)(width-cWidth)/(float)width);
     _myArrayValue[1] = cY / ((float)(height-cHeight)/(float)height);
     // update the value label.
-    _myValueLabel.set(adjustValue(_myArrayValue[0],0)+" / "+adjustValue(_myArrayValue[1],0));
+    valueLabel().set(adjustValue(_myArrayValue[0],0)+" / "+adjustValue(_myArrayValue[1],0));
 
     // broadcast triggers a ControlEvent, updates are made to the sketch, 
     // controlEvent(ControlEvent) is called.
