@@ -95,16 +95,13 @@ public class Label implements CDrawable {
 		this(theText, 0, 10, theColor);
 	}
 
-	protected Label(final String theText, final int theWidth,
-			final int theHeight) {
+	protected Label(final String theText, final int theWidth, final int theHeight) {
 		this(theText, theWidth, theHeight, 0xffffffff);
 	}
 
-	protected Label(final String theText, final int theWidth,
-			final int theHeight, final int theColor) {
+	protected Label(final String theText, final int theWidth, final int theHeight, final int theColor) {
 		bitFontRenderer = new BitFontRenderer();
-		init(theText, (theWidth != 0) ? theWidth : bitFontRenderer.getWidth(
-				theText, this), theHeight, theColor);
+		init(theText, (theWidth != 0) ? theWidth : bitFontRenderer.getWidth(theText, this), theHeight, theColor);
 	}
 
 	/**
@@ -115,8 +112,7 @@ public class Label implements CDrawable {
 	 * @param theHeight
 	 * @param theColor
 	 */
-	public Label(PApplet theApplet, String theText, int theWidth,
-			int theHeight, int theColor) {
+	public Label(PApplet theApplet, String theText, int theWidth, int theHeight, int theColor) {
 		bitFontRenderer = new BitFontRenderer(theApplet);
 		init(theText, theWidth, theHeight, theColor);
 	}
@@ -125,8 +121,7 @@ public class Label implements CDrawable {
 		this(theApplet, theText, theWidth, theHeight, 0xffffff);
 	}
 
-	private void init(String theText, final int theWidth, final int theHeight,
-			final int theColor) {
+	private void init(String theText, final int theWidth, final int theHeight, final int theColor) {
 		_myText = (theText == null) ? "" : theText;
 		_myWidth = theWidth + LABEL_WIDTH_OFFSET;
 		_myHeight = theHeight;
@@ -146,7 +141,7 @@ public class Label implements CDrawable {
 	 * set the text of the label to upperCase.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *        boolean
 	 */
 	public void toUpperCase(boolean theFlag) {
 		isToUpperCase = theFlag;
@@ -157,29 +152,26 @@ public class Label implements CDrawable {
 	 * draw a textlabel at a given location xy.
 	 * 
 	 * @param theApplet
-	 *            PApplet
+	 *        PApplet
 	 * @param theX
-	 *            int
+	 *        int
 	 * @param theY
-	 *            int
+	 *        int
 	 */
 	public void draw(final PApplet theApplet, final int theX, final int theY) {
 		if (isVisible) {
 			theApplet.pushMatrix();
-			theApplet.translate(_myControllerStyle.marginLeft,
-					_myControllerStyle.marginTop);
+			theApplet.translate(_myControllerStyle.marginLeft, _myControllerStyle.marginTop);
 			if (isColorBackground) {
 				theApplet.fill(_myColorBackground);
-				float ww = _myControllerStyle.paddingRight
-						+ _myControllerStyle.paddingLeft;
+				float ww = _myControllerStyle.paddingRight + _myControllerStyle.paddingLeft;
 				if (_myControllerStyle.backgroundWidth > -1) {
 					ww += _myControllerStyle.backgroundWidth;
 				} else {
 					ww += _myImage.width;
 				}
 
-				float hh = _myControllerStyle.paddingBottom
-						+ _myControllerStyle.paddingTop;
+				float hh = _myControllerStyle.paddingBottom + _myControllerStyle.paddingTop;
 				if (_myControllerStyle.backgroundHeight > -1) {
 					hh += _myControllerStyle.backgroundHeight;
 				} else {
@@ -189,15 +181,10 @@ public class Label implements CDrawable {
 				theApplet.rect(theX, theY, ww, hh);
 			}
 			if (isControlFont) {
-				renderControlFont(theApplet, theX
-						+ _myControllerStyle.paddingLeft, theY
-						+ _myControllerStyle.paddingTop);
+				renderControlFont(theApplet, theX + _myControllerStyle.paddingLeft, theY + _myControllerStyle.paddingTop);
 			} else {
-				if ((_myImage.width > 0 && _myImage.height > 0)
-						|| !isControlFont) {
-					theApplet.image(_myImage, theX
-							+ _myControllerStyle.paddingLeft, theY
-							+ _myControllerStyle.paddingTop);
+				if ((_myImage.width > 0 && _myImage.height > 0) || !isControlFont) {
+					theApplet.image(_myImage, theX + _myControllerStyle.paddingLeft, theY + _myControllerStyle.paddingTop);
 				}
 			}
 			theApplet.popMatrix();
@@ -210,20 +197,17 @@ public class Label implements CDrawable {
 	public void draw(PApplet theApplet) {
 		if (isVisible) {
 			theApplet.pushMatrix();
-			theApplet.translate(_myControllerStyle.marginLeft,
-					_myControllerStyle.marginTop);
+			theApplet.translate(_myControllerStyle.marginLeft, _myControllerStyle.marginTop);
 			if (isColorBackground) {
 				theApplet.fill(_myColorBackground);
-				float ww = _myControllerStyle.paddingRight
-						+ _myControllerStyle.paddingLeft;
+				float ww = _myControllerStyle.paddingRight + _myControllerStyle.paddingLeft;
 				if (_myControllerStyle.backgroundWidth > -1) {
 					ww += _myControllerStyle.backgroundWidth;
 				} else {
 					ww += _myImage.width;
 				}
 
-				float hh = _myControllerStyle.paddingBottom
-						+ _myControllerStyle.paddingTop;
+				float hh = _myControllerStyle.paddingBottom + _myControllerStyle.paddingTop;
 				if (_myControllerStyle.backgroundHeight > -1) {
 					hh += _myControllerStyle.backgroundHeight;
 				} else {
@@ -233,13 +217,11 @@ public class Label implements CDrawable {
 				theApplet.rect(position.x, position.y, ww, hh);
 			}
 			if (isControlFont) {
-				renderControlFont(theApplet, position.x
-						+ _myControllerStyle.paddingLeft, position.y
-						+ _myControllerStyle.paddingTop);
+				renderControlFont(theApplet, position.x + _myControllerStyle.paddingLeft, position.y
+				  + _myControllerStyle.paddingTop);
 			} else {
-				theApplet.image(_myImage, position.x
-						+ _myControllerStyle.paddingLeft, position.y
-						+ _myControllerStyle.paddingTop);
+				theApplet.image(_myImage, position.x + _myControllerStyle.paddingLeft, position.y
+				  + _myControllerStyle.paddingTop);
 			}
 			theApplet.popMatrix();
 		}
@@ -252,25 +234,21 @@ public class Label implements CDrawable {
 	 * @param theY
 	 * @param theColor
 	 */
-	protected void draw(final PApplet theApplet, final int theX,
-			final int theY, final int theColor) {
+	protected void draw(final PApplet theApplet, final int theX, final int theY, final int theColor) {
 		theApplet.pushMatrix();
-		theApplet.translate(_myControllerStyle.marginLeft,
-				_myControllerStyle.marginTop);
+		theApplet.translate(_myControllerStyle.marginLeft, _myControllerStyle.marginTop);
 		_myColor = theColor;
 		if (isControlFont) {
 			if (isColorBackground) {
 				theApplet.fill(_myColorBackground);
-				float ww = _myControllerStyle.paddingRight
-						+ _myControllerStyle.paddingLeft;
+				float ww = _myControllerStyle.paddingRight + _myControllerStyle.paddingLeft;
 				if (_myControllerStyle.backgroundWidth > -1) {
 					ww += _myControllerStyle.backgroundWidth;
 				} else {
 					ww += _myImage.width;
 				}
 
-				float hh = _myControllerStyle.paddingBottom
-						+ _myControllerStyle.paddingTop;
+				float hh = _myControllerStyle.paddingBottom + _myControllerStyle.paddingTop;
 				if (_myControllerStyle.backgroundHeight > -1) {
 					hh += _myControllerStyle.backgroundHeight;
 				} else {
@@ -279,22 +257,19 @@ public class Label implements CDrawable {
 
 				theApplet.rect(theX, theY, ww, hh);
 			}
-			renderControlFont(theApplet, theX + _myControllerStyle.paddingLeft,
-					theY + _myControllerStyle.paddingTop);
+			renderControlFont(theApplet, theX + _myControllerStyle.paddingLeft, theY + _myControllerStyle.paddingTop);
 		} else {
 			if (_myImage.width > 0 && _myImage.height > 0) {
 				if (isColorBackground) {
 					theApplet.fill(_myColorBackground);
-					float ww = _myControllerStyle.paddingRight
-							+ _myControllerStyle.paddingLeft;
+					float ww = _myControllerStyle.paddingRight + _myControllerStyle.paddingLeft;
 					if (_myControllerStyle.backgroundWidth > -1) {
 						ww += _myControllerStyle.backgroundWidth;
 					} else {
 						ww += _myImage.width;
 					}
 
-					float hh = _myControllerStyle.paddingBottom
-							+ _myControllerStyle.paddingTop;
+					float hh = _myControllerStyle.paddingBottom + _myControllerStyle.paddingTop;
 					if (_myControllerStyle.backgroundHeight > -1) {
 						hh += _myControllerStyle.backgroundHeight;
 					} else {
@@ -303,9 +278,7 @@ public class Label implements CDrawable {
 
 					theApplet.rect(theX, theY, ww, hh);
 				}
-				theApplet.image(_myImage,
-						theX + _myControllerStyle.paddingLeft, theY
-								+ _myControllerStyle.paddingTop);
+				theApplet.image(_myImage, theX + _myControllerStyle.paddingLeft, theY + _myControllerStyle.paddingTop);
 
 			}
 		}
@@ -316,10 +289,9 @@ public class Label implements CDrawable {
 		theApplet.fill(_myColor);
 		theApplet.textFont(_myControlFont.getPFont(), _myControlFontSize);
 		theApplet.textLeading(_myLineHeight);
-		theApplet.translate(0,
-				_myControlFont.getPFont().getFont().getSize2D() * 0.7f);
-		theApplet.text(isToUpperCase ? _myText.toUpperCase() : _myText, theX,
-				theY);
+		// TODO why 0.7f use proper font positioning
+		theApplet.translate(0, _myControlFont.getPFont().getFont().getSize2D() * 0.7f);
+		theApplet.text(isToUpperCase ? _myText.toUpperCase() : _myText, theX, theY);
 	}
 
 	/**
@@ -350,21 +322,18 @@ public class Label implements CDrawable {
 		set(theText, _myColor, _myCursorPosition);
 	}
 
-	public void set(final String theText, final int theColor,
-			final boolean isFixedSize) {
+	public void set(final String theText, final int theColor, final boolean isFixedSize) {
 		_myColor = theColor;
 		setFixedSize(isFixedSize);
 		set(theText, _myColor, _myCursorPosition);
 	}
 
-	public void setWithCursorPosition(final String theText,
-			final int theCursorPosition) {
+	public void setWithCursorPosition(final String theText, final int theCursorPosition) {
 		_myOffsetX = 0;
 		set(theText, _myColor, theCursorPosition, _myOffsetX);
 	}
 
-	public void setWithCursorPosition(final String theText,
-			final int theCursorPosition, final int theOffsetX) {
+	public void setWithCursorPosition(final String theText, final int theCursorPosition, final int theOffsetX) {
 		_myOffsetX = theOffsetX;
 		set(theText, _myColor, theCursorPosition, _myOffsetX);
 	}
@@ -380,7 +349,7 @@ public class Label implements CDrawable {
 	 * 
 	 * @shortdesc set the Pixel-Font-Family of the Textlabel.
 	 * @param theFont
-	 *            int
+	 *        int
 	 */
 	public Label setFont(int theFont) {
 		isControlFont = false;
@@ -463,10 +432,8 @@ public class Label implements CDrawable {
 
 	protected void update() {
 		if (isControlFont) {
-			ControlP5.papplet.textFont(_myControlFont.getPFont(),
-					_myControlFontSize);
-			_myWidth = (int) ControlP5.papplet
-					.textWidth(isToUpperCase ? _myText.toUpperCase() : _myText);
+			ControlP5.papplet.textFont(_myControlFont.getPFont(), _myControlFontSize);
+			_myWidth = (int) ControlP5.papplet.textWidth(isToUpperCase ? _myText.toUpperCase() : _myText);
 		} else {
 			if (!isFixedSize) {
 				_myHeight = bitFontRenderer.font[_myFontIndex].height;
@@ -489,14 +456,12 @@ public class Label implements CDrawable {
 		return _myOffsetY;
 	}
 
-	protected void set(String theText, final int theColor,
-			final int theCursorPosition) {
+	protected void set(String theText, final int theColor, final int theCursorPosition) {
 		_myOffsetX = 0;
 		set(theText, theColor, theCursorPosition, _myOffsetX);
 	}
 
-	protected void set(String theText, final int theColor,
-			final int theCursorPosition, final int theOffsetX) {
+	protected void set(String theText, final int theColor, final int theCursorPosition, final int theOffsetX) {
 		_myOffsetX = theOffsetX;
 		_myCursorPosition = theCursorPosition;
 		if (theText == null) {
