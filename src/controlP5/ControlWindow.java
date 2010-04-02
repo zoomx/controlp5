@@ -9,6 +9,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import processing.core.PApplet;
+import processing.core.PGraphics3D;
 
 /**
  * the purpose of a control window is to outsource controllers so that they dont
@@ -73,6 +74,8 @@ public class ControlWindow implements MouseWheelListener {
 	protected boolean isDrawBackground = true;
 
 	protected boolean isUndecorated = false;
+	
+	protected boolean is3D;
 
 	/**
 	 * @invisible
@@ -91,6 +94,9 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	protected void init() {
+		String myRenderer = _myApplet.g.getClass().toString().toLowerCase();
+		is3D = (myRenderer.contains("gl") || myRenderer.contains("3d"));
+		
 		_myTabs = new ControllerList();
 		_myControlWindowCanvas = new Vector();
 		_myControlCanvas = new Vector();

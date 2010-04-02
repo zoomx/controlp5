@@ -110,7 +110,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * @invisible
 	 */
-	public static final String VERSION = "0.5.0";
+	public static final String VERSION = "0.5.1";
 
 	/**
 	 * @invisible
@@ -139,6 +139,7 @@ public class ControlP5 extends ControlP5Base {
 	protected boolean blockDraw;
 
 	// protected currentStack;
+	
 
 	/**
 	 * instantiate controlP5.
