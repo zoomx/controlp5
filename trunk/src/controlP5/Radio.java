@@ -28,7 +28,6 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 /**
- * deprecated, use RadioButton instead.
  * 
  * @deprecated use RadioButton or CheckBox instead
  * @related ControlP5
@@ -298,10 +297,10 @@ public class Radio extends Controller {
 	}
 	
 	public void setColorLabel(int theColor) {
-		color.colorLabel = theColor;
+		color.colorCaptionLabel = theColor;
 		for (int i = 0; i < _myRadioButtons.size(); i++) {
 			RadioToggle myRadioButton = ((RadioToggle) _myRadioButtons.get(i));
-			myRadioButton.label.set(myRadioButton.label.toString(), color.colorLabel);
+			myRadioButton.label.set(myRadioButton.label.toString(), color.colorCaptionLabel);
 		}
 	}
 
@@ -342,7 +341,7 @@ public class Radio extends Controller {
 			_myX = theX;
 			_myY = theY;
 			label = new Label(theLabel);
-			label.setColor(color.colorLabel);
+			label.setColor(color.colorCaptionLabel);
 			value = theValue;
 		}
 

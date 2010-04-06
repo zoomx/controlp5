@@ -191,7 +191,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		}
 		width = theWidth;
 		height = theHeight;
-		_myCaptionLabel = new Label(theName, color.colorLabel);
+		_myCaptionLabel = new Label(theName, color.colorCaptionLabel);
 		_myValueLabel = new Label("");
 		_myControlListener = new Vector<ControlListener>();
 		subelements = new Vector<Controller>();
@@ -414,6 +414,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public final void updateEvents() {
 		if (isVisible && (isMousePressed == _myControlWindow.mouselock)) {
 			if (isMousePressed && ControlP5.keyHandler.isAltDown && isMoveable) {
+				if(!ControlP5.isLock) {
 				positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
 				positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
 				if (ControlP5.keyHandler.isShiftDown) {
@@ -421,6 +422,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 					position.y = ((int) (positionBuffer.y) / 10) * 10;
 				} else {
 					position.set(positionBuffer);
+				}
 				}
 			} else {
 				if (isInside) {
@@ -1066,7 +1068,13 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public void show() {
 		isVisible = true;
 	}
-
+	
+	public void setColor(CColor theColor) {
+		color.set(theColor);
+		setColorLabel(theColor.getCaptionLabel());
+		setColorValueLabel(theColor.getValueLabel());
+	}
+	
 	/**
 	 * set the color for the controller while active.
 	 * 
@@ -1098,26 +1106,38 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	}
 
 	/**
-	 * set the color of the text label of the controller.
-	 * 
+	 * @deprecated use setColorCaptionLabel() instead
 	 * @param theColor
 	 *        int
 	 */
 	public void setColorLabel(final int theColor) {
-		color.colorLabel = theColor;
-		_myCaptionLabel.set(_myCaptionLabel.toString(), color.colorLabel);
+		setColorCaptionLabel(theColor);
+	}
+	
+	/**
+	 * set the color of the text label of the controller.
+	 * @param theColor
+	 */
+	public void setColorCaptionLabel(final int theColor) {
+		color.colorCaptionLabel = theColor;
+		_myCaptionLabel.set(_myCaptionLabel.toString(), color.colorCaptionLabel);
 	}
 
 	/**
 	 * set the color of the value label of the controller.
-	 * 
+	 * @deprecated use setColorValueLabel() instead
 	 * @param theColor
 	 *        int
 	 */
 	public void setColorValue(final int theColor) {
-		color.colorValue = theColor;
+		setColorValueLabel(theColor);
+	}
+	
+	
+	public void setColorValueLabel(final int theColor) {
+		color.colorValueLabel = theColor;
 		if (_myValueLabel != null) {
-			_myValueLabel.set(_myValueLabel.toString(), color.colorValue);
+			_myValueLabel.set(_myValueLabel.toString(), color.colorValueLabel);
 		}
 	}
 
@@ -1196,7 +1216,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		    + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length())
 		      ? adjustValue(_myMax)
 		      : adjustValue(_myMin)),
-		  color.colorValue);
+		  color.colorValueLabel);
 		_myValueLabel.set("" + adjustValue(_myValue));
 	}
 

@@ -31,7 +31,7 @@ public class ControllerSprite implements Cloneable {
 		_myState = 0;
 
 		display = new PImage(theWidth, theHeight);
-		display = theControlP5.papplet.createImage(theWidth, theHeight, PApplet.RGB);
+		display = ControlP5.papplet.createImage(theWidth, theHeight, PApplet.RGB);
 		update();
 
 	}

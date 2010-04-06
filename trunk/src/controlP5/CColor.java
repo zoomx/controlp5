@@ -29,73 +29,57 @@ package controlP5;
 public class CColor {
 
 	/*
-	 * @TODO
-	 * refering to this thread
-	 * http://processing.org/discourse/yabb2/YaBB.pl?num=1246553397/2#2
-	 * the color handling is not very user friendly and should be revised.
-	 * naming: take out color from the fields
-	 * make fields public or add getter for each color
-	 * how to change/edit only the alpha channel of a color?
+	 * TODO refering to this thread
+	 * http://processing.org/discourse/yabb2/YaBB.pl?num=1246553397/2#2 the
+	 * color handling is not very user friendly and should be revised. naming:
+	 * take out color from the fields make fields public or add getter for each
+	 * color how to change/edit only the alpha channel of a color?
 	 */
 	protected int colorBackground = 0xff003652;
 
 	protected int colorForeground = 0xff00698c;
 
-	protected int colorActive = 0xff08a2cf; //0699C4;
+	protected int colorActive = 0xff08a2cf; // 0699C4;
 
-	protected int colorLabel = 0xffffffff;
+	protected int colorCaptionLabel = 0xffffffff;
 
-	protected int colorValue = 0xffffffff;
+	protected int colorValueLabel = 0xffffffff;
+
+	protected int alpha = 0xff;
+
+	protected int maskA = 0x00ffffff;
+	protected int maskR = 0xff00ffff;
+	protected int maskG = 0xffff00ff;
+	protected int maskB = 0xffffff00;
 
 	protected void set(CColor theColor) {
 		colorBackground = theColor.colorBackground;
 		colorForeground = theColor.colorForeground;
 		colorActive = theColor.colorActive;
-		colorLabel = theColor.colorLabel;
-		colorValue = theColor.colorValue;
+		colorCaptionLabel = theColor.colorCaptionLabel;
+		colorValueLabel = theColor.colorValueLabel;
 	}
 
 	protected void copyTo(ControllerInterface theControl) {
 		theControl.setColorBackground(colorBackground);
 		theControl.setColorForeground(colorForeground);
 		theControl.setColorActive(colorActive);
-		theControl.setColorLabel(colorLabel);
+		theControl.setColorLabel(colorCaptionLabel);
 	}
 
 	public String toString() {
-		return ("colorBackground "
-		  + (colorBackground >> 16 & 0xff)
-		  + "-"
-		  + (colorBackground >> 8 & 0xff)
-		  + "-"
-		  + (colorBackground >> 0 & 0xff)
-		  + "\n"
-		  + "colorForeground "
-		  + (colorForeground >> 16 & 0xff)
-		  + "-"
-		  + (colorForeground >> 8 & 0xff)
-		  + "-"
-		  + (colorForeground >> 0 & 0xff)
-		  + "\n"
-		  + "colorActive "
-		  + (colorActive >> 16 & 0xff)
-		  + "-"
-		  + (colorActive >> 8 & 0xff)
-		  + "-"
-		  + (colorActive >> 0 & 0xff)
-		  + "\n"
-		  + "colorLabel "
-		  + (colorLabel >> 16 & 0xff)
-		  + "-"
-		  + (colorLabel >> 8 & 0xff)
-		  + "-"
-		  + (colorLabel >> 0 & 0xff)
-		  + "\n"
-		  + "colorValue "
-		  + (colorValue >> 16 & 0xff)
-		  + "-"
-		  + (colorValue >> 8 & 0xff)
-		  + "-" + (colorValue >> 0 & 0xff));
+		return ("colorBackground " + (colorBackground >> 16 & 0xff) + "-"
+				+ (colorBackground >> 8 & 0xff) + "-"
+				+ (colorBackground >> 0 & 0xff) + "\n" + "colorForeground "
+				+ (colorForeground >> 16 & 0xff) + "-"
+				+ (colorForeground >> 8 & 0xff) + "-"
+				+ (colorForeground >> 0 & 0xff) + "\n" + "colorActive "
+				+ (colorActive >> 16 & 0xff) + "-" + (colorActive >> 8 & 0xff)
+				+ "-" + (colorActive >> 0 & 0xff) + "\n" + "colorLabel "
+				+ (colorCaptionLabel >> 16 & 0xff) + "-" + (colorCaptionLabel >> 8 & 0xff)
+				+ "-" + (colorCaptionLabel >> 0 & 0xff) + "\n" + "colorValue "
+				+ (colorValueLabel >> 16 & 0xff) + "-" + (colorValueLabel >> 8 & 0xff)
+				+ "-" + (colorValueLabel >> 0 & 0xff));
 	}
 
 	public CColor() {
@@ -107,12 +91,70 @@ public class CColor {
 
 	public boolean equals(CColor theColor) {
 		if (colorBackground == theColor.colorBackground
-		  && colorForeground == theColor.colorForeground
-		  && colorActive == theColor.colorActive
-		  && colorLabel == theColor.colorLabel
-		  && colorValue == theColor.colorValue) {
+				&& colorForeground == theColor.colorForeground
+				&& colorActive == theColor.colorActive
+				&& colorCaptionLabel == theColor.colorCaptionLabel
+				&& colorValueLabel == theColor.colorValueLabel) {
 			return true;
 		}
 		return false;
 	}
+
+	public void setAlpha(int theAlpha) {
+		alpha = theAlpha;
+		colorBackground &= maskA | alpha << 24;
+		colorForeground &= maskA | alpha << 24;
+		colorActive &= maskA | alpha << 24;
+		colorCaptionLabel &= maskA | alpha << 24;
+		colorValueLabel &= maskA | alpha << 24;
+	}
+
+	public void setForeground(int theColor) {
+		colorForeground = (theColor & maskA) | alpha << 24;
+	}
+
+	public void setBackground(int theColor) {
+		colorBackground = (theColor & maskA) | alpha << 24;
+		;
+	}
+
+	public void setActive(int theColor) {
+		colorActive = (theColor & maskA) | alpha << 24;
+	}
+
+	public void setCaptionLabel(int theColor) {
+		colorCaptionLabel = (theColor & maskA) | alpha << 24;
+	}
+
+	public void setValueLabel(int theColor) {
+		colorCaptionLabel = (theColor & maskA) | alpha << 24;
+	}
+	
+	
+	public int getAlpha() {
+		return alpha;
+	}
+	
+	public int getForeground() {
+		return colorForeground;
+	}
+	
+	public int getBackground() {
+		return colorBackground;
+	}
+	
+	public int getActive() {
+		return colorActive;
+	}
+	
+	public int getCaptionLabel() {
+		return colorCaptionLabel;
+	}
+	
+	public int getValueLabel() {
+		return colorValueLabel;
+	}
+	
+	
+	
 }

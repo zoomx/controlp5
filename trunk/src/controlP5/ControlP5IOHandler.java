@@ -261,8 +261,8 @@ public class ControlP5IOHandler {
 		myRoot.setAttribute("colorBackground", ControlP5IOHandler.intToString(theControlP5.color.colorBackground));
 		myRoot.setAttribute("colorForeground", ControlP5IOHandler.intToString(theControlP5.color.colorForeground));
 		myRoot.setAttribute("colorActive", ControlP5IOHandler.intToString(theControlP5.color.colorActive));
-		myRoot.setAttribute("colorLabel", ControlP5IOHandler.intToString(theControlP5.color.colorLabel));
-		myRoot.setAttribute("colorValue", ControlP5IOHandler.intToString(theControlP5.color.colorValue));
+		myRoot.setAttribute("colorLabel", ControlP5IOHandler.intToString(theControlP5.color.colorCaptionLabel));
+		myRoot.setAttribute("colorValue", ControlP5IOHandler.intToString(theControlP5.color.colorValueLabel));
 		CColor myColor = new CColor(controlP5.color);
 		// getting ControlWindows
 		for (int k = 0; k < theControlP5.controlWindows().size(); k++) {
@@ -276,8 +276,8 @@ public class ControlP5IOHandler {
 				myPappletXMLElement.setAttribute("colorBackground", ControlP5IOHandler.intToString(myColor.colorBackground));
 				myPappletXMLElement.setAttribute("colorForeground", ControlP5IOHandler.intToString(myColor.colorForeground));
 				myPappletXMLElement.setAttribute("colorActive", ControlP5IOHandler.intToString(myColor.colorActive));
-				myPappletXMLElement.setAttribute("colorLabel", ControlP5IOHandler.intToString(myColor.colorLabel));
-				myPappletXMLElement.setAttribute("colorValue", ControlP5IOHandler.intToString(myColor.colorValue));
+				myPappletXMLElement.setAttribute("colorLabel", ControlP5IOHandler.intToString(myColor.colorCaptionLabel));
+				myPappletXMLElement.setAttribute("colorValue", ControlP5IOHandler.intToString(myColor.colorValueLabel));
 			}
 
 			for (int j = 0; j < myTabs.size(); j++) {
@@ -292,8 +292,8 @@ public class ControlP5IOHandler {
 					myTabXMLElement.setAttribute("colorBackground", ControlP5IOHandler.intToString(myColor.colorBackground));
 					myTabXMLElement.setAttribute("colorForeground", ControlP5IOHandler.intToString(myColor.colorForeground));
 					myTabXMLElement.setAttribute("colorActive", ControlP5IOHandler.intToString(myColor.colorActive));
-					myTabXMLElement.setAttribute("colorLabel", ControlP5IOHandler.intToString(myColor.colorLabel));
-					myTabXMLElement.setAttribute("colorValue", ControlP5IOHandler.intToString(myColor.colorValue));
+					myTabXMLElement.setAttribute("colorLabel", ControlP5IOHandler.intToString(myColor.colorCaptionLabel));
+					myTabXMLElement.setAttribute("colorValue", ControlP5IOHandler.intToString(myColor.colorValueLabel));
 				}
 
 				for (int i = 0; i < myControllerList.size(); i++) {
@@ -305,8 +305,8 @@ public class ControlP5IOHandler {
 							c.setAttribute("colorBackground", ControlP5IOHandler.intToString(myColor.colorBackground));
 							c.setAttribute("colorForeground", ControlP5IOHandler.intToString(myColor.colorForeground));
 							c.setAttribute("colorActive", ControlP5IOHandler.intToString(myColor.colorActive));
-							c.setAttribute("colorLabel", ControlP5IOHandler.intToString(myColor.colorLabel));
-							c.setAttribute("colorValue", ControlP5IOHandler.intToString(myColor.colorValue));
+							c.setAttribute("colorLabel", ControlP5IOHandler.intToString(myColor.colorCaptionLabel));
+							c.setAttribute("colorValue", ControlP5IOHandler.intToString(myColor.colorValueLabel));
 						}
 
 						myTabXMLElement.addChild(c);
@@ -390,8 +390,8 @@ public class ControlP5IOHandler {
 			myColor.colorBackground = ControlP5IOHandler.parseHex(myXML.getStringAttribute("colorBackground"));
 			myColor.colorForeground = ControlP5IOHandler.parseHex(myXML.getStringAttribute("colorForeground"));
 			myColor.colorActive = ControlP5IOHandler.parseHex(myXML.getStringAttribute("colorActive"));
-			myColor.colorLabel = ControlP5IOHandler.parseHex(myXML.getStringAttribute("colorLabel"));
-			myColor.colorValue = ControlP5IOHandler.parseHex(myXML.getStringAttribute("colorValue"));
+			myColor.colorCaptionLabel = ControlP5IOHandler.parseHex(myXML.getStringAttribute("colorLabel"));
+			myColor.colorValueLabel = ControlP5IOHandler.parseHex(myXML.getStringAttribute("colorValue"));
 
 			for (int a = 0; a < myControlWindows.size(); a++) {
 				ControlP5XMLElement myWindowXMLElement = myControlWindows.get(a);
@@ -403,8 +403,8 @@ public class ControlP5IOHandler {
 					myColor.colorForeground = ControlP5IOHandler.parseHex(myWindowXMLElement
 					  .getStringAttribute("colorForeground"));
 					myColor.colorActive = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorActive"));
-					myColor.colorLabel = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorLabel"));
-					myColor.colorValue = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorValue"));
+					myColor.colorCaptionLabel = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorLabel"));
+					myColor.colorValueLabel = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorValue"));
 				}
 				if ((myWindowXMLElement.getStringAttribute("class")).startsWith("controlP5.PAppletWindow")) {
 
@@ -669,8 +669,8 @@ public class ControlP5IOHandler {
 			theColor.colorForeground = ControlP5IOHandler
 			  .parseHex(theControllerElement.getStringAttribute("colorForeground"));
 			theColor.colorActive = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorActive"));
-			theColor.colorLabel = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorLabel"));
-			theColor.colorValue = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorValue"));
+			theColor.colorCaptionLabel = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorLabel"));
+			theColor.colorValueLabel = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorValue"));
 		}
 		return theColor;
 	}

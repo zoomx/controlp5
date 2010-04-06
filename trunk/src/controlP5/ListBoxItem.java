@@ -7,7 +7,8 @@ public class ListBoxItem {
 	protected boolean isActive;
 	protected CColor color;
 	protected int id = -1;
-	ListBoxItem(
+		
+	protected ListBoxItem(
 			ListBox theListBox,
 	        String theName,
 	        int theValue) {
@@ -24,6 +25,23 @@ public class ListBoxItem {
 	public void setColor(CColor theColor) {
 		color.set(theColor);
 	}
+	
+	public void setColorActive(int theColor) {
+		color.colorActive = theColor;
+	}
+	
+	public void setColorForeground(int theColor) {
+		color.colorForeground = theColor;
+	}
+	
+	public void setColorBackground(int theColor) {
+		color.colorBackground = theColor;
+	}
+	
+	public void setColorLabel(int theColor) {
+		color.colorCaptionLabel = theColor;
+	}
+	
 	
 	public void setId(int theId) {
 		id = theId;

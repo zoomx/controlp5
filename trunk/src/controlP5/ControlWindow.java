@@ -65,9 +65,9 @@ public class ControlWindow implements MouseWheelListener {
 
 	public final static int ECONOMIC = PAppletWindow.ECONOMIC;
 
-	protected Vector _myControlWindowCanvas;
+	protected Vector<ControlWindowCanvas> _myControlWindowCanvas;
 
-	protected Vector _myControlCanvas;
+	protected Vector<ControlCanvas> _myControlCanvas;
 
 	protected boolean isMouseOver;
 
@@ -76,6 +76,8 @@ public class ControlWindow implements MouseWheelListener {
 	protected boolean isUndecorated = false;
 	
 	protected boolean is3D;
+	
+	protected CVector3f autoPosition = new CVector3f(10, 30, 0);
 
 	/**
 	 * @invisible
@@ -98,8 +100,8 @@ public class ControlWindow implements MouseWheelListener {
 		is3D = (myRenderer.contains("gl") || myRenderer.contains("3d"));
 		
 		_myTabs = new ControllerList();
-		_myControlWindowCanvas = new Vector();
-		_myControlCanvas = new Vector();
+		_myControlWindowCanvas = new Vector<ControlWindowCanvas>();
+		_myControlCanvas = new Vector<ControlCanvas>();
 		if (_myApplet instanceof PAppletWindow) {
 			_myName = ((PAppletWindow) _myApplet).name();
 			isPAppletWindow = true;
@@ -114,7 +116,7 @@ public class ControlWindow implements MouseWheelListener {
 			if (_myApplet instanceof PAppletWindow) {
 				_myApplet.registerKeyEvent(new ControlWindowKeyListener(this));
 			} else {
-				controlP5.keyHandler.update(this);
+				ControlP5.keyHandler.update(this);
 			}
 		}
 
@@ -366,8 +368,8 @@ public class ControlWindow implements MouseWheelListener {
 				}
 
 				for (int i = 0; i < _myControlWindowCanvas.size(); i++) {
-					if (((ControlWindowCanvas) _myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.PRE) {
-						((ControlWindowCanvas) _myControlWindowCanvas.get(i)).draw(_myApplet);
+					if ((_myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.PRE) {
+						(_myControlWindowCanvas.get(i)).draw(_myApplet);
 					}
 				}
 
@@ -403,8 +405,8 @@ public class ControlWindow implements MouseWheelListener {
 				((ControllerInterface) _myTabs.get(0)).draw(_myApplet);
 
 				for (int i = 0; i < _myControlWindowCanvas.size(); i++) {
-					if (((ControlWindowCanvas) _myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.POST) {
-						((ControlWindowCanvas) _myControlWindowCanvas.get(i)).draw(_myApplet);
+					if ((_myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.POST) {
+						( _myControlWindowCanvas.get(i)).draw(_myApplet);
 					}
 				}
 
@@ -572,7 +574,7 @@ public class ControlWindow implements MouseWheelListener {
 	 *        int
 	 */
 	public void setColorLabel(int theColor) {
-		color.colorLabel = theColor;
+		color.colorCaptionLabel = theColor;
 		for (int i = 0; i < tabs().size(); i++) {
 			((Tab) tabs().get(i)).setColorLabel(theColor);
 		}
@@ -585,7 +587,7 @@ public class ControlWindow implements MouseWheelListener {
 	 *        int
 	 */
 	public void setColorValue(int theColor) {
-		color.colorValue = theColor;
+		color.colorValueLabel = theColor;
 		for (int i = 0; i < tabs().size(); i++) {
 			((Tab) tabs().get(i)).setColorValue(theColor);
 		}
@@ -764,11 +766,11 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	public void begin() {
-
+		controlP5.setCurrentPointer(this);
 	}
 
 	public void end() {
-
+		controlP5.releaseCurrentPointer(this);
 	}
 
 	protected ControlP5XMLElement getAsXML() {

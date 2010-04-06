@@ -59,7 +59,7 @@ public class ControlP5 extends ControlP5Base {
 
 	public ControlWindow controlWindow;
 
-	private Hashtable _myControllerMap;
+	private Hashtable<String,ControllerInterface> _myControllerMap;
 
 	protected ControlBroadcaster _myControlBroadcaster;
 
@@ -69,7 +69,7 @@ public class ControlP5 extends ControlP5Base {
 
 	public CColor color = new CColor();
 
-	protected Vector controlWindowList;
+	protected Vector<ControlWindow> controlWindowList;
 
 	protected static boolean isLock = false;
 
@@ -165,12 +165,12 @@ public class ControlP5 extends ControlP5Base {
 		welcome();
 		isTabEventsActive = false;
 		_myControlP5IOHandler = new ControlP5IOHandler(this);
-		controlWindowList = new Vector();
+		controlWindowList = new Vector<ControlWindow>();
 		_myControlBroadcaster = new ControlBroadcaster(this);
 		keyHandler = new ControlWindowKeyHandler(this);
 		controlWindow = new ControlWindow(this, papplet);
 		papplet.registerKeyEvent(new ControlWindowKeyListener(this));
-		_myControllerMap = new Hashtable();
+		_myControllerMap = new Hashtable<String,ControllerInterface>();
 		controlWindowList.add(controlWindow);
 		isApplet = papplet.online;
 		super.init(this);
@@ -261,9 +261,9 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public Tab getTab(String theName) {
 		for (int j = 0; j < controlWindowList.size(); j++) {
-			for (int i = 0; i < ((ControlWindow) controlWindowList.get(j)).tabs().size(); i++) {
-				if (((Tab) ((ControlWindow) controlWindowList.get(j)).tabs().get(i)).name().equals(theName)) {
-					return (Tab) ((ControlWindow) controlWindowList.get(j)).tabs().get(i);
+			for (int i = 0; i < controlWindowList.get(j).tabs().size(); i++) {
+				if (((Tab) controlWindowList.get(j).tabs().get(i)).name().equals(theName)) {
+					return (Tab) (controlWindowList.get(j)).tabs().get(i);
 				}
 			}
 		}
@@ -336,7 +336,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	protected void clear() {
 		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
-			((ControlWindow) controlWindowList.get(i)).clear();
+			controlWindowList.get(i).clear();
 		}
 
 		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
@@ -384,9 +384,9 @@ public class ControlP5 extends ControlP5Base {
 		}
 
 		for (int j = 0; j < controlWindowList.size(); j++) {
-			for (int i = 0; i < ((ControlWindow) controlWindowList.get(j)).tabs().size(); i++) {
-				if (((Tab) ((ControlWindow) controlWindowList.get(j)).tabs().get(i)).name().equals(theString)) {
-					((Tab) ((ControlWindow) controlWindowList.get(j)).tabs().get(i)).remove();
+			for (int i = 0; i < controlWindowList.get(j).tabs().size(); i++) {
+				if (((Tab) (controlWindowList.get(j)).tabs().get(i)).name().equals(theString)) {
+					((Tab) (controlWindowList.get(j)).tabs().get(i)).remove();
 				}
 			}
 		}
@@ -461,8 +461,8 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public ControlWindow window(String theWindowName) {
 		for (int i = 0; i < controlWindowList.size(); i++) {
-			if (((ControlWindow) controlWindowList.get(i)).name().equals(theWindowName)) {
-				return (ControlWindow) controlWindowList.get(i);
+			if (controlWindowList.get(i).name().equals(theWindowName)) {
+				return controlWindowList.get(i);
 			}
 		}
 		System.out.println("### WARNING ###\n" + "### ControlWindow " + theWindowName + " does not exist. returning null.");
@@ -531,7 +531,7 @@ public class ControlP5 extends ControlP5Base {
 			theUrlPath = "";
 			return;
 		}
-		theUrlPath = _myControlP5IOHandler.replace(theUrlPath, "&amp;", "&");
+		theUrlPath = ControlP5IOHandler.replace(theUrlPath, "&amp;", "&");
 		if (theUrlPath.indexOf('?') == -1) {
 			theUrlPath += '?';
 		} else {
@@ -570,8 +570,8 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorActive(theColor);
 		}
 	}
@@ -584,8 +584,8 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorForeground(theColor);
 		}
 	}
@@ -598,8 +598,8 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorBackground(theColor);
 		}
 	}
@@ -611,9 +611,9 @@ public class ControlP5 extends ControlP5Base {
 	 *        int
 	 */
 	public void setColorLabel(int theColor) {
-		color.colorLabel = theColor;
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		color.colorCaptionLabel = theColor;
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorLabel(theColor);
 		}
 	}
@@ -625,27 +625,27 @@ public class ControlP5 extends ControlP5Base {
 	 *        int
 	 */
 	public void setColorValue(int theColor) {
-		color.colorValue = theColor;
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		color.colorValueLabel = theColor;
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorValue(theColor);
 		}
 	}
 
-	protected Vector controlWindows() {
+	protected Vector<ControlWindow> controlWindows() {
 		return controlWindowList;
 	}
 
 	/**
-	 * lock ControlP5 to disable moving Controllers around.
-	 * 
+	 * lock ControlP5 to disable moving Controllers around. Other key events are still available like ALT-h to hide and show the controllers
+	 * To disable all key events, use disableKeys()
 	 */
 	public void lock() {
 		isLock = true;
 	}
 
 	/**
-	 * unlock ControlP5 to enable moving Controllers around.
+	 * unlock ControlP5 to enable moving Controllers around. 
 	 * 
 	 */
 	public void unlock() {
@@ -755,8 +755,8 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public void update() {
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.update();
 		}
 	}
@@ -767,8 +767,8 @@ public class ControlP5 extends ControlP5Base {
 
 	public void setUpdate(boolean theFlag) {
 		isUpdate = theFlag;
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setUpdate(theFlag);
 		}
 	}
@@ -811,8 +811,8 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	protected void updateFont(ControlFont theControlFont) {
-		for (Enumeration e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = (ControlWindow) e.nextElement();
+		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
+			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.updateFont(theControlFont);
 		}
 	}
@@ -829,6 +829,9 @@ public class ControlP5 extends ControlP5Base {
 		isKeys = true;
 	}
 
+	public static void warning(Object theObject, String theWarning) {
+		System.out.println("ControlP5.warning @ "+theObject.getClass().getName()+". "+theWarning);
+	}
 }
 
 // new controllers

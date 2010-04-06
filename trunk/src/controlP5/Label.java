@@ -24,7 +24,6 @@ package controlP5;
  */
 
 import processing.core.PApplet;
-import processing.core.PFont;
 import processing.core.PImage;
 
 /**
@@ -137,11 +136,15 @@ public class Label implements CDrawable {
 		set(_myText);
 	}
 
+	private void checkRenderer() {
+
+	}
+
 	/**
 	 * set the text of the label to upperCase.
 	 * 
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public void toUpperCase(boolean theFlag) {
 		isToUpperCase = theFlag;
@@ -152,11 +155,11 @@ public class Label implements CDrawable {
 	 * draw a textlabel at a given location xy.
 	 * 
 	 * @param theApplet
-	 *        PApplet
+	 *          PApplet
 	 * @param theX
-	 *        int
+	 *          int
 	 * @param theY
-	 *        int
+	 *          int
 	 */
 	public void draw(final PApplet theApplet, final int theX, final int theY) {
 		if (isVisible) {
@@ -218,10 +221,10 @@ public class Label implements CDrawable {
 			}
 			if (isControlFont) {
 				renderControlFont(theApplet, position.x + _myControllerStyle.paddingLeft, position.y
-				  + _myControllerStyle.paddingTop);
+						+ _myControllerStyle.paddingTop);
 			} else {
 				theApplet.image(_myImage, position.x + _myControllerStyle.paddingLeft, position.y
-				  + _myControllerStyle.paddingTop);
+						+ _myControllerStyle.paddingTop);
 			}
 			theApplet.popMatrix();
 		}
@@ -297,8 +300,8 @@ public class Label implements CDrawable {
 	/**
 	 * set the text of the label. when setting the text, the fixedSize flag will
 	 * be temporarily overwritten and set to false. after the text has been set,
-	 * the fixedSize flag is set back to its previous value. use set(String,
-	 * true) to set text for a fixed size area.
+	 * the fixedSize flag is set back to its previous value. use set(String, true)
+	 * to set text for a fixed size area.
 	 * 
 	 * @param theText
 	 */
@@ -340,8 +343,8 @@ public class Label implements CDrawable {
 
 	/**
 	 * a textlabel is an image containing text rendered from a bitfont source
-	 * image. available bit fonts are: standard56, standard58, synt24, grixel.
-	 * the font of a textlabel can be changed by using setFont(int theFontIndex)
+	 * image. available bit fonts are: standard56, standard58, synt24, grixel. the
+	 * font of a textlabel can be changed by using setFont(int theFontIndex)
 	 * theFontIndex is of type int and available indexes are stored in the
 	 * constants ControlP5.standard56, ControlP5.standard58, ControlP5.synt24,
 	 * ControlP5.grixel available characters for each pixelfont range from ascii
@@ -349,7 +352,7 @@ public class Label implements CDrawable {
 	 * 
 	 * @shortdesc set the Pixel-Font-Family of the Textlabel.
 	 * @param theFont
-	 *        int
+	 *          int
 	 */
 	public Label setFont(int theFont) {
 		isControlFont = false;
@@ -395,12 +398,12 @@ public class Label implements CDrawable {
 	}
 
 	/**
-	 * work around, fix the issue with cutting off a label when setting a new
-	 * font for a label.
+	 * work around, fix the issue with cutting off a label when setting a new font
+	 * for a label.
 	 */
 	public Label adjust() {
 		if (isControlFont) {
-			_myHeight = bitFontRenderer.font[_myFontIndex].height;
+			_myHeight = BitFontRenderer.font[_myFontIndex].height;
 			_myWidth = bitFontRenderer.getWidth(this);
 			_myWidth += _myText.length() * _myLetterSpacing;
 		}
@@ -436,7 +439,7 @@ public class Label implements CDrawable {
 			_myWidth = (int) ControlP5.papplet.textWidth(isToUpperCase ? _myText.toUpperCase() : _myText);
 		} else {
 			if (!isFixedSize) {
-				_myHeight = bitFontRenderer.font[_myFontIndex].height;
+				_myHeight = BitFontRenderer.font[_myFontIndex].height;
 				_myWidth = bitFontRenderer.getWidth(this);
 				_myWidth += _myText.length() * _myLetterSpacing;
 

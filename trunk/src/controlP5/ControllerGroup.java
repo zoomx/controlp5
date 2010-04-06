@@ -89,20 +89,20 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 	protected float[] _myArrayValue;
 
-	protected boolean isBarToggle = true;
+	protected boolean isCollapse = true;
 
 	/**
 	 * @invisible
 	 * @param theControlP5
-	 *        ControlP5
+	 *          ControlP5
 	 * @param theParent
-	 *        ControllerGroup
+	 *          ControllerGroup
 	 * @param theName
-	 *        String
+	 *          String
 	 * @param theX
-	 *        float
+	 *          float
 	 * @param theY
-	 *        float
+	 *          float
 	 */
 	public ControllerGroup(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY) {
 		position = new CVector3f(theX, theY, 0);
@@ -111,7 +111,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 		_myName = theName;
 		controllers = new ControllerList();
 		_myControlCanvas = new Vector<ControlCanvas>();
-		_myLabel = new Label(_myName, color.colorLabel);
+		_myLabel = new Label(_myName, color.colorCaptionLabel);
 		setParent((theParent == null) ? this : theParent);
 	}
 
@@ -130,7 +130,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theParent
-	 *        ControllerGroup
+	 *          ControllerGroup
 	 */
 	void setParent(ControllerGroup theParent) {
 		if (_myParent != null && _myParent != this) {
@@ -160,7 +160,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the group of the controller.
 	 * 
 	 * @param theGroup
-	 *        ControllerGroup
+	 *          ControllerGroup
 	 */
 	public void setGroup(ControllerGroup theGroup) {
 		setParent(theGroup);
@@ -168,7 +168,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 	/**
 	 * @param theName
-	 *        String
+	 *          String
 	 */
 	public void setGroup(String theName) {
 		setParent(controlP5.getGroup(theName));
@@ -178,11 +178,11 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * move the group.
 	 * 
 	 * @param theGroup
-	 *        ControlGroup
+	 *          ControlGroup
 	 * @param theTab
-	 *        Tab
+	 *          Tab
 	 * @param theControlWindow
-	 *        ControlWindow
+	 *          ControlWindow
 	 */
 	public void moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theControlWindow) {
 		if (theGroup != null) {
@@ -225,7 +225,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the tab of the controller.
 	 * 
 	 * @param theName
-	 *        String
+	 *          String
 	 */
 	public void setTab(String theName) {
 		setParent(controlP5.getTab(theName));
@@ -239,7 +239,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the tab of the controller.
 	 * 
 	 * @param theTab
-	 *        Tab
+	 *          Tab
 	 */
 	public void setTab(Tab theTab) {
 		setParent(theTab);
@@ -294,9 +294,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the position of this controller.
 	 * 
 	 * @param theX
-	 *        float
+	 *          float
 	 * @param theY
-	 *        float
+	 *          float
 	 */
 	public void setPosition(float theX, float theY) {
 		position.set((int) theX, (int) theY);
@@ -341,7 +341,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * enable or disable the update function of a controller.
 	 * 
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public void setUpdate(boolean theFlag) {
 		isUpdate = theFlag;
@@ -373,15 +373,17 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 			if ((isMousePressed == _myControlWindow.mouselock)) {
 				if (isMousePressed && ControlP5.keyHandler.isAltDown && isMoveable) {
-					positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
-					positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
-					if (ControlP5.keyHandler.isShiftDown) {
-						position.x = ((int) (positionBuffer.x) / 10) * 10;
-						position.y = ((int) (positionBuffer.y) / 10) * 10;
-					} else {
-						position.set(positionBuffer);
+					if (!ControlP5.isLock) {
+						positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
+						positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
+						if (ControlP5.keyHandler.isShiftDown) {
+							position.x = ((int) (positionBuffer.x) / 10) * 10;
+							position.y = ((int) (positionBuffer.y) / 10) * 10;
+						} else {
+							position.set(positionBuffer);
+						}
+						updateAbsolutePosition();
 					}
-					updateAbsolutePosition();
 				} else {
 					if (inside()) {
 						if (!isInside) {
@@ -409,7 +411,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theApplet
-	 *        PApplet
+	 *          PApplet
 	 */
 	public void draw(PApplet theApplet) {
 		if (isVisible) {
@@ -478,7 +480,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * @invisible add a controller to the group, but use Controller.setGroup()
 	 *            instead.
 	 * @param theElement
-	 *        ControllerInterface
+	 *          ControllerInterface
 	 */
 	public void add(ControllerInterface theElement) {
 		controllers.add(theElement);
@@ -488,7 +490,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * @invisible remove a controller from the group, but use
 	 *            Controller.setGroup() instead.
 	 * @param theElement
-	 *        ControllerInterface
+	 *          ControllerInterface
 	 */
 
 	public void remove(ControllerInterface theElement) {
@@ -498,7 +500,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theElement
-	 *        CDrawable
+	 *          CDrawable
 	 */
 	public void addDrawable(CDrawable theElement) {
 		controllers.addDrawable(theElement);
@@ -507,7 +509,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theElement
-	 *        CDrawable
+	 *          CDrawable
 	 */
 	public void remove(CDrawable theElement) {
 		controllers.removeDrawable(theElement);
@@ -555,7 +557,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theEvent
-	 *        KeyEvent
+	 *          KeyEvent
 	 */
 	public void keyEvent(KeyEvent theEvent) {
 		for (int i = 0; i < controllers.size(); i++) {
@@ -566,7 +568,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theStatus
-	 *        boolean
+	 *          boolean
 	 * @return boolean
 	 */
 	public boolean setMousePressed(boolean theStatus) {
@@ -608,7 +610,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theId
-	 *        int
+	 *          int
 	 */
 	public void setId(int theId) {
 		_myId = theId;
@@ -626,7 +628,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the color for the group when active.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
@@ -639,7 +641,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the foreground color of the group.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
@@ -652,7 +654,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the background color of the group.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
@@ -665,12 +667,12 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the color of the text label of the group.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorLabel(int theColor) {
-		color.colorLabel = theColor;
+		color.colorCaptionLabel = theColor;
 		if (_myLabel != null) {
-			_myLabel.set(_myLabel.toString(), color.colorLabel);
+			_myLabel.set(_myLabel.toString(), color.colorCaptionLabel);
 		}
 		for (int i = 0; i < controllers.size(); i++) {
 			((ControllerInterface) controllers.get(i)).setColorLabel(theColor);
@@ -681,12 +683,12 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the color of the value label.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorValue(int theColor) {
-		color.colorValue = theColor;
+		color.colorValueLabel = theColor;
 		if (_myValueLabel != null) {
-			_myValueLabel.set(_myValueLabel.toString(), color.colorValue);
+			_myValueLabel.set(_myValueLabel.toString(), color.colorValueLabel);
 		}
 		for (int i = 0; i < controllers.size(); i++) {
 			((ControllerInterface) controllers.get(i)).setColorValue(theColor);
@@ -697,7 +699,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the label of the group.
 	 * 
 	 * @param theLabel
-	 *        String
+	 *          String
 	 */
 	public void setLabel(String theLabel) {
 		_myLabel.setFixedSize(false);
@@ -718,7 +720,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the group's visibility.
 	 * 
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public void setVisible(boolean theFlag) {
 		isVisible = theFlag;
@@ -742,7 +744,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * set the moveable status of the group.
 	 * 
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public void setMoveable(boolean theFlag) {
 		isMoveable = theFlag;
@@ -760,7 +762,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	/**
 	 * @invisible
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public void setOpen(boolean theFlag) {
 		isOpen = theFlag;
@@ -804,9 +806,8 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * !!! experimental, have to check if this spoils anything.
-	 * implemented for ScrollList and MultiList to forward values to
-	 * a dedicated method
+	 * !!! experimental, have to check if this spoils anything. implemented for
+	 * ScrollList and MultiList to forward values to a dedicated method
 	 */
 	public float value() {
 		return _myValue;
@@ -824,7 +825,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * get a controller of the group.
 	 * 
 	 * @param theController
-	 *        String
+	 *          String
 	 * @return Controller
 	 */
 	public Controller controller(String theController) {
@@ -839,12 +840,23 @@ public abstract class ControllerGroup implements ControllerInterface {
 		return _myValueLabel;
 	}
 
+	public void enableCollapse() {
+		isCollapse = true;
+	}
+
+	public void disableCollapse() {
+		isCollapse = false;
+	}
+
+	public boolean isCollapse() {
+		return isCollapse;
+	}
+
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
-		  && _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
-		  && _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() - _myHeight && _myControlWindow.mouseY < position
-		  .y()
-		  + _myParent.absolutePosition().y());
+				&& _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
+				&& _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() - _myHeight && _myControlWindow.mouseY < position.y()
+				+ _myParent.absolutePosition().y());
 	}
 
 	/**

@@ -108,7 +108,7 @@ public class Range extends Controller {
 	  int theWidth,
 	  int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName, color.colorLabel);
+		_myCaptionLabel = new Label(theName, color.colorCaptionLabel);
 		_myArrayValue = new float[] {
 		  theDefaultMinValue, theDefaultMaxValue
 		};
@@ -121,10 +121,10 @@ public class Range extends Controller {
 		minHandle = (theDefaultMinValue / _myValueRange) * width;
 		maxHandle = (theDefaultMaxValue / _myValueRange) * width;
 
-		_myValueLabel = new Label("" + adjustValue(_myMin), color.colorValue);
+		_myValueLabel = new Label("" + adjustValue(_myMin), color.colorValueLabel);
 		_myValueLabel.set("" + adjustValue(theDefaultMinValue));
 
-		_myHighValueLabel = new Label(adjustValue(_myMax), color.colorValue);
+		_myHighValueLabel = new Label(adjustValue(_myMax), color.colorValueLabel);
 		_myHighValueLabel.set("" + adjustValue(theDefaultMaxValue));
 
 		_myValue = theDefaultMinValue;

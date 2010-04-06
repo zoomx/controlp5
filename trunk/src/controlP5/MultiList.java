@@ -31,6 +31,8 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	protected MultiListInterface mostRecent;
 
 	protected CRect _myRect;
+	
+	protected int _myDirection = ControlP5Constants.RIGHT;
 
 	/**
 	 * @invisible
@@ -94,6 +96,17 @@ public class MultiList extends Controller implements MultiListInterface, Control
 		_myRect = new CRect(theX, theY, theW, theH);
 	}
 
+	public int getDirection() {
+		return _myDirection;
+	}
+	
+	public void setDirection(int theDirection) {
+		_myDirection = (theDirection == LEFT) ? LEFT:RIGHT;
+		for (int i = 0; i < subelements.size(); i++) {
+			((MultiListButton) subelements.get(i)).setDirection(_myDirection);
+		}
+	}
+	
 	/**
 	 * @invisible
 	 * @param theX
@@ -153,10 +166,10 @@ public class MultiList extends Controller implements MultiListInterface, Control
 		return b;
 	}
 
-	// !!! add an option to remove MultiListButtons
+	// TODO add an option to remove MultiListButtons
 
 	/**
-	 * !!! experimental. see scrollList. needs controllerPlug.
+	 * TODO experimental. see scrollList. needs controllerPlug.
 	 * 
 	 * @param theEvent
 	 */
