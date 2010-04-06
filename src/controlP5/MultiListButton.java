@@ -1,10 +1,8 @@
 package controlP5;
 
-import controlP5.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import processing.core.PApplet;
 
 /**
  * @example ControlP5multiList
@@ -18,7 +16,9 @@ public class MultiListButton extends Button implements MultiListInterface {
 	MultiList root;
 
 	CRect _myRect;
-
+	
+	protected int _myDirection = ControlP5Constants.RIGHT;
+	
 	/**
 	 * 
 	 * @param theProperties
@@ -45,8 +45,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 			if (((MultiListButton) parent.subelements().get(i)) == this) {
 				myYoffset = height + 1;
 			}
-			((MultiListButton) parent.subelements().get(i)).updateLocation(0,
-					-myYoffset);
+			((MultiListButton) parent.subelements().get(i)).updateLocation(0,-myYoffset);
 		}
 
 		if (_myParent != null) {
@@ -69,7 +68,16 @@ public class MultiListButton extends Button implements MultiListInterface {
 	public Vector subelements() {
 		return subelements;
 	}
-
+	
+	
+	public int getDirection() {
+		return _myDirection;
+	}
+	
+	protected void setDirection(int theDirection) {
+		_myDirection = theDirection;
+	}
+	
 	/**
 	 * @invisible
 	 * @param theX
@@ -97,8 +105,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 		position().y += theY;
 		updateRect(position().x, position().y, width, height);
 		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListInterface) subelements.get(i))
-					.updateLocation(theX, theY);
+			((MultiListInterface) subelements.get(i)).updateLocation(theX, theY);
 		}
 	}
 
@@ -109,8 +116,10 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 *            int
 	 */
 	public Controller setWidth(int theWidth) {
+		// negative direction
+		int dif = (_myDirection == LEFT) ? theWidth-width:0;
 		width = theWidth;
-		updateLocation(0, 0);
+		updateLocation(-dif, 0);
 		return this;
 	}
 
@@ -126,8 +135,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 		difHeight = height - difHeight;
 		int myYoffset = 0;
 		for (int i = 0; i < parent.subelements().size(); i++) {
-			((MultiListButton) parent.subelements().get(i)).updateLocation(0,
-					myYoffset);
+			((MultiListButton) parent.subelements().get(i)).updateLocation(0,myYoffset);
 			if (((MultiListButton) parent.subelements().get(i)) == this) {
 				myYoffset = difHeight;
 			}
@@ -150,18 +158,16 @@ public class MultiListButton extends Button implements MultiListInterface {
 		for (int i = 0; i < subelements().size(); i++) {
 			myHeight += ((MultiListButton) subelements().get(i)).height + 1;
 		}
-
-		MultiListButton b = new MultiListButton(controlP5, theName, theValue,
-				(int) position().x + (width + 1), (int) position().y
-						+ (height + 1) + myHeight, (int) width, (int) height,
-				this, root);
+		// negative direction, this is static now, make it dynamic depending on the
+		// location of the list.
+		int xx = ((int) position().x + (width + 1));
+		MultiListButton b = new MultiListButton(controlP5, theName, theValue,xx, (int) position().y+ (height + 1) + myHeight, (int) width, (int) height,this, root);
 		b.isMoveable = false;
 		b.hide();
 		controlP5.register(b);
 		b.addListener(root);
 		subelements.add(b);
-		updateRect(position().x() + (width + 1), position().y(), width,
-				(height + 1) + myHeight);
+		updateRect(xx, position().y(), width,(height + 1) + myHeight);
 		return b;
 	}
 

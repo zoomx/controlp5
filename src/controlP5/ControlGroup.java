@@ -40,8 +40,6 @@ import processing.core.PApplet;
  */
 public class ControlGroup extends ControllerGroup implements ControlListener {
 
-	// TODO implement control events for controlGroups.
-	// http://processing.org/discourse/yabb_beta/YaBB.cgi?board=LibraryProblems;action=display;num=1228715265;start=0#0
 	protected Button _myCloseButton;
 
 	protected int _myBackgroundHeight = 0;
@@ -56,26 +54,26 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 * 
 	 * @invisible
 	 * @param theControlP5
-	 *        ControlP5
+	 *          ControlP5
 	 * @param theParent
-	 *        ControllerGroup
+	 *          ControllerGroup
 	 * @param theName
-	 *        String
+	 *          String
 	 * @param theX
-	 *        int
+	 *          int
 	 * @param theY
-	 *        int
+	 *          int
 	 */
 	public ControlGroup(
-	  ControlP5 theControlP5,
-	  ControllerGroup theParent,
-	  String theName,
-	  int theX,
-	  int theY,
-	  int theW,
-	  int theH) {
+			ControlP5 theControlP5,
+			ControllerGroup theParent,
+			String theName,
+			int theX,
+			int theY,
+			int theW,
+			int theH) {
 		super(theControlP5, theParent, theName, theX, theY);
-		_myValueLabel = new Label("-");
+		_myValueLabel = new Label("");
 		_myWidth = theW;
 		_myHeight = theH;
 	}
@@ -84,11 +82,9 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 * @invisible
 	 */
 	public void mousePressed() {
-		if (isBarToggle) {
-			if (!controlP5.keyHandler.isAltDown) {
+		if (isCollapse) {
+			if (!ControlP5.keyHandler.isAltDown) {
 				isOpen = !isOpen;
-				_myValueLabel.set(isOpen ? "-" : "+");
-
 				if (isEventActive) {
 					controlP5.controlbroadcaster().broadcast(new ControlEvent(this), ControlP5Constants.METHOD);
 				}
@@ -100,7 +96,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 * activate or deactivate the Event status of a tab.
 	 * 
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public ControlGroup activateEvent(boolean theFlag) {
 		isEventActive = theFlag;
@@ -135,14 +131,21 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 			theApplet.fill(isInside ? color.colorForeground : color.colorBackground);
 			theApplet.rect(0, -1, _myWidth, -_myHeight);
 			_myLabel.draw(theApplet, 2, -_myHeight);
-			_myValueLabel.draw(theApplet, _myWidth - 9, -_myHeight);
+			if (isCollapse) {
+				theApplet.fill(color.colorActive);
+				if (isOpen) {
+					theApplet.triangle(_myWidth - 10, -_myHeight / 2 - 3, _myWidth - 4, -_myHeight / 2 - 3, _myWidth - 7, -_myHeight / 2);
+				} else {
+					theApplet.triangle(_myWidth - 10, -_myHeight / 2, _myWidth - 4, -_myHeight / 2, _myWidth - 7, -_myHeight / 2 - 3);
+				}
+			}
 		}
 	}
 
 	/**
 	 * @invisible
 	 * @param theElement
-	 *        ControlP5XMLElement
+	 *          ControlP5XMLElement
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setName("group");
@@ -156,6 +159,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	}
 
 	/**
+	 * TODO redesign or deprecate 
 	 * add a close button to the controlbar of this controlGroup.
 	 */
 	public void addCloseButton() {
@@ -167,6 +171,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	}
 
 	/**
+	 * TODO redesign or deprecate
 	 * remove the close button.
 	 */
 	public void removeCloseButton() {
@@ -191,7 +196,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	/**
 	 * @invisible
 	 * @param theEvent
-	 *        ControlEvent
+	 *          ControlEvent
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.controller().name().equals(name() + "close")) {

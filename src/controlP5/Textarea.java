@@ -99,7 +99,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.update();
 		_myValueLabel.position.set(2, 2);
-		_myValueLabel.setColor(color.colorValue);
+		_myValueLabel.setColor(color.colorValueLabel);
 
 		addDrawable(_myValueLabel);
 		_myScrollbar = new Slider(controlP5, _myParent, name() + "Scroller", 0, 1, 1, _myWidth, 0, 10, _myHeight);

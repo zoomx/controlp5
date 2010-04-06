@@ -3,18 +3,18 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * press the mouse inside a numberbox and move up and down to
- * change the values of a numberbox.
+ * press the mouse inside a numberbox and move up and down to change the values
+ * of a numberbox.
  * 
  * by default you increase and decrease numbers by dragging the mouse up and
  * down. use setDirection(Controller.HORIZONTAL) to change the mouse control to
  * left and right.
- * Why do I get -1000000 as initial value when creating a numberbox
- * without a default value?
- * the value of a numberbox defaults back to its minValue, which is
- * -1000000. either use a default value or link a variable to the
- * numberbox - this is done by giving a float or int variable the
- * same name as the numberbox.
+ * 
+ * Why do I get -1000000 as initial value when creating a numberbox without a
+ * default value? the value of a numberbox defaults back to its minValue, which
+ * is -1000000. either use a default value or link a variable to the numberbox -
+ * this is done by giving a float or int variable the same name as the
+ * numberbox.
  * 
  * Use setMultiplier(float) to change the sensitivity of values
  * increasing/decreasing, by default the multiplier is 1.
@@ -42,7 +42,7 @@ public class Numberbox extends Controller {
 
 	protected float _myMultiplier = 1;
 
-	protected static int autoWidth = 100;
+	protected static int autoWidth = 70;
 
 	protected static int autoHeight = 15;
 
@@ -58,34 +58,34 @@ public class Numberbox extends Controller {
 	 * 
 	 * @invisible
 	 * @param theControlP5
-	 *        ControlP5
+	 *            ControlP5
 	 * @param theParent
-	 *        Tab
+	 *            Tab
 	 * @param theName
-	 *        String
+	 *            String
 	 * @param theDefaultValue
-	 *        float
+	 *            float
 	 * @param theX
-	 *        int
+	 *            int
 	 * @param theY
-	 *        int
+	 *            int
 	 * @param theWidth
-	 *        int
+	 *            int
 	 * @param theHeight
-	 *        int
+	 *            int
 	 */
 	public Numberbox(
-	  ControlP5 theControlP5,
-	  Tab theParent,
-	  String theName,
-	  float theDefaultValue,
-	  int theX,
-	  int theY,
-	  int theWidth,
-	  int theHeight) {
+			ControlP5 theControlP5,
+			Tab theParent,
+			String theName,
+			float theDefaultValue,
+			int theX,
+			int theY,
+			int theWidth,
+			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
-		_myValueLabel = new Label("" + _myValue, theWidth, 12, color.colorValue);
+		_myValueLabel = new Label("" + _myValue, theWidth, 12, color.colorValueLabel);
 		_myMin = -1000000;
 		_myMax = 1000000;
 	}
@@ -109,17 +109,20 @@ public class Numberbox extends Controller {
 	/**
 	 * @invisible
 	 * @param theApplet
-	 *        PApplet
+	 *            PApplet
 	 */
 	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
 		theApplet.translate(position().x(), position().y());
-		theApplet.stroke(color.colorForeground);
+
 		theApplet.fill(color.colorBackground);
 		theApplet.rect(0, 0, width, height);
-		theApplet.noStroke();
-		_myCaptionLabel.draw(theApplet, 4, height + 4);
-		_myValueLabel.draw(theApplet, 4, 4);
+		theApplet.fill((isActive) ? color.colorActive : color.colorForeground);
+		int h = height / 2;
+		theApplet.triangle(0, h - 6, 6, h, 0, h + 6);
+
+		_myCaptionLabel.draw(theApplet, 0, height + 4);
+		_myValueLabel.draw(theApplet, 10, h - _myValueLabel.height() / 2 + 3);
 		theApplet.popMatrix();
 	}
 
@@ -153,7 +156,7 @@ public class Numberbox extends Controller {
 	 * set the value of the numberbox.
 	 * 
 	 * @param theValue
-	 *        float
+	 *            float
 	 */
 	public void setValue(float theValue) {
 		_myValue = theValue;
@@ -163,10 +166,10 @@ public class Numberbox extends Controller {
 	}
 
 	/**
-	 * set the direction for changing the numberbox value when dragging the mouse.
-	 * by default this is up/down (VERTICAL), use
-	 * setDirection(Controller.HORIZONTAL) to change to
-	 * left/right or back with setDirection(Controller.VERTICAL).
+	 * set the direction for changing the numberbox value when dragging the
+	 * mouse. by default this is up/down (VERTICAL), use
+	 * setDirection(Controller.HORIZONTAL) to change to left/right or back with
+	 * setDirection(Controller.VERTICAL).
 	 * 
 	 * @param theValue
 	 */
@@ -190,7 +193,7 @@ public class Numberbox extends Controller {
 	/**
 	 * @invisible
 	 * @param theElement
-	 *        ControlP5XMLElement
+	 *            ControlP5XMLElement
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "numberbox");

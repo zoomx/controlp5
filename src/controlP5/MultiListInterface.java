@@ -1,6 +1,5 @@
 package controlP5;
 
-import controlP5.*;
 import processing.core.PApplet;
 import java.util.Vector;
 
@@ -26,4 +25,6 @@ public interface MultiListInterface {
     String name();
 
     Vector subelements();
+    
+    int getDirection();
 }

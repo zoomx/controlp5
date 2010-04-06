@@ -112,7 +112,11 @@ public class Button extends Controller {
 		theApplet.translate(position.x, position.y);
 		if (!isSprite) {
 			if (getIsInside() || isOn) {
-				theApplet.fill(color.colorActive);
+				if(isPressed) {
+					theApplet.fill(color.colorActive);
+				} else {
+					theApplet.fill(color.colorForeground);
+				}
 			} else {
 				theApplet.fill(color.colorBackground);
 			}

@@ -1,13 +1,23 @@
+2010-04-04  Andreas Schlegel
+      * version 0.5.1
+      * ControlP5: lock() and unlock() are working again.
+      * ControlEvent: added function id() to make access to the id of  controller, group, tab, etc. easier
+      * ControlEvent: added function type() for easier distinguishing the type of Controller the event was triggered from, returns ControlEvent.UNDEFINED, ControlEvent.CONTROLLER, ControlEvent.TAB, ControlEvent.GROUP 
+      * ListBoxItem: adding ListBoxItem to make changes to each item of a listBox especially the color settings of a listBoxItem.
+      * CColor: now with getter and setter functions, supports changing the value of the alpha channel.
+      * ControlWindow: adding begin() and end(). this allows to move controllers automatically to the main window or a separate controlWindow.
+      * ControllerGroup: adding enableCollapse(), disableCollapse(), isCollapse() to enable/disable the collapsing and opening of a controllerGroup e.g. listBox.
+      	
 2010-03-26  Andreas Schlegel
       * version 0.5.0
       * making transition to 1.5+, no more java 1.4 support.
       * compiling against processing 1.1
+      * ControlP5: added disableKeys() and enableKeys(), suggested in the discourse. disables and enables keyEvents such as hide/show with ALT-h.
       * Toggle: when inactive, the color refers to colorBackground instead of colorForeground now.
       * ControlFont: smooth related functions have been disabled and deprecated due to processing 1.1 changes.
       * Slider: use alignValueLabel() to position the value label of a slider on TOP, CENTER, or BOTTOM
-      * ControlP5quick example: new, ControlP5quick shows how to quickly add Controllers with auto-arrangement.
-      * ControlP5: added disableKeys() and enableKeys(), suggested in the discourse. 
-            
+      * example ControlP5quick: new, ControlP5quick shows how to quickly add Controllers with auto-arrangement.
+                
 2010-02-16  Andreas Schlegel
       * version 0.4.7
       * Slider: adding TickMarks and replacing steps with snapToTickMarks().

@@ -80,13 +80,13 @@ public class Textfield extends Controller {
 	        int theWidth,
 	        int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName.toUpperCase(), color.colorLabel);
+		_myCaptionLabel = new Label(theName.toUpperCase(), color.colorCaptionLabel);
 		_myCaptionLabel.setFixedSize(false);
 		myBroadcastType = STRING;
 		_myValueLabel.setWidth(width - 10);
 		_myValueLabel.setHeight(15);
 		_myValueLabel.set(">");
-		_myValueLabel.setColor(color.colorValue);
+		_myValueLabel.setColor(color.colorValueLabel);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.setFixedSize(true);
 		_myValueLabel.setFont(ControlP5.standard56);

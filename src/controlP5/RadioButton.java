@@ -38,7 +38,7 @@ import java.util.Vector;
  */
 public class RadioButton extends ControlGroup {
 
-	protected Vector _myRadioToggles;
+	protected Vector<Toggle> _myRadioToggles;
 
 	protected int rowSpacing = 2;
 
@@ -77,8 +77,8 @@ public class RadioButton extends ControlGroup {
 		final int theY) {
 		super(theControlP5, theParent, theName, theX, theY, 100, 9);
 		isBarVisible = false;
-		isBarToggle = false;
-		_myRadioToggles = new Vector();
+		isCollapse = false;
+		_myRadioToggles = new Vector<Toggle>();
 		setItemsPerRow(1);
 	}
 
@@ -125,8 +125,8 @@ public class RadioButton extends ControlGroup {
 	public void removeItem(final String theName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			if (((Toggle) _myRadioToggles.get(i)).name().equals(theName)) {
-				((Toggle) _myRadioToggles.get(i)).removeListener(this);
+			if ((_myRadioToggles.get(i)).name().equals(theName)) {
+				(_myRadioToggles.get(i)).removeListener(this);
 				_myRadioToggles.remove(i);
 			}
 		}
@@ -189,7 +189,7 @@ public class RadioButton extends ControlGroup {
 	public boolean getState(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			Toggle t = ((Toggle) _myRadioToggles.get(i));
+			Toggle t = _myRadioToggles.get(i);
 			if (theRadioButtonName.equals(t.name())) {
 				return t.getState();
 			}
@@ -203,7 +203,7 @@ public class RadioButton extends ControlGroup {
 		int yy = 0;
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			Toggle t = ((Toggle) _myRadioToggles.get(i));
+			Toggle t = _myRadioToggles.get(i);
 			t.position().y = yy;
 			t.position().x = xx;
 
@@ -276,10 +276,10 @@ public class RadioButton extends ControlGroup {
 		int n = _myRadioToggles.size();
 		if (theIndex < n) {
 			for (int i = 0; i < n; i++) {
-				((Toggle) _myRadioToggles.get(i)).deactivate();
+				_myRadioToggles.get(i).deactivate();
 			}
 			((Toggle) _myRadioToggles.get(theIndex)).activate();
-			_myValue = ((Toggle) _myRadioToggles.get(theIndex)).value();
+			_myValue = _myRadioToggles.get(theIndex).value();
 			updateValues(true);
 		}
 	}
@@ -292,7 +292,7 @@ public class RadioButton extends ControlGroup {
 	 */
 	public void deactivate(int theIndex) {
 		if (theIndex < _myRadioToggles.size()) {
-			Toggle t = ((Toggle) _myRadioToggles.get(theIndex));
+			Toggle t = _myRadioToggles.get(theIndex);
 			if (t.isActive) {
 				t.deactivate();
 				_myValue = -1;
@@ -304,7 +304,7 @@ public class RadioButton extends ControlGroup {
 	public void activate(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			Toggle t = ((Toggle) _myRadioToggles.get(i));
+			Toggle t = _myRadioToggles.get(i);
 			if (theRadioButtonName.equals(t.name())) {
 				t.activate();
 				_myValue = t.value();
@@ -323,7 +323,7 @@ public class RadioButton extends ControlGroup {
 	public void deactivate(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			Toggle t = ((Toggle) _myRadioToggles.get(i));
+			Toggle t = _myRadioToggles.get(i);
 			if (theRadioButtonName.equals(t.name())) {
 				t.deactivate();
 				_myValue = -1;
@@ -358,7 +358,7 @@ public class RadioButton extends ControlGroup {
 			_myValue = -1;
 			int n = _myRadioToggles.size();
 			for (int i = 0; i < n; i++) {
-				Toggle t = ((Toggle) _myRadioToggles.get(i));
+				Toggle t = _myRadioToggles.get(i);
 				if (!t.equals(theEvent.controller())) {
 					t.deactivate();
 				}

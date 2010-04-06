@@ -128,7 +128,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 			for (int i = 1; i < controllers.size(); i++) {
 				int n = Math.abs(myValue / _myItemHeight) + (i - 1);
 				n = Math.max(0, Math.min(n, items.size() - 1));
-				((Button) controllers.get(i)).color.colorBackground = (items.get(n)).color.colorBackground;
+				((Button) controllers.get(i)).setColor(items.get(n).getColor());
 				((Button) controllers.get(i)).captionLabel().set((items.get(n)).text);
 				((Button) controllers.get(i))._myValue = (items.get(n)).value;
 			}
@@ -136,7 +136,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 			_myScrollbar.hide();
 			for (int i = 1; i < controllers.size(); i++) {
 				int n = i - 1;
-				((Button) controllers.get(i)).color.colorBackground = (items.get(n)).color.colorBackground;
+				((Button) controllers.get(i)).setColor(items.get(n).getColor());
 				((Button) controllers.get(i)).captionLabel().set((items.get(n)).text);
 				((Button) controllers.get(i))._myValue = (items.get(n)).value;
 			}
@@ -235,7 +235,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void setColorLabel(int theColor) {
 		super.setColorLabel(theColor);
 		for (int i = 0; i < items.size(); i++) {
-			(items.get(i)).getColor().colorLabel = theColor;
+			(items.get(i)).getColor().colorCaptionLabel = theColor;
 		}
 	}
 
@@ -245,7 +245,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void setColorValue(int theColor) {
 		super.setColorValue(theColor);
 		for (int i = 0; i < items.size(); i++) {
-			(items.get(i)).getColor().colorValue = theColor;
+			(items.get(i)).getColor().colorValueLabel = theColor;
 		}
 	}
 
@@ -315,10 +315,20 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 	}
 
+	/**
+	 * returns a listBoxItem by index in the list of items.
+	 * @param theIndex
+	 * @return
+	 */
 	public ListBoxItem item(int theIndex) {
 		return ((ListBoxItem) items.get(theIndex));
 	}
 	
+	/**
+	 * returns a listBoxItem by name.
+	 * @param theItemName
+	 * @return
+	 */
 	public ListBoxItem item(String theItemName) {
 		for (int i = items.size() - 1; i >= 0; i--) {
 			if ((items.get(i)).name.equals(theItemName)) {

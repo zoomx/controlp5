@@ -37,7 +37,7 @@ public class Slider extends Controller {
 
 	protected boolean isSnapToTickMarks;
 
-	protected static int autoWidth = 200;
+	protected static int autoWidth = 150;
 
 	protected static int autoHeight = 10;
 
@@ -86,7 +86,7 @@ public class Slider extends Controller {
 	  int theWidth,
 	  int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName, color.colorLabel);
+		_myCaptionLabel = new Label(theName, color.colorCaptionLabel);
 		_myMin = theMin;
 		_myMax = theMax;
 		// initialize the valueLabel with the longest string available, which is
@@ -96,7 +96,7 @@ public class Slider extends Controller {
 		    + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length())
 		      ? adjustValue(_myMax)
 		      : adjustValue(_myMin)),
-		  color.colorValue);
+		  color.colorValueLabel);
 		// after initializing valueLabel, set the value to
 		// the default value.
 		_myValueLabel.set("" + adjustValue(_myValue));

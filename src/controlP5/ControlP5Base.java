@@ -8,6 +8,7 @@ public class ControlP5Base implements ControlP5Constants {
 
 	protected void init(ControlP5 theControlP5) {
 		controlP5 = theControlP5;
+		currentPointer = controlP5.controlWindow;
 	}
 
 	/**
@@ -785,17 +786,36 @@ public class ControlP5Base implements ControlP5Constants {
 	 * very simple add
 	 */
 	
-	protected CVector3f autoPosition = new CVector3f(20, 20, 0);
+	
+	
+	protected ControlWindow currentPointer;
+	
+	protected boolean isCurrentPointerClosed = true;
+	
+	protected void setCurrentPointer(ControlWindow theWindow) {
+		currentPointer = theWindow;
+		isCurrentPointerClosed = false;
+	}
+	
+	protected void releaseCurrentPointer(ControlWindow theWindow) {
+		if(isCurrentPointerClosed==false) {
+			currentPointer = controlP5.controlWindow;
+			isCurrentPointerClosed  = true;
+		} else {
+			ControlP5.warning(this,"use .end() first before using .begin() again.");
+		}
+	}
+	
 	
 	protected void linebreak(Controller theController, boolean theFlag, int theW, int theH, CVector3f theSpacing) {
 		if (theFlag == true) {
-			autoPosition.y += theH + theSpacing.y;
-			autoPosition.x = 20;
+			currentPointer.autoPosition.y += theH + theSpacing.y;
+			currentPointer.autoPosition.x = 10;
 		} else {
 			if(theController instanceof Slider) {
-				autoPosition.x += theController.captionLabel().width();
+				currentPointer.autoPosition.x += theController.captionLabel().width();
 			}
-			autoPosition.x += theController.autoSpacing.x + theW;
+			currentPointer.autoPosition.x += theController.autoSpacing.x + theW;
 		}
 	}
 
@@ -804,40 +824,53 @@ public class ControlP5Base implements ControlP5Constants {
 		  theName,
 		  theMin,
 		  theMax,
-		  (int) autoPosition.x(),
-		  (int) autoPosition.y(),
+		  (int) currentPointer.autoPosition.x(),
+		  (int) currentPointer.autoPosition.y(),
 		  Slider.autoWidth,
 		  Slider.autoHeight);
 		linebreak(s, false, Slider.autoWidth, Slider.autoHeight, s.autoSpacing);
+		s.moveTo(currentPointer);
 		return s;
 	}
 
 	public Button addButton(String theName) {
-		return addButton(theName, 1);
+		Button b = addButton(theName, 1);
+		b.moveTo(currentPointer);
+		return b;
 	}
 
 	public Button addButton(String theName, float theValue) {
 		Button b = addButton(
 		  theName,
 		  theValue,
-		  (int) autoPosition.x,
-		  (int) autoPosition.y,
+		  (int) currentPointer.autoPosition.x,
+		  (int) currentPointer.autoPosition.y,
 		  Button.autoWidth,
 		  Button.autoHeight);
 		linebreak(b, false, Button.autoWidth, Button.autoHeight, b.autoSpacing);
+		b.moveTo(currentPointer);
 		return b;
 	}
 
 	public Toggle addToggle(String theName) {
-		Toggle t = addToggle(theName, autoPosition.x, autoPosition.y, Toggle.autoWidth, Toggle.autoHeight);
+		Toggle t = addToggle(theName, currentPointer.autoPosition.x, currentPointer.autoPosition.y, Toggle.autoWidth, Toggle.autoHeight);
 		linebreak(t, false, Toggle.autoWidth, Toggle.autoHeight, t.autoSpacing);
+		t.moveTo(currentPointer);
 		return t;
 	}
 	
 	public Numberbox addNumberbox(String theName) {
-		Numberbox n = addNumberbox(theName, (int)autoPosition.x, (int)autoPosition.y, Numberbox.autoWidth, Numberbox.autoHeight);
+		Numberbox n = addNumberbox(theName, (int)currentPointer.autoPosition.x, (int)currentPointer.autoPosition.y, Numberbox.autoWidth, Numberbox.autoHeight);
 		linebreak(n, false, Numberbox.autoWidth, Numberbox.autoHeight, n.autoSpacing);
+		n.moveTo(currentPointer);
 		return n;
 	}
-
+	
+	
+	public ControlWindow addControlWindow(String theName) {
+		return addControlWindow(theName, 20, 20,400,400);
+	}
+	
+	
+	
 }

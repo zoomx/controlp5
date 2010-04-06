@@ -48,7 +48,12 @@ public class ControlEvent {
 	public static final int LEAVE = 2;
 	public static final int RELEASED = 3;
 	public static final int RELEASEDOUTSIDE = 3;
-
+	
+	public static int UNDEFINDED = -1;
+	public static int CONTROLLER = 0;
+	public static int TAB = 1;
+	public static int GROUP = 2;
+	
 	protected int myAction;
 
 	/**
@@ -193,5 +198,19 @@ public class ControlEvent {
 	public String name() {
 		return _myController.name();
 	}
-
+	
+	public int id() {
+		return _myController.id();
+	}
+	
+	public int type() {
+		if(isController) {
+			return CONTROLLER;
+		} else if(isTab) {
+			return TAB;
+		} else if(isGroup) {
+			return GROUP;
+		}
+		return -1;
+	}
 }
