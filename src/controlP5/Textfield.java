@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,7 +19,9 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
@@ -36,8 +38,7 @@ import java.awt.event.KeyEvent;
  * usage and behavior of a terminal, the command line.
  * 
  * @example ControlP5textfield
- * @nosuperclasses Controller
- * @related Controller
+ * @nosuperclasses Controller Controller
  */
 public class Textfield extends Controller {
 
@@ -46,10 +47,9 @@ public class Textfield extends Controller {
 	 * changes and adjustments. implement new fonts, current one is too small.
 	 * make the text go to the left when cursor goes beyond right border. make
 	 * textfield work for controlWindow
-	 * 
 	 */
 
-	protected ArrayList myTextList = new ArrayList();
+  protected ArrayList<String> myTextList = new ArrayList<String>();
 
 	int myIndex = 1;
 
@@ -66,26 +66,26 @@ public class Textfield extends Controller {
 	protected boolean isKeepFocus = false;
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theControllerProperties
-	 *            ControllerProperties
+	 *          ControllerProperties
 	 */
 	public Textfield(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        String theDefaultValue,
-	        int theX,
-	        int theY,
-	        int theWidth,
-	        int theHeight) {
+			ControlP5 theControlP5,
+			ControllerGroup theParent,
+			String theName,
+			String theDefaultValue,
+			int theX,
+			int theY,
+			int theWidth,
+			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel = new Label(theName.toUpperCase(), color.colorCaptionLabel);
 		_myCaptionLabel.setFixedSize(false);
 		myBroadcastType = STRING;
 		_myValueLabel.setWidth(width - 10);
 		_myValueLabel.setHeight(15);
-		_myValueLabel.set(">");
+		_myValueLabel.set("|");
 		_myValueLabel.setColor(color.colorValueLabel);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.setFixedSize(true);
@@ -94,22 +94,21 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theValue
-	 *            float
+	 *          float
 	 */
-	public void setValue(
-	        float theValue) {}
+	public void setValue(float theValue) {
+	}
 
 	/**
-	 * set the mode of the textfield to password mode, each character is shown
-	 * as a "*" like e.g. in online password forms.
+	 * set the mode of the textfield to password mode, each character is shown as
+	 * a "*" like e.g. in online password forms.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *          boolean
 	 */
-	public void setPasswordMode(
-	        boolean theFlag) {
+	public void setPasswordMode(boolean theFlag) {
 		isPasswordMode = theFlag;
 	}
 
@@ -117,10 +116,9 @@ public class Textfield extends Controller {
 	 * set the textfield's focus to true or false.
 	 * 
 	 * @param theFlag
-	 *            boolean
+	 *          boolean
 	 */
-	public void setFocus(
-	        boolean theFlag) {
+	public void setFocus(boolean theFlag) {
 		if (theFlag == true) {
 			mousePressed();
 		} else {
@@ -134,8 +132,7 @@ public class Textfield extends Controller {
 	 * 
 	 * @param theFlag
 	 */
-	public void keepFocus(
-	        boolean theFlag) {
+	public void keepFocus(boolean theFlag) {
 		isKeepFocus = theFlag;
 		if (isKeepFocus) {
 			setFocus(true);
@@ -153,17 +150,15 @@ public class Textfield extends Controller {
 
 	/**
 	 * set the value of the textfield and will broadcast the new string value
-	 * immediately. what is the difference between setValue and setText?
-	 * setValue does broadcast the value that has been set, setText does not
-	 * broadcast the value, but only updates the content of a textfield. for
-	 * further information about how setText works, see the setText
-	 * documentation.
+	 * immediately. what is the difference between setValue and setText? setValue
+	 * does broadcast the value that has been set, setText does not broadcast the
+	 * value, but only updates the content of a textfield. for further information
+	 * about how setText works, see the setText documentation.
 	 * 
 	 * @param theValue
-	 *            String
+	 *          String
 	 */
-	public void setValue(
-	        String theValue) {
+	public void setValue(String theValue) {
 		myTextline = new StringBuffer(theValue);
 		// myPosition = myTextline.length() - 1;
 		_myStringValue = theValue;
@@ -173,15 +168,15 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * setText does set the text of a textfield, but will not broadcast its
-	 * value. use setText to force the textfield to change its text. you can
-	 * call setText any time, nevertheless when autoClear is set to true (which
-	 * is the default), it will NOT work when called from within controlEvent or
-	 * within a method that has been identified by ControlP5 to forward messages
-	 * to, when return has been pressed to confirm a textfield.<br /> use
-	 * setAutoClear(false) to enable setText to be executed for the above case.
-	 * use yourTextfield.isAutoClear() to check if autoClear is true or false.
-	 * <br />
+	 * setText does set the text of a textfield, but will not broadcast its value.
+	 * use setText to force the textfield to change its text. you can call setText
+	 * any time, nevertheless when autoClear is set to true (which is the
+	 * default), it will NOT work when called from within controlEvent or within a
+	 * method that has been identified by ControlP5 to forward messages to, when
+	 * return has been pressed to confirm a textfield.<br />
+	 * use setAutoClear(false) to enable setText to be executed for the above
+	 * case. use yourTextfield.isAutoClear() to check if autoClear is true or
+	 * false. <br />
 	 * setText replaces the current/latest content of a textfield but does NOT
 	 * overwrite the content. when scrolling through the list of textlines (use
 	 * key up and down), the previous content that has been replaced will be put
@@ -189,8 +184,7 @@ public class Textfield extends Controller {
 	 * 
 	 * @param theValue
 	 */
-	public void setText(
-	        String theValue) {
+	public void setText(String theValue) {
 		myTextline = new StringBuffer(theValue);
 		// myPosition = myTextline.length() - 1;
 		_myStringValue = theValue;
@@ -199,7 +193,7 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public void update() {
 		_myStringValue = myTextline.toString();
@@ -209,7 +203,7 @@ public class Textfield extends Controller {
 	/**
 	 * click the texfield to activate.
 	 * 
-	 * @invisible
+	 * 
 	 * 
 	 */
 	protected void mousePressed() {
@@ -226,12 +220,11 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theApplet
-	 *            PApplet
+	 *          PApplet
 	 */
-	public void draw(
-	        PApplet theApplet) {
+	public void draw(PApplet theApplet) {
 		if (isTexfieldActive && isActive) {
 			theApplet.stroke(color.colorActive);
 		} else {
@@ -252,19 +245,17 @@ public class Textfield extends Controller {
 	 * flip throught the texfield history with cursor keys UP and DOWN. go back
 	 * and forth with cursor keys LEFT and RIGHT.
 	 * 
-	 * @invisible
+	 * 
 	 */
-	public void keyEvent(
-	        KeyEvent theKeyEvent) {
-		if (!controlP5.keyHandler.isAltDown && isTexfieldActive && isActive
-		        && theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
-			if (controlP5.keyHandler.keyCode == UP) {
+	public void keyEvent(KeyEvent theKeyEvent) {
+		if (!ControlP5.keyHandler.isAltDown && isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
+			if (ControlP5.keyHandler.keyCode == UP) {
 				if (myTextList.size() > 0 && myIndex > 0) {
 					myIndex--;
 					myTextline = new StringBuffer((String) myTextList.get(myIndex));
 					adjust();
 				}
-			} else if (controlP5.keyHandler.keyCode == DOWN) {
+			} else if (ControlP5.keyHandler.keyCode == DOWN) {
 				myIndex++;
 				if (myIndex >= myTextList.size()) {
 					myIndex = myTextList.size();
@@ -273,27 +264,27 @@ public class Textfield extends Controller {
 					myTextline = new StringBuffer((String) myTextList.get(myIndex));
 				}
 				adjust();
-			} else if (controlP5.keyHandler.keyCode == LEFT) {
+			} else if (ControlP5.keyHandler.keyCode == LEFT) {
 				if (myPosition > 0) {
 					myPosition--;
 				}
-			} else if (controlP5.keyHandler.keyCode == RIGHT) {
+			} else if (ControlP5.keyHandler.keyCode == RIGHT) {
 				if (myPosition < myTextline.length()) {
 					myPosition++;
 				}
-			} else if (controlP5.keyHandler.keyCode == DELETE || controlP5.keyHandler.keyCode == BACKSPACE) {
+			} else if (ControlP5.keyHandler.keyCode == DELETE || ControlP5.keyHandler.keyCode == BACKSPACE) {
 				if (myTextline.length() > 0) {
 					if (myPosition > 0) {
 						myTextline.deleteCharAt(myPosition - 1);
 						myPosition--;
 					}
 				}
-			} else if (controlP5.keyHandler.keyCode == ENTER) {
+			} else if (ControlP5.keyHandler.keyCode == ENTER) {
 				submit();
-			} else if (controlP5.keyHandler.keyCode != SHIFT && controlP5.keyHandler.keyCode != ALT
-			        && controlP5.keyHandler.keyCode != TAB && controlP5.keyHandler.keyCode != CONTROL) {
-				if ((int) controlP5.keyHandler.key > 31 && (int) controlP5.keyHandler.key < 127) {
-					myTextline.insert(myPosition, controlP5.keyHandler.key);
+			} else if (ControlP5.keyHandler.keyCode != SHIFT && ControlP5.keyHandler.keyCode != ALT
+					&& ControlP5.keyHandler.keyCode != TAB && ControlP5.keyHandler.keyCode != CONTROL) {
+				if ((int) ControlP5.keyHandler.key > 31 && (int) ControlP5.keyHandler.key < 127) {
+					myTextline.insert(myPosition, ControlP5.keyHandler.key);
 					myPosition++;
 				}
 			}
@@ -310,9 +301,9 @@ public class Textfield extends Controller {
 			_myValueLabel.setWithCursorPosition(myPasswordTextline, myPosition);
 		} else {
 			int offset = 0;
-			int m = _myValueLabel.bitFontRenderer.getWidth(myTextline.toString(), _myValueLabel,myPosition);
-			offset = (m>_myValueLabel.width()) ? _myValueLabel.width() - m:0;			
-			_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition,offset);
+			int m = _myValueLabel.bitFontRenderer.getWidth(myTextline.toString(), _myValueLabel, myPosition);
+			offset = (m > _myValueLabel.width()) ? _myValueLabel.width() - m : 0;
+			_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition, offset);
 		}
 	}
 
@@ -362,8 +353,7 @@ public class Textfield extends Controller {
 	 * 
 	 * @param theFlag
 	 */
-	public void setAutoClear(
-	        boolean theFlag) {
+	public void setAutoClear(boolean theFlag) {
 		isAutoClear = theFlag;
 	}
 
@@ -389,9 +379,7 @@ public class Textfield extends Controller {
 		}
 	}
 
-	/**
-	 * @invisible
-	 */
+	
 	protected void adjust() {
 		myPosition = myTextline.length();
 		if (myPosition < 0) {
@@ -400,12 +388,11 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theElement
-	 *            ControlP5XMLElement
+	 *          ControlP5XMLElement
 	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
+	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "textfield");
 		theElement.setAttribute("value", "" + stringValue());
 	}

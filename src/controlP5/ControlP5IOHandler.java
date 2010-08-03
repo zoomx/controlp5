@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2006 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,32 +19,35 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
+import java.awt.Component;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.awt.Toolkit;
-import java.awt.Image;
-import java.net.URL;
-import java.awt.MediaTracker;
-import java.util.Hashtable;
 import java.util.Calendar;
-import java.net.URLConnection;
-import java.net.HttpURLConnection;
-import java.io.OutputStreamWriter;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
-import java.awt.Component;
 
 import controlP5.Radio.RadioToggle;
 
 /**
- * @invisible
+ * 
  */
 public class ControlP5IOHandler {
 
@@ -83,9 +86,9 @@ public class ControlP5IOHandler {
 		try {
 			mt.waitForAll();
 		} catch (InterruptedException e) {
-			System.out.println("### ERROR " + e);
+			ControlP5.logger().severe("loading image failed."+ e.toString());
 		} catch (Exception e) {
-			System.out.println("### ERROR at loadImage " + e);
+			ControlP5.logger().severe("loading image failed."+ e.toString());
 		}
 		return img;
 	}
@@ -93,9 +96,9 @@ public class ControlP5IOHandler {
 	/**
 	 * borrowed from http://www.javapractices.com/Topic96.cjp
 	 * 
-	 * @invisible
+	 * 
 	 * @param aURLFragment
-	 *        String
+	 *          String
 	 * @return String
 	 */
 	public static String forURL(String aURLFragment) {
@@ -109,9 +112,10 @@ public class ControlP5IOHandler {
 	}
 
 	/**
-	 * @invisible borrowed from http://www.javapractices.com/Topic96.cjp
+	 * borrowed from http://www.javapractices.com/Topic96.cjp
+	 * 
 	 * @param aTagFragment
-	 *        String
+	 *          String
 	 * @return String
 	 */
 	public static String forHTMLTag(String aTagFragment) {
@@ -147,7 +151,7 @@ public class ControlP5IOHandler {
 	 * display;num=1159828167;start=0#0
 	 * 
 	 * @param string
-	 *        String
+	 *          String
 	 * @return String
 	 */
 	String URLEncode(String string) {
@@ -178,9 +182,8 @@ public class ControlP5IOHandler {
 		int p = 0;
 
 		while (p < theSourceString.length() && (p = theSourceString.indexOf(theSearchForString, p)) >= 0) {
-			theSourceString = theSourceString.substring(0, p)
-			  + theReplaceString
-			  + theSourceString.substring(p + theSearchForString.length(), theSourceString.length());
+			theSourceString = theSourceString.substring(0, p) + theReplaceString
+					+ theSourceString.substring(p + theSearchForString.length(), theSourceString.length());
 			p += theReplaceString.length();
 		}
 		return theSourceString;
@@ -196,14 +199,14 @@ public class ControlP5IOHandler {
 		int myLen = theHex.length();
 		int a, r, b, g;
 		switch (myLen) {
-			case (8):
-				break;
-			case (6):
-				theHex = "ff" + theHex;
-				break;
-			default:
-				theHex = "ff000000";
-				break;
+		case (8):
+			break;
+		case (6):
+			theHex = "ff" + theHex;
+			break;
+		default:
+			theHex = "ff000000";
+			break;
 		}
 		a = (new Integer(Integer.parseInt(theHex.substring(0, 2), 16))).intValue();
 		r = (new Integer(Integer.parseInt(theHex.substring(2, 4), 16))).intValue();
@@ -227,23 +230,19 @@ public class ControlP5IOHandler {
 	/**
 	 * save controlP5 settings to your local disk or to a remote server. a file
 	 * controlP5.xml will be written to the data folder of your sketch. you can
-	 * set another file path with method setFilePath(). to save a file to a
-	 * remote server set the url with setUrlPath() e.g.
+	 * set another file path with method setFilePath(). to save a file to a remote
+	 * server set the url with setUrlPath() e.g.
 	 * setUrlPath("http://yourdomain.com/controlP5/upload.php");
 	 * 
 	 * @shortdesc save controlP5 settings to your local disk or to a remote
 	 *            server.
 	 * @param theFilename
-	 *        String
-	 * @return boolean
-	 * @related setFilePath ( )
-	 * @related setUrlPath ( )
-	 * @related load ( )
-	 * @related loadUrl ( )
-	 * @todo saving in application mode does write the xml file into a folder
-	 *       data on top level, but does not load from there. therefore loading
-	 *       in application mode one would have to use the inputstreamreader
-	 *       used before switching to loadStrings.
+	 *          String
+	 * @return boolean setFilePath ( ) setUrlPath ( ) load ( ) loadUrl ( )
+	 * @todo saving in application mode does write the xml file into a folder data
+	 *       on top level, but does not load from there. therefore loading in
+	 *       application mode one would have to use the inputstreamreader used
+	 *       before switching to loadStrings.
 	 */
 	protected boolean save(ControlP5 theControlP5, String theFilePath) {
 
@@ -257,7 +256,7 @@ public class ControlP5IOHandler {
 		myRoot.setAttribute("date", myCalender.getTime().toString());
 		myRoot.setAttribute("filepath", theControlP5.filePath());
 		myRoot.setAttribute("urlpath", theControlP5.urlPath());
-		myRoot.setAttribute("lock", "" + ControlP5.isLock);
+		myRoot.setAttribute("lock", "" + ControlP5.isMoveable);
 		myRoot.setAttribute("colorBackground", ControlP5IOHandler.intToString(theControlP5.color.colorBackground));
 		myRoot.setAttribute("colorForeground", ControlP5IOHandler.intToString(theControlP5.color.colorForeground));
 		myRoot.setAttribute("colorActive", ControlP5IOHandler.intToString(theControlP5.color.colorActive));
@@ -319,7 +318,7 @@ public class ControlP5IOHandler {
 		}
 		// upload xml to a webspace.
 		if (theControlP5.urlPath().toLowerCase().startsWith("http://")
-		  || theControlP5.urlPath().toLowerCase().startsWith("https://")) {
+				|| theControlP5.urlPath().toLowerCase().startsWith("https://")) {
 			try {
 				URL url = new URL(theControlP5.urlPath());
 				URLConnection connection = url.openConnection();
@@ -328,16 +327,16 @@ public class ControlP5IOHandler {
 				connection.setDoOutput(true);
 				OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
 				out.write("controlP5="
-				  + ControlP5IOHandler.forURL(myHeader + ControlP5IOHandler.replace(myRoot.toString(), ">", ">\n")));
+						+ ControlP5IOHandler.forURL(myHeader + ControlP5IOHandler.replace(myRoot.toString(), ">", ">\n")));
 				out.flush();
 				out.close();
 				BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				while (br.ready()) {
-					System.out.println(br.readLine());
+					br.readLine();
 				}
-				System.out.println("uploading xml to " + theControlP5.urlPath() + " .");
+				ControlP5.logger().info("uploading xml to " + theControlP5.urlPath() + " .");
 			} catch (Exception e) {
-				System.out.println("### ERROR ###\n" + "### Error while uploading xml to " + theControlP5.urlPath() + " " + e);
+				ControlP5.logger().severe("Uploading xml to " + theControlP5.urlPath() + " failed. " + e);
 			}
 		}
 		// save xml to file.
@@ -349,20 +348,15 @@ public class ControlP5IOHandler {
 							theFilePath = "data/" + theFilePath;
 						}
 					}
-					ControlP5.papplet.saveStrings(theFilePath, new String[] {
-					  myHeader, ControlP5IOHandler.replace(myRoot.toString(), ">", ">\n")
-					});
-					System.out.println("ControlP5 writing file " + theFilePath + " to disk.");
+					ControlP5.papplet.saveStrings(theFilePath, new String[] { myHeader,
+							ControlP5IOHandler.replace(myRoot.toString(), ">", ">\n") });
+					ControlP5.logger().info("ControlP5 writing file " + theFilePath + " to disk.");
 				} else {
-					System.out.println("### ERROR ###\n" + "### Please specify a filepath in order to save settings to xml.");
+					ControlP5.logger().warning("Please specify a filepath in order to save settings to xml.");
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("### WARNING ###\n"
-			  + "### did not write to file "
-			  + theFilePath
-			  + " because of exception "
-			  + e);
+			ControlP5.logger().warning("File has not been written to " + theFilePath + " due to " + e);
 		}
 		return true;
 	}
@@ -381,7 +375,7 @@ public class ControlP5IOHandler {
 			ControlP5XMLElement myXML = new ControlP5XMLElement();
 			myXML.parseString(theString);
 
-			Vector<ControlP5XMLElement> myControlWindows = myXML.getChildren();
+			List<ControlP5XMLElement> myControlWindows = myXML.getChildren();
 
 			_myFilePath = myXML.getStringAttribute("filepath");
 			_myUrlPath = myXML.getStringAttribute("urlpath");
@@ -398,33 +392,24 @@ public class ControlP5IOHandler {
 				/* check for ControlWindow */
 				ControlWindow myControlWindow = null;
 				if (myWindowXMLElement.getStringAttribute("colorBackground") != null) {
-					myColor.colorBackground = ControlP5IOHandler.parseHex(myWindowXMLElement
-					  .getStringAttribute("colorBackground"));
-					myColor.colorForeground = ControlP5IOHandler.parseHex(myWindowXMLElement
-					  .getStringAttribute("colorForeground"));
+					myColor.colorBackground = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorBackground"));
+					myColor.colorForeground = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorForeground"));
 					myColor.colorActive = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorActive"));
 					myColor.colorCaptionLabel = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorLabel"));
 					myColor.colorValueLabel = ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("colorValue"));
 				}
 				if ((myWindowXMLElement.getStringAttribute("class")).startsWith("controlP5.PAppletWindow")) {
 
-					myControlWindow = controlP5.addControlWindow(
-					  myWindowXMLElement.getStringAttribute("name"),
-					  myWindowXMLElement.getIntAttribute("x"),
-					  myWindowXMLElement.getIntAttribute("y"),
-					  myWindowXMLElement.getIntAttribute("width"),
-					  myWindowXMLElement.getIntAttribute("height"));
-					myControlWindow.setBackground(ControlP5IOHandler
-					  .parseHex(myWindowXMLElement.getStringAttribute("background")));
+					myControlWindow = controlP5.addControlWindow(myWindowXMLElement.getStringAttribute("name"), myWindowXMLElement.getIntAttribute("x"), myWindowXMLElement.getIntAttribute("y"), myWindowXMLElement.getIntAttribute("width"), myWindowXMLElement.getIntAttribute("height"));
+					myControlWindow.setBackground(ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("background")));
 				} else {
 					myControlWindow = controlP5.controlWindow;
 					controlP5.controlWindow.init();
 					controlP5.controlWindowList.add(controlP5.controlWindow);
-					myControlWindow.setBackground(ControlP5IOHandler
-					  .parseHex(myWindowXMLElement.getStringAttribute("background")));
+					myControlWindow.setBackground(ControlP5IOHandler.parseHex(myWindowXMLElement.getStringAttribute("background")));
 				}
 
-				Vector<ControlP5XMLElement> myTabs = myWindowXMLElement.getChildren();
+				List<ControlP5XMLElement> myTabs = myWindowXMLElement.getChildren();
 				/**
 				 * @todo
 				 * @todo save the default name in the xml file.
@@ -443,7 +428,7 @@ public class ControlP5IOHandler {
 					myColor = checkColor(myTabXMLElement, myColor);
 					myTab.color.set(myColor);
 
-					Vector<ControlP5XMLElement> myControllers = myTabXMLElement.getChildren();
+					List<ControlP5XMLElement> myControllers = myTabXMLElement.getChildren();
 					ControlGroup myGroup = null;
 
 					for (int j = 0; j < myControllers.size(); j++) {
@@ -465,21 +450,19 @@ public class ControlP5IOHandler {
 			controlP5.isAutoInitialization = myInit;
 			return true;
 		} catch (Exception e) {
-			System.out.println("ERROR unable to parse file. make sure the file exists. " + e);
+			ControlP5.logger().severe("Unable to parse file. make sure the file exists. " + e);
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	private void parseGroup(
-	  ControlP5XMLElement theControllerElement,
-	  ControlGroup theGroup,
-	  Tab theTab,
-	  ControlWindow theControlWindow,
-	  CColor theColor) {
-		ControlGroup g = controlP5.addGroup(theControllerElement.getStringAttribute("name"), (int) theControllerElement
-		  .getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement
-		  .getDoubleAttribute("width"));
+			ControlP5XMLElement theControllerElement,
+			ControlGroup theGroup,
+			Tab theTab,
+			ControlWindow theControlWindow,
+			CColor theColor) {
+		ControlGroup g = controlP5.addGroup(theControllerElement.getStringAttribute("name"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"));
 		g.setLabel(theControllerElement.getStringAttribute("label"));
 		g.setId(theControllerElement.getIntAttribute("id"));
 		g.moveTo(theGroup, theTab, theControlWindow);
@@ -491,7 +474,7 @@ public class ControlP5IOHandler {
 		theColor = checkColor(theControllerElement, theColor);
 		g.color.set(theColor);
 
-		Vector<ControlP5XMLElement> myChilds = theControllerElement.getChildren();
+		List<ControlP5XMLElement> myChilds = theControllerElement.getChildren();
 		for (int j = 0; j < myChilds.size(); j++) {
 			ControlP5XMLElement myControllerElement = myChilds.get(j);
 			if (myControllerElement.getName().equals("controller")) {
@@ -503,76 +486,53 @@ public class ControlP5IOHandler {
 	}
 
 	private void parseController(
-	  ControlP5XMLElement theControllerElement,
-	  ControlGroup theGroup,
-	  Tab theTab,
-	  ControlWindow theControlWindow,
-	  CColor theColor) {
+			ControlP5XMLElement theControllerElement,
+			ControlGroup theGroup,
+			Tab theTab,
+			ControlWindow theControlWindow,
+			CColor theColor) {
 		ControllerInterface myController = null;
 		/* slider */
 		if (theControllerElement.getStringAttribute("type").equals("slider")) {
-			myController = controlP5.addSlider(
-			  theControllerElement.getStringAttribute("name"),
-			  (float) theControllerElement.getDoubleAttribute("min"),
-			  (float) theControllerElement.getDoubleAttribute("max"),
-			  (float) theControllerElement.getDoubleAttribute("value"),
-			  (int) theControllerElement.getDoubleAttribute("x"),
-			  (int) theControllerElement.getDoubleAttribute("y"),
-			  theControllerElement.getIntAttribute("width"),
-			  theControllerElement.getIntAttribute("height"));
+			myController = controlP5.addSlider(theControllerElement.getStringAttribute("name"), (float) theControllerElement.getDoubleAttribute("min"), (float) theControllerElement.getDoubleAttribute("max"), (float) theControllerElement.getDoubleAttribute("value"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), theControllerElement.getIntAttribute("width"), theControllerElement.getIntAttribute("height"));
 
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 		/* knob */
 		else if (theControllerElement.getStringAttribute("type").equals("knob")) {
-			myController = controlP5.addKnob(
-			  theControllerElement.getStringAttribute("name"),
-			  (float) theControllerElement.getDoubleAttribute("min"),
-			  (float) theControllerElement.getDoubleAttribute("max"),
-			  (float) theControllerElement.getDoubleAttribute("value"),
-			  (int) theControllerElement.getDoubleAttribute("x"),
-			  (int) theControllerElement.getDoubleAttribute("y"),
-			  theControllerElement.getIntAttribute("width"));
+			myController = controlP5.addKnob(theControllerElement.getStringAttribute("name"), (float) theControllerElement.getDoubleAttribute("min"), (float) theControllerElement.getDoubleAttribute("max"), (float) theControllerElement.getDoubleAttribute("value"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), theControllerElement.getIntAttribute("width"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 		/* bang */
 		else if (theControllerElement.getStringAttribute("type").equals("bang")) {
-			myController = controlP5.addBang(theControllerElement.getStringAttribute("name"), (int) theControllerElement
-			  .getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement
-			  .getDoubleAttribute("width"), (int) theControllerElement.getDoubleAttribute("height"));
+			myController = controlP5.addBang(theControllerElement.getStringAttribute("name"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement.getDoubleAttribute("height"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 		/* textarea */
 		else if (theControllerElement.getStringAttribute("type").equals("textarea")) {
-			myController = controlP5.addTextarea(theControllerElement.getStringAttribute("name"), theControllerElement
-			  .getContent(), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement
-			  .getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement
-			  .getDoubleAttribute("height"));
+			myController = controlP5.addTextarea(theControllerElement.getStringAttribute("name"), theControllerElement.getContent(), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement.getDoubleAttribute("height"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 		/* textlabel */
 		else if (theControllerElement.getStringAttribute("type").equals("textlabel")) {
-			myController = controlP5.addTextlabel(theControllerElement.getStringAttribute("name"), theControllerElement
-			  .getContent(), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement
-			  .getDoubleAttribute("y"));
+			myController = controlP5.addTextlabel(theControllerElement.getStringAttribute("name"), theControllerElement.getContent(), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 
 		/* radio */
 		else if (theControllerElement.getStringAttribute("type").equals("radio")) {
-			Radio myRadio = controlP5.addRadio(theControllerElement.getStringAttribute("name"), (int) theControllerElement
-			  .getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"));
-			Vector<ControlP5XMLElement> myRadioButtons = theControllerElement.getChildren();
+			Radio myRadio = controlP5.addRadio(theControllerElement.getStringAttribute("name"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"));
+			List<ControlP5XMLElement> myRadioButtons = theControllerElement.getChildren();
 			for (int k = 0; k < myRadioButtons.size(); k++) {
 				ControlP5XMLElement myRadioButtonElement = myRadioButtons.get(k);
 				String myRadioToggleLabel = myRadioButtonElement.getStringAttribute("name");
 				int myRadioToggleValue = (int) myRadioButtonElement.getDoubleAttribute("value");
-				RadioToggle myRadioToggle = (myRadio).addItem(myRadioToggleLabel, myRadioToggleValue);
+				RadioToggle myRadioToggle = myRadio.addItem(myRadioToggleLabel, myRadioToggleValue);
 				myRadioToggle.setId(theControllerElement.getIntAttribute("id"));
 				if (myRadioButtonElement.getIntAttribute("state") == 1) {
 					(myRadio).activate(myRadioToggle.name());
@@ -584,18 +544,11 @@ public class ControlP5IOHandler {
 		}
 		/* ScrollList */
 		else if (theControllerElement.getStringAttribute("type").equals("scrolllist")) {
-			ScrollList myScrollList = controlP5.addScrollList(
-			  theControllerElement.getStringAttribute("name"),
-			  (int) theControllerElement.getDoubleAttribute("x"),
-			  (int) theControllerElement.getDoubleAttribute("y"),
-			  (int) theControllerElement.getDoubleAttribute("width"),
-			  (int) theControllerElement.getDoubleAttribute("height"));
-			Vector<ControlP5XMLElement> myScrollListButtons = theControllerElement.getChildren();
+			ScrollList myScrollList = controlP5.addScrollList(theControllerElement.getStringAttribute("name"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement.getDoubleAttribute("height"));
+			List<ControlP5XMLElement> myScrollListButtons = theControllerElement.getChildren();
 			for (int k = 0; k < myScrollListButtons.size(); k++) {
 				ControlP5XMLElement myRadioButtonElement = myScrollListButtons.get(k);
-				myScrollList.addItem(
-				  myRadioButtonElement.getStringAttribute("name"),
-				  (int) myRadioButtonElement.getDoubleAttribute("value")).setId(myRadioButtonElement.getIntAttribute("id"));
+				myScrollList.addItem(myRadioButtonElement.getStringAttribute("name"), (int) myRadioButtonElement.getDoubleAttribute("value")).setId(myRadioButtonElement.getIntAttribute("id"));
 			}
 			myScrollList.setOpen((int) theControllerElement.getDoubleAttribute("open") > 0 ? true : false);
 			myController = myScrollList;
@@ -604,42 +557,26 @@ public class ControlP5IOHandler {
 		}
 		/* toggle */
 		else if (theControllerElement.getStringAttribute("type").equals("toggle")) {
-			myController = controlP5.addToggle(
-			  theControllerElement.getStringAttribute("name"),
-			  (float) theControllerElement.getDoubleAttribute("value") > 0.5 ? true : false,
-			  (int) theControllerElement.getDoubleAttribute("x"),
-			  (int) theControllerElement.getDoubleAttribute("y"),
-			  (int) theControllerElement.getDoubleAttribute("width"),
-			  (int) theControllerElement.getDoubleAttribute("height"));
+			myController = controlP5.addToggle(theControllerElement.getStringAttribute("name"), (float) theControllerElement.getDoubleAttribute("value") > 0.5 ? true
+					: false, (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement.getDoubleAttribute("height"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 		/* textfield */
 		else if (theControllerElement.getStringAttribute("type").equals("textfield")) {
-			myController = controlP5.addTextfield(theControllerElement.getStringAttribute("name"), (int) theControllerElement
-			  .getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), theControllerElement
-			  .getIntAttribute("width"), theControllerElement.getIntAttribute("height"));
+			myController = controlP5.addTextfield(theControllerElement.getStringAttribute("name"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), theControllerElement.getIntAttribute("width"), theControllerElement.getIntAttribute("height"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 		/* numberbox */
 		else if (theControllerElement.getStringAttribute("type").equals("numberbox")) {
-			myController = controlP5.addNumberbox(
-			  theControllerElement.getStringAttribute("name"),
-			  (float) theControllerElement.getDoubleAttribute("value"),
-			  (int) theControllerElement.getDoubleAttribute("x"),
-			  (int) theControllerElement.getDoubleAttribute("y"),
-			  (int) theControllerElement.getDoubleAttribute("width"),
-			  (int) theControllerElement.getDoubleAttribute("height"));
+			myController = controlP5.addNumberbox(theControllerElement.getStringAttribute("name"), (float) theControllerElement.getDoubleAttribute("value"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement.getDoubleAttribute("height"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
 		/* button */
 		else if (theControllerElement.getStringAttribute("type").equals("button")) {
-			myController = controlP5.addButton(theControllerElement.getStringAttribute("name"), (float) theControllerElement
-			  .getDoubleAttribute("value"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement
-			  .getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement
-			  .getDoubleAttribute("height"));
+			myController = controlP5.addButton(theControllerElement.getStringAttribute("name"), (float) theControllerElement.getDoubleAttribute("value"), (int) theControllerElement.getDoubleAttribute("x"), (int) theControllerElement.getDoubleAttribute("y"), (int) theControllerElement.getDoubleAttribute("width"), (int) theControllerElement.getDoubleAttribute("height"));
 			int myId = (int) theControllerElement.getIntAttribute("id");
 			myController.setId(myId);
 		}
@@ -664,10 +601,8 @@ public class ControlP5IOHandler {
 
 	private CColor checkColor(ControlP5XMLElement theControllerElement, CColor theColor) {
 		if (theControllerElement.getStringAttribute("colorBackground") != null) {
-			theColor.colorBackground = ControlP5IOHandler
-			  .parseHex(theControllerElement.getStringAttribute("colorBackground"));
-			theColor.colorForeground = ControlP5IOHandler
-			  .parseHex(theControllerElement.getStringAttribute("colorForeground"));
+			theColor.colorBackground = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorBackground"));
+			theColor.colorForeground = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorForeground"));
 			theColor.colorActive = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorActive"));
 			theColor.colorCaptionLabel = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorLabel"));
 			theColor.colorValueLabel = ControlP5IOHandler.parseHex(theControllerElement.getStringAttribute("colorValue"));

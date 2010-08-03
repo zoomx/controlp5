@@ -1,13 +1,39 @@
+2010-08-03  Andreas Schlegel
+      * version 0.5.2
+      * Slider2D: a new Controller, 2D slider control.
+      * Button, Bang, Toggle, : setImage() defines an image for DEFAULT,OVER,ACTIVE,HIGHLIGHT mode.
+      * Button, Bang, Toggle, : setImages() defines an image for DEFAULT,OVER,ACTIVE,HIGHLIGHT mode.
+      * Button: adding setSwitch() in order to use a button as a switch (makes toggle obsolete)
+      * Button: adding booleanValue() returns true or false, useful in case a button is set to be a switch.
+      * Button: adding setOn() setOff(), useful when button is a switch.
+      * Toggle: changing default look to ControlP5.SWITCH, an on/off look for toggles. use toggle.setMode(ControlP5.DEFAULT) to reset to the old default look.
+      * ControllerDisplay: adding interface ControllerDisplay to enable custom displays for a controller.
+      * Controller: setImage, allows to replace the default look of a controller with an image (PImage).  
+      * Controller: setDisplay allows custom displays for controller. the custom display is called from within a controller's draw function. A custom Display implements interface ControllerDisplay
+      * Controller: adding lock(), unlock(), isLock(), setMoveable(), isMoveable(), isUserInteraction(), setUserInteraction()
+      * Controller: adding plugTo(), removePlugFrom() (if this causes any problems or error message, please report)
+      * ControlP5: adding java.util.logging.Logger for logging error, debug, info messages - wrapped in ControlP5.error(), ControlP5.warning(), ControlP5.info(), ControlP5.debug() 
+      * ControlP5: added registerDispose()
+      * ControlP5: adding setMoveable() and isMoveable() to diable/enable controllers to be moved around.
+      * ControlP5: adding disableShortcuts(), enableShortcuts() instead of disableKeys() and enableKeys()
+      * ControlP5: deprecating lock(), unlock(), disableKeys(), enableKeys()
+      * ControlWindow: adding begin() and end(). this allows to move controllers automatically to the main window or a separate controlWindow.
+      * Toggle: adding setValue(boolean)
+      * Matrix: mouseReleasedOutside error fixed.    
+      * ControlWindow: window is now properly removed when closed, thanks henri.
+      * TextLabel: adding setControlFont()
+      * Knob: all new.
+          	
 2010-04-04  Andreas Schlegel
       * version 0.5.1
       * ControlP5: lock() and unlock() are working again.
       * ControlEvent: added function id() to make access to the id of  controller, group, tab, etc. easier
-      * ControlEvent: added function type() for easier distinguishing the type of Controller the event was triggered from, returns ControlEvent.UNDEFINED, ControlEvent.CONTROLLER, ControlEvent.TAB, ControlEvent.GROUP 
+      * ControlEvent: added function type() for easier distinguishing between the type of Controller the event was triggered from, returns ControlEvent.UNDEFINED, ControlEvent.CONTROLLER, ControlEvent.TAB, ControlEvent.GROUP 
       * ListBoxItem: adding ListBoxItem to make changes to each item of a listBox especially the color settings of a listBoxItem.
       * CColor: now with getter and setter functions, supports changing the value of the alpha channel.
       * ControlWindow: adding begin() and end(). this allows to move controllers automatically to the main window or a separate controlWindow.
       * ControllerGroup: adding enableCollapse(), disableCollapse(), isCollapse() to enable/disable the collapsing and opening of a controllerGroup e.g. listBox.
-      	
+           	
 2010-03-26  Andreas Schlegel
       * version 0.5.0
       * making transition to 1.5+, no more java 1.4 support.

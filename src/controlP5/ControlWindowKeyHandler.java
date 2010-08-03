@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2006 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,21 +19,15 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
+
 import java.awt.event.KeyEvent;
 
-/**
- * the key control for the ControlWindows is a hassle because when re/loading
- * settings, it takes a bit till the frame of a ControlWindow is closed and
- * disposed. a couple of nullpointers and possible exception occur while
- * reloading a new window, therefor the key handling seems so complicated and
- * circuitous.
- * 
- * @invisible
- */
 public class ControlWindowKeyHandler implements ControlP5Constants {
 
 	private ControlWindow _myMasterControlWindow;
@@ -59,7 +53,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 	}
 
 	public void keyEvent(final KeyEvent theKeyEvent, final ControlWindow theControlWindow, final boolean isMasterWindow) {
-		if (_myMasterControlWindow.controlP5.isKeys) {
+		
 			if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
 				switch (theKeyEvent.getKeyCode()) {
 					case (KeyEvent.VK_SHIFT):
@@ -94,7 +88,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 					}
 				}
 			}
-			if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED && isAltDown) {
+			if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED && isAltDown && _myMasterControlWindow.controlP5.isShortcuts) {
 				if (isKeyMenu) {
 					handleInputEvent(theKeyEvent.getKeyCode());
 				}
@@ -116,6 +110,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 					}
 				}
 			}
+	
 			/*
 			 * during re/loading period of settings theControlWindow might be
 			 * null
@@ -123,7 +118,6 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			if (theControlWindow != null) {
 				theControlWindow.keyEvent(theKeyEvent);
 			}
-		}
 	}
 
 	/**
@@ -138,7 +132,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			case (DECREASE):
 			case (INCREASE):
 			case (RESET):
-				System.out.println("### Key controls are not supported in this version anymore.");
+				ControlP5.logger().warning("Key controls are not supported in this version anymore.");
 		}
 	}
 

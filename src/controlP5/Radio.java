@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,7 +19,9 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
@@ -30,20 +32,20 @@ import java.util.Hashtable;
 /**
  * 
  * @deprecated use RadioButton or CheckBox instead
- * @related ControlP5
- * @related Bang
- * @related Button
- * @related Knob
- * @related Numberbox
- * @related Radio
- * @related Slider
- * @related Tab
- * @related Textfield
- * @related Toggle
+ *  ControlP5
+ *  Bang
+ *  Button
+ *  Knob
+ *  Numberbox
+ *  Radio
+ *  Slider
+ *  Tab
+ *  Textfield
+ *  Toggle
  * 
  * @example ControlP5radio
  * @nosuperclasses Controller
- * @related Controller
+ *  Controller
  */
 public class Radio extends Controller {
 	
@@ -73,7 +75,7 @@ public class Radio extends Controller {
 	
 	boolean isDeactivateAll = false;
 	/**
-	 * @invisible
+	 * 
 	 * @param theControlP5
 	 *            ControlP5
 	 * @param theParent
@@ -114,7 +116,7 @@ public class Radio extends Controller {
 
 	/**
 	 * @deprecated
-	 * @invisible
+	 * 
 	 * @param theLabel
 	 *            String
 	 * @param theValue
@@ -171,7 +173,7 @@ public class Radio extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theApplet
 	 *            PApplet
 	 */
@@ -309,7 +311,7 @@ public class Radio extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theElement
 	 *            ControlP5XMLElement
 	 */
@@ -381,7 +383,7 @@ public class Radio extends Controller {
 		}
 
 		/**
-		 * @invisible
+		 * 
 		 * @param theApplet
 		 *            PApplet
 		 */

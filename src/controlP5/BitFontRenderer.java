@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,7 +19,13 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
+ *
+ */
+
+/**
  * adopted from fasttext by Glen Murphy @ http://glenmurphy.com/
  */
 
@@ -27,7 +33,14 @@ import java.awt.Component;
 import processing.core.PImage;
 
 /**
- * @invisible
+ * The bitfontRenderer is used to draw any text labels used by controlP5 by
+ * default. The bitfontRenderer is based on a per pixel technique and is not
+ * using processing's PFont renderer. To use PFonts within controlP5, take a
+ * look at ControlFont
+ * 
+ * @see controlP5.ControlFont
+ * 
+ * 
  */
 public class BitFontRenderer {
 	/**
@@ -92,8 +105,8 @@ public class BitFontRenderer {
 		}
 	}
 
-	/**
-	 * @invisible
+	/*
+	 * (non-Javadoc)
 	 */
 	public BitFontRenderer() {
 		loadFonts(null);
@@ -170,20 +183,20 @@ public class BitFontRenderer {
 
 		int[] mywh = new int[numFonts];
 		System.arraycopy(mywh, 0, mywh, 0, mywh.length);
-		mywh = mywh;
+//		mywh = mywh;
 
 		try {
 			font[numFonts - 1] = (PImage) (theImage.get().clone());
 		} catch (Exception e) {
-			System.out.println("ERROR BitFontRenderer.addBitFont(). " + e);
+			ControlP5.logger().severe(e.toString());
 		}
 		init(numFonts - 1, numFonts);
 		return numFonts - 1;
 	}
 
-	// removed getWidth(String theText, int theFontIndex);
-	// removed getWidth(String theText, int theFontIndex, int theLength)
-
+	/*
+	 * (non-Javadoc)
+	 */
 	public int getWidth(Label theLabel) {
 		return getWidth(theLabel.getText(), theLabel, theLabel.getText().length());
 	}
@@ -210,33 +223,21 @@ public class BitFontRenderer {
 			if (myIndex >= 0 && myIndex <= 95) {
 				myWidth += charWidth[theLabel.getFontIndex()][myIndex] + theLabel.getLetterSpacing();
 			} else {
-				System.out
-				  .println("WARNING, you are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example).");
+				ControlP5.logger().warning("You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example).");
 			}
 		}
 		return myWidth;
 	}
 
-	/**
-	 * 
-	 * @param theC
-	 * @param theX
-	 * @param theY
-	 * @param theColor
-	 * @param theHighlight
-	 * @param theImage
-	 * @param theMask
-	 * @param theFontIndex
-	 */
 	private void putchar(
-	  final int theC,
-	  final int theX,
-	  final int theY,
-	  final int theColor,
-	  boolean theHighlight,
-	  final PImage theImage,
-	  final PImage theMask,
-	  final int theFontIndex) {
+			final int theC,
+			final int theX,
+			final int theY,
+			final int theColor,
+			boolean theHighlight,
+			final PImage theImage,
+			final PImage theMask,
+			final int theFontIndex) {
 		final int myWH = theImage.width * theImage.height;
 		final int len = charWidth[theFontIndex][theC] * charHeight[theFontIndex];
 		final int w = theY * theImage.width;
@@ -250,11 +251,7 @@ public class BitFontRenderer {
 		}
 	}
 
-	/**
-	 * @invisible
-	 * @param theLabel
-	 * @return
-	 */
+	
 	private int writeCharacters(final Label theLabel) {
 		int indent = 0;
 		final int myOriginalY = theLabel.getOffsetY();
@@ -300,19 +297,14 @@ public class BitFontRenderer {
 		}
 		for (int i = 0; i < letters.length; i++) {
 			if (letters[i].letter != -1) {
-				putchar(letters[i].letter, theLabel.getOffsetX() + letters[i].indent, letters[i].lineheight, theLabel
-				  .getColor(), letters[i].isHighlight, theLabel.getImage(), theLabel.getImageMask(), theLabel.getFontIndex());
+				putchar(letters[i].letter, theLabel.getOffsetX() + letters[i].indent, letters[i].lineheight, theLabel.getColor(), letters[i].isHighlight, theLabel.getImage(), theLabel.getImageMask(), theLabel.getFontIndex());
 			}
 		}
 		return myY - myOriginalY;
 	}
 
-	/**
-	 * write a label to the display window.
-	 * 
-	 * @invisible
-	 * @param theLabel
-	 * @return
+	/*
+	 * (non-Javadoc)
 	 */
 	public int write(final Label theLabel) {
 		final int myWH = theLabel.getImage().width * theLabel.getImage().height;

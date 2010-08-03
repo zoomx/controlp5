@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,7 +19,9 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
@@ -41,10 +43,15 @@ import java.awt.GraphicsEnvironment;
 /**
  * PAppletWIndow description.
  * 
- * @invisible
+ * 
  */
 
 public class PAppletWindow extends PApplet implements WindowListener, ComponentListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1773456691122668251L;
 
 	protected int width = 600;
 
@@ -55,10 +62,10 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	protected int y = 100;
 
 	protected String _myName;
-	
-	protected  String _myTitle;
-	
-	protected  boolean isCoordinates = true; 
+
+	protected String _myTitle;
+
+	protected boolean isCoordinates = true;
 
 	protected boolean isLoop = true;
 
@@ -76,31 +83,29 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 
 	protected int _myFrameRate = 15;
 
+	/*
+	 * (non-Javadoc)
+	 */
 	public PAppletWindow() {
 		super();
 	}
 
-	public PAppletWindow(
-	        final String theName,
-	        final int theWidth,
-	        final int theHeight) {
+	/*
+	 * (non-Javadoc)
+	 */
+	public PAppletWindow(final String theName, final int theWidth, final int theHeight) {
 		this(theName, theWidth, theHeight, "", 15);
 	}
 
-	/**
-	 * @param theName
-	 *            String
-	 * @param theWidth
-	 *            int
-	 * @param theHeight
-	 *            int
+	/*
+	 * (non-Javadoc)
 	 */
 	public PAppletWindow(
-	        final String theName,
-	        final int theWidth,
-	        final int theHeight,
-	        final String theRenderer,
-	        final int theFrameRate) {
+			final String theName,
+			final int theWidth,
+			final int theHeight,
+			final String theRenderer,
+			final int theFrameRate) {
 		super();
 		_myName = theName;
 		_myTitle = theName;
@@ -111,35 +116,24 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 		launch();
 	}
 
-	/**
-	 * @param theName
-	 *            String
-	 * @param theX
-	 *            int
-	 * @param theY
-	 *            int
-	 * @param theWidth
-	 *            int
-	 * @param theHeight
-	 *            int
+	/*
+	 * (non-Javadoc)
 	 */
-	public PAppletWindow(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight) {
+	public PAppletWindow(final String theName, final int theX, final int theY, final int theWidth, final int theHeight) {
 		this(theName, theX, theY, theWidth, theHeight, "", 15);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 */
 	public PAppletWindow(
-	        final String theName,
-	        final int theX,
-	        final int theY,
-	        final int theWidth,
-	        final int theHeight,
-	        final String theRenderer,
-	        final int theFrameRate) {
+			final String theName,
+			final int theX,
+			final int theY,
+			final int theWidth,
+			final int theHeight,
+			final String theRenderer,
+			final int theFrameRate) {
 		super();
 		_myName = theName;
 		_myTitle = theName;
@@ -151,22 +145,30 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 		_myRenderer = theRenderer;
 		launch();
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 */
 	public void setParent(ControlP5 theControlP5) {
 		controlP5 = theControlP5;
 	}
-	
-	
+
+	/*
+	 * (non-Javadoc)
+	 */
 	public void pause() {
 		controlWindow.isAutoDraw = false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 */
 	public void play() {
 		controlWindow.isAutoDraw = true;
 	}
 
-	/**
-	 * @return String
+	/*
+	 * (non-Javadoc)
 	 */
 	public String name() {
 		return _myName;
@@ -176,10 +178,9 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	 * show/hide the controller window.
 	 * 
 	 * @param theValue
-	 *            boolean
+	 *          boolean
 	 */
-	protected void visible(
-	        boolean theValue) {
+	protected void visible(boolean theValue) {
 		// frame.setVisible(theValue);
 		// frame.pack();
 		if (theValue == true) {
@@ -193,15 +194,14 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	 * resize controller window.
 	 * 
 	 * @param theValue
-	 *            boolean
+	 *          boolean
 	 */
-	protected void resizeable(
-	        boolean theValue) {
+	protected void resizeable(boolean theValue) {
 		frame.setResizable(theValue);
 	}
 
-	/**
-	 * @invisible
+	/*
+	 * (non-Javadoc)
 	 */
 	public void setup() {
 		try {
@@ -210,10 +210,9 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 		}
 		if (_myRenderer.length() == 0) {
 			size(width, height);
-//			System.out.println("default renderer");
 		} else {
 			size(width, height, _myRenderer);
-//			System.out.println("ControlWindow: using renderer " + _myRenderer);
+			ControlP5.logger().finer("ControlWindow: using renderer " + _myRenderer);
 		}
 		try {
 			Thread.sleep(100);
@@ -242,183 +241,160 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 		}
 	}
 
-	protected void setControlWindow(
-	        ControlWindow theWindow) {
+	protected void setControlWindow(ControlWindow theWindow) {
 		controlWindow = theWindow;
 	}
 
-	/**
-	 * @invisible
-	 */
-	public void draw() {}
-	
-	
+	@Override
+	public void draw() {
+	}
+
 	public void setTitle(String theTitle) {
 		_myTitle = theTitle;
 		updateTitle();
 	}
-	
+
 	protected void updateTitle() {
 		String m = _myTitle;
-		if(isCoordinates) {
+		if (isCoordinates) {
 			m += " x:" + x + " y:" + y + "   " + width + "x" + height;
 		}
 		frame.setTitle(m);
-	} 
-	
+	}
+
 	public String title() {
 		return _myTitle;
-	} 
-	
+	}
+
 	public void showCoordinates() {
 		isCoordinates = true;
 		updateTitle();
 	}
-	
+
 	public void hideCoordinates() {
 		isCoordinates = false;
 		updateTitle();
 	}
-	
-	/**
-	 * @invisible
-	 * @param e
-	 *            WindowEvent
+
+	/*
+	 * (non-Javadoc)
 	 */
-	public void windowActivated(
-	        WindowEvent e) {
+	public void windowActivated(WindowEvent e) {
 		isLoop = true;
 		loop();
 		try {
-		controlP5.deactivateControllers();
-		} catch(NullPointerException nullPointer) {
+			controlP5.deactivateControllers();
+		} catch (NullPointerException nullPointer) {
 		}
 	}
 
-	public void keyPressed(
-	        KeyEvent theKeyEvent) {
-		controlP5.papplet.keyPressed(theKeyEvent);
-		controlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
-	}
-
-	public void keyReleased(
-	        KeyEvent theKeyEvent) {
-		controlP5.papplet.keyReleased(theKeyEvent);
-		controlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
-	}
-
-	public void keyTyped(
-	        KeyEvent theKeyEvent) {
-		controlP5.papplet.keyTyped(theKeyEvent);
-		controlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
-	}
- 
-	/**
-	 * @invisible
-	 * @param e
-	 *            WindowEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void windowClosed(
-	        WindowEvent e) {
-//	 System.out.println("window closed");
+	public void keyPressed(KeyEvent theKeyEvent) {
+		ControlP5.papplet.keyPressed(theKeyEvent);
+		ControlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
 	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            WindowEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void windowClosing(
-	        WindowEvent e) {
+	public void keyReleased(KeyEvent theKeyEvent) {
+		ControlP5.papplet.keyReleased(theKeyEvent);
+		ControlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 */
+	public void keyTyped(KeyEvent theKeyEvent) {
+		ControlP5.papplet.keyTyped(theKeyEvent);
+		ControlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 */
+	public void windowClosed(WindowEvent e) {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 */
+	public void windowClosing(WindowEvent e) {
 		controlWindow.remove();
 		controlWindow._myApplet.stop();
 		dispose();
 	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            WindowEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void windowDeactivated(
-	        WindowEvent e) {
+	public void windowDeactivated(WindowEvent e) {
 		if (_myMode == ECONOMIC) {
 			isLoop = false;
 			noLoop();
 		}
 	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            WindowEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void windowDeiconified(
-	        WindowEvent e) {}
+	public void windowDeiconified(WindowEvent e) {
+	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            WindowEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void windowIconified(
-	        WindowEvent e) {}
+	public void windowIconified(WindowEvent e) {
+	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            WindowEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void windowOpened(
-	        WindowEvent e) {}
+	public void windowOpened(WindowEvent e) {
+	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            ComponentEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void componentHidden(
-	        ComponentEvent e) {}
+	public void componentHidden(ComponentEvent e) {
+	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            ComponentEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void componentMoved(
-	        ComponentEvent e) {
+	public void componentMoved(ComponentEvent e) {
 		Component c = e.getComponent();
 		x = c.getLocation().x;
 		y = c.getLocation().y;
 		updateTitle();
 	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            ComponentEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void componentResized(
-	        ComponentEvent e) {
+	public void componentResized(ComponentEvent e) {
 		Component c = e.getComponent();
 		// System.out.println("componentResized event from " +
 		// c.getClass().getName() + "; new size: " + c.getSize().width
 		// + ", " + c.getSize().height);
 	}
 
-	/**
-	 * @invisible
-	 * @param e
-	 *            ComponentEvent
+	/*
+	 * (non-Javadoc)
 	 */
-	public void componentShown(
-	        ComponentEvent e) {
-	// System.out.println("componentShown event from " +
-	// e.getComponent().getClass().getName());
+	public void componentShown(ComponentEvent e) {
+		// System.out.println("componentShown event from " +
+		// e.getComponent().getClass().getName());
 	}
 
-	public void setMode(
-	        int theValue) {
+	/**
+	 * set the rendering mode of the PAppletWindow which can either be
+	 * ControlP5.ECONOMIC or ControlP5.NORMAL.
+	 * 
+	 */
+	public void setMode(int theValue) {
 		if (theValue == ECONOMIC) {
 			_myMode = ECONOMIC;
 			return;
@@ -449,6 +425,8 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 		init();
 
 		frame.pack(); // get insets. get more.
+		frame.setLocation(x, y);
+
 		Insets insets = frame.getInsets();
 
 		int windowW = Math.max(width, MIN_WINDOW_WIDTH) + insets.left + insets.right;
@@ -466,7 +444,6 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 		frame.setName(_myName);
 		frame.setTitle(_myName + " x:" + x + " y:" + y + "   w:" + width + " h:" + height);
 		frame.setVisible(true);
-		frame.setLocation(x,y);
 		requestFocus();
 	}
 

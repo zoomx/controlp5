@@ -1,18 +1,39 @@
 package controlP5;
 
+/**
+ * controlP5 is a processing gui library.
+ *
+ *  2007-2010 by Andreas Schlegel
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General
+ * Public License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
+ *
+ */
+
+import java.util.List;
 import java.util.Vector;
 
 import processing.core.PApplet;
 
 /**
- * @shortdesc the scroll list is a list of selectable items.
- * 
+ * scrollList, a list of selectable and scrollable items.
  * 
  * @example ControlP5listBox
- * @nosuperclasses Controller
- * @related Controller
- * @related ControlGroup
- * @related ControllerGroup
  */
 public class ListBox extends ControlGroup implements ControlListener {
 
@@ -30,53 +51,26 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	protected int _myHeight;
 
-	protected Vector<ListBoxItem> items;
+	protected List<ListBoxItem> items;
 
 	protected int spacing;
 
 	protected boolean isMultipleChoice = false;
 
-	/**
-	 * @invisible
-	 * @param theControlP5
-	 *        ControlP5
-	 * @param theGroup
-	 *        ControllerGroup
-	 * @param theName
-	 *        String
-	 * @param theX
-	 *        int
-	 * @param theY
-	 *        int
-	 * @param theW
-	 *        int
-	 * @param theH
-	 *        int
-	 */
 	protected ListBox(
-	  ControlP5 theControlP5,
-	  ControllerGroup theGroup,
-	  String theName,
-	  int theX,
-	  int theY,
-	  int theW,
-	  int theH) {
+			ControlP5 theControlP5,
+			ControllerGroup theGroup,
+			String theName,
+			int theX,
+			int theY,
+			int theW,
+			int theH) {
 		super(theControlP5, theGroup, theName, theX, theY, theW, 9);
 		_myWidth = theW;
 		_myBackgroundHeight = theH;
 		items = new Vector<ListBoxItem>();
 		_myAdjustedListHeight = (((int) (_myBackgroundHeight / _myItemHeight)) * _myItemHeight + 1) - 2;
-		_myScrollbar = new Slider(
-		  controlP5,
-		  _myParent,
-		  theName + "Scroller",
-		  0,
-		  1,
-		  1,
-		  _myWidth + 1,
-		  0,
-		  10,
-		  _myAdjustedListHeight);
+		_myScrollbar = new Slider(controlP5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth + 1, 0, 10, _myAdjustedListHeight);
 		_myName = theName;
 		_myScrollbar.setBroadcast(false);
 		_myScrollbar.setSliderMode(Slider.FLEXIBLE);
@@ -116,15 +110,13 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 	}
 
-	/**
-	 * 
-	 */
+	
 	private void scroll() {
 		int myValue = 0;
 		if ((items.size()) * _myItemHeight > _myAdjustedListHeight && isScrollbarVisible) {
 			_myScrollbar.show();
 			myValue = (int) (((_myScrollValue * (((items.size()) * _myItemHeight) - _myAdjustedListHeight)) / _myItemHeight))
-			  * _myItemHeight;
+					* _myItemHeight;
 			for (int i = 1; i < controllers.size(); i++) {
 				int n = Math.abs(myValue / _myItemHeight) + (i - 1);
 				n = Math.max(0, Math.min(n, items.size() - 1));
@@ -254,7 +246,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 			int myLength = controllers.size() - 1;
 			if ((myLength * _myItemHeight) < _myBackgroundHeight) {
 				Button b = new Button(controlP5, (ControllerGroup) this, _myName + "Button" + myLength, myLength, 0, myLength
-				  * _myItemHeight, _myWidth, _myItemHeight - 1, false);
+						* _myItemHeight, _myWidth, _myItemHeight - 1, false);
 				b.setMoveable(false);
 				add(b);
 				controlP5.register(b);
@@ -278,9 +270,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * add an item to the ListBox.
 	 * 
 	 * @param theName
-	 *        String
+	 *          String
 	 * @param theValue
-	 *        int
+	 *          int
 	 */
 	public ListBoxItem addItem(String theName, int theValue) {
 		ListBoxItem lbi = new ListBoxItem(this, theName, theValue);
@@ -293,7 +285,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * remove an item from the ListBox.
 	 * 
 	 * @param theItemName
-	 *        String
+	 *          String
 	 */
 	public void removeItem(String theItemName) {
 		try {
@@ -309,23 +301,23 @@ public class ListBox extends ControlGroup implements ControlListener {
 			}
 			updateScroll();
 		} catch (Exception e) {
-			if (ControlP5.DEBUG) {
-				System.out.println("ScrollList.removeItem exception:" + e);
-			}
+				ControlP5.logger().finer("ScrollList.removeItem exception:" + e);
 		}
 	}
 
 	/**
 	 * returns a listBoxItem by index in the list of items.
+	 * 
 	 * @param theIndex
 	 * @return
 	 */
 	public ListBoxItem item(int theIndex) {
 		return ((ListBoxItem) items.get(theIndex));
 	}
-	
+
 	/**
-	 * returns a listBoxItem by name.
+	 * TODO faulty returns a listBoxItem by name.
+	 * 
 	 * @param theItemName
 	 * @return
 	 */
@@ -337,11 +329,11 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 		return null;
 	}
-	
-	/**
-	 * @invisible
-	 * @param theEvent
-	 *        ControlEvent
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.ControlGroup#controlEvent(controlP5.ControlEvent)
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.controller() instanceof Button) {
@@ -362,10 +354,10 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	}
 
-	/**
-	 * @invisible
-	 * @param theElement
-	 *        ControlP5XMLElement
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.ControlGroup#addToXMLElement(controlP5.ControlP5XMLElement)
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "listBox");

@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,7 +19,9 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
@@ -30,8 +32,6 @@ package controlP5;
  * information see the tab documentation.
  * 
  * @example ControlP5controlEvent
- * @related ControlP5
- * @related Tab
  */
 public class ControlEvent {
 
@@ -48,18 +48,18 @@ public class ControlEvent {
 	public static final int LEAVE = 2;
 	public static final int RELEASED = 3;
 	public static final int RELEASEDOUTSIDE = 3;
-	
+
 	public static int UNDEFINDED = -1;
 	public static int CONTROLLER = 0;
 	public static int TAB = 1;
 	public static int GROUP = 2;
-	
+
 	protected int myAction;
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theController
-	 *        Controller
+	 *          Controller
 	 */
 	protected ControlEvent(Controller theController) {
 		_myController = theController;
@@ -69,9 +69,9 @@ public class ControlEvent {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theController
-	 *        Controller
+	 *          Controller
 	 */
 	public ControlEvent(Tab theController) {
 		_myController = theController;
@@ -81,9 +81,9 @@ public class ControlEvent {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theController
-	 *        Controller
+	 *          Controller
 	 */
 	public ControlEvent(ControllerGroup theController) {
 		_myController = theController;
@@ -102,8 +102,8 @@ public class ControlEvent {
 	}
 
 	/**
-	 * returns a string value if applicable to the controller e.g. textfield has
-	 * a string value.
+	 * returns a string value if applicable to the controller e.g. textfield has a
+	 * string value.
 	 * 
 	 * @return String
 	 */
@@ -123,17 +123,8 @@ public class ControlEvent {
 	/**
 	 * returns the instance of the controller.
 	 * 
-	 * @return Controller
-	 * @related Bang
-	 * @related Button
-	 * @related Knob
-	 * @related Numberbox
-	 * @related Radio
-	 * @related Slider
-	 * @related Textfield
-	 * @related Toggle
-	 * @related MultiList
-	 * @related Matrix
+	 * @return Controller Bang Button Knob Numberbox Radio Slider Textfield Toggle
+	 *         MultiList Matrix
 	 */
 	public Controller controller() {
 		return ((Controller) _myController);
@@ -142,8 +133,7 @@ public class ControlEvent {
 	/**
 	 * return the tab that evoked the event.
 	 * 
-	 * @return Tab
-	 * @related Tab
+	 * @return Tab Tab
 	 */
 	public Tab tab() {
 		return (Tab) _myController;
@@ -152,8 +142,7 @@ public class ControlEvent {
 	/**
 	 * return the tab that evoked the event.
 	 * 
-	 * @return Tab
-	 * @related Tab
+	 * @return Tab Tab
 	 */
 	public ControlGroup group() {
 		return (ControlGroup) _myController;
@@ -198,17 +187,17 @@ public class ControlEvent {
 	public String name() {
 		return _myController.name();
 	}
-	
+
 	public int id() {
 		return _myController.id();
 	}
-	
+
 	public int type() {
-		if(isController) {
+		if (isController) {
 			return CONTROLLER;
-		} else if(isTab) {
+		} else if (isTab) {
 			return TAB;
-		} else if(isGroup) {
+		} else if (isGroup) {
 			return GROUP;
 		}
 		return -1;

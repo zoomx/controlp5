@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,25 +19,30 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
-import processing.core.PApplet;
-import java.util.Hashtable;
-import java.util.Vector;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+
+import processing.core.PApplet;
 
 /**
  * ControllerGroup is an abstract class and is extended by e.g. ControlGroup,
  * Tab, or ScrollList
  * 
- * @related ControlGroup
- * @related ScrollList
- * @related Tab
- * @related Textarea
+ *  ControlGroup
+ *  ScrollList
+ *  Tab
+ *  Textarea
  */
-public abstract class ControllerGroup implements ControllerInterface {
+public abstract class ControllerGroup implements ControllerInterface, ControlP5Constants {
 
 	protected CVector3f position;
 
@@ -81,7 +86,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 	protected boolean isUpdate;
 
-	protected Vector<ControlCanvas> _myControlCanvas;
+	protected List<ControlCanvas> _myControlCanvas;
 
 	protected float _myValue;
 
@@ -90,9 +95,18 @@ public abstract class ControllerGroup implements ControllerInterface {
 	protected float[] _myArrayValue;
 
 	protected boolean isCollapse = true;
+	
+	protected int _myPickingColor = 0x6600ffff;
+	
+	protected CVector3f autoPosition = new CVector3f(10, 30, 0);
 
+	protected float tempAutoPositionHeight = 0;
+	
+	protected float autoPositionOffsetX = 10;
+
+	
 	/**
-	 * @invisible
+	 * 
 	 * @param theControlP5
 	 *          ControlP5
 	 * @param theParent
@@ -122,13 +136,18 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public void init() {
 	}
-
+	
+	
+	public ControllerInterface parent() {
+		return _myParent;
+	}
+	
 	/**
-	 * @invisible
+	 * 
 	 * @param theParent
 	 *          ControllerGroup
 	 */
@@ -216,6 +235,10 @@ public abstract class ControllerGroup implements ControllerInterface {
 	public void moveTo(String theTabName, ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab(theTabName), theControlWindow);
 	}
+	
+	public void moveTo(ControlWindow theControlWindow, String theTabName) {
+		moveTo(null, theControlWindow.tab(theTabName), theControlWindow);
+	}
 
 	public void moveTo(Tab theTab, ControlWindow theControlWindow) {
 		moveTo(null, theTab, theControlWindow);
@@ -275,7 +298,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return CVector3f
 	 */
 	public CVector3f position() {
@@ -283,7 +306,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return CVector3f
 	 */
 	public CVector3f absolutePosition() {
@@ -305,7 +328,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public void updateAbsolutePosition() {
 		absolutePosition.set(position);
@@ -317,7 +340,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public void continuousUpdateEvents() {
 		for (int i = controllers.size() - 1; i >= 0; i--) {
@@ -360,7 +383,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public void updateEvents() {
 
@@ -373,7 +396,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 			if ((isMousePressed == _myControlWindow.mouselock)) {
 				if (isMousePressed && ControlP5.keyHandler.isAltDown && isMoveable) {
-					if (!ControlP5.isLock) {
+					if (!ControlP5.isMoveable) {
 						positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
 						positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
 						if (ControlP5.keyHandler.isShiftDown) {
@@ -403,21 +426,22 @@ public abstract class ControllerGroup implements ControllerInterface {
 
 	/**
 	 * @see ControllerInterface.updateInternalEvents
-	 * @invisible
+	 * 
 	 */
 	public void updateInternalEvents(PApplet theApplet) {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theApplet
 	 *          PApplet
 	 */
-	public void draw(PApplet theApplet) {
+	public final void draw(PApplet theApplet) {
 		if (isVisible) {
 			theApplet.pushMatrix();
 			theApplet.translate(position.x(), position.y());
 			preDraw(theApplet);
+			_myControlWindow._myPicking.update(this);
 			drawControllers(theApplet);
 			postDraw(theApplet);
 			theApplet.popMatrix();
@@ -463,8 +487,9 @@ public abstract class ControllerGroup implements ControllerInterface {
 	 * 
 	 * @param theCanvas
 	 */
-	public void addCanvas(ControlCanvas theCanvas) {
+	public ControlCanvas addCanvas(ControlCanvas theCanvas) {
 		_myControlCanvas.add(theCanvas);
+		return theCanvas;
 	}
 
 	/**
@@ -477,7 +502,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible add a controller to the group, but use Controller.setGroup()
+	 *  add a controller to the group, but use Controller.setGroup()
 	 *            instead.
 	 * @param theElement
 	 *          ControllerInterface
@@ -487,7 +512,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible remove a controller from the group, but use
+	 *  remove a controller from the group, but use
 	 *            Controller.setGroup() instead.
 	 * @param theElement
 	 *          ControllerInterface
@@ -498,7 +523,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theElement
 	 *          CDrawable
 	 */
@@ -507,7 +532,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theElement
 	 *          CDrawable
 	 */
@@ -547,7 +572,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return ControlWindow
 	 */
 	public ControlWindow getWindow() {
@@ -555,7 +580,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theEvent
 	 *          KeyEvent
 	 */
@@ -566,7 +591,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theStatus
 	 *          boolean
 	 * @return boolean
@@ -608,7 +633,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theId
 	 *          int
 	 */
@@ -617,7 +642,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return int
 	 */
 	public int id() {
@@ -760,7 +785,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theFlag
 	 *          boolean
 	 */
@@ -793,8 +818,13 @@ public abstract class ControllerGroup implements ControllerInterface {
 		setOpen(false);
 	}
 
+	
+	public int getPickingColor() {
+		return _myPickingColor;
+	}
+	
 	/**
-	 * @invisible
+	 * 
 	 * @return CColor
 	 */
 	public CColor color() {
@@ -851,6 +881,14 @@ public abstract class ControllerGroup implements ControllerInterface {
 	public boolean isCollapse() {
 		return isCollapse;
 	}
+	
+	public int getWidth() {
+		return _myWidth;
+	}
+	
+	public int getHeight() {
+		return _myHeight;
+	}
 
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
@@ -860,7 +898,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return boolean
 	 */
 	public boolean isXMLsavable() {
@@ -868,7 +906,7 @@ public abstract class ControllerGroup implements ControllerInterface {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return ControlP5XMLElement
 	 */
 	public ControlP5XMLElement getAsXML() {

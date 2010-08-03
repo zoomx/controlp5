@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,14 +19,15 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
-
 import java.awt.event.KeyEvent;
 
 /**
- * @invisible
+ * 
  */
 public interface ControlP5Constants {
 
@@ -45,6 +46,8 @@ public interface ControlP5Constants {
 	public final static int METHOD = 0;
 
 	public final static int FIELD = 1;
+	
+	public final static int EVENT = 2;
 
 	public final static int INTEGER = 0;
 
@@ -56,10 +59,12 @@ public interface ControlP5Constants {
 
 	public final static int ARRAY = 4;
 
-	public final static Class[] acceptClassList = {
+	public final static Class<?>[] acceptClassList = {
 	  int.class, float.class, boolean.class, String.class
 	};
 
+	public final static Class<?> controlEventClass = ControlEvent.class;
+	
 	public final static int UP = KeyEvent.VK_UP;
 
 	public final static int DOWN = KeyEvent.VK_DOWN;
@@ -115,5 +120,32 @@ public interface ControlP5Constants {
 	public static final int HORIZONTAL = 0;
 
 	public static final int VERTICAL = 1;
+	
+	public static final int DEFAULT = 0;
+	
+	public static final int OVER = 1;
+	
+	public static final int ACTIVE = 2;
+	
+	public static final int HIGHLIGHT = 3;
+	
+	public static final int IMAGE = 1;
+	
+	public static final int SPRITE = 2;
+	 
+	public static final int CUSTOM = 3;
+	
+	public static final int SWITCH = 100;
+	
+	public static final int MOVE = 0;
 
+	public static final int RELEASE = 1;
+
+	public static final int PRESSED = 2;
+
+	public static final int LINE = 1;
+	
+	public static final int ELLIPSE = 2;
+	
+	public static final int ARC = 3;
 }
