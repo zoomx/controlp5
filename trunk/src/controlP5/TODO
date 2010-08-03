@@ -1,11 +1,17 @@
 TODO
-
+2010-07-25  Andreas Schlegel
+      * Android support, current version conflicts with android java (ControlWindow, PAppletWindow, using Toolkit when loading bit-font, KeyEvents, etc.)
+      * CColor: alpha handling
+      * Chart: finish. a chart graph controller to display line, bar, pie and histogram charts.
+       
 2010-04-02  Andreas Schlegel
+      * BitFontRenderer: \n is recognized as a not-supported-character. fix!
       * general: processingjs port
       * Knob: implement new version of knob
       * Textfield: implement new version of textfield
       * TextArea: implement new version of TextArea
       * Label: implement modifications so that text rendering for P3D works properly
+      * picking: use an image and color-coding for picking controllers instead mouse-coordinates against rectangular boxes.
 
 
 

@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,22 +19,30 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
 import java.util.Vector;
 
+import processing.core.PImage;
+
 /**
- * a radio button implementation.
+ * a radio button implementation. a radioButton is a list of toggles that can be
+ * turned on or off. radioButton is of type ControllerGroup, therefore a
+ * controllerPlug can't be set. this means that an event from a radioButton
+ * can't be forwarded to a method other than controlEvent in a sketch.
  * 
- * @related ControlP5
- * @related CheckBox
- * @related Toggle
+ * a radioButton has 2 sets of values. radioButton.value() returns the value of
+ * the active radioButton item. radioButton.arrayValue() returns a float array
+ * that represents the active (1) and inactive (0) items of a radioButton.
+ * 
+ * ControlP5 CheckBox Toggle
  * 
  * @example ControlP5RadioButton
- * @nosuperclasses Controller
- * @related Controller
+ * @nosuperclasses Controller Controller
  */
 public class RadioButton extends ControlGroup {
 
@@ -52,29 +60,16 @@ public class RadioButton extends ControlGroup {
 
 	protected int itemWidth = 11;
 
-	/**
-	 * a radioButton is a list of toggles that can be turned on or off.
-	 * radioButton is of type ControllerGroup, therefore a controllerPlug can't
-	 * be set. this means that an event from a radioButton can't be forwarded to
-	 * a method other than controlEvent in a sketch.
-	 * 
-	 * a radioButton has 2 sets of values. radioButton.value() returns the value
-	 * of the active radioButton item. radioButton.arrayValue() returns a float
-	 * array that represents the active (1) and inactive (0) items of a
-	 * radioButton.
-	 * 
-	 * @param theControlP5
-	 * @param theParent
-	 * @param theName
-	 * @param theX
-	 * @param theY
-	 */
+	protected boolean[] availableImages = new boolean[3];
+
+	protected PImage[] images = new PImage[3];
+
 	public RadioButton(
-		final ControlP5 theControlP5,
-		final ControllerGroup theParent,
-		final String theName,
-		final int theX,
-		final int theY) {
+			final ControlP5 theControlP5,
+			final ControllerGroup theParent,
+			final String theName,
+			final int theX,
+			final int theY) {
 		super(theControlP5, theParent, theName, theX, theY, 100, 9);
 		isBarVisible = false;
 		isCollapse = false;
@@ -91,8 +86,11 @@ public class RadioButton extends ControlGroup {
 	 */
 	public Toggle addItem(final String theName, final float theValue) {
 		Toggle t = controlP5.addToggle(theName, 0, 0, itemWidth, itemHeight);
+		t.setMode(ControlP5.DEFAULT);
 		t.captionLabel().style().marginLeft = t.width + 4;
 		t.captionLabel().style().marginTop = -t.height - 2;
+		t.setImages(images[0], images[1], images[2]);
+		t.setSize(images[0]);
 		return addItem(t, theValue);
 	}
 
@@ -133,6 +131,44 @@ public class RadioButton extends ControlGroup {
 		updateValues(false);
 	}
 
+	public RadioButton setImages(PImage theImage1, PImage theImage2, PImage theImage3) {
+		setImage(theImage1, DEFAULT);
+		setImage(theImage2, OVER);
+		setImage(theImage3, ACTIVE);
+		return this;
+	}
+
+	/**
+	 * Controller.DEFAULT (background) Controller.OVER (foreground)
+	 * Controller.ACTIVE (active)
+	 * 
+	 * @param theImage
+	 */
+	public PImage setImage(PImage theImage) {
+		return setImage(theImage, DEFAULT);
+	}
+
+	public PImage setImage(PImage theImage, int theState) {
+		if (theImage != null) {
+			images[theState] = theImage;
+			availableImages[theState] = true;
+			for (int i = 0; i < _myRadioToggles.size(); i++) {
+				_myRadioToggles.get(i).setImage(theImage, theState);
+			}
+			return theImage;
+		}
+		return null;
+	}
+
+	public void setSize(PImage theImage) {
+		setSize(theImage.width, theImage.height);
+	}
+
+	public void setSize(int theWidth, int theHeight) {
+		setItemWidth(theWidth);
+		setItemHeight(theHeight);
+	}
+
 	/**
 	 * set the height of a radioButton/checkBox item. by default the height is
 	 * 11px. in order to recognize a custom height, the itemHeight has to be set
@@ -145,9 +181,9 @@ public class RadioButton extends ControlGroup {
 	}
 
 	/**
-	 * set the width of a radioButton/checkBox item. by default the width is
-	 * 11px. in order to recognize a custom width, the itemWidth has to be set
-	 * before adding items to a radioButton/checkBox.
+	 * set the width of a radioButton/checkBox item. by default the width is 11px.
+	 * in order to recognize a custom width, the itemWidth has to be set before
+	 * adding items to a radioButton/checkBox.
 	 * 
 	 * @param theItemWidth
 	 */
@@ -214,8 +250,7 @@ public class RadioButton extends ControlGroup {
 				_myWidth = xx;
 				yy += t.height + rowSpacing;
 				xx = 0;
-			}
-			else {
+			} else {
 				_myWidth = xx;
 			}
 		}
@@ -279,7 +314,7 @@ public class RadioButton extends ControlGroup {
 				_myRadioToggles.get(i).deactivate();
 			}
 			((Toggle) _myRadioToggles.get(theIndex)).activate();
-			_myValue = _myRadioToggles.get(theIndex).value();
+			_myValue = _myRadioToggles.get(theIndex).internalValue();
 			updateValues(true);
 		}
 	}
@@ -301,6 +336,8 @@ public class RadioButton extends ControlGroup {
 		}
 	}
 
+	// TODO
+	// does not deactivate the current radio-toggle.
 	public void activate(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
@@ -315,8 +352,8 @@ public class RadioButton extends ControlGroup {
 	}
 
 	/**
-	 * deactivate a RadioButton and set the value of the radio controller to
-	 * the default value (-1).
+	 * deactivate a RadioButton and set the value of the radio controller to the
+	 * default value (-1).
 	 * 
 	 * @param theRadioButtonName
 	 */
@@ -345,12 +382,12 @@ public class RadioButton extends ControlGroup {
 		// updateValues(true);
 		// }
 		// }
-		System.out.println("RadioButton.toggle() not yet implemented, working on it.");
+		ControlP5.logger().info("toggle() not yet implemented, working on it.");
 	}
 
 	/**
-	 * controlEvent is called whenever a radioButton item is (de-)activated.
-	 * this happens internally.
+	 * controlEvent is called whenever a radioButton item is (de-)activated. this
+	 * happens internally.
 	 * 
 	 */
 	public void controlEvent(ControlEvent theEvent) {
@@ -361,8 +398,7 @@ public class RadioButton extends ControlGroup {
 				Toggle t = _myRadioToggles.get(i);
 				if (!t.equals(theEvent.controller())) {
 					t.deactivate();
-				}
-				else {
+				} else {
 					if (t.isOn) {
 						_myValue = t.internalValue();
 					}

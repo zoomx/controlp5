@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing library to create simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,17 +19,21 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import processing.core.PApplet;
 import processing.core.PFont;
-
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.Iterator;
 
 /**
  * controlP5 is a processing and java library for creating simple control GUIs.
@@ -59,7 +63,7 @@ public class ControlP5 extends ControlP5Base {
 
 	public ControlWindow controlWindow;
 
-	private Hashtable<String,ControllerInterface> _myControllerMap;
+	private Hashtable<String, ControllerInterface> _myControllerMap;
 
 	protected ControlBroadcaster _myControlBroadcaster;
 
@@ -71,54 +75,54 @@ public class ControlP5 extends ControlP5Base {
 
 	protected Vector<ControlWindow> controlWindowList;
 
-	protected static boolean isLock = false;
+	protected static boolean isMoveable = false;
 
 	protected boolean isAutoInitialization = false;
 
 	protected boolean isGlobalControllersAlwaysVisible = true;
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static final int standard58 = 0;
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static final int standard56 = 1;
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static final int synt24 = 2;
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static final int grixel = 3;
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static ControlWindowKeyHandler keyHandler;
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static PApplet papplet;
 
 	/**
-	 * @invisible
+	 * 
 	 */
-	public static final String VERSION = "0.5.1";
+	public static final String VERSION = "##version##";
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static boolean isApplet;
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public static boolean DEBUG;
 
@@ -132,23 +136,26 @@ public class ControlP5 extends ControlP5Base {
 
 	protected static ControlFont controlFont;
 
-	protected boolean isKeys = true;
+	protected boolean isShortcuts = true;
 
-	// use blockDraw to prevent controlp5 to draw any elements. this is useful
-	// when using clear() or load()
+	// use blockDraw to prevent controlp5 to draw any elements.
+	// this is useful when using clear() or load()
 	protected boolean blockDraw;
 
 	// protected currentStack;
 	
+	
+	protected static Logger logger;
 
 	/**
 	 * instantiate controlP5.
 	 * 
 	 * @param theParent
-	 *        PApplet
+	 *          PApplet
 	 */
 	public ControlP5(final PApplet theParent) {
 		papplet = theParent;
+		papplet = (PApplet) theParent;
 		init();
 	}
 
@@ -162,6 +169,8 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	protected void init() {
+		logger = Logger.getLogger("controlP5");
+		logger.setLevel(Level.ALL);
 		welcome();
 		isTabEventsActive = false;
 		_myControlP5IOHandler = new ControlP5IOHandler(this);
@@ -170,17 +179,16 @@ public class ControlP5 extends ControlP5Base {
 		keyHandler = new ControlWindowKeyHandler(this);
 		controlWindow = new ControlWindow(this, papplet);
 		papplet.registerKeyEvent(new ControlWindowKeyListener(this));
-		_myControllerMap = new Hashtable<String,ControllerInterface>();
+		papplet.registerDispose(this);
+		_myControllerMap = new Hashtable<String, ControllerInterface>();
 		controlWindowList.add(controlWindow);
 		isApplet = papplet.online;
 		super.init(this);
 	}
 
 	private void welcome() {
-		System.out.println("ControlP5 "
-		  + VERSION
-		  + " "
-		  + "infos, comments, questions at http://www.sojamo.de/libraries/controlP5");
+		System.out.println("ControlP5 " + VERSION + " "
+				+ "infos, comments, questions at http://www.sojamo.de/libraries/controlP5");
 	}
 
 	public void setTabEventsActive(boolean theFlag) {
@@ -188,30 +196,29 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * autoInitialization can be very handy when it comes to initializing
-	 * values, e.g. you load a set of controllers from an xml file, then the
-	 * values that are attached to the controllers will be reset to its state
-	 * saved in the xml file. to turn of auto intialization, call
-	 * setAutoInitialization(false) right after initializing controlP5 and
-	 * before creating any controller.
+	 * autoInitialization can be very handy when it comes to initializing values,
+	 * e.g. you load a set of controllers from an xml file, then the values that
+	 * are attached to the controllers will be reset to its state saved in the xml
+	 * file. to turn of auto intialization, call setAutoInitialization(false)
+	 * right after initializing controlP5 and before creating any controller.
 	 * 
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public void setAutoInitialization(boolean theFlag) {
 		isAutoInitialization = theFlag;
 	}
 
 	/**
-	 * by default controlP5 draws any controller on top of any drawing done in
-	 * the draw() function (this doesnt apply to P3D where controlP5.draw() has
-	 * to be called manually in the sketch's draw() function ). to turn off the
-	 * auto drawing of controlP5, use controlP5.setAutoDraw(false). now you can
-	 * call controlP5.draw() any time whenever controllers should be drawn into
-	 * the sketch.
+	 * by default controlP5 draws any controller on top of any drawing done in the
+	 * draw() function (this doesnt apply to P3D where controlP5.draw() has to be
+	 * called manually in the sketch's draw() function ). to turn off the auto
+	 * drawing of controlP5, use controlP5.setAutoDraw(false). now you can call
+	 * controlP5.draw() any time whenever controllers should be drawn into the
+	 * sketch.
 	 * 
 	 * @param theFlag
-	 *        boolean
+	 *          boolean
 	 */
 	public void setAutoDraw(boolean theFlag) {
 		if (isAutoDraw() && theFlag == false) {
@@ -234,7 +241,7 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return ControlBroadcaster
 	 */
 	public ControlBroadcaster controlbroadcaster() {
@@ -245,7 +252,7 @@ public class ControlP5 extends ControlP5Base {
 	 * get a tab by name.
 	 * 
 	 * @param theName
-	 *        String
+	 *          String
 	 * @return Tab
 	 */
 	public Tab tab(String theName) {
@@ -256,7 +263,7 @@ public class ControlP5 extends ControlP5Base {
 	 * get a tab by name.
 	 * 
 	 * @param theName
-	 *        String
+	 *          String
 	 * @return Tab
 	 */
 	public Tab getTab(String theName) {
@@ -275,9 +282,9 @@ public class ControlP5 extends ControlP5Base {
 	 * get a tab by name from a specific controlwindow.
 	 * 
 	 * @param theWindow
-	 *        ControlWindow
+	 *          ControlWindow
 	 * @param theName
-	 *        String
+	 *          String
 	 * @return Tab
 	 */
 	public Tab tab(ControlWindow theWindow, String theName) {
@@ -288,9 +295,9 @@ public class ControlP5 extends ControlP5Base {
 	 * get a tab by name from a specific controlwindow.
 	 * 
 	 * @param theWindow
-	 *        ControlWindow
+	 *          ControlWindow
 	 * @param theName
-	 *        String
+	 *          String
 	 * @return Tab
 	 */
 	public Tab getTab(ControlWindow theWindow, String theName) {
@@ -304,9 +311,9 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theController
-	 *        ControllerInterface
+	 *          ControllerInterface
 	 */
 	public void register(ControllerInterface theController) {
 		checkName(theController.name());
@@ -332,7 +339,7 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	protected void clear() {
 		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
@@ -344,6 +351,8 @@ public class ControlP5 extends ControlP5Base {
 		}
 
 		_myControllerMap.clear();
+
+		// TODO ??? remove or keep?
 		// controlWindow.init();
 	}
 
@@ -351,7 +360,7 @@ public class ControlP5 extends ControlP5Base {
 	 * remove a controlWindow and all its contained controllers.
 	 * 
 	 * @param theWindow
-	 *        ControlWindow
+	 *          ControlWindow
 	 */
 	protected void remove(ControlWindow theWindow) {
 		theWindow.remove();
@@ -362,7 +371,7 @@ public class ControlP5 extends ControlP5Base {
 	 * remove a controller by instance.
 	 * 
 	 * @param theController
-	 *        ControllerInterface
+	 *          ControllerInterface
 	 */
 	protected void remove(ControllerInterface theController) {
 		_myControllerMap.remove(theController.name());
@@ -372,7 +381,7 @@ public class ControlP5 extends ControlP5Base {
 	 * remove a controlP5 element such as a controller, group, or tab by name.
 	 * 
 	 * @param theString
-	 *        String
+	 *          String
 	 */
 	public void remove(String theString) {
 		if (controller(theString) != null) {
@@ -397,7 +406,7 @@ public class ControlP5 extends ControlP5Base {
 	 * get a controller by name. you will have to cast the controller.
 	 * 
 	 * @param theName
-	 *        String
+	 *          String
 	 * @return Controller
 	 */
 	public Controller controller(String theName) {
@@ -413,7 +422,7 @@ public class ControlP5 extends ControlP5Base {
 	 * get a group by name
 	 * 
 	 * @param theGroupName
-	 *        String
+	 *          String
 	 * @return ControllerGroup
 	 */
 	public ControllerGroup group(String theGroupName) {
@@ -424,7 +433,7 @@ public class ControlP5 extends ControlP5Base {
 	 * get a group by name.
 	 * 
 	 * @param theGroupName
-	 *        String
+	 *          String
 	 * @return ControllerGroup
 	 */
 	public ControllerGroup getGroup(String theGroupName) {
@@ -455,9 +464,8 @@ public class ControlP5 extends ControlP5Base {
 	 * get a ControlWindow by name.
 	 * 
 	 * @param theName
-	 *        String
-	 * @return ControlWindow
-	 * @related ControlWindow
+	 *          String
+	 * @return ControlWindow ControlWindow
 	 */
 	public ControlWindow window(String theWindowName) {
 		for (int i = 0; i < controlWindowList.size(); i++) {
@@ -465,30 +473,24 @@ public class ControlP5 extends ControlP5Base {
 				return controlWindowList.get(i);
 			}
 		}
-		System.out.println("### WARNING ###\n" + "### ControlWindow " + theWindowName + " does not exist. returning null.");
+		ControlP5.logger().warning("ControlWindow " + theWindowName + " does not exist. returning null.");
 		return null;
 	}
 
 	private boolean checkName(String theName) {
 		if (_myControllerMap.containsKey(theName)) {
-			System.out.println("### WARNING. controller with name \""
-			  + theName
-			  + "\" already exists. overwriting reference of existing controller.");
+			ControlP5.logger().warning("Controller with name \"" + theName + "\" already exists. overwriting reference of existing controller.");
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * set the path / filename of the xml file your controlP5 setup will be
-	 * saved to.
+	 * set the path / filename of the xml file your controlP5 setup will be saved
+	 * to.
 	 * 
 	 * @param theFilename
-	 *        String
-	 * @related setUrlPath ( )
-	 * @related save ( )
-	 * @related load ( )
-	 * @related loadUrl ( )
+	 *          String setUrlPath ( ) save ( ) load ( ) loadUrl ( )
 	 */
 	public void setFilePath(String theFilePath) {
 		if (theFilePath == null) {
@@ -502,11 +504,7 @@ public class ControlP5 extends ControlP5Base {
 	 * save your controlP5 setup to.
 	 * 
 	 * @param theUrlPath
-	 *        String
-	 * @related setFilePath ( )
-	 * @related loadUrl ( )
-	 * @related load ( )
-	 * @related save ( )
+	 *          String setFilePath ( ) loadUrl ( ) load ( ) save ( )
 	 */
 	public void setUrlPath(String theUrlPath) {
 		setUrlPath(theUrlPath, "controlP5.xml");
@@ -517,13 +515,9 @@ public class ControlP5 extends ControlP5Base {
 	 * save your controlP5 setup to.
 	 * 
 	 * @param theUrlPath
-	 *        String
+	 *          String
 	 * @param theFilename
-	 *        String
-	 * @related setFilePath ( )
-	 * @related loadUrl ( )
-	 * @related load ( )
-	 * @related save ( )
+	 *          String setFilePath ( ) loadUrl ( ) load ( ) save ( )
 	 * 
 	 */
 	public void setUrlPath(String theUrlPath, String theFilename) {
@@ -566,7 +560,7 @@ public class ControlP5 extends ControlP5Base {
 	 * set the active state color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
@@ -580,7 +574,7 @@ public class ControlP5 extends ControlP5Base {
 	 * set the foreground color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
@@ -594,7 +588,7 @@ public class ControlP5 extends ControlP5Base {
 	 * set the backgorund color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
@@ -608,7 +602,7 @@ public class ControlP5 extends ControlP5Base {
 	 * set the label color of tabs and controllers.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorLabel(int theColor) {
 		color.colorCaptionLabel = theColor;
@@ -622,7 +616,7 @@ public class ControlP5 extends ControlP5Base {
 	 * set the value color of controllers.
 	 * 
 	 * @param theColor
-	 *        int
+	 *          int
 	 */
 	public void setColorValue(int theColor) {
 		color.colorValueLabel = theColor;
@@ -637,41 +631,59 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * lock ControlP5 to disable moving Controllers around. Other key events are still available like ALT-h to hide and show the controllers
-	 * To disable all key events, use disableKeys()
+	 * disable Controllers to be moved around. Other key events are still
+	 * available like ALT-h to hide and show the controllers To disable all key
+	 * events, use disableKeys()
 	 */
-	public void lock() {
-		isLock = true;
+	public void setMoveable(boolean theFlag) {
+		isMoveable = true;
 	}
 
 	/**
-	 * unlock ControlP5 to enable moving Controllers around. 
+	 * check if controllers are moveable
 	 * 
 	 */
+	public void isMoveable() {
+		isMoveable = false;
+	}
+
+	/**
+	 * lock ControlP5 to disable moving Controllers around. Other key events are
+	 * still available like ALT-h to hide and show the controllers To disable all
+	 * key events, use disableKeys() use setMoveable(false) instead
+	 * 
+	 * @deprecated
+	 */
+	public void lock() {
+		isMoveable = false;
+	}
+
+	/**
+	 * unlock ControlP5 to enable moving Controllers around. use setMoveable(true)
+	 * instead
+	 * 
+	 * @deprecated
+	 */
 	public void unlock() {
-		isLock = false;
+		isMoveable = true;
 	}
 
 	/**
 	 * save controlP5 settings to your local disk or to a remote server. a file
 	 * controlP5.xml will be written to the data folder of your sketch. you can
-	 * set another file path with method setFilePath(). to save a file to a
-	 * remote server set the url with setUrlPath() e.g.
+	 * set another file path with method setFilePath(). to save a file to a remote
+	 * server set the url with setUrlPath() e.g.
 	 * setUrlPath("http://yourdomain.com/controlP5/upload.php");
 	 * 
 	 * @shortdesc save controlP5 settings to your local disk or to a remote
 	 *            server.
 	 * @param theFilename
-	 *        String
-	 * @return boolean
-	 * @related setFilePath ( )
-	 * @related setUrlPath ( )
-	 * @related load ( )
-	 * @related loadUrl ( )
-	 * @todo saving in application mode does write the xml file into a folder
-	 *       data on top level, but does not load from there. therefore loading
-	 *       in application mode one would have to use the inputstreamreader
-	 *       used before switching to loadStrings.
+	 *          String
+	 * @return boolean setFilePath ( ) setUrlPath ( ) load ( ) loadUrl ( )
+	 * @todo saving in application mode does write the xml file into a folder data
+	 *       on top level, but does not load from there. therefore loading in
+	 *       application mode one would have to use the inputstreamreader used
+	 *       before switching to loadStrings.
 	 */
 	public boolean save(String theFilePath) {
 		return _myControlP5IOHandler.save(this, theFilePath);
@@ -680,16 +692,13 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * save controlP5 settings to your local disk or to a remote server. a file
 	 * controlP5.xml will be written to the data folder of your sketch. you can
-	 * set another file path with method setFilePath(). to save a file to a
-	 * remote server set the url with setUrlPath() e.g.
+	 * set another file path with method setFilePath(). to save a file to a remote
+	 * server set the url with setUrlPath() e.g.
 	 * setUrlPath("http://yourdomain.com/controlP5/upload.php");
 	 * 
 	 * @shortdesc save controlP5 settings to your local disk or to a remote
 	 *            server.
-	 * @return boolean
-	 * @related load ( )
-	 * @related setUrlPath ( )
-	 * @related setFilePath ( )
+	 * @return boolean load ( ) setUrlPath ( ) setFilePath ( )
 	 */
 	public boolean save() {
 		if (_myFilePath != null) {
@@ -707,7 +716,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean load(String theFileName) {
 		blockDraw = true;
 		clear();
-		System.out.println("loading.." + theFileName);
+		ControlP5.logger().info("loading " + theFileName);
 		String[] myStrings = papplet.loadStrings(theFileName);
 		String myString = "";
 		for (int i = 0; i < myStrings.length; i++) {
@@ -821,17 +830,82 @@ public class ControlP5 extends ControlP5Base {
 		return controlFont;
 	}
 
+	/**
+	 * @deprecated use disableShortcuts()
+	 */
 	public void disableKeys() {
-		isKeys = false;
+		isShortcuts = false;
 	}
 
+	/**
+	 * @deprecated use enableShortcuts()
+	 */
 	public void enableKeys() {
-		isKeys = true;
+		isShortcuts = true;
 	}
 
-	public static void warning(Object theObject, String theWarning) {
-		System.out.println("ControlP5.warning @ "+theObject.getClass().getName()+". "+theWarning);
+	/**
+	 * disable shortcuts such as alt-h for hiding/showing controllers
+	 */
+	public void disableShortcuts() {
+		isShortcuts = true;
 	}
+
+	public void enableShortcuts() {
+		isShortcuts = false;
+	}
+
+	public ControllerGroup begin() {
+		// TODO replace controlWindow.tab("default") with
+		// controlWindow.tabs().get(1);
+		return begin(controlWindow.tab("default"));
+	}
+
+	public ControllerGroup begin(ControllerGroup theGroup) {
+		setCurrentPointer(theGroup);
+		return theGroup;
+	}
+
+	public ControllerGroup begin(int theX, int theY) {
+		// TODO replace controlWindow.tab("default") with
+		// controlWindow.tabs().get(1);
+		return begin(controlWindow.tab("default"), theX, theY);
+	}
+
+	public ControllerGroup begin(ControllerGroup theGroup, int theX, int theY) {
+		setCurrentPointer(theGroup);
+		theGroup.autoPosition.x = theX;
+		theGroup.autoPosition.y = theY;
+		theGroup.autoPositionOffsetX = theX;
+		return theGroup;
+	}
+
+	public ControllerGroup begin(ControlWindow theWindow) {
+		return begin(theWindow.tab("default"));
+	}
+
+	public ControllerGroup begin(ControlWindow theWindow, int theX, int theY) {
+		return begin(theWindow.tab("default"), theX, theY);
+	}
+
+	public ControllerGroup end(ControllerGroup theGroup) {
+		releaseCurrentPointer(theGroup);
+		return theGroup;
+	}
+
+	public ControllerGroup end() {
+		return end(controlWindow.tab("default"));
+	}
+
+
+	public void dispose() {
+		clear();
+	}
+	
+	public static Logger logger() {
+		return logger;
+	}
+	
 }
 
 // new controllers

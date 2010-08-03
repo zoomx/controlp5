@@ -1,5 +1,31 @@
 package controlP5;
 
+/**
+ * controlP5 is a processing gui library.
+ *
+ *  2007-2010 by Andreas Schlegel
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General
+ * Public License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
+ *
+ */
+
+
 import processing.core.PApplet;
 import processing.core.PMatrix;
 
@@ -15,15 +41,15 @@ import processing.core.PMatrix;
  * 
  * @example ControlP5textlabel
  * @nosuperclasses Controller
- * @related Controller
- * @related Textarea
+ *  Controller
+ *  Textarea
  */
 public class Textlabel extends Controller {
 
 	protected int _myLetterSpacing = 0;
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theControlP5
 	 *        ControlP5
 	 * @param theParent
@@ -206,7 +232,7 @@ public class Textlabel extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theValue
 	 *        float
 	 */
@@ -273,6 +299,11 @@ public class Textlabel extends Controller {
 		_myValueLabel.setFont(theFont);
 	}
 
+	public ControlFont setControlFont(ControlFont theControlFont) {
+		_myValueLabel.setControlFont(theControlFont);
+		return theControlFont;
+	}
+	
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
 		  && _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myValueLabel.width()
@@ -287,7 +318,7 @@ public class Textlabel extends Controller {
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theElement
 	 *        ControlP5XMLElement
 	 */

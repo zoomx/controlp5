@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,14 +19,17 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 
 /**
- * @invisible
+ * 
  */
 public class ControllerPlug {
 
@@ -40,32 +43,39 @@ public class ControllerPlug {
 
 	private int _myType = ControlP5Constants.INVALID;
 
-	private Class _myParameterClass;
+	private Class<?> _myParameterClass;
 
 	private int _myParameterType = -1;
 
 	private Object _myValue = null;
 
+	private Class<?>[] _myAcceptClassList;
+
 	public ControllerPlug(
-	  final Object theObject,
-	  final String theName,
-	  final int theType,
-	  final int theParameterType,
-	  Class[] theAcceptClassList) {
+			final Object theObject,
+			final String theName,
+			final int theType,
+			final int theParameterType,
+			Class<?>[] theAcceptClassList) {
 		set(theObject, theName, theType, theParameterType, theAcceptClassList);
 	}
 
+	protected void set(Object theObject) {
+		set(theObject, name(), type(), parameterType(), acceptClassList());
+	}
+
 	public void set(
-	  final Object theObject,
-	  final String theName,
-	  final int theType,
-	  final int theParameterType,
-	  final Class[] theAcceptClassList) {
+			final Object theObject,
+			final String theName,
+			final int theType,
+			final int theParameterType,
+			final Class<?>[] theAcceptClassList) {
 		_myObject = theObject;
 		_myName = theName;
 		_myType = theType;
 		_myParameterType = theParameterType;
-		Class myClass = theObject.getClass();
+		_myAcceptClassList = theAcceptClassList;
+		Class<?> myClass = theObject.getClass();
 
 		/* check for methods */
 		if (_myType == ControlP5Constants.METHOD) {
@@ -74,8 +84,8 @@ public class ControllerPlug {
 				for (int i = 0; i < myMethods.length; i++) {
 					if ((myMethods[i].getName()).equals(theName)) {
 						if (myMethods[i].getParameterTypes().length == 1) {
-							for (int j = 0; j < theAcceptClassList.length; j++) {
-								if (myMethods[i].getParameterTypes()[0] == theAcceptClassList[j]) {
+							for (int j = 0; j < _myAcceptClassList.length; j++) {
+								if (myMethods[i].getParameterTypes()[0] == _myAcceptClassList[j]) {
 									_myParameterClass = myMethods[i].getParameterTypes()[0];
 									break;
 								}
@@ -87,17 +97,26 @@ public class ControllerPlug {
 						break;
 					}
 				}
-				Class[] myArgs = (_myParameterClass == null) ? new Class[] {} : new Class[] {
-					_myParameterClass
-				};
+				Class<?>[] myArgs = (_myParameterClass == null) ? new Class[] {} : new Class[] { _myParameterClass };
 				_myMethod = myClass.getDeclaredMethod(_myName, myArgs);
 				_myMethod.setAccessible(true);
 			} catch (SecurityException e) {
 				printSecurityWarning(e);
 			} catch (NoSuchMethodException e) {
-				System.out.println("### ERROR @ ControllerPlug. " + e);
+				ControlP5.logger().warning(" plug() failed." + e);
 			}
 
+			/* check for controlEvent */
+		} else if (_myType == ControlP5Constants.EVENT) {
+			try {
+				_myMethod = _myObject.getClass().getMethod(_myName, new Class[] { ControlEvent.class });
+				_myMethod.setAccessible(true);
+				_myParameterClass = ControlEvent.class;
+			} catch (SecurityException e) {
+				printSecurityWarning(e);
+			} catch (NoSuchMethodException e) {
+				ControlP5.logger().warning(" plug() failed." + e);
+			}
 			/* check for fields */
 		} else if (_myType == ControlP5Constants.FIELD) {
 			for (int i = 0; i < myClass.getDeclaredFields().length; i++) {
@@ -107,10 +126,10 @@ public class ControllerPlug {
 			}
 			if (_myParameterClass != null) {
 				/**
-				 * note. when running in applet mode.
-				 * for some reason setAccessible(true) works for methods
-				 * but not for fields. theAccessControlException is thrown.
-				 * therefore, make fields in your code public.
+				 * note. when running in applet mode. for some reason
+				 * setAccessible(true) works for methods but not for fields.
+				 * theAccessControlException is thrown. therefore, make fields in your
+				 * code public.
 				 */
 				try {
 					_myField = myClass.getDeclaredField(_myName);
@@ -125,7 +144,7 @@ public class ControllerPlug {
 						printSecurityWarning(ex);
 					}
 				} catch (NoSuchFieldException e) {
-					System.out.println("### ERROR @ ControllerPlug. " + e);
+					ControlP5.logger().warning(e.toString());
 				}
 			}
 		}
@@ -134,12 +153,9 @@ public class ControllerPlug {
 	private void printSecurityWarning(Exception e) {
 		// AccessControlException required for applets.
 		if (!ControlP5.isApplet) {
-			System.out.println("### WARNING AccessControlException.\n"
-			  + "you are probably running in applet mode.\n"
-			  + "make sure fields and methods which you want to \n"
-			  + "access in your processing code are public.\n"
-			  + e);
 			ControlP5.isApplet = true;
+			ControlP5.logger().warning("You are probably running in applet mode.\n"
+					+ "make sure fields and methods in your code are public.\n" + e);
 		}
 	}
 
@@ -171,6 +187,10 @@ public class ControllerPlug {
 		return _myParameterType;
 	}
 
+	protected Class<?>[] acceptClassList() {
+		return _myAcceptClassList;
+	}
+
 	private Object get(float theValue) {
 		if (_myParameterClass == float.class) {
 			return new Float(theValue);
@@ -188,9 +208,7 @@ public class ControllerPlug {
 	}
 
 	protected Object[] getMethodParameter(float theValue) {
-		return new Object[] {
-			get(theValue)
-		};
+		return new Object[] { get(theValue) };
 	}
 
 	protected Method getMethod() {
@@ -201,7 +219,7 @@ public class ControllerPlug {
 		return _myField;
 	}
 
-	protected Class classType() {
+	protected Class<?> classType() {
 		return _myParameterClass;
 	}
 

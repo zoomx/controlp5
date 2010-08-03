@@ -1,9 +1,9 @@
 package controlP5;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * controlP5 is a processing gui library.
  *
- *  2007 by Andreas Schlegel
+ *  2007-2010 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -19,24 +19,24 @@ package controlP5;
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
  * Boston, MA 02111-1307 USA
  *
- * @author Andreas Schlegel (http://www.sojamo.de)
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
  *
  */
 
 import processing.core.PApplet;
 
 /**
- * ControlGroup extends ControllerGroup, for a list and documentation for
+ * use a controlGroup to bundle several controllers, controlGroups can be closed
+ * and opened to keep the screen organized.
+ * 
+ * ControlGroup extends ControllerGroup, for a list and documentation of
  * available methods see the <a
  * href="./controllergroup_class_controllergroup.htm">ControllerGroup</a>
  * documentation.
  * 
- * use a controlGroup to bundle several controllers. controlGroups can be closed
- * and opened to keep the screen organized.
- * 
  * @example ControlP5group
- * @nosuperclasses ControllerGroup
- * @related ControllerGroup
  */
 public class ControlGroup extends ControllerGroup implements ControlListener {
 
@@ -50,20 +50,6 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 
 	protected boolean isBarVisible = true;
 
-	/**
-	 * 
-	 * @invisible
-	 * @param theControlP5
-	 *          ControlP5
-	 * @param theParent
-	 *          ControllerGroup
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 */
 	public ControlGroup(
 			ControlP5 theControlP5,
 			ControllerGroup theParent,
@@ -78,9 +64,6 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		_myHeight = theH;
 	}
 
-	/**
-	 * @invisible
-	 */
 	public void mousePressed() {
 		if (isCollapse) {
 			if (!ControlP5.keyHandler.isAltDown) {
@@ -103,22 +86,47 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		return this;
 	}
 
+	/**
+	 * get the height of the controlGroup's background.
+	 * 
+	 * @return
+	 */
 	public int getBackgroundHeight() {
 		return _myBackgroundHeight;
 	}
 
+	/**
+	 * set the height of the controlGroup's background.
+	 * 
+	 * @param theHeight
+	 */
 	public void setBackgroundHeight(int theHeight) {
 		_myBackgroundHeight = theHeight;
 	}
 
+	/**
+	 * set the background color of a controlGroup.
+	 * 
+	 * @param theColor
+	 */
 	public void setBackgroundColor(int theColor) {
 		_myBackgroundColor = theColor;
 	}
 
+	/**
+	 * set the height of the top bar (used to open/close and move a controlGroup).
+	 * 
+	 * @param theHeight
+	 */
 	public void setBarHeight(int theHeight) {
 		_myHeight = theHeight;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.ControllerGroup#preDraw(processing.core.PApplet)
+	 */
 	protected void preDraw(PApplet theApplet) {
 		if (isOpen) {
 			theApplet.fill(_myBackgroundColor);
@@ -126,6 +134,11 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.ControllerGroup#postDraw(processing.core.PApplet)
+	 */
 	protected void postDraw(PApplet theApplet) {
 		if (isBarVisible) {
 			theApplet.fill(isInside ? color.colorForeground : color.colorBackground);
@@ -142,10 +155,9 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		}
 	}
 
-	/**
-	 * @invisible
-	 * @param theElement
-	 *          ControlP5XMLElement
+	/*
+	 * (non-Javadoc)
+	 * @see controlP5.ControllerInterface#addToXMLElement(controlP5.ControlP5XMLElement)
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setName("group");
@@ -159,8 +171,8 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	}
 
 	/**
-	 * TODO redesign or deprecate 
-	 * add a close button to the controlbar of this controlGroup.
+	 * TODO redesign or deprecate add a close button to the controlbar of this
+	 * controlGroup.
 	 */
 	public void addCloseButton() {
 		if (_myCloseButton == null) {
@@ -171,8 +183,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	}
 
 	/**
-	 * TODO redesign or deprecate
-	 * remove the close button.
+	 * TODO redesign or deprecate remove the close button.
 	 */
 	public void removeCloseButton() {
 		if (_myCloseButton == null) {
@@ -193,10 +204,9 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		return isBarVisible;
 	}
 
-	/**
-	 * @invisible
-	 * @param theEvent
-	 *          ControlEvent
+	/*
+	 * (non-Javadoc)
+	 * @see controlP5.ControlListener#controlEvent(controlP5.ControlEvent)
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.controller().name().equals(name() + "close")) {
@@ -207,7 +217,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	/**
 	 * !!! experimental, see ControllerGroup.value()
 	 * 
-	 * @invisible
+	 * 
 	 * @return String
 	 */
 	public String stringValue() {
@@ -217,7 +227,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	/**
 	 * !!! experimental, see ControllerGroup.value()
 	 * 
-	 * @invisible
+	 * 
 	 * @return float
 	 */
 	public float value() {
@@ -228,7 +238,8 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		return _myArrayValue;
 	}
 
-	protected void setArrayValue(float[] theArray) {
+	public void setArrayValue(float[] theArray) {
 		_myArrayValue = theArray;
 	}
+
 }

@@ -28,57 +28,22 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * use a controlWindowCanvas to draw your own content into a control window.
+ * The interface ControllerDisplay can be used to define custom displays for
+ * controllers.
  * 
- * @example ControlP5groupCanvas
+ * @see controlP5.draw(processing.core.PApplet)
+ * @see controlP5.setDisplay(ControllerDisplay)
  * 
  */
-public abstract class ControlCanvas {
-
-	public final static int PRE = 0;
-	public final static int POST = 1;
-	protected int _myMode = PRE;
+public interface ControllerDisplay {
 
 	/**
-	 * controlCanvas is an abstract class and therefore needs to be extended by
-	 * your class. draw(PApplet theApplet) is the only method that needs to be
-	 * overwritten.
-	 */
-	public abstract void draw(PApplet theApplet);
-
-	/**
-	 * get the drawing mode of a ControlWindowCanvas. this can be PRE or POST.
+	 * display() will be called by the controller's draw() function and will pass
+	 * on a reference of PApplet and the Controller itself to your custom display.
 	 * 
-	 * @return
+	 * @param theApplet
+	 * @param theController
 	 */
-	public final int mode() {
-		return _myMode;
-	}
-
-	/**
-	 * set the drawing mode to PRE. PRE is the default.
-	 */
-	public final void pre() {
-		setMode(PRE);
-	}
-
-	/**
-	 * set the drawing mode to POST.
-	 */
-	public final void post() {
-		setMode(POST);
-	}
-
-	/**
-	 * 
-	 * @param theMode
-	 */
-	public final void setMode(int theMode) {
-		if (theMode == PRE) {
-			_myMode = PRE;
-		} else {
-			_myMode = POST;
-		}
-	}
+	public void display(PApplet theApplet, Controller theController);
 
 }

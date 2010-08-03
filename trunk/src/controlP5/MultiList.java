@@ -1,7 +1,33 @@
 package controlP5;
 
+/**
+ * controlP5 is a processing gui library.
+ *
+ *  2007-2010 by Andreas Schlegel
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General
+ * Public License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
+ *
+ */
+
+import java.util.List;
+
 import processing.core.PApplet;
-import java.util.Vector;
 
 /**
  * multilist has the effect of a menu-tree. see the example for more information
@@ -9,7 +35,7 @@ import java.util.Vector;
  * 
  * @example ControlP5multiList
  * @nosuperclasses Controller
- * @related Controller
+ *  Controller
  */
 public class MultiList extends Controller implements MultiListInterface, ControlListener {
 
@@ -34,30 +60,10 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	
 	protected int _myDirection = ControlP5Constants.RIGHT;
 
-	/**
-	 * @invisible
-	 */
 	public int closeDelay = 30;
 
 	protected int _myDefaultButtonHeight = 10;
 
-	/**
-	 * @invisible
-	 * @param theControlP5
-	 *            ControlP5
-	 * @param theParent
-	 *            Tab
-	 * @param theName
-	 *            String
-	 * @param theX
-	 *            int
-	 * @param theY
-	 *            int
-	 * @param theWidth
-	 *            int
-	 * @param theHeight
-	 *            int
-	 */
 	public MultiList(
 	        ControlP5 theControlP5,
 	        Tab theParent,
@@ -71,20 +77,13 @@ public class MultiList extends Controller implements MultiListInterface, Control
 		setup();
 	}
 
-	/**
-	 * @invisible
-	 */
 	public void setup() {
 		mostRecent = this;
 		isVisible = true;
 		updateRect(position().x, position().y, width, _myDefaultButtonHeight);
 	}
 
-	/**
-	 * @invisible
-	 * @return Vector
-	 */
-	public Vector subelements() {
+	public List<Controller> subelements() {
 		return subelements;
 	}
 
@@ -108,7 +107,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 	
 	/**
-	 * @invisible
+	 * 
 	 * @param theX
 	 *            float
 	 * @param theY
@@ -183,7 +182,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theApplet
 	 *            PApplet
 	 */
@@ -193,7 +192,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theApplet
 	 *            PApplet
 	 * @return boolean
@@ -225,7 +224,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theFlag
 	 *            boolean
 	 */
@@ -236,7 +235,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @return boolean
 	 */
 	public boolean observe() {
@@ -244,7 +243,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theInterface
 	 *            MultiListInterface
 	 */
@@ -259,7 +258,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public void close() {
 		for (int i = 0; i < subelements.size(); i++) {
@@ -268,7 +267,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 */
 	public void open() {
 		for (int i = 0; i < subelements.size(); i++) {
@@ -277,7 +276,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theValue
 	 *            float
 	 */
@@ -292,7 +291,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	}
 
 	/**
-	 * @invisible
+	 * 
 	 * @param theElement
 	 *            ControlP5XMLElement
 	 */
