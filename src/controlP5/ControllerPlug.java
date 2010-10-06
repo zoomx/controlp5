@@ -28,9 +28,7 @@ package controlP5;
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
 
-/**
- * 
- */
+
 public class ControllerPlug {
 
 	private Object _myObject;

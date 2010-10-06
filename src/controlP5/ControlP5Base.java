@@ -40,8 +40,7 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a tab to controlP5. by default the tab will be added to the main
 	 * window.
 	 * 
-	 * @param theName
-	 *          String
+	 * @param theName String
 	 * @return Tasaveb
 	 */
 	public Tab addTab(String theName) {
@@ -68,18 +67,12 @@ public class ControlP5Base implements ControlP5Constants {
 	 * a button to controlP5. by default it will be added to the default tab of
 	 * the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theValue
-	 *          float
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theW
-	 *          int
-	 * @param theH
-	 *          int
+	 * @param theName String
+	 * @param theValue float
+	 * @param theX int
+	 * @param theY int
+	 * @param theW int
+	 * @param theH int
 	 * @return Button
 	 */
 	public Button addButton(
@@ -98,16 +91,11 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a bang to controlP5. by default it will be added to the default tab of
 	 * the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theName String
+	 * @param theX int
+	 * @param theY int
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return Bang
 	 */
 	public Bang addBang(final String theName, final int theX, final int theY, final int theWidth, final int theHeight) {
@@ -120,18 +108,12 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a toggle to controlP5. by default it will be added to the default tab
 	 * of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theDefaultValue
-	 *          boolean
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theName String
+	 * @param theDefaultValue boolean
+	 * @param theX float
+	 * @param theY float
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return Toggle
 	 */
 	public Toggle addToggle(
@@ -152,18 +134,12 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a toggle to controlP5. by default it will be added to the default tab
 	 * of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theDefaultValue
-	 *          boolean
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theName String
+	 * @param theDefaultValue boolean
+	 * @param theX float
+	 * @param theY float
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return Toggle Toggle
 	 */
 	public Toggle addToggle(
@@ -234,22 +210,14 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a slider to controlP5. by default it will be added to the default tab
 	 * of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theMin
-	 *          float
-	 * @param theMax
-	 *          float
-	 * @param theDefaultValue
-	 *          float
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theW
-	 *          int
-	 * @param theH
-	 *          int
+	 * @param theName String
+	 * @param theMin float
+	 * @param theMax float
+	 * @param theDefaultValue float
+	 * @param theX int
+	 * @param theY int
+	 * @param theW int
+	 * @param theH int
 	 * @return Slider
 	 */
 	public Slider addSlider(
@@ -267,23 +235,16 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	/**
-	 * add a slider to controlP5. by default a slider will be added to the default tab
-	 * of the main window.
+	 * add a slider to controlP5. by default a slider will be added to the default
+	 * tab of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theMin
-	 *          float
-	 * @param theMax
-	 *          float
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theName String
+	 * @param theMin float
+	 * @param theMax float
+	 * @param theX int
+	 * @param theY int
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return Slider
 	 */
 	public Slider addSlider(
@@ -316,20 +277,13 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a slider to controlP5. by default it will be added to the default tab
 	 * of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theMin
-	 *          float
-	 * @param theMax
-	 *          float
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theName String
+	 * @param theMin float
+	 * @param theMax float
+	 * @param theX int
+	 * @param theY int
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return Slider
 	 */
 	public Range addRange(
@@ -347,16 +301,11 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a numberbox to controlP5. by default it will be added to the default
 	 * tab of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theName String
+	 * @param theX float
+	 * @param theY float
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return Numberbox Numberbox
 	 */
 	public Numberbox addNumberbox(
@@ -365,25 +314,19 @@ public class ControlP5Base implements ControlP5Constants {
 			final int theY,
 			final int theWidth,
 			final int theHeight) {
-		return addNumberbox(theName, Float.NaN, theX, theY, theWidth, theHeight);
+		return addNumberbox(theName, 0, theX, theY, theWidth, theHeight);
 	}
 
 	/**
 	 * add a numberbox to controlP5. by default it will be added to the default
 	 * tab of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theDefaultValue
-	 *          int
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theName String
+	 * @param theDefaultValue int
+	 * @param theX float
+	 * @param theY float
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return Numberbox Numberbox
 	 */
 	public Numberbox addNumberbox(
@@ -401,18 +344,12 @@ public class ControlP5Base implements ControlP5Constants {
 	/**
 	 * add a knob to your controlP5 setup.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theMin
-	 *          float
-	 * @param theMax
-	 *          float
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
-	 * @param theDiameter
-	 *          int
+	 * @param theName String
+	 * @param theMin float
+	 * @param theMax float
+	 * @param theX float
+	 * @param theY float
+	 * @param theDiameter int
 	 * @return Knob Knob
 	 */
 	public Knob addKnob(
@@ -440,20 +377,13 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a knob to controlP5. by default it will be added to the default tab of
 	 * the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theMin
-	 *          float
-	 * @param theMax
-	 *          float
-	 * @param theDefaultValue
-	 *          float
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
-	 * @param theDiameter
-	 *          int
+	 * @param theName String
+	 * @param theMin float
+	 * @param theMax float
+	 * @param theDefaultValue float
+	 * @param theX float
+	 * @param theY float
+	 * @param theDiameter int
 	 * @return Knob Knob
 	 */
 	public Knob addKnob(
@@ -473,18 +403,12 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a textlabel to controlP5. by default it will be added to the default
 	 * tab of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theText
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theW
-	 *          int
-	 * @param theH
-	 *          int
+	 * @param theName String
+	 * @param theText String
+	 * @param theX int
+	 * @param theY int
+	 * @param theW int
+	 * @param theH int
 	 * @return Textlabel
 	 */
 	public Textarea addTextarea(
@@ -509,16 +433,11 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a textfield to controlP5. by default it will be added to the default
 	 * tab of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theW
-	 *          int
-	 * @param theH
-	 *          int
+	 * @param theName String
+	 * @param theX int
+	 * @param theY int
+	 * @param theW int
+	 * @param theH int
 	 * @return Textfield
 	 */
 	public Textfield addTextfield(final String theName, final int theX, final int theY, final int theW, final int theH) {
@@ -531,12 +450,9 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a radio list to controlP5. by default it will be added to the default
 	 * tab of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
+	 * @param theName String
+	 * @param theX int
+	 * @param theY int
 	 * @return Radio
 	 */
 	public Radio addRadio(final String theName, final int theX, final int theY) {
@@ -573,16 +489,11 @@ public class ControlP5Base implements ControlP5Constants {
 	 * add a scroll list to controlP5. by default it will be added to the default
 	 * tab of the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theW
-	 *          int
-	 * @param theH
-	 *          int
+	 * @param theName String
+	 * @param theX int
+	 * @param theY int
+	 * @param theW int
+	 * @param theH int
 	 * @return ScrollList
 	 */
 	public ScrollList addScrollList(final String theName, final int theX, final int theY, final int theW, final int theH) {
@@ -591,6 +502,16 @@ public class ControlP5Base implements ControlP5Constants {
 		return myController;
 	}
 
+	/**
+	 * adds a ListBox.
+	 * 
+	 * @param theName
+	 * @param theX
+	 * @param theY
+	 * @param theW
+	 * @param theH
+	 * @return ListBox
+	 */
 	public ListBox addListBox(final String theName, final int theX, final int theY, final int theW, final int theH) {
 		ListBox myController = new ListBox(controlP5, (Tab) controlP5.controlWindow.tabs().get(1), theName, theX, theY, theW, theH);
 		controlP5.register(myController);
@@ -598,7 +519,29 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	/**
-	 * add a colorpicker.
+	 * adds a pulldown-menu.
+	 * 
+	 * @param theName
+	 * @param theX
+	 * @param theY
+	 * @param theW
+	 * @param theH
+	 * @return PulldownMenu
+	 */
+	public DropdownList addDropdownList(
+			final String theName,
+			final int theX,
+			final int theY,
+			final int theW,
+			final int theH) {
+		DropdownList myController = new DropdownList(controlP5, (Tab) controlP5.controlWindow.tabs().get(1), theName, theX, theY, theW, theH);
+		controlP5.register(myController);
+		return myController;
+	}
+	
+	
+	/**
+	 * add a simple RGB colorpicker.
 	 * 
 	 * @param theName
 	 * @param theX
@@ -618,17 +561,14 @@ public class ControlP5Base implements ControlP5Constants {
 		controlP5.register(myController);
 		return myController;
 	}
-	
+
 	/**
 	 * add a group to controlP5. by default it will be added to the default tab of
 	 * the main window.
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
+	 * @param theName String
+	 * @param theX int
+	 * @param theY int
 	 * @return ControlGroup
 	 */
 	public ControlGroup addGroup(String theName, int theX, int theY, int theW) {
@@ -644,12 +584,9 @@ public class ControlP5Base implements ControlP5Constants {
 	/**
 	 * create a new ControlWindow.
 	 * 
-	 * @param theWindowName
-	 *          String
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theWindowName String
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return ControlWindow ControlWindow
 	 */
 	public ControlWindow addControlWindow(final String theWindowName, final int theWidth, final int theHeight) {
@@ -678,16 +615,11 @@ public class ControlP5Base implements ControlP5Constants {
 	/**
 	 * create a new ControlWindow.
 	 * 
-	 * @param theWindowName
-	 *          String
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theWindowName String
+	 * @param theX int
+	 * @param theY int
+	 * @param theWidth int
+	 * @param theHeight int
 	 * @return ControlWindow ControlWindow
 	 */
 	public ControlWindow addControlWindow(
@@ -710,8 +642,6 @@ public class ControlP5Base implements ControlP5Constants {
 		controlP5.controlWindowList.add(myControlWindow);
 		return myControlWindow;
 	}
-	
-	
 
 	/**
 	 * very simple and automated adding of certain controllers.

@@ -63,7 +63,7 @@ public class CheckBox extends RadioButton {
 	public final void activateAll() {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			((Toggle) _myRadioToggles.get(i)).activate();
+			_myRadioToggles.get(i).activate();
 		}
 		updateValues();
 	}
@@ -73,7 +73,7 @@ public class CheckBox extends RadioButton {
 	 */
 	public final void activate(int theIndex) {
 		if (theIndex < _myRadioToggles.size()) {
-			((Toggle) _myRadioToggles.get(theIndex)).activate();
+			_myRadioToggles.get(theIndex).activate();
 			updateValues();
 		}
 	}
@@ -83,7 +83,7 @@ public class CheckBox extends RadioButton {
 	 */
 	public final void deactivate(int theIndex) {
 		if (theIndex < _myRadioToggles.size()) {
-			((Toggle) _myRadioToggles.get(theIndex)).deactivate();
+			_myRadioToggles.get(theIndex).deactivate();
 			updateValues();
 		}
 	}
@@ -93,7 +93,7 @@ public class CheckBox extends RadioButton {
 	 */
 	public final void toggle(int theIndex) {
 		if (theIndex < _myRadioToggles.size()) {
-			Toggle t = ((Toggle) _myRadioToggles.get(theIndex));
+			Toggle t = _myRadioToggles.get(theIndex);
 			if (t.getState() == true) {
 				t.deactivate();
 			} else {
@@ -109,9 +109,8 @@ public class CheckBox extends RadioButton {
 	public final void toggle(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			Toggle t = ((Toggle) _myRadioToggles.get(i));
+			Toggle t = _myRadioToggles.get(i);
 			if (theRadioButtonName.equals(t.name())) {
-
 				if (t.getState() == true) {
 					t.deactivate();
 				} else {
@@ -129,7 +128,7 @@ public class CheckBox extends RadioButton {
 	public final void activate(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			Toggle t = ((Toggle) _myRadioToggles.get(i));
+			Toggle t = _myRadioToggles.get(i);
 			if (theRadioButtonName.equals(t.name())) {
 				t.activate();
 				updateValues();
@@ -144,7 +143,7 @@ public class CheckBox extends RadioButton {
 	public final void deactivate(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			Toggle t = ((Toggle) _myRadioToggles.get(i));
+			Toggle t = _myRadioToggles.get(i);
 			if (theRadioButtonName.equals(t.name())) {
 				t.deactivate();
 				updateValues();
@@ -156,5 +155,10 @@ public class CheckBox extends RadioButton {
 	private final void updateValues() {
 		_myValue = -1;
 		updateValues(true);
+	}
+	
+	@Override
+	public String toString() {
+		return "type:\tCheckBox\n"+super.toString();
 	}
 }

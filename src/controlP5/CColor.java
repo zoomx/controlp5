@@ -85,13 +85,13 @@ public class CColor {
 	}
 
 	public String toString() {
-		return ("colorBackground " + (colorBackground >> 16 & 0xff) + "-" + (colorBackground >> 8 & 0xff) + "-"
-				+ (colorBackground >> 0 & 0xff) + "\n" + "colorForeground " + (colorForeground >> 16 & 0xff) + "-"
-				+ (colorForeground >> 8 & 0xff) + "-" + (colorForeground >> 0 & 0xff) + "\n" + "colorActive "
-				+ (colorActive >> 16 & 0xff) + "-" + (colorActive >> 8 & 0xff) + "-" + (colorActive >> 0 & 0xff) + "\n"
-				+ "colorLabel " + (colorCaptionLabel >> 16 & 0xff) + "-" + (colorCaptionLabel >> 8 & 0xff) + "-"
-				+ (colorCaptionLabel >> 0 & 0xff) + "\n" + "colorValue " + (colorValueLabel >> 16 & 0xff) + "-"
-				+ (colorValueLabel >> 8 & 0xff) + "-" + (colorValueLabel >> 0 & 0xff));
+		return ("bg (" + (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff) + ","
+				+ (colorBackground >> 0 & 0xff) + "), " + "fg (" + (colorForeground >> 16 & 0xff) + ","
+				+ (colorForeground >> 8 & 0xff) + "," + (colorForeground >> 0 & 0xff) + "), " + "active ("
+				+ (colorActive >> 16 & 0xff) + "," + (colorActive >> 8 & 0xff) + "," + (colorActive >> 0 & 0xff) + "), "
+				+ "captionlabel (" + (colorCaptionLabel >> 16 & 0xff) + "," + (colorCaptionLabel >> 8 & 0xff) + ","
+				+ (colorCaptionLabel >> 0 & 0xff) + "), " + "valuelabel " + (colorValueLabel >> 16 & 0xff) + ","
+				+ (colorValueLabel >> 8 & 0xff) + "," + (colorValueLabel >> 0 & 0xff)+")");
 	}
 
 	public CColor() {

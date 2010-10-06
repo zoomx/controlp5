@@ -46,8 +46,7 @@ import processing.core.PApplet;
  * 
  * 
  * @example ControlP5numberbox
- * @nosuperclasses Controller
- *  Controller
+ * @nosuperclasses Controller Controller
  */
 public class Numberbox extends Controller {
 
@@ -76,28 +75,23 @@ public class Numberbox extends Controller {
 	/**
 	 * 
 	 * 
-	 */
-
-	/**
-	 * 
-	 * 
 	 * 
 	 * @param theControlP5
-	 *            ControlP5
+	 *          ControlP5
 	 * @param theParent
-	 *            Tab
+	 *          Tab
 	 * @param theName
-	 *            String
+	 *          String
 	 * @param theDefaultValue
-	 *            float
+	 *          float
 	 * @param theX
-	 *            int
+	 *          int
 	 * @param theY
-	 *            int
+	 *          int
 	 * @param theWidth
-	 *            int
+	 *          int
 	 * @param theHeight
-	 *            int
+	 *          int
 	 */
 	public Numberbox(
 			ControlP5 theControlP5,
@@ -115,9 +109,10 @@ public class Numberbox extends Controller {
 		_myMax = 1000000;
 	}
 
-	/**
-	 * @see ControllerInterfalce.updateInternalEvents
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see ControllerInterfalce.updateInternalEvents
 	 */
 	public void updateInternalEvents(PApplet theApplet) {
 		if (isActive) {
@@ -131,40 +126,29 @@ public class Numberbox extends Controller {
 		}
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param theApplet
-	 *            PApplet
-	 */
-	public void draw(PApplet theApplet) {
-		theApplet.pushMatrix();
-		theApplet.translate(position().x(), position().y());
-
-		theApplet.fill(color.colorBackground);
-		theApplet.rect(0, 0, width, height);
-		theApplet.fill((isActive) ? color.colorActive : color.colorForeground);
-		int h = height / 2;
-		theApplet.triangle(0, h - 6, 6, h, 0, h + 6);
-
-		_myCaptionLabel.draw(theApplet, 0, height + 4);
-		_myValueLabel.draw(theApplet, 10, h - _myValueLabel.height() / 2 + 3);
-		theApplet.popMatrix();
-	}
-
-	/**
-	 * 
+	 * @see controlP5.Controller#mousePressed()
 	 */
 	public void mousePressed() {
 		isActive = true;
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see controlP5.Controller#mouseReleased()
 	 */
 	public void mouseReleased() {
 		isActive = false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.Controller#mouseReleasedOutside()
+	 */
 	public void mouseReleasedOutside() {
 		mouseReleased();
 	}
@@ -181,7 +165,7 @@ public class Numberbox extends Controller {
 	 * set the value of the numberbox.
 	 * 
 	 * @param theValue
-	 *            float
+	 *          float
 	 */
 	public void setValue(float theValue) {
 		_myValue = theValue;
@@ -191,8 +175,8 @@ public class Numberbox extends Controller {
 	}
 
 	/**
-	 * set the direction for changing the numberbox value when dragging the
-	 * mouse. by default this is up/down (VERTICAL), use
+	 * set the direction for changing the numberbox value when dragging the mouse.
+	 * by default this is up/down (VERTICAL), use
 	 * setDirection(Controller.HORIZONTAL) to change to left/right or back with
 	 * setDirection(Controller.VERTICAL).
 	 * 
@@ -206,6 +190,11 @@ public class Numberbox extends Controller {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.Controller#update()
+	 */
 	public void update() {
 		setValue(_myValue);
 	}
@@ -218,10 +207,42 @@ public class Numberbox extends Controller {
 	/**
 	 * 
 	 * @param theElement
-	 *            ControlP5XMLElement
+	 *          ControlP5XMLElement
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "numberbox");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.Controller#updateDisplayMode(int)
+	 */
+	public void updateDisplayMode(int theMode) {
+		_myDisplayMode = theMode;
+		switch (theMode) {
+		case (DEFAULT):
+			_myDisplay = new NumberboxDisplay();
+		case (SPRITE):
+		case (IMAGE):
+		case (CUSTOM):
+		default:
+			break;
+
+		}
+	}
+
+	class NumberboxDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			theApplet.fill(color.colorBackground);
+			theApplet.rect(0, 0, width, height);
+			theApplet.fill((isActive) ? color.colorActive : color.colorForeground);
+			int h = height / 2;
+			theApplet.triangle(0, h - 6, 6, h, 0, h + 6);
+
+			_myCaptionLabel.draw(theApplet, 0, height + 4);
+			_myValueLabel.draw(theApplet, 10, h - _myValueLabel.height() / 2 + 3);
+		}
 	}
 
 }

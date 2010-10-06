@@ -25,7 +25,6 @@ package controlP5;
  *
  */
 
-
 import java.util.Vector;
 
 import processing.core.PApplet;
@@ -35,8 +34,7 @@ import processing.core.PVector;
  * a slider.
  * 
  * @example ControlP5slider
- * @nosuperclasses Controller
- *  Controller
+ * @nosuperclasses Controller Controller
  */
 public class Range extends Controller {
 
@@ -100,44 +98,32 @@ public class Range extends Controller {
 
 	/**
 	 * 
-	 * @param theControlP5
-	 *        ControlP5
-	 * @param theParent
-	 *        ControllerGroup
-	 * @param theName
-	 *        String
-	 * @param theMin
-	 *        float
-	 * @param theMax
-	 *        float
-	 * @param theDefaultValue
-	 *        float
-	 * @param theX
-	 *        int
-	 * @param theY
-	 *        int
-	 * @param theWidth
-	 *        int
-	 * @param theHeight
-	 *        int
+	 * @param theControlP5 ControlP5
+	 * @param theParent ControllerGroup
+	 * @param theName String
+	 * @param theMin float
+	 * @param theMax float
+	 * @param theDefaultValue float
+	 * @param theX int
+	 * @param theY int
+	 * @param theWidth int
+	 * @param theHeight int
 	 */
 	public Range(
-	  ControlP5 theControlP5,
-	  ControllerGroup theParent,
-	  String theName,
-	  float theMin,
-	  float theMax,
-	  float theDefaultMinValue,
-	  float theDefaultMaxValue,
-	  int theX,
-	  int theY,
-	  int theWidth,
-	  int theHeight) {
+			ControlP5 theControlP5,
+			ControllerGroup theParent,
+			String theName,
+			float theMin,
+			float theMax,
+			float theDefaultMinValue,
+			float theDefaultMaxValue,
+			int theX,
+			int theY,
+			int theWidth,
+			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel = new Label(theName, color.colorCaptionLabel);
-		_myArrayValue = new float[] {
-		  theDefaultMinValue, theDefaultMaxValue
-		};
+		_myArrayValue = new float[] { theDefaultMinValue, theDefaultMaxValue };
 
 		_myMin = theMin;
 		_myMax = theMax;
@@ -166,8 +152,7 @@ public class Range extends Controller {
 
 	/**
 	 * 
-	 * @param theMode
-	 *        int
+	 * @param theMode int
 	 */
 	public void setSliderMode(int theMode) {
 	}
@@ -225,8 +210,7 @@ public class Range extends Controller {
 
 	/**
 	 * 
-	 * @param theApplet
-	 *        PApplet
+	 * @param theApplet PApplet
 	 */
 	public void draw(PApplet theApplet) {
 		if (isVisible) {
@@ -282,12 +266,10 @@ public class Range extends Controller {
 		}
 	}
 
-	
 	/**
 	 * set the value of the range-slider.
 	 * 
-	 * @param theValue
-	 *        float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 		_myValue = theValue;
@@ -314,22 +296,22 @@ public class Range extends Controller {
 	/**
 	 * set the minimum value of the slider.
 	 * 
-	 * @param theValue
-	 *        float
+	 * @param theValue float
 	 */
 	public void setMin(float theValue) {
 		_myMin = theValue;
+		_myValueRange = _myMax - _myMin;
 		update();
 	}
 
 	/**
 	 * set the maximum value of the slider.
 	 * 
-	 * @param theValue
-	 *        float
+	 * @param theValue float
 	 */
 	public void setMax(float theValue) {
-		_myMax = theValue;
+		_myMax = theValue;		
+		_myValueRange = _myMax - _myMin;
 		update();
 	}
 
@@ -342,20 +324,19 @@ public class Range extends Controller {
 	}
 
 	public void setLowValue(float theValue) {
-		_myArrayValue[0] = theValue;
+		_myArrayValue[0] = PApplet.max(_myMin, theValue);
 		update();
 	}
 
 	public void setHighValue(float theValue) {
-		_myArrayValue[1] = theValue;
+		_myArrayValue[1] = PApplet.min(_myMax, theValue);
 		update();
 	}
 
 	/**
 	 * set the width of the slider.
 	 * 
-	 * @param theValue
-	 *        int
+	 * @param theValue int
 	 */
 	public Controller setWidth(int theValue) {
 		width = theValue;
@@ -366,8 +347,7 @@ public class Range extends Controller {
 	/**
 	 * set the height of the slider.
 	 * 
-	 * @param theValue
-	 *        int
+	 * @param theValue int
 	 */
 	public Controller setHeight(int theValue) {
 		height = theValue;
@@ -418,8 +398,7 @@ public class Range extends Controller {
 
 	/**
 	 * 
-	 * @param theElement
-	 *        ControlP5XMLElement
+	 * @param theElement ControlP5XMLElement
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "range");

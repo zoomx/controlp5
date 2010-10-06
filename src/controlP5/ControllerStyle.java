@@ -60,6 +60,27 @@ public class ControllerStyle {
 		paddingLeft = theValue;
 	}
 
+	public void setPadding(int theTop, int theRight, int theBottom, int theLeft) {
+		padding(theTop, theRight, theBottom, theLeft);
+	}
+	
+	public void setPaddingTop(int theValue) {
+		paddingTop = theValue;
+	}
+	
+	public void setPaddingBottom(int theValue) {
+		paddingBottom = theValue;
+	}
+	
+	public void setPaddingRight(int theValue) {
+		paddingRight = theValue;
+	}
+	
+	public void setPaddingLeft(int theValue) {
+		paddingLeft = theValue;
+	}
+
+	
 	/*
 	 * 
 	 */
@@ -69,7 +90,27 @@ public class ControllerStyle {
 		marginBottom = theBottom;
 		marginLeft = theLeft;
 	}
+	
+	public void setMargin(int theTop, int theRight, int theBottom, int theLeft) {
+		margin(theTop, theRight, theBottom, theLeft);
+	}
 
+	public void setMarginTop(int theValue) {
+		marginTop = theValue;
+	}
+	
+	public void setMarginBottom(int theValue) {
+		marginBottom = theValue;
+	}
+	
+	public void setMarginRight(int theValue) {
+		marginRight = theValue;
+	}
+	
+	public void setMarginLeft(int theValue) {
+		marginLeft = theValue;
+	}
+	
 	/*
 	 * 
 	 */

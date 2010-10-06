@@ -60,8 +60,7 @@ public abstract class ControlBehavior {
 	/**
 	 * set the value of the controller.
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 		value = theValue;
@@ -86,8 +85,7 @@ public abstract class ControlBehavior {
 	/**
 	 * (de)activate the behavior.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setActive(boolean theFlag) {
 		isActive = theFlag;

@@ -25,13 +25,11 @@ package controlP5;
  *
  */
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Field;
+import java.util.ArrayList;
 
-/**
- * 
- */
 public class ControlBroadcaster {
 
 	private int _myControlEventType = ControlP5Constants.INVALID;
@@ -41,13 +39,36 @@ public class ControlBroadcaster {
 	private ControlP5 _myControlP5;
 
 	private String _myEventMethod = "controlEvent";
+	
+	private ArrayList<ControlListener> _myControlListeners;
+	
 
 	protected ControlBroadcaster(ControlP5 theControlP5) {
 		_myControlP5 = theControlP5;
+		_myControlListeners = new ArrayList<ControlListener>();
 		_myControlEventPlug = checkObject(ControlP5.papplet, getEventMethod(), new Class[] { ControlEvent.class });
 		if (_myControlEventPlug != null) {
 			_myControlEventType = ControlP5Constants.METHOD;
 		}
+	}
+	
+	public void addListener(ControlListener theListener) {
+		_myControlListeners.add(theListener);
+	}
+	
+	public void removeListener(ControlListener theListener) {
+		_myControlListeners.remove(theListener);
+	}
+	
+	public ControlListener getListener(int theIndex) {
+		if(theIndex<0 || theIndex>=_myControlListeners.size()) {
+			return null;
+		} 
+		return _myControlListeners.get(theIndex);
+	}
+	
+	public int listenerSize() {
+		return _myControlListeners.size();
 	}
 
 	@Deprecated
@@ -115,6 +136,9 @@ public class ControlBroadcaster {
 	}
 
 	public void broadcast(final ControlEvent theControlEvent, final int theType) {
+		for(ControlListener cl:_myControlListeners) {
+			cl.controlEvent(theControlEvent);
+		}
 		if (theControlEvent.isTab() == false && theControlEvent.isGroup() == false) {
 			if (theControlEvent.controller().getControllerPlugList().size() > 0) {
 				if (theType == ControlP5Constants.STRING) {
@@ -142,10 +166,8 @@ public class ControlBroadcaster {
 
 	/**
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theValue
-	 *          float
+	 * @param theName String
+	 * @param theValue float
 	 */
 	protected void callTarget(final ControllerPlug thePlug, final float theValue) {
 		if (thePlug.checkType(ControlP5Constants.METHOD)) {
@@ -158,10 +180,8 @@ public class ControlBroadcaster {
 
 	/**
 	 * 
-	 * @param theName
-	 *          String
-	 * @param theValue
-	 *          String
+	 * @param theName String
+	 * @param theValue String
 	 */
 	protected void callTarget(final ControllerPlug thePlug, final String theValue) {
 		if (thePlug.checkType(ControlP5Constants.METHOD)) {
@@ -173,12 +193,9 @@ public class ControlBroadcaster {
 
 	/**
 	 * 
-	 * @param theObject
-	 *          Object
-	 * @param theField
-	 *          Field
-	 * @param theParam
-	 *          Object
+	 * @param theObject Object
+	 * @param theField Field
+	 * @param theParam Object
 	 */
 	private void invokeField(final Object theObject, final Field theField, final Object theParam) {
 		try {
@@ -190,12 +207,9 @@ public class ControlBroadcaster {
 
 	/**
 	 * 
-	 * @param theObject
-	 *          Object
-	 * @param theMethod
-	 *          Method
-	 * @param theParam
-	 *          Object[]
+	 * @param theObject Object
+	 * @param theMethod Method
+	 * @param theParam Object[]
 	 */
 	private void invokeMethod(final Object theObject, final Method theMethod, final Object[] theParam) {
 		try {
@@ -225,10 +239,8 @@ public class ControlBroadcaster {
 
 	/**
 	 * 
-	 * @param theMethod
-	 *          Method
-	 * @param theException
-	 *          Exception
+	 * @param theMethod Method
+	 * @param theException Exception
 	 */
 	private void printMethodError(Method theMethod, Exception theException) {
 		ControlP5.logger().severe("An error occured while forwarding a Controller value\n "

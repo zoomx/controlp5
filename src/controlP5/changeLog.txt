@@ -1,3 +1,52 @@
+2010-09-30  Andreas Schlegel  <andi@sojamo.de>
+
+      * version 0.5.4	
+      
+      * src/controlP5/RadioButton.java: 
+      adding setNoneSelectedAllowed(true/false) default is true. 
+      http://forum.processing.org/topic/controlp5-radiobutton-strange-behaviour
+      
+      * src/controlP5/DropdownList.java:
+      renaming PulldownMenu to DropdownList.
+      
+      * src/controlP5/Range.java
+      setMin() and setMax() bug fixed.
+      
+      * src/controlP5/ControlBroadcaster.java:
+      adding addListner(), removeListener(), getListener()
+      any object that implements ControlListener can register with the ControlBroadcaster to
+      receive ControlEvents broadcasted.
+      
+      * src/controlP5/BitFontRenderer.java:
+      fixed ArrayIndexOutOfBoundsException
+      only characters between ASCII 32 and 127 are supported.
+      
+      * src/controlP5/ControlP5.java:
+      disabled clear() call (called from within dispose()) when in applet mode. 
+      Reason: all controllers will be cleared due to dispose call 
+      when switching tabs. Fix required.   
+      
+2010-08-18  Andreas Schlegel  <andi@sojamo.de>
+
+      * version 0.5.3
+      
+      * src/controlP5/ListBox.java:
+      adding clear(). clears a ListBox in order to re-filling list.
+      
+      * src/controlP5/ListBox.java:
+      changing behavior of a ListBox-Button. 
+      a ListBox-button is clicked, it will call the Button's onLeave() 
+      and setIsInside(false) function to solve problem addressed here:
+      http://forum.processing.org/topic/controlp5-listbox-loses-mouseclicks
+       
+      * src/controlP5/ListBox.java: 
+      adding actAsPulldownMenu() to enable/disable pulldown 
+      functionality for a ListBox.
+      
+      * src/controlP5/PulldownMenu.java:
+      new Controller, extends ListBox, acts as a pulldown-menu.
+      
+      
 2010-08-03  Andreas Schlegel
       * version 0.5.2
       * Slider2D: a new Controller, 2D slider control.
@@ -11,10 +60,10 @@
       * Controller: setImage, allows to replace the default look of a controller with an image (PImage).  
       * Controller: setDisplay allows custom displays for controller. the custom display is called from within a controller's draw function. A custom Display implements interface ControllerDisplay
       * Controller: adding lock(), unlock(), isLock(), setMoveable(), isMoveable(), isUserInteraction(), setUserInteraction()
-      * Controller: adding plugTo(), removePlugFrom() (if this causes any problems or error message, please report)
+      * Controller: adding plugTo(), unplugFrom() (if this causes any problems or error message, please report)
       * ControlP5: adding java.util.logging.Logger for logging error, debug, info messages - wrapped in ControlP5.error(), ControlP5.warning(), ControlP5.info(), ControlP5.debug() 
       * ControlP5: added registerDispose()
-      * ControlP5: adding setMoveable() and isMoveable() to diable/enable controllers to be moved around.
+      * ControlP5: adding setMoveable() and isMoveable() to disable/enable controllers to be moved around.
       * ControlP5: adding disableShortcuts(), enableShortcuts() instead of disableKeys() and enableKeys()
       * ControlP5: deprecating lock(), unlock(), disableKeys(), enableKeys()
       * ControlWindow: adding begin() and end(). this allows to move controllers automatically to the main window or a separate controlWindow.

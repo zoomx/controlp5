@@ -30,8 +30,7 @@ import processing.core.PApplet;
 /**
  * A button triggers an event after it has been release. Events can be linked to
  * functions and fields inside your program/sketch. for a full documentation of
- * this controller see the <a
- * href="./controller_class_controller.htm">controller</a> class.
+ * this controller see the {@link Controller} class.
  * 
  * @example ControlP5button
  */
@@ -44,7 +43,7 @@ public class Button extends Controller {
 
 	protected boolean isOn = false;
 
-	protected static int autoWidth = 50;
+	protected static int autoWidth = 70;
 
 	protected static int autoHeight = 20;
 
@@ -79,42 +78,26 @@ public class Button extends Controller {
 		_myValue = theDefaultValue;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 */
 	public Button() {
 		super(null, null, null, 0, 0, 1, 1);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 */
 	public Button(ControlP5 theControlP5, String theName) {
 		super(theControlP5, theControlP5.tab("default"), theName, 0, 0, 1, 1);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onEnter()
-	 */
+	@Override
 	protected void onEnter() {
 		isActive = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onLeave()
-	 */
+	@Override
 	protected void onLeave() {
 		isActive = false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mousePressed()
+	/**
+	 * {@inheritDoc}
 	 */
 	public void mousePressed() {
 		isActive = getIsInside();
@@ -124,10 +107,8 @@ public class Button extends Controller {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleased()
+	/**
+	 * {@inheritDoc}
 	 */
 	public void mouseReleased() {
 		isPressed = false;
@@ -136,11 +117,13 @@ public class Button extends Controller {
 		}
 		isActive = false;
 	}
-	
+
 	/**
-	 * when to activate a button, when PRESSED or RELEASE;
-	 * @param theValue
-	 * @return
+	 * A button can be activated by a mouse PRESSED or mouse RELEASE. Default
+	 * value is RELEASE.
+	 * 
+	 * @param theValue use ControlP5.PRESSED or ControlP5.RELEASE as parameter
+	 * @return Button
 	 */
 	public Button activateBy(int theValue) {
 		if (theValue == PRESSED) {
@@ -154,8 +137,6 @@ public class Button extends Controller {
 	protected void activate() {
 		if (isActive) {
 			isActive = false;
-			// added. if a tab changes due to a mousePressed, 'isInside' has to
-			// be set to false
 			if (parent() instanceof Tab) {
 				setIsInside(false);
 			}
@@ -164,10 +145,8 @@ public class Button extends Controller {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleasedOutside()
+	/**
+	 * {@inheritDoc}
 	 */
 	public void mouseReleasedOutside() {
 		mouseReleased();
@@ -176,29 +155,22 @@ public class Button extends Controller {
 	/**
 	 * set the value of the button controller.
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#update()
+	/**
+	 * {@inheritDoc}
 	 */
 	public void update() {
 		setValue(_myValue);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * controlP5.ControllerInterface#addToXMLElement(controlP5.ControlP5XMLElement
-	 * )
+	/**
+	 * {@inheritDoc}
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "button");
@@ -208,15 +180,19 @@ public class Button extends Controller {
 	 * turn a button into a switch, or use toggle instead.
 	 * 
 	 * @see controlP5.Toggle
-	 * @param theFlag
+	 * @param theFlag turns the button into a switch when true
+	 * @return Button
 	 */
 	public Button setSwitch(boolean theFlag) {
 		isSwitch = theFlag;
 		return this;
 	}
 
-	/*
-	 * not tested yet.
+	/**
+	 * If the button acts as a switch, setOn will turn on the switch. Use
+	 * {@link #setSwitch(boolean) setSwitch} to turn a button into a switch.
+	 * 
+	 * @return Button
 	 */
 	public Button setOn() {
 		if (isSwitch) {
@@ -227,8 +203,11 @@ public class Button extends Controller {
 		return this;
 	}
 
-	/*
-	 * not tested yet.
+	/**
+	 * If the button acts as a switch, setOff will turn off the switch. Use
+	 * {@link #setSwitch(boolean) setSwitch} to turn a button into a switch.
+	 * 
+	 * @return Button
 	 */
 	public Button setOff() {
 		if (isSwitch) {
@@ -240,18 +219,18 @@ public class Button extends Controller {
 	}
 
 	/**
-	 * booleanValue returns true or false and indicates the switch state of the
-	 * button. setSwitch(true/false) should have been called before.
+	 * Returns true or false and indicates the switch state of the
+	 * button. {@link setSwitch(boolean) setSwitch} should have been set before.
 	 * 
 	 * @see controlP5.Button#setSwitch(boolean)
-	 * @return
+	 * @return boolean 
 	 */
 	public boolean booleanValue() {
 		return isOn;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * {@inheritDoc}}
 	 * 
 	 * @see controlP5.Controller#updateDisplayMode(int)
 	 */
@@ -273,6 +252,7 @@ public class Button extends Controller {
 
 		}
 	}
+
 
 	class ButtonSpriteDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
@@ -334,5 +314,10 @@ public class Button extends Controller {
 				theApplet.image(images[DEFAULT], 0, 0);
 			}
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "type:\tButton\n"+super.toString();
 	}
 }

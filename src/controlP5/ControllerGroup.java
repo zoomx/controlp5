@@ -37,10 +37,7 @@ import processing.core.PApplet;
  * ControllerGroup is an abstract class and is extended by e.g. ControlGroup,
  * Tab, or ScrollList
  * 
- *  ControlGroup
- *  ScrollList
- *  Tab
- *  Textarea
+ * ControlGroup ScrollList Tab Textarea
  */
 public abstract class ControllerGroup implements ControllerInterface, ControlP5Constants {
 
@@ -95,28 +92,22 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	protected float[] _myArrayValue;
 
 	protected boolean isCollapse = true;
-	
+
 	protected int _myPickingColor = 0x6600ffff;
-	
+
 	protected CVector3f autoPosition = new CVector3f(10, 30, 0);
 
 	protected float tempAutoPositionHeight = 0;
-	
+
 	protected float autoPositionOffsetX = 10;
 
-	
 	/**
 	 * 
-	 * @param theControlP5
-	 *          ControlP5
-	 * @param theParent
-	 *          ControllerGroup
-	 * @param theName
-	 *          String
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
+	 * @param theControlP5 ControlP5
+	 * @param theParent ControllerGroup
+	 * @param theName String
+	 * @param theX float
+	 * @param theY float
 	 */
 	public ControllerGroup(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY) {
 		position = new CVector3f(theX, theY, 0);
@@ -140,16 +131,14 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	public void init() {
 	}
-	
-	
+
 	public ControllerInterface parent() {
 		return _myParent;
 	}
-	
+
 	/**
 	 * 
-	 * @param theParent
-	 *          ControllerGroup
+	 * @param theParent ControllerGroup
 	 */
 	void setParent(ControllerGroup theParent) {
 		if (_myParent != null && _myParent != this) {
@@ -178,16 +167,14 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the group of the controller.
 	 * 
-	 * @param theGroup
-	 *          ControllerGroup
+	 * @param theGroup ControllerGroup
 	 */
 	public void setGroup(ControllerGroup theGroup) {
 		setParent(theGroup);
 	}
 
 	/**
-	 * @param theName
-	 *          String
+	 * @param theName String
 	 */
 	public void setGroup(String theName) {
 		setParent(controlP5.getGroup(theName));
@@ -196,12 +183,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * move the group.
 	 * 
-	 * @param theGroup
-	 *          ControlGroup
-	 * @param theTab
-	 *          Tab
-	 * @param theControlWindow
-	 *          ControlWindow
+	 * @param theGroup ControlGroup
+	 * @param theTab Tab
+	 * @param theControlWindow ControlWindow
 	 */
 	public void moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theControlWindow) {
 		if (theGroup != null) {
@@ -235,7 +219,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public void moveTo(String theTabName, ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.tab(theTabName), theControlWindow);
 	}
-	
+
 	public void moveTo(ControlWindow theControlWindow, String theTabName) {
 		moveTo(null, theControlWindow.tab(theTabName), theControlWindow);
 	}
@@ -247,8 +231,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the tab of the controller.
 	 * 
-	 * @param theName
-	 *          String
+	 * @param theName String
 	 */
 	public void setTab(String theName) {
 		setParent(controlP5.getTab(theName));
@@ -261,8 +244,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the tab of the controller.
 	 * 
-	 * @param theTab
-	 *          Tab
+	 * @param theTab Tab
 	 */
 	public void setTab(Tab theTab) {
 		setParent(theTab);
@@ -316,10 +298,8 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the position of this controller.
 	 * 
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
+	 * @param theX float
+	 * @param theY float
 	 */
 	public void setPosition(float theX, float theY) {
 		position.set((int) theX, (int) theY);
@@ -343,6 +323,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 */
 	public void continuousUpdateEvents() {
+		if (controllers.size() <= 0) {
+			return;
+		}
 		for (int i = controllers.size() - 1; i >= 0; i--) {
 			((ControllerInterface) controllers.get(i)).continuousUpdateEvents();
 		}
@@ -353,6 +336,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * controller.
 	 */
 	public void update() {
+		if (controllers.size() <= 0) {
+			return;
+		}
 		for (int i = controllers.size() - 1; i >= 0; i--) {
 			if (((ControllerInterface) controllers.get(i)).isUpdate()) {
 				((ControllerInterface) controllers.get(i)).update();
@@ -363,8 +349,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * enable or disable the update function of a controller.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setUpdate(boolean theFlag) {
 		isUpdate = theFlag;
@@ -433,8 +418,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * 
-	 * @param theApplet
-	 *          PApplet
+	 * @param theApplet PApplet
 	 */
 	public final void draw(PApplet theApplet) {
 		if (isVisible) {
@@ -502,20 +486,18 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	}
 
 	/**
-	 *  add a controller to the group, but use Controller.setGroup()
-	 *            instead.
-	 * @param theElement
-	 *          ControllerInterface
+	 * add a controller to the group, but use Controller.setGroup() instead.
+	 * 
+	 * @param theElement ControllerInterface
 	 */
 	public void add(ControllerInterface theElement) {
 		controllers.add(theElement);
 	}
 
 	/**
-	 *  remove a controller from the group, but use
-	 *            Controller.setGroup() instead.
-	 * @param theElement
-	 *          ControllerInterface
+	 * remove a controller from the group, but use Controller.setGroup() instead.
+	 * 
+	 * @param theElement ControllerInterface
 	 */
 
 	public void remove(ControllerInterface theElement) {
@@ -524,8 +506,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * 
-	 * @param theElement
-	 *          CDrawable
+	 * @param theElement CDrawable
 	 */
 	public void addDrawable(CDrawable theElement) {
 		controllers.addDrawable(theElement);
@@ -533,8 +514,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * 
-	 * @param theElement
-	 *          CDrawable
+	 * @param theElement CDrawable
 	 */
 	public void remove(CDrawable theElement) {
 		controllers.removeDrawable(theElement);
@@ -581,8 +561,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * 
-	 * @param theEvent
-	 *          KeyEvent
+	 * @param theEvent KeyEvent
 	 */
 	public void keyEvent(KeyEvent theEvent) {
 		for (int i = 0; i < controllers.size(); i++) {
@@ -592,8 +571,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * 
-	 * @param theStatus
-	 *          boolean
+	 * @param theStatus boolean
 	 * @return boolean
 	 */
 	public boolean setMousePressed(boolean theStatus) {
@@ -634,8 +612,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * 
-	 * @param theId
-	 *          int
+	 * @param theId int
 	 */
 	public void setId(int theId) {
 		_myId = theId;
@@ -652,8 +629,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the color for the group when active.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
@@ -665,8 +641,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the foreground color of the group.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
@@ -678,8 +653,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the background color of the group.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
@@ -691,8 +665,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the color of the text label of the group.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorLabel(int theColor) {
 		color.colorCaptionLabel = theColor;
@@ -707,8 +680,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the color of the value label.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorValue(int theColor) {
 		color.colorValueLabel = theColor;
@@ -723,8 +695,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the label of the group.
 	 * 
-	 * @param theLabel
-	 *          String
+	 * @param theLabel String
 	 */
 	public void setLabel(String theLabel) {
 		_myLabel.setFixedSize(false);
@@ -744,8 +715,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the group's visibility.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setVisible(boolean theFlag) {
 		isVisible = theFlag;
@@ -768,8 +738,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * set the moveable status of the group.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setMoveable(boolean theFlag) {
 		isMoveable = theFlag;
@@ -786,8 +755,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setOpen(boolean theFlag) {
 		isOpen = theFlag;
@@ -818,11 +786,10 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		setOpen(false);
 	}
 
-	
 	public int getPickingColor() {
 		return _myPickingColor;
 	}
-	
+
 	/**
 	 * 
 	 * @return CColor
@@ -854,8 +821,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * get a controller of the group.
 	 * 
-	 * @param theController
-	 *          String
+	 * @param theController String
 	 * @return Controller
 	 */
 	public Controller controller(String theController) {
@@ -881,13 +847,23 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public boolean isCollapse() {
 		return isCollapse;
 	}
-	
+
 	public int getWidth() {
 		return _myWidth;
 	}
-	
+
 	public int getHeight() {
 		return _myHeight;
+	}
+
+	public ControllerGroup setWidth(int theWidth) {
+		_myWidth = theWidth;
+		return this;
+	}
+
+	public ControllerGroup setHeight(int theHeight) {
+		_myHeight = theHeight;
+		return this;
 	}
 
 	protected boolean inside() {
@@ -923,4 +899,11 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		return myXMLElement;
 	}
 
+	@Override
+	public String toString() {
+		return "\nname:\t" + _myName + "\n" + "label:\t" + _myLabel.getText() + "\n" + "id:\t" + _myId + "\n" + "value:\t"
+				+ _myValue + "\n" + "position:\t" + position + "\n" + "absolute:\t" + absolutePosition + "\n" + "width:\t"
+				+ getWidth() + "\n" + "height:\t" + getHeight() + "\n" + "color:\t" + getColor() + "\n" + "visible:\t"
+				+ isVisible + "\n" + "moveable:\t" + isMoveable + "\n";
+	}
 }

@@ -1,4 +1,7 @@
 TODO
+2010-08-07  Andreas Schlegel
+      * fix ControlWindowCanvas.pre(), doesnt work anymore.
+      
 2010-07-25  Andreas Schlegel
       * Android support, current version conflicts with android java (ControlWindow, PAppletWindow, using Toolkit when loading bit-font, KeyEvents, etc.)
       * CColor: alpha handling

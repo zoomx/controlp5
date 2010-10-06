@@ -25,9 +25,9 @@ package controlP5;
  *
  */
 
-import processing.core.PApplet;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import processing.core.PApplet;
 
 /**
  * 
@@ -49,7 +49,7 @@ import java.util.Hashtable;
  */
 public class Radio extends Controller {
 	
-	Vector _myRadioButtons;
+	ArrayList<RadioToggle> _myRadioButtons;
 
 	private int myLineSpacing = 14;
 
@@ -94,7 +94,7 @@ public class Radio extends Controller {
 	        float theX,
 	        float theY) {
 		super(theControlP5, theParent, theName, theX, theY, 30, 30);
-		_myRadioButtons = new Vector();
+		_myRadioButtons = new ArrayList<RadioToggle>();
 	}
 
 	public Radio(
@@ -107,7 +107,7 @@ public class Radio extends Controller {
 	        int theHeight,
 	        int theLineSpacing) {
 		super(theControlP5, theParent, theName, theX, theY, 30, 30);
-		_myRadioButtons = new Vector();
+		_myRadioButtons = new ArrayList<RadioToggle>();
 		myLineSpacing = theLineSpacing;
 		_myRadioButtonWidth = theWidth;
 		_myRadioButtonHeight = theHeight;
