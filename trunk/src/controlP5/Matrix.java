@@ -61,7 +61,7 @@ public class Matrix extends Controller {
 
 	protected long _myTime;
 
-	protected long _myInterval;
+	protected int _myInterval;
 
 	protected int currentX = -1;
 
@@ -96,11 +96,14 @@ public class Matrix extends Controller {
 	/**
 	 * set the speed of intervals in millis iterating through the matrix.
 	 * 
-	 * @param theInterval
-	 *          long
+	 * @param theInterval int
 	 */
-	public void setInterval(long theInterval) {
+	public void setInterval(int theInterval) {
 		_myInterval = theInterval;
+	}
+	
+	public int getInterval() {
+		return _myInterval;
 	}
 
 	/**

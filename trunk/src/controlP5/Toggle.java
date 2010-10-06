@@ -42,31 +42,22 @@ public class Toggle extends Controller {
 
 	protected float internalValue = -1;
 
-	protected static int autoWidth = 20;
+	protected static int autoWidth = 40;
 
 	protected static int autoHeight = 20;
 
 	protected CVector3f autoSpacing = new CVector3f(10, 20, 0);
 
-
 	/**
 	 * 
-	 * @param theControlP5
-	 *          ControlP5
-	 * @param theParent
-	 *          Tab
-	 * @param theName
-	 *          String
-	 * @param theValue
-	 *          float
-	 * @param theX
-	 *          float
-	 * @param theY
-	 *          float
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theControlP5 ControlP5
+	 * @param theParent Tab
+	 * @param theName String
+	 * @param theValue float
+	 * @param theX float
+	 * @param theY float
+	 * @param theWidth int
+	 * @param theHeight int
 	 */
 	public Toggle(
 			ControlP5 theControlP5,
@@ -83,8 +74,7 @@ public class Toggle extends Controller {
 
 	/**
 	 * 
-	 * @param theApplet
-	 *          PApplet
+	 * @param theApplet PApplet
 	 */
 	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
@@ -111,8 +101,7 @@ public class Toggle extends Controller {
 
 	/**
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 		if (theValue == 0) {
@@ -133,8 +122,7 @@ public class Toggle extends Controller {
 	/**
 	 * set the state of the toggle, which can be true or false.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setState(boolean theFlag) {
 		isOn = theFlag;
@@ -174,13 +162,12 @@ public class Toggle extends Controller {
 	 * @param theMode
 	 */
 	public void setMode(int theMode) {
-			updateDisplayMode(theMode);
+		updateDisplayMode(theMode);
 	}
 
 	/**
 	 * 
-	 * @param theElement
-	 *          ControlP5XMLElement
+	 * @param theElement ControlP5XMLElement
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "toggle");
@@ -212,6 +199,8 @@ public class Toggle extends Controller {
 			_myDisplay = new ToggleDisplay();
 			break;
 		case (SPRITE):
+			_myDisplay = new ToggleSpriteDisplay();
+			break;
 		case (IMAGE):
 			_myDisplay = new ToggleImageDisplay();
 			break;
@@ -239,13 +228,27 @@ public class Toggle extends Controller {
 		}
 	}
 
+	class ToggleSpriteDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			if (isActive) {
+				sprite.setState(1);
+			} else {
+				if (isOn) {
+					sprite.setState(1);
+				} else {
+					sprite.setState(0);
+				}
+			}
+		}
+	}
+
 	class ToggleImageDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
 			} else {
-				if(isOn) {
-				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
+				if (isOn) {
+					theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
 				} else {
 					theApplet.image(images[DEFAULT], 0, 0);
 				}

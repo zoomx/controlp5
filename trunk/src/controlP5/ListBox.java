@@ -25,9 +25,8 @@ package controlP5;
  *
  */
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-
 import processing.core.PApplet;
 
 /**
@@ -37,9 +36,11 @@ import processing.core.PApplet;
  */
 public class ListBox extends ControlGroup implements ControlListener {
 
-	protected int _myAdjustedListHeight;
-
 	protected int _myItemHeight = 13;
+
+	protected int maxButtons = 0;
+
+	protected int _myOriginalBackgroundHeight = 0;
 
 	protected Slider _myScrollbar;
 
@@ -53,9 +54,13 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	protected List<ListBoxItem> items;
 
-	protected int spacing;
+	protected List<Button> buttons;
+
+	protected int spacing = 1;
 
 	protected boolean isMultipleChoice = false;
+
+	protected boolean pulldown;
 
 	protected ListBox(
 			ControlP5 theControlP5,
@@ -66,35 +71,52 @@ public class ListBox extends ControlGroup implements ControlListener {
 			int theW,
 			int theH) {
 		super(theControlP5, theGroup, theName, theX, theY, theW, 9);
+
+		items = new ArrayList<ListBoxItem>();
+		buttons = new ArrayList<Button>();
+
 		_myWidth = theW;
-		_myBackgroundHeight = theH;
-		items = new Vector<ListBoxItem>();
-		_myAdjustedListHeight = (((int) (_myBackgroundHeight / _myItemHeight)) * _myItemHeight + 1) - 2;
-		_myScrollbar = new Slider(controlP5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth + 1, 0, 10, _myAdjustedListHeight);
 		_myName = theName;
+		_myBackgroundHeight = theH;
+
+		_myScrollbar = new Slider(controlP5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth + 1, 0, 10, _myBackgroundHeight);
 		_myScrollbar.setBroadcast(false);
 		_myScrollbar.setSliderMode(Slider.FLEXIBLE);
 		_myScrollbar.setMoveable(false);
 		_myScrollbar.setLabelVisible(false);
 		_myScrollbar.setParent(this);
-		add(_myScrollbar);
 		_myScrollbar.addListener(this);
 		_myScrollbar.setVisible(false);
 		_myScrollbar.hide();
+		_myScrollbar.updateDisplayMode(DEFAULT);
+		add(_myScrollbar);
+		
+		setHeight(_myBackgroundHeight);
 	}
 
+	/**
+	 * hide the scrollbar.
+	 */
 	public void hideScrollbar() {
 		isScrollbarVisible = false;
 		_myScrollbar.hide();
 	}
 
+	/**
+	 * show the scrollbar.
+	 */
 	public void showScrollbar() {
 		isScrollbarVisible = true;
-		if ((controllers.size() - 1) * _myItemHeight > _myAdjustedListHeight && isScrollbarVisible) {
+		if ((items.size()) * _myItemHeight > _myBackgroundHeight && isScrollbarVisible) {
 			_myScrollbar.show();
 		}
 	}
 
+	/**
+	 * check if the scrollbar is visible.
+	 * 
+	 * @return
+	 */
 	public boolean isScrollbarVisible() {
 		return isScrollbarVisible;
 	}
@@ -105,90 +127,242 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @param theValue
 	 */
 	public void scroll(float theValue) {
-		if ((items.size()) * _myItemHeight > _myAdjustedListHeight) {
+		if ((items.size()) * _myItemHeight > _myBackgroundHeight) {
 			_myScrollbar.setValue(PApplet.abs(1 - PApplet.min(PApplet.max(0, theValue), 1)));
 		}
 	}
 
-	
+	/**
+	 * internal scroll updates.
+	 */
 	private void scroll() {
-		int myValue = 0;
-		if ((items.size()) * _myItemHeight > _myAdjustedListHeight && isScrollbarVisible) {
+		int n = 0;
+		if (buttons.size() < items.size() && isScrollbarVisible) {
 			_myScrollbar.show();
-			myValue = (int) (((_myScrollValue * (((items.size()) * _myItemHeight) - _myAdjustedListHeight)) / _myItemHeight))
-					* _myItemHeight;
-			for (int i = 1; i < controllers.size(); i++) {
-				int n = Math.abs(myValue / _myItemHeight) + (i - 1);
-				n = Math.max(0, Math.min(n, items.size() - 1));
-				((Button) controllers.get(i)).setColor(items.get(n).getColor());
-				((Button) controllers.get(i)).captionLabel().set((items.get(n)).text);
-				((Button) controllers.get(i))._myValue = (items.get(n)).value;
-			}
+			n = (int) Math.abs(_myScrollValue * (items.size() - buttons.size()));
 		} else {
 			_myScrollbar.hide();
-			for (int i = 1; i < controllers.size(); i++) {
-				int n = i - 1;
-				((Button) controllers.get(i)).setColor(items.get(n).getColor());
-				((Button) controllers.get(i)).captionLabel().set((items.get(n)).text);
-				((Button) controllers.get(i))._myValue = (items.get(n)).value;
-			}
+		}
+		for (int i = 0; i < buttons.size(); i++) {
+			buttons.get(i).setColor(items.get(n + i).getColor());
+			buttons.get(i).captionLabel().set((items.get(n + i)).text);
+			buttons.get(i)._myValue = (items.get(n + i)).value;
 		}
 	}
 
+	/**
+	 * set the height of list box items.
+	 * 
+	 * @param theHeight
+	 */
 	public void setItemHeight(int theHeight) {
 		_myItemHeight = theHeight;
-		_myAdjustedListHeight = (((int) (_myBackgroundHeight / _myItemHeight)) * _myItemHeight + spacing) - 2;
-		_myScrollbar.setHeight((int) (_myAdjustedListHeight + 1));
-		for (int i = 1; i < controllers.size(); i++) {
-			((Button) controllers.get(i)).height = theHeight - 1;
-			((Button) controllers.get(i)).position.y = (theHeight + spacing) * (i - 1);
+		for (int i = 0; i < buttons.size(); i++) {
+			buttons.get(i).height = theHeight;
+			buttons.get(i).position.y = (theHeight + spacing) * i;
 		}
-		setHeight(_myBackgroundHeight);
+		setHeight(_myOriginalBackgroundHeight);
 	}
 
-	public void setHeight(int theHeight) {
-		_myBackgroundHeight = theHeight;
-		_myAdjustedListHeight = (((int) (_myBackgroundHeight / _myItemHeight)) * _myItemHeight + spacing) - 2;
+	/**
+	 * set the height of the list box.
+	 * 
+	 * @param theHeight
+	 */
+	public ListBox setHeight(int theHeight) {
+		_myOriginalBackgroundHeight = theHeight;
 
-		int pn = controllers.size() - 1;
-		int n = (int) (_myBackgroundHeight / _myItemHeight);
-		boolean isScrollbarRequired = _myBackgroundHeight < (_myItemHeight + spacing) * items.size();
+		// re-adjust the _myAdjustedListHeight variable based on height change.
+		_myBackgroundHeight = (_myOriginalBackgroundHeight / (_myItemHeight + spacing)) * (_myItemHeight + spacing);
+		maxButtons = _myBackgroundHeight / (_myItemHeight + spacing);
 
-		if (pn > n) { // make listbox smaller
-			for (int i = 0; i < pn - n; i++) {
-				String buttonName = _myName + "Button" + (n + i);
-				controllers.remove(controlP5.controller(buttonName));
-				controlP5.remove(buttonName);
+		int pn = buttons.size();
+		int n = (int) (_myBackgroundHeight / (_myItemHeight + spacing));
+
+		if (n < pn) {
+			for (int i = buttons.size() - 1; i >= n; i--) {
+				controlP5.remove(controlP5.controller(buttons.get(i).name()));
+				controllers.remove(buttons.get(i));
+				buttons.remove(i);
 			}
-			if (isScrollbarRequired) {
-				_myScrollbar.show();
-				scroll();
-			} else {
-				_myScrollbar.hide();
-			}
-		}
-
-		if (pn < n) { // make listbox bigger
+		} else if (pn < n) { // increase size of list
 			int nn = Math.min(n, items.size());
 			nn -= pn;
 			addListButton(nn);
-			if (isScrollbarRequired) {
-				_myScrollbar.show();
-				scroll();
-			} else {
-				_myScrollbar.hide();
-			}
 		}
-		_myScrollbar.setHeight(_myAdjustedListHeight + 1);
+		updateBackground();
+		scroll();
+		return this;
+	}
+	
+	private void updateScroll() {
+		_myScrollValue = _myScrollbar.value();
+		_myScrollbar.setValue(_myScrollValue);
+		if (buttons.size() < items.size() && isScrollbarVisible) {
+			_myScrollbar.show();
+		}
+		updateBackground();
 		scroll();
 	}
+	
+	private void updateBackground() {
+		if (items.size() * (_myItemHeight + spacing) < _myOriginalBackgroundHeight) {
+			_myBackgroundHeight = items.size() * (_myItemHeight + spacing);
+		}
+		if (buttons.size()<items.size()) {
+			_myScrollbar.setHeight(_myBackgroundHeight - spacing);
+			_myScrollbar.show();
+		} else {
+			_myScrollbar.hide();
+		}
+		
+	}
 
-	public void setWidth(int theWidth) {
+	public ListBox setWidth(int theWidth) {
 		_myWidth = theWidth;
 		for (int i = 1; i < controllers.size(); i++) {
 			((Button) controllers.get(i)).width = theWidth;
 		}
 		_myScrollbar.position.x = _myWidth + 1;
+		return this;
+	}
+
+	protected void addListButton(int theNum) {
+		for (int i = 0; (i < theNum) && (buttons.size() < maxButtons); i++) {
+			int index = buttons.size();
+			Button b = new Button(controlP5, (ControllerGroup) this, _myName + "Button" + index, index, 0, index
+					* (_myItemHeight + spacing), _myWidth, _myItemHeight, false);
+			b.setMoveable(false);
+			add(b);
+			controlP5.register(b);
+			b.setBroadcast(false);
+			b.addListener(this);
+			buttons.add(b);
+		}
+		updateScroll();
+	}
+
+
+
+	/**
+	 * Adds an item to the ListBox.
+	 * 
+	 * @see #removeItem(String,int)
+	 * @param theName String
+	 * @param theValue int
+	 */
+	public ListBoxItem addItem(String theName, int theValue) {
+		ListBoxItem lbi = new ListBoxItem(this, theName, theValue);
+		items.add(lbi);
+		addListButton(1);
+		return lbi;
+	}
+
+	/**
+	 * Removes an item from the ListBox using the unique name of the item given
+	 * when added to the list.
+	 * 
+	 * @see #addItem(String,int)
+	 * @param theItemName String
+	 */
+	public void removeItem(String theItemName) {
+		try {
+			for (int i = items.size() - 1; i >= 0; i--) {
+				if ((items.get(i)).name.equals(theItemName)) {
+					items.remove(i);
+				}
+			}
+			if ((buttons.size()) > items.size()) {
+				String buttonName = ((Button) controllers.get(buttons.size())).name();
+				buttons.remove(controlP5.controller(buttonName));
+				controllers.remove(controlP5.controller(buttonName));
+				controlP5.remove(buttonName);
+
+			}
+			updateScroll();
+		} catch (Exception e) {
+			ControlP5.logger().finer("ScrollList.removeItem exception:" + e);
+		}
+	}
+
+	/**
+	 * returns a listBoxItem by index in the list of items.
+	 * 
+	 * @param theIndex
+	 * @return
+	 */
+	public ListBoxItem item(int theIndex) {
+		return ((ListBoxItem) items.get(theIndex));
+	}
+
+	/**
+	 * TODO faulty returns a listBoxItem by name.
+	 * 
+	 * @param theItemName
+	 * @return
+	 */
+	public ListBoxItem item(String theItemName) {
+		for (int i = items.size() - 1; i >= 0; i--) {
+			if ((items.get(i)).name.equals(theItemName)) {
+				return items.get(i);
+			}
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.ControlGroup#controlEvent(controlP5.ControlEvent)
+	 */
+	public void controlEvent(ControlEvent theEvent) {
+		if (theEvent.controller() instanceof Button) {
+			try {
+				_myValue = theEvent.controller().value();
+				ControlEvent myEvent = new ControlEvent(this);
+				if (pulldown) {
+					close();
+					setLabel(theEvent.label());
+				}
+				controlP5.controlbroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
+				((Button) theEvent.controller()).onLeave();
+				((Button) theEvent.controller()).setIsInside(false);
+			} catch (Exception e) {
+				ControlP5.logger().warning("ScrollList.controlEvent exception:" + e);
+			}
+		} else {
+			_myScrollValue = -(1 - theEvent.value());
+			scroll();
+		}
+
+	}
+
+	/**
+	 * Enable a ListBox to act as a pulldown menu. Alternatively use class
+	 * PulldownMenu instead.
+	 * 
+	 * @see controlP5.PulldownMenu
+	 * @param theValue
+	 */
+	public void actAsPulldownMenu(boolean theValue) {
+		pulldown = theValue;
+		if (pulldown) {
+			close();
+		}
+	}
+
+	/**
+	 * remove all items from a list box
+	 */
+	public void clear() {
+		for (int i = items.size() - 1; i >= 0; i--) {
+			removeItem(items.get(i).name);
+		}
+		items.clear();
+		for (int i = buttons.size() - 1; i >= 0; i--) {
+			controlP5.remove(buttons.get(i));
+		}
+		_myBackgroundHeight = 0;
 	}
 
 	/**
@@ -239,119 +413,6 @@ public class ListBox extends ControlGroup implements ControlListener {
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().colorValueLabel = theColor;
 		}
-	}
-
-	protected void addListButton(int theNum) {
-		for (int i = 0; i < theNum; i++) {
-			int myLength = controllers.size() - 1;
-			if ((myLength * _myItemHeight) < _myBackgroundHeight) {
-				Button b = new Button(controlP5, (ControllerGroup) this, _myName + "Button" + myLength, myLength, 0, myLength
-						* _myItemHeight, _myWidth, _myItemHeight - 1, false);
-				b.setMoveable(false);
-				add(b);
-				controlP5.register(b);
-				b.setBroadcast(false);
-				b.addListener(this);
-			}
-		}
-		updateScroll();
-	}
-
-	private void updateScroll() {
-		_myScrollValue = _myScrollbar.value();
-		_myScrollbar.setValue(_myScrollValue);
-		if ((items.size() - 1) * _myItemHeight > _myAdjustedListHeight && isScrollbarVisible) {
-			_myScrollbar.show();
-		}
-		scroll();
-	}
-
-	/**
-	 * add an item to the ListBox.
-	 * 
-	 * @param theName
-	 *          String
-	 * @param theValue
-	 *          int
-	 */
-	public ListBoxItem addItem(String theName, int theValue) {
-		ListBoxItem lbi = new ListBoxItem(this, theName, theValue);
-		items.add(lbi);
-		addListButton(1);
-		return lbi;
-	}
-
-	/**
-	 * remove an item from the ListBox.
-	 * 
-	 * @param theItemName
-	 *          String
-	 */
-	public void removeItem(String theItemName) {
-		try {
-			for (int i = items.size() - 1; i >= 0; i--) {
-				if ((items.get(i)).name.equals(theItemName)) {
-					items.remove(i);
-				}
-			}
-			if ((controllers.size() - 1) > items.size()) {
-				String buttonName = ((Button) controllers.get(controllers.size() - 1)).name();
-				controllers.remove(controlP5.controller(buttonName));
-				controlP5.remove(buttonName);
-			}
-			updateScroll();
-		} catch (Exception e) {
-				ControlP5.logger().finer("ScrollList.removeItem exception:" + e);
-		}
-	}
-
-	/**
-	 * returns a listBoxItem by index in the list of items.
-	 * 
-	 * @param theIndex
-	 * @return
-	 */
-	public ListBoxItem item(int theIndex) {
-		return ((ListBoxItem) items.get(theIndex));
-	}
-
-	/**
-	 * TODO faulty returns a listBoxItem by name.
-	 * 
-	 * @param theItemName
-	 * @return
-	 */
-	public ListBoxItem item(String theItemName) {
-		for (int i = items.size() - 1; i >= 0; i--) {
-			if ((items.get(i)).name.equals(theItemName)) {
-				return items.get(i);
-			}
-		}
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.ControlGroup#controlEvent(controlP5.ControlEvent)
-	 */
-	public void controlEvent(ControlEvent theEvent) {
-		if (theEvent.controller() instanceof Button) {
-			try {
-				_myValue = theEvent.controller().value();
-				ControlEvent myEvent = new ControlEvent(this);
-				controlP5.controlbroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
-			} catch (Exception e) {
-				// in case the itemHeight conflicts with
-				// the listHeight, an java.lang.ArrayIndexOutOfBoundsException
-				// might occur.
-				// !!! fix
-			}
-		} else {
-			_myScrollValue = -(1 - theEvent.value());
-			scroll();
-		}
-
 	}
 
 	/*

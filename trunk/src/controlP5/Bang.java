@@ -128,8 +128,7 @@ public class Bang extends Controller {
 	 * set the value of the bang controller. since bang can be true or false,
 	 * false=0 and true=1
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 		_myValue = theValue;
@@ -168,13 +167,30 @@ public class Bang extends Controller {
 			_myDisplay = new BangDisplay();
 			break;
 		case (SPRITE):
+			_myDisplay = new BangSpriteDisplay();
+			break;
 		case (IMAGE):
 			_myDisplay = new BangImageDisplay();
 			break;
 		case (CUSTOM):
 		default:
 			break;
+		}
+	}
 
+	class BangSpriteDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			if (isActive) {
+				sprite.setState(1);
+			} else {
+				sprite.setState(0);
+			}
+			if (cnt < 0) {
+				sprite.setState(0);
+				cnt++;
+			}
+			theApplet.fill(0);
+			sprite.draw(theApplet);
 		}
 	}
 
@@ -214,4 +230,8 @@ public class Bang extends Controller {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "type:\tBang\n"+super.toString();
+	}
 }

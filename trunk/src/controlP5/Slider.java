@@ -70,9 +70,9 @@ public class Slider extends Controller {
 
 	protected static int autoHeight = 10;
 
-	// TODO replace and include Label alignments 
+	// TODO replace and include Label alignments
 	// and positioning in Controller class
-	
+
 	protected int alignValueLabel = CENTER;
 
 	public int valueLabelPositioning = FIX;
@@ -85,26 +85,16 @@ public class Slider extends Controller {
 	 * 
 	 * @example ControlP5slider
 	 * 
-	 * @param theControlP5
-	 *          ControlP5
-	 * @param theParent
-	 *          ControllerGroup
-	 * @param theName
-	 *          String
-	 * @param theMin
-	 *          float
-	 * @param theMax
-	 *          float
-	 * @param theDefaultValue
-	 *          float
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theControlP5 ControlP5
+	 * @param theParent ControllerGroup
+	 * @param theName String
+	 * @param theMin float
+	 * @param theMax float
+	 * @param theDefaultValue float
+	 * @param theX int
+	 * @param theY int
+	 * @param theWidth int
+	 * @param theHeight int
 	 */
 	public Slider(
 			ControlP5 theControlP5,
@@ -146,8 +136,7 @@ public class Slider extends Controller {
 	 * use the slider mode to set the mode of the slider bar, which can be
 	 * Slider.FLEXIBLE or Slider.FIX
 	 * 
-	 * @param theMode
-	 *          int
+	 * @param theMode int
 	 */
 	public void setSliderMode(int theMode) {
 		_mySliderMode = theMode;
@@ -188,8 +177,7 @@ public class Slider extends Controller {
 	/**
 	 * set the value of the slider.
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 		_myValue = theValue;
@@ -208,8 +196,7 @@ public class Slider extends Controller {
 	/**
 	 * set the minimum value of the slider.
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setMin(float theValue) {
 		_myMin = theValue;
@@ -219,8 +206,7 @@ public class Slider extends Controller {
 	/**
 	 * set the maximum value of the slider.
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setMax(float theValue) {
 		_myMax = theValue;
@@ -230,8 +216,7 @@ public class Slider extends Controller {
 	/**
 	 * set the width of the slider.
 	 * 
-	 * @param theValue
-	 *          int
+	 * @param theValue int
 	 */
 	public Controller setWidth(int theValue) {
 		width = theValue;
@@ -242,8 +227,7 @@ public class Slider extends Controller {
 	/**
 	 * set the height of the slider.
 	 * 
-	 * @param theValue
-	 *          int
+	 * @param theValue int
 	 */
 	public Controller setHeight(int theValue) {
 		height = theValue;
@@ -253,8 +237,7 @@ public class Slider extends Controller {
 
 	/**
 	 * 
-	 * @param theElement
-	 *          ControlP5XMLElement
+	 * @param theElement ControlP5XMLElement
 	 */
 	public void addToXMLElement(ControlP5XMLElement theElement) {
 		theElement.setAttribute("type", "slider");

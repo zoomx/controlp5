@@ -29,7 +29,6 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import processing.core.PApplet;
@@ -41,25 +40,6 @@ import processing.core.PFont;
  * @example ControlP5basics
  */
 public class ControlP5 extends ControlP5Base {
-
-	// projects using controlP5
-	// http://www.danielsauter.com/showreel.php?id=59
-	// http://www.raintone.com/2009/03/fractalwavetables-v2/
-	// http://www.flickr.com/photos/jrosenk/3631041263/
-	// http://www.gtdv.org/
-	// http://0p0media.com/aurapixlab/
-	// http://www.introspector.be/index.php?/research/dook/
-	// http://createdigitalmotion.com/2009/11/29/processing-beats-keyframing-typestar-karaoke-machine-generates-kinetic-lyrics/
-	// http://www.yonaskolb.com/predray
-	// http://www.creativeapplications.net/processing/cop15-identity-processing/
-	// http://vimeo.com/9158064 + http://vimeo.com/9153342 processing-city,
-	// sandy-city
-	//
-
-	// TODO
-	// (1) file dialog:
-	// http://java.sun.com/j2se/1.5.0/docs/api/java/awt/FileDialog.html
-	// (2) add ControlIcon for custom icons with PImage
 
 	public ControlWindow controlWindow;
 
@@ -114,7 +94,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * 
 	 */
-	public static final String VERSION = "##version##";
+	public static final String VERSION = "0.5.4";// "##version##"; // compiles
+	// before replacing ##version##
 
 	/**
 	 * 
@@ -122,7 +103,7 @@ public class ControlP5 extends ControlP5Base {
 	public static boolean isApplet;
 
 	/**
-	 * 
+	 * use this static variable to turn DEBUG on or off.
 	 */
 	public static boolean DEBUG;
 
@@ -142,16 +123,12 @@ public class ControlP5 extends ControlP5Base {
 	// this is useful when using clear() or load()
 	protected boolean blockDraw;
 
-	// protected currentStack;
-	
-	
-	protected static Logger logger;
+	private static final Logger logger = Logger.getLogger("controlP5.ControlP5");
 
 	/**
 	 * instantiate controlP5.
 	 * 
-	 * @param theParent
-	 *          PApplet
+	 * @param theParent PApplet
 	 */
 	public ControlP5(final PApplet theParent) {
 		papplet = theParent;
@@ -160,17 +137,15 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public ControlP5(final PApplet theParent, ControlFont theControlFont) {
-		// gui addons inspiration.
-		// http://www.futureaudioworkshop.com/
-		// 
 		papplet = theParent;
 		setControlFont(theControlFont);
 		init();
 	}
 
+	/**
+	 * 
+	 */
 	protected void init() {
-		logger = Logger.getLogger("controlP5");
-		logger.setLevel(Level.ALL);
 		welcome();
 		isTabEventsActive = false;
 		_myControlP5IOHandler = new ControlP5IOHandler(this);
@@ -202,8 +177,7 @@ public class ControlP5 extends ControlP5Base {
 	 * file. to turn of auto intialization, call setAutoInitialization(false)
 	 * right after initializing controlP5 and before creating any controller.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setAutoInitialization(boolean theFlag) {
 		isAutoInitialization = theFlag;
@@ -217,8 +191,7 @@ public class ControlP5 extends ControlP5Base {
 	 * controlP5.draw() any time whenever controllers should be drawn into the
 	 * sketch.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setAutoDraw(boolean theFlag) {
 		if (isAutoDraw() && theFlag == false) {
@@ -248,11 +221,22 @@ public class ControlP5 extends ControlP5Base {
 		return _myControlBroadcaster;
 	}
 
+	public void addListener(ControlListener theListener) {
+		controlbroadcaster().addListener(theListener);
+	}
+
+	public void removeListener(ControlListener theListener) {
+		controlbroadcaster().removeListener(theListener);
+	}
+
+	public ControlListener getListener(int theIndex) {
+		return controlbroadcaster().getListener(theIndex);
+	}
+
 	/**
 	 * get a tab by name.
 	 * 
-	 * @param theName
-	 *          String
+	 * @param theName String
 	 * @return Tab
 	 */
 	public Tab tab(String theName) {
@@ -262,8 +246,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * get a tab by name.
 	 * 
-	 * @param theName
-	 *          String
+	 * @param theName String
 	 * @return Tab
 	 */
 	public Tab getTab(String theName) {
@@ -281,10 +264,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * get a tab by name from a specific controlwindow.
 	 * 
-	 * @param theWindow
-	 *          ControlWindow
-	 * @param theName
-	 *          String
+	 * @param theWindow ControlWindow
+	 * @param theName String
 	 * @return Tab
 	 */
 	public Tab tab(ControlWindow theWindow, String theName) {
@@ -294,10 +275,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * get a tab by name from a specific controlwindow.
 	 * 
-	 * @param theWindow
-	 *          ControlWindow
-	 * @param theName
-	 *          String
+	 * @param theWindow ControlWindow
+	 * @param theName String
 	 * @return Tab
 	 */
 	public Tab getTab(ControlWindow theWindow, String theName) {
@@ -312,8 +291,7 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * 
-	 * @param theController
-	 *          ControllerInterface
+	 * @param theController ControllerInterface
 	 */
 	public void register(ControllerInterface theController) {
 		checkName(theController.name());
@@ -359,8 +337,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * remove a controlWindow and all its contained controllers.
 	 * 
-	 * @param theWindow
-	 *          ControlWindow
+	 * @param theWindow ControlWindow
 	 */
 	protected void remove(ControlWindow theWindow) {
 		theWindow.remove();
@@ -370,8 +347,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * remove a controller by instance.
 	 * 
-	 * @param theController
-	 *          ControllerInterface
+	 * @param theController ControllerInterface
 	 */
 	protected void remove(ControllerInterface theController) {
 		_myControllerMap.remove(theController.name());
@@ -380,8 +356,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * remove a controlP5 element such as a controller, group, or tab by name.
 	 * 
-	 * @param theString
-	 *          String
+	 * @param theString String
 	 */
 	public void remove(String theString) {
 		if (controller(theString) != null) {
@@ -405,8 +380,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * get a controller by name. you will have to cast the controller.
 	 * 
-	 * @param theName
-	 *          String
+	 * @param theName String
 	 * @return Controller
 	 */
 	public Controller controller(String theName) {
@@ -421,8 +395,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * get a group by name
 	 * 
-	 * @param theGroupName
-	 *          String
+	 * @param theGroupName String
 	 * @return ControllerGroup
 	 */
 	public ControllerGroup group(String theGroupName) {
@@ -432,8 +405,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * get a group by name.
 	 * 
-	 * @param theGroupName
-	 *          String
+	 * @param theGroupName String
 	 * @return ControllerGroup
 	 */
 	public ControllerGroup getGroup(String theGroupName) {
@@ -463,8 +435,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * get a ControlWindow by name.
 	 * 
-	 * @param theName
-	 *          String
+	 * @param theName String
 	 * @return ControlWindow ControlWindow
 	 */
 	public ControlWindow window(String theWindowName) {
@@ -479,7 +450,8 @@ public class ControlP5 extends ControlP5Base {
 
 	private boolean checkName(String theName) {
 		if (_myControllerMap.containsKey(theName)) {
-			ControlP5.logger().warning("Controller with name \"" + theName + "\" already exists. overwriting reference of existing controller.");
+			ControlP5.logger().warning("Controller with name \"" + theName
+					+ "\" already exists. overwriting reference of existing controller.");
 			return true;
 		}
 		return false;
@@ -489,8 +461,7 @@ public class ControlP5 extends ControlP5Base {
 	 * set the path / filename of the xml file your controlP5 setup will be saved
 	 * to.
 	 * 
-	 * @param theFilename
-	 *          String setUrlPath ( ) save ( ) load ( ) loadUrl ( )
+	 * @param theFilename String setUrlPath ( ) save ( ) load ( ) loadUrl ( )
 	 */
 	public void setFilePath(String theFilePath) {
 		if (theFilePath == null) {
@@ -503,8 +474,7 @@ public class ControlP5 extends ControlP5Base {
 	 * you can set an url an e.g. index.php file on a server where you want to
 	 * save your controlP5 setup to.
 	 * 
-	 * @param theUrlPath
-	 *          String setFilePath ( ) loadUrl ( ) load ( ) save ( )
+	 * @param theUrlPath String setFilePath ( ) loadUrl ( ) load ( ) save ( )
 	 */
 	public void setUrlPath(String theUrlPath) {
 		setUrlPath(theUrlPath, "controlP5.xml");
@@ -514,10 +484,8 @@ public class ControlP5 extends ControlP5Base {
 	 * you can set an url e.g. an index.php file on a server where you want to
 	 * save your controlP5 setup to.
 	 * 
-	 * @param theUrlPath
-	 *          String
-	 * @param theFilename
-	 *          String setFilePath ( ) loadUrl ( ) load ( ) save ( )
+	 * @param theUrlPath String
+	 * @param theFilename String setFilePath ( ) loadUrl ( ) load ( ) save ( )
 	 * 
 	 */
 	public void setUrlPath(String theUrlPath, String theFilename) {
@@ -559,8 +527,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * set the active state color of tabs and controllers.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorActive(int theColor) {
 		color.colorActive = theColor;
@@ -573,8 +540,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * set the foreground color of tabs and controllers.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorForeground(int theColor) {
 		color.colorForeground = theColor;
@@ -587,8 +553,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * set the backgorund color of tabs and controllers.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorBackground(int theColor) {
 		color.colorBackground = theColor;
@@ -601,8 +566,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * set the label color of tabs and controllers.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorLabel(int theColor) {
 		color.colorCaptionLabel = theColor;
@@ -615,8 +579,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * set the value color of controllers.
 	 * 
-	 * @param theColor
-	 *          int
+	 * @param theColor int
 	 */
 	public void setColorValue(int theColor) {
 		color.colorValueLabel = theColor;
@@ -677,8 +640,7 @@ public class ControlP5 extends ControlP5Base {
 	 * 
 	 * @shortdesc save controlP5 settings to your local disk or to a remote
 	 *            server.
-	 * @param theFilename
-	 *          String
+	 * @param theFilename String
 	 * @return boolean setFilePath ( ) setUrlPath ( ) load ( ) loadUrl ( )
 	 * @todo saving in application mode does write the xml file into a folder data
 	 *       on top level, but does not load from there. therefore loading in
@@ -714,6 +676,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theFileName
 	 */
 	public boolean load(String theFileName) {
+		System.out.println("loading (1)");
 		blockDraw = true;
 		clear();
 		ControlP5.logger().info("loading " + theFileName);
@@ -897,15 +860,23 @@ public class ControlP5 extends ControlP5Base {
 		return end(controlWindow.tab("default"));
 	}
 
-
+	/**
+	 * disposes and clears all controlP5 elements. When running in applet mode,
+	 * opening new tabs or switching to another tab causes the applet to call
+	 * dispose(). therefore dispose() is disabled when running ing applet mode.
+	 * TODO implement better dispose handling for applets.
+	 */
 	public void dispose() {
-		clear();
+		if (!isApplet) {
+			clear();
+		}
+
 	}
-	
+
 	public static Logger logger() {
 		return logger;
 	}
-	
+
 }
 
 // new controllers
@@ -915,4 +886,26 @@ public class ControlP5 extends ControlP5Base {
 // 
 // inspiration
 // http://www.explodingart.com/arb/Andrew_R._Brown/Code/Code.html
+
+// projects using controlP5
+// http://www.danielsauter.com/showreel.php?id=59
+// http://www.raintone.com/2009/03/fractalwavetables-v2/
+// http://www.flickr.com/photos/jrosenk/3631041263/
+// http://www.gtdv.org/
+// http://0p0media.com/aurapixlab/
+// http://www.introspector.be/index.php?/research/dook/
+// http://createdigitalmotion.com/2009/11/29/processing-beats-keyframing-typestar-karaoke-machine-generates-kinetic-lyrics/
+// http://www.yonaskolb.com/predray
+// http://www.creativeapplications.net/processing/cop15-identity-processing/
+// http://vimeo.com/9158064 + http://vimeo.com/9153342 processing-city,
+// sandy-city
+//
+
+// TODO
+// (1) file dialog:
+// http://java.sun.com/j2se/1.5.0/docs/api/java/awt/FileDialog.html
+// (2) add ControlIcon for custom icons with PImage
+
+// gui addons inspiration.
+// http://www.futureaudioworkshop.com/
 

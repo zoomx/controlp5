@@ -62,6 +62,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		_myValueLabel = new Label("");
 		_myWidth = theW;
 		_myHeight = theH;
+		
 	}
 
 	public void mousePressed() {
@@ -130,7 +131,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	protected void preDraw(PApplet theApplet) {
 		if (isOpen) {
 			theApplet.fill(_myBackgroundColor);
-			theApplet.rect(0, 0, _myWidth, _myBackgroundHeight);
+			theApplet.rect(0, 0, _myWidth, _myBackgroundHeight-1);
 		}
 	}
 
@@ -241,5 +242,11 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	public void setArrayValue(float[] theArray) {
 		_myArrayValue = theArray;
 	}
-
+	
+	@Override
+	public String toString() {
+		return super.toString();
+	} 
+	
+	
 }

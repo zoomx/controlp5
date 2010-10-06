@@ -262,9 +262,7 @@ public class BitFontRenderer {
 		int err = 0;
 		for (int i = 0; i < myText.length(); i++) {
 			int c = (int) myText.charAt(i);
-			if (c >= 127) {
-				c = 32;
-			}
+			
 			if (c != 10) {
 				if ((myWrap > 0 && indent > myWrap)) {
 					indent = theLabel.getOffsetX(); // 0;
@@ -286,7 +284,11 @@ public class BitFontRenderer {
 						}
 					}
 				}
-
+				
+				if (c >= 127 || c<=32) {
+					c = 32;
+				}
+				
 				letters[i] = new Letter(indent, c - 32, myY, (i == theLabel.getCursorPosition() - 1));
 				indent += charWidth[theLabel.getFontIndex()][c - 32] + theLabel.getLetterSpacing();
 			} else {

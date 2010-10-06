@@ -25,10 +25,6 @@ import processing.core.PApplet;
  * 
  */
 
-// this will become a color picker
-// some inspiration
-// http://www.nbdtech.com/blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
-// http://alienryderflex.com/hsp.html
 
 public class ColorPicker extends ControlGroup {
 
@@ -136,5 +132,14 @@ public class ColorPicker extends ControlGroup {
 			theApplet.rect(0, 44, getWidth(), 15);
 		}
 	}
-
+	
+	@Override
+	public String toString() {
+		return "type:\tColorPicker\n"+super.toString();
+	}
 }
+
+//this will become a color picker
+//some inspiration
+//http://www.nbdtech.com/blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
+//http://alienryderflex.com/hsp.html

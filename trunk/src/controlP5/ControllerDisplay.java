@@ -29,7 +29,7 @@ import processing.core.PApplet;
 
 /**
  * The interface ControllerDisplay can be used to define custom displays for
- * controllers.
+ * available controllers.
  * 
  * @see controlP5.draw(processing.core.PApplet)
  * @see controlP5.setDisplay(ControllerDisplay)
@@ -38,8 +38,10 @@ import processing.core.PApplet;
 public interface ControllerDisplay {
 
 	/**
-	 * display() will be called by the controller's draw() function and will pass
-	 * on a reference of PApplet and the Controller itself to your custom display.
+	 * draw your custom controllers.
+	 * display() will be called by a controller's draw() function and will pass a
+	 * reference of PApplet as well as the Controller itself to your custom
+	 * display class.
 	 * 
 	 * @param theApplet
 	 * @param theController

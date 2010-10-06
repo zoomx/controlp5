@@ -25,6 +25,7 @@ package controlP5;
  *
  */
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import processing.core.PImage;
@@ -46,7 +47,7 @@ import processing.core.PImage;
  */
 public class RadioButton extends ControlGroup {
 
-	protected Vector<Toggle> _myRadioToggles;
+	protected ArrayList<Toggle> _myRadioToggles;
 
 	protected int rowSpacing = 2;
 
@@ -64,6 +65,8 @@ public class RadioButton extends ControlGroup {
 
 	protected PImage[] images = new PImage[3];
 
+	protected boolean noneSelectedAllowed = true;
+
 	public RadioButton(
 			final ControlP5 theControlP5,
 			final ControllerGroup theParent,
@@ -73,7 +76,7 @@ public class RadioButton extends ControlGroup {
 		super(theControlP5, theParent, theName, theX, theY, 100, 9);
 		isBarVisible = false;
 		isCollapse = false;
-		_myRadioToggles = new Vector<Toggle>();
+		_myRadioToggles = new ArrayList<Toggle>();
 		setItemsPerRow(1);
 	}
 
@@ -293,6 +296,9 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 */
 	public void deactivateAll() {
+		if(!isMultipleChoice && !noneSelectedAllowed) {
+			return;
+		}
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			((Toggle) _myRadioToggles.get(i)).deactivate();
@@ -326,6 +332,9 @@ public class RadioButton extends ControlGroup {
 	 * @param theIndex
 	 */
 	public void deactivate(int theIndex) {
+		if(!isMultipleChoice && !noneSelectedAllowed) {
+			return;
+		}
 		if (theIndex < _myRadioToggles.size()) {
 			Toggle t = _myRadioToggles.get(theIndex);
 			if (t.isActive) {
@@ -335,17 +344,18 @@ public class RadioButton extends ControlGroup {
 			}
 		}
 	}
-
-	// TODO
-	// does not deactivate the current radio-toggle.
+	
+	/**
+	 * active an item of the Radio button by name.
+	 * 
+	 * @param theRadioButtonName
+	 */
 	public void activate(String theRadioButtonName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			Toggle t = _myRadioToggles.get(i);
 			if (theRadioButtonName.equals(t.name())) {
-				t.activate();
-				_myValue = t.value();
-				updateValues(true);
+				activate(i);
 				return;
 			}
 		}
@@ -392,6 +402,16 @@ public class RadioButton extends ControlGroup {
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		if (!isMultipleChoice) {
+			if(noneSelectedAllowed==false && theEvent.controller().value()<1) {
+				if(theEvent.controller() instanceof Toggle) {
+					Toggle t = ((Toggle) theEvent.controller());
+					boolean b = t.isBroadcast();
+					t.setBroadcast(false);
+					t.setState(true);
+					t.setBroadcast(b);
+					return;
+				}
+			}
 			_myValue = -1;
 			int n = _myRadioToggles.size();
 			for (int i = 0; i < n; i++) {
@@ -421,4 +441,18 @@ public class RadioButton extends ControlGroup {
 		}
 	}
 
+	/**
+	 * in order to always have 1 item selected, use setNoneSelectedAllowed(false).
+	 * the default value is true. this does not apply to the multipleChoice mode.
+	 * 
+	 * @param theValue
+	 */
+	public void setNoneSelectedAllowed(boolean theValue) {
+		noneSelectedAllowed = theValue;
+	}
+	
+	@Override
+	public String toString() {
+		return "type:\tRadioButton\n"+super.toString();
+	}
 }
