@@ -31,7 +31,7 @@ import processing.core.PApplet;
  * @shortdesc a textarea can be used to leave notes inside of controlP5
  *            displayed on the screen.
  * 
- *            scrollbars are available when text extends the visible area.
+ *            scrollbars are made available when text extends the visible area.
  *            Textarea extends ControllerGroup, for more available methods see
  *            the ControllerGroup documentation.
  * 
@@ -109,8 +109,9 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		_myValueLabel.multiline(true);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.update();
-		_myValueLabel.position.set(2, 2);
-		_myValueLabel.setColor(color.colorValueLabel);
+		_myValueLabel.position.x = 2;
+		_myValueLabel.position.y = 2;
+		_myValueLabel.setColor(color.getValueLabel());
 
 		addDrawable(_myValueLabel);
 		_myScrollbar = new Slider(controlP5, _myParent, name() + "Scroller", 0, 1, 1, _myWidth, 0, 10, _myHeight);
@@ -144,7 +145,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 
 	public void showScrollbar() {
 		isScrollbarVisible = true;
-		boolean isScrollbar = _myHeight < (_myValueLabel.textHeight() + _myValueLabel.lineHeight());
+		boolean isScrollbar = _myHeight < (_myValueLabel.getTextHeight() + _myValueLabel.getLineHeight());
 		if (isScrollbar) {
 			_myScrollbar.show();
 		}
@@ -181,7 +182,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 */
 	private void scroll() {
 		_myScrollValue = PApplet.min(PApplet.max(-1, _myScrollValue), 0);
-		float myLen = _myValueLabel.textHeight() + _myValueLabel.getLineHeight();
+		float myLen = _myValueLabel.getTextHeight() + _myValueLabel.getLineHeight();
 		float myOffset = 0;
 		boolean isScrollbar = _myHeight < myLen;
 		if (isScrollbar) {
@@ -202,7 +203,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		theValue = (theValue < 10) ? 10 : theValue;
 		_myWidth = theValue;
 		_myValueLabel.setWidth(_myWidth - 2);
-		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.textHeight());
+		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
 		_myScrollbar.setHeight(_myHeight + _myValueLabel.style().paddingTop + _myValueLabel.style().paddingBottom);
 		return this;
 	}
@@ -216,7 +217,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		theValue = (theValue < 10) ? 10 : theValue;
 		_myHeight = theValue;
 		_myValueLabel.setHeight(_myHeight - 2);
-		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.textHeight());
+		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
 		_myScrollbar.setHeight((int) (_myHeight + _myValueLabel.style().paddingTop + _myValueLabel.style().paddingBottom));
 		return this;
 	}
@@ -256,8 +257,21 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 */
 	public void setText(String theText) {
 		_myValueLabel.set(theText, true);
-		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.textHeight());
+		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
 		_myScrollbar.setHeight(_myHeight + _myValueLabel.style().paddingTop + _myValueLabel.style().paddingBottom);
+	}
+
+	/**
+	 * returns the text content of the textarea.
+	 * 
+	 * @return String
+	 */
+	public String getText() {
+		return getStringValue();
+	}
+
+	public String text() {
+		return getText();
 	}
 
 	/**
@@ -273,8 +287,8 @@ public class Textarea extends ControllerGroup implements ControlListener {
 
 	protected void preDraw(PApplet theApplet) {
 		if (_myScrollbar.isVisible() || isColorBackground) {
-			_myScrollbar.position().x = _myWidth + _myValueLabel.style().paddingLeft + _myValueLabel.style().paddingRight;
-			theApplet.stroke(color.colorBackground);
+			_myScrollbar.getPosition().x = _myWidth + _myValueLabel.style().paddingLeft + _myValueLabel.style().paddingRight;
+			theApplet.stroke(color.getBackground());
 			if (!isColorBackground) {
 				theApplet.noFill();
 			} else {
@@ -292,40 +306,25 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	// !!! add padding to the box.
 	// padding and margin doesnt work nicely with textarea yet!
 	protected boolean inside() {
-		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
-				&& _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
-				&& _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() && _myControlWindow.mouseY < position.y()
-				+ _myParent.absolutePosition().y() + _myHeight);
+		return (_myControlWindow.mouseX > position.x + _myParent.absolutePosition.x
+				&& _myControlWindow.mouseX < position.x + _myParent.absolutePosition.x + _myWidth
+				&& _myControlWindow.mouseY > position.y + _myParent.absolutePosition.y && _myControlWindow.mouseY < position.y
+				+ _myParent.absolutePosition.y + _myHeight);
 	}
 
-	/**
-	 * 
-	 * @param theElement ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setName("controller");
-		theElement.setAttribute("type", "textarea");
-		theElement.setAttribute("width", new Integer(_myWidth));
-		theElement.setAttribute("height", new Integer(_myHeight));
-		theElement.setContent(_myValueLabel.toString());
-	}
-
+	
 	/**
 	 * returns the content of the textarea's label.
 	 * 
+	 * @deprecated
 	 * @return String
 	 */
 	public String stringValue() {
-		return _myValueLabel.toString();
+		return getStringValue();
 	}
 
-	/**
-	 * returns the text content of the textarea .
-	 * 
-	 * @return
-	 */
-	public String text() {
-		return stringValue();
+	public String getStringValue() {
+		return _myValueLabel.toString();
 	}
 
 	/**

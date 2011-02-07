@@ -26,6 +26,7 @@ package controlP5;
  */
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 /**
  * a toggle can have two states, true and false, where true has the value 1 and
@@ -46,7 +47,7 @@ public class Toggle extends Controller {
 
 	protected static int autoHeight = 20;
 
-	protected CVector3f autoSpacing = new CVector3f(10, 20, 0);
+	protected PVector autoSpacing = new PVector(10, 20, 0);
 
 	/**
 	 * 
@@ -78,7 +79,7 @@ public class Toggle extends Controller {
 	 */
 	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
-		theApplet.translate(position().x(), position().y());
+		theApplet.translate(position.x, position.y);
 		_myDisplay.display(theApplet, this);
 		theApplet.popMatrix();
 	}
@@ -166,14 +167,6 @@ public class Toggle extends Controller {
 	}
 
 	/**
-	 * 
-	 * @param theElement ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "toggle");
-	}
-
-	/**
 	 * by default a toggle returns 0 (for off) and 1 (for on). the internal value
 	 * variable can be used to store an additional value for a toggle event.
 	 * 
@@ -217,9 +210,9 @@ public class Toggle extends Controller {
 	class ToggleDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
-				theApplet.fill(color.colorActive);
+				theApplet.fill(color.getActive());
 			} else {
-				theApplet.fill(isOn ? color.colorActive : color.colorBackground);
+				theApplet.fill(isOn ? color.getActive() : color.getBackground());
 			}
 			theApplet.rect(0, 0, width, height);
 			if (isLabelVisible) {
@@ -259,9 +252,9 @@ public class Toggle extends Controller {
 
 	class ToggleSwitchDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
-			theApplet.fill(color.colorBackground);
+			theApplet.fill(color.getBackground());
 			theApplet.rect(0, 0, width, height);
-			theApplet.fill(color.colorActive);
+			theApplet.fill(color.getActive());
 			if (isOn) {
 				theApplet.rect(0, 0, width / 2, height);
 			} else {

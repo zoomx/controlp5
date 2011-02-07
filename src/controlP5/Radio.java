@@ -27,28 +27,20 @@ package controlP5;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 import processing.core.PApplet;
+import processing.core.PVector;
 
 /**
  * 
- * @deprecated use RadioButton or CheckBox instead
- *  ControlP5
- *  Bang
- *  Button
- *  Knob
- *  Numberbox
- *  Radio
- *  Slider
- *  Tab
- *  Textfield
- *  Toggle
+ * @deprecated use RadioButton or CheckBox instead ControlP5 Bang Button Knob
+ *             Numberbox Radio Slider Tab Textfield Toggle
  * 
  * @example ControlP5radio
- * @nosuperclasses Controller
- *  Controller
+ * @nosuperclasses Controller Controller
  */
 public class Radio extends Controller {
-	
+
 	ArrayList<RadioToggle> _myRadioButtons;
 
 	private int myLineSpacing = 14;
@@ -57,7 +49,7 @@ public class Radio extends Controller {
 
 	int labelOffsetY = 2;
 
-	CVector3f _myMousePosition = new CVector3f();
+	PVector _myMousePosition = new PVector();
 
 	RadioToggle _myCurrentRadioButton;
 
@@ -70,42 +62,33 @@ public class Radio extends Controller {
 	int _myHeight;
 
 	int _myWidth;
-	
+
 	public int defaultValue = -1;
-	
+
 	boolean isDeactivateAll = false;
+
 	/**
 	 * 
-	 * @param theControlP5
-	 *            ControlP5
-	 * @param theParent
-	 *            ControllerGroup
-	 * @param theName
-	 *            String
-	 * @param theX
-	 *            float
-	 * @param theY
-	 *            float
+	 * @param theControlP5 ControlP5
+	 * @param theParent ControllerGroup
+	 * @param theName String
+	 * @param theX float
+	 * @param theY float
 	 */
-	public Radio(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theX,
-	        float theY) {
+	public Radio(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY) {
 		super(theControlP5, theParent, theName, theX, theY, 30, 30);
 		_myRadioButtons = new ArrayList<RadioToggle>();
 	}
 
 	public Radio(
-	        ControlP5 theControlP5,
-	        ControllerGroup theParent,
-	        String theName,
-	        float theX,
-	        float theY,
-	        int theWidth,
-	        int theHeight,
-	        int theLineSpacing) {
+			ControlP5 theControlP5,
+			ControllerGroup theParent,
+			String theName,
+			float theX,
+			float theY,
+			int theWidth,
+			int theHeight,
+			int theLineSpacing) {
 		super(theControlP5, theParent, theName, theX, theY, 30, 30);
 		_myRadioButtons = new ArrayList<RadioToggle>();
 		myLineSpacing = theLineSpacing;
@@ -117,40 +100,31 @@ public class Radio extends Controller {
 	/**
 	 * @deprecated
 	 * 
-	 * @param theLabel
-	 *            String
-	 * @param theValue
-	 *            int
+	 * @param theLabel String
+	 * @param theValue int
 	 * @return RadioButton
 	 */
-	public RadioToggle add(
-	        final String theLabel,
-	        final int theValue) {
+	public RadioToggle add(final String theLabel, final int theValue) {
 		return addItem(theLabel, theValue);
 	}
 
 	/**
 	 * add a new radio button item.
 	 * 
-	 * @param theLabel
-	 *            String
-	 * @param theValue
-	 *            int
+	 * @param theLabel String
+	 * @param theValue int
 	 */
-	public RadioToggle addItem(
-	        final String theLabel,
-	        final int theValue) {
+	public RadioToggle addItem(final String theLabel, final int theValue) {
 		RadioToggle myRadioButton = new RadioToggle(0, _myRadioButtons.size() * myLineSpacing, theLabel, theValue);
 		_myRadioButtons.add(myRadioButton);
 		getDimensions();
-		if (_myRadioButtons.size() == 1 && isDeactivateAll==false) {
+		if (_myRadioButtons.size() == 1 && isDeactivateAll == false) {
 			activate(myRadioButton.name());
 		}
 		return myRadioButton;
 	}
 
-	public void removeItem(
-	        String theName) {
+	public void removeItem(String theName) {
 		for (int i = _myRadioButtons.size() - 1; i >= 0; i--) {
 			if (((RadioToggle) _myRadioButtons.get(i)).name().equals(theName)) {
 				_myRadioButtons.remove(i);
@@ -174,21 +148,18 @@ public class Radio extends Controller {
 
 	/**
 	 * 
-	 * @param theApplet
-	 *            PApplet
+	 * @param theApplet PApplet
 	 */
-	public void draw(
-	        PApplet theApplet) {
+	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
-		theApplet.translate(position.x(), position.y());
+		theApplet.translate(position.x, position.y);
 		for (int i = 0; i < _myRadioButtons.size(); i++) {
 			((RadioToggle) _myRadioButtons.get(i)).updateInternalEvents(theApplet);
 			((RadioToggle) _myRadioButtons.get(i)).draw(theApplet);
 		}
 		theApplet.popMatrix();
 	}
-	
-	
+
 	/**
 	 * set the default value of a Radio controller, in case no radio button is
 	 * selected.
@@ -198,16 +169,12 @@ public class Radio extends Controller {
 	public void setDefaultValue(int theValue) {
 		defaultValue = theValue;
 	}
-	
-	
-	
+
 	/**
 	 * 
-	 * @param theValue
-	 *            float
+	 * @param theValue float
 	 */
-	public void setValue(
-	        float theValue) {
+	public void setValue(float theValue) {
 		for (int i = 0; i < _myRadioButtons.size(); i++) {
 			RadioToggle myRadioButton = ((RadioToggle) _myRadioButtons.get(i));
 			if (myRadioButton.value == theValue) {
@@ -228,11 +195,9 @@ public class Radio extends Controller {
 	/**
 	 * set current radio button.
 	 * 
-	 * @param theRadioButton
-	 *            RadioButton
+	 * @param theRadioButton RadioButton
 	 */
-	public void current(
-	        RadioToggle theRadioButton) {
+	public void current(RadioToggle theRadioButton) {
 		_myCurrentRadioButton = theRadioButton;
 	}
 
@@ -248,11 +213,9 @@ public class Radio extends Controller {
 	/**
 	 * activate a radio button by name.
 	 * 
-	 * @param theRadioButtonLabel
-	 *            String
+	 * @param theRadioButtonLabel String
 	 */
-	public void activate(
-	        String theRadioButtonName) {
+	public void activate(String theRadioButtonName) {
 		for (int i = 0; i < _myRadioButtons.size(); i++) {
 			RadioToggle myRadioButton = ((RadioToggle) _myRadioButtons.get(i));
 			if (theRadioButtonName.equals(myRadioButton.name())) {
@@ -261,10 +224,10 @@ public class Radio extends Controller {
 			}
 		}
 	}
-	
+
 	/**
-	 * deactivate a RadioButton and set the value of the radio controller to
-	 * the default value.
+	 * deactivate a RadioButton and set the value of the radio controller to the
+	 * default value.
 	 * 
 	 * @param theRadioButtonName
 	 */
@@ -279,7 +242,7 @@ public class Radio extends Controller {
 			}
 		}
 	}
-	
+
 	public void deactivateAll() {
 		for (int i = 0; i < _myRadioButtons.size(); i++) {
 			RadioToggle myRadioButton = ((RadioToggle) _myRadioButtons.get(i));
@@ -291,37 +254,25 @@ public class Radio extends Controller {
 	}
 
 	public void setColorBackground(int theColor) {
-		color.colorBackground = theColor;
+		color.setBackground(theColor);
 	}
 
 	public void setColorForeground(int theColor) {
-		color.colorForeground = theColor;
+		color.setForeground(theColor);
 	}
-	
+
 	public void setColorLabel(int theColor) {
-		color.colorCaptionLabel = theColor;
+		color.setCaptionLabel(theColor);
 		for (int i = 0; i < _myRadioButtons.size(); i++) {
 			RadioToggle myRadioButton = ((RadioToggle) _myRadioButtons.get(i));
-			myRadioButton.label.set(myRadioButton.label.toString(), color.colorCaptionLabel);
+			myRadioButton.label.set(myRadioButton.label.toString(), color.getCaptionLabel());
 		}
 	}
 
 	public void setColorActive(int theColor) {
-		color.colorActive = theColor;
+		color.setActive(theColor);
 	}
 
-	/**
-	 * 
-	 * @param theElement
-	 *            ControlP5XMLElement
-	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "radio");
-		for (int i = 0; i < _myRadioButtons.size(); i++) {
-			theElement.addChild(((RadioToggle) _myRadioButtons.get(i)).getAsXML());
-		}
-	}
 
 	class RadioToggle {
 
@@ -335,15 +286,11 @@ public class Radio extends Controller {
 
 		boolean isActive;
 
-		RadioToggle(
-		        final int theX,
-		        final int theY,
-		        final String theLabel,
-		        final int theValue) {
+		RadioToggle(final int theX, final int theY, final String theLabel, final int theValue) {
 			_myX = theX;
 			_myY = theY;
 			label = new Label(theLabel);
-			label.setColor(color.colorCaptionLabel);
+			label.setColor(color.getCaptionLabel());
 			value = theValue;
 		}
 
@@ -355,8 +302,7 @@ public class Radio extends Controller {
 			return _myId;
 		}
 
-		public void setId(
-		        int theId) {
+		public void setId(int theId) {
 			_myId = theId;
 		}
 
@@ -371,8 +317,7 @@ public class Radio extends Controller {
 		/**
 		 * @see ControllerInterfalce.updateInternalEvents
 		 */
-		public void updateInternalEvents(
-		        PApplet theApplet) {
+		public void updateInternalEvents(PApplet theApplet) {
 			if (getIsInside()) {
 				if (insideRadioButton()) {
 					if (isMousePressed && current() != this) {
@@ -384,20 +329,18 @@ public class Radio extends Controller {
 
 		/**
 		 * 
-		 * @param theApplet
-		 *            PApplet
+		 * @param theApplet PApplet
 		 */
-		public void draw(
-		        PApplet theApplet) {
+		public void draw(PApplet theApplet) {
 			theApplet.noStroke();
 			if (isActive) {
-				theApplet.fill(color.colorActive);
+				theApplet.fill(color.getActive());
 			} else {
-				theApplet.fill(color.colorForeground);
+				theApplet.fill(color.getForeground());
 			}
 			if (getIsInside()) {
 				if (insideRadioButton()) {
-					theApplet.fill(color.colorActive);
+					theApplet.fill(color.getActive());
 				}
 			}
 			theApplet.pushMatrix();
@@ -408,24 +351,10 @@ public class Radio extends Controller {
 		}
 
 		private boolean insideRadioButton() {
-			return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x() + _myX
-			        && _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myX
-			                + _myRadioButtonWidth
-			        && _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() + _myY && _myControlWindow.mouseY < position
-			        .y()
-			        + _myParent.absolutePosition().y() + _myY + _myRadioButtonHeight);
-		}
-
-		protected ControlP5XMLElement getAsXML() {
-			ControlP5XMLElement myXMLElement = new ControlP5XMLElement(new Hashtable(), true, false);
-			myXMLElement.setName("radiobutton");
-			myXMLElement.setAttribute("type", "radiobutton");
-			myXMLElement.setAttribute("name", label.toString());
-			myXMLElement.setAttribute("label", label.toString());
-			myXMLElement.setAttribute("id", new Integer(id()));
-			myXMLElement.setAttribute("value", new Float(value));
-			myXMLElement.setAttribute("state", new Integer((isActive ? 1 : 0)));
-			return myXMLElement;
+			return (_myControlWindow.mouseX > position.x + _myParent.absolutePosition().x + _myX
+					&& _myControlWindow.mouseX < position.x + _myParent.absolutePosition().x + _myX + _myRadioButtonWidth
+					&& _myControlWindow.mouseY > position.y + _myParent.absolutePosition().y + _myY && _myControlWindow.mouseY < position.y
+					+ _myParent.absolutePosition().y + _myY + _myRadioButtonHeight);
 		}
 
 	}

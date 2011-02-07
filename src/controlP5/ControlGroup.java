@@ -25,6 +25,9 @@ package controlP5;
  *
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import processing.core.PApplet;
 
 /**
@@ -50,6 +53,8 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 
 	protected boolean isBarVisible = true;
 
+	protected List<ControlListener> _myControlListener;
+	
 	public ControlGroup(
 			ControlP5 theControlP5,
 			ControllerGroup theParent,
@@ -59,18 +64,22 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 			int theW,
 			int theH) {
 		super(theControlP5, theParent, theName, theX, theY);
+		_myControlListener = new ArrayList<ControlListener>();
 		_myValueLabel = new Label("");
 		_myWidth = theW;
 		_myHeight = theH;
-		
 	}
 
 	public void mousePressed() {
-		if (isCollapse) {
+		if (isBarVisible && isCollapse) {
 			if (!ControlP5.keyHandler.isAltDown) {
 				isOpen = !isOpen;
 				if (isEventActive) {
-					controlP5.controlbroadcaster().broadcast(new ControlEvent(this), ControlP5Constants.METHOD);
+					final ControlEvent myEvent = new ControlEvent(this);
+					controlP5.controlbroadcaster().broadcast(myEvent, ControlP5Constants.METHOD);
+					for (ControlListener cl : _myControlListener) {
+						cl.controlEvent(myEvent);
+					}
 				}
 			}
 		}
@@ -122,6 +131,10 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	public void setBarHeight(int theHeight) {
 		_myHeight = theHeight;
 	}
+	
+	public int getBarHeight() {
+		return _myHeight;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -142,11 +155,11 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 */
 	protected void postDraw(PApplet theApplet) {
 		if (isBarVisible) {
-			theApplet.fill(isInside ? color.colorForeground : color.colorBackground);
+			theApplet.fill(isInside ? color.getForeground() : color.getBackground());
 			theApplet.rect(0, -1, _myWidth, -_myHeight);
 			_myLabel.draw(theApplet, 2, -_myHeight);
 			if (isCollapse) {
-				theApplet.fill(color.colorActive);
+				theApplet.fill(_myLabel.getColor());
 				if (isOpen) {
 					theApplet.triangle(_myWidth - 10, -_myHeight / 2 - 3, _myWidth - 4, -_myHeight / 2 - 3, _myWidth - 7, -_myHeight / 2);
 				} else {
@@ -156,20 +169,6 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see controlP5.ControllerInterface#addToXMLElement(controlP5.ControlP5XMLElement)
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setName("group");
-		theElement.setAttribute("width", new Integer(_myWidth));
-		theElement.setAttribute("height", new Integer(_myHeight));
-		for (int i = 0; i < controllers.size(); i++) {
-			if (((ControllerInterface) controllers.get(i)).isXMLsavable()) {
-				theElement.addChild(((ControllerInterface) controllers.get(i)).getAsXML());
-			}
-		}
-	}
 
 	/**
 	 * TODO redesign or deprecate add a close button to the controlbar of this
@@ -222,7 +221,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 * @return String
 	 */
 	public String stringValue() {
-		return "" + _myValue;
+		return Float.toString(_myValue);
 	}
 
 	/**
@@ -248,5 +247,36 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		return super.toString();
 	} 
 	
+	
+
+	/**
+	 * add a listener to the controller.
+	 * 
+	 * ControlListener
+	 * 
+	 * @param theListener ControlListener
+	 */
+	public void addListener(final ControlListener theListener) {
+		_myControlListener.add(theListener);
+	}
+
+	/**
+	 * remove a listener from the controller.
+	 * 
+	 * ControlListener
+	 * 
+	 * @param theListener ControlListener
+	 */
+	public void removeListener(final ControlListener theListener) {
+		_myControlListener.remove(theListener);
+	}
+
+	/**
+	 * 
+	 * @return int
+	 */
+	public int listenerSize() {
+		return _myControlListener.size();
+	}
 	
 }

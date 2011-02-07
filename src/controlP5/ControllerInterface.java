@@ -25,248 +25,122 @@ package controlP5;
  *
  */
 
-import processing.core.PApplet;
 import java.awt.event.KeyEvent;
 
-/**
- * 
- */
+import processing.core.PApplet;
+import processing.core.PVector;
+
 public interface ControllerInterface {
 
-	/**
-	 * 
-	 */
 	public void init();
-	
+
 	public int getWidth();
-	
+
 	public int getHeight();
+
+	public float value();
 	
+	public void setValue(float theValue);
+	
+	public float getValue();
+	
+	public PVector position();
+	
+	public PVector getPosition();
 
-	/**
-	 * 
-	 * @return CVector3f
-	 */
-	public CVector3f position();
-
-	/**
-	 * 
-	 * @param theX
-	 *        float
-	 * @param theY
-	 *        float
-	 */
 	public void setPosition(float theX, float theY);
+	
+	public void setPosition(PVector thePVector); 
 
-	/**
-	 * 
-	 * @return CVector3f
-	 */
-	public CVector3f absolutePosition();
+	public PVector absolutePosition();
+	
+	public PVector getAbsolutePosition();
+	
+	public void setAbsolutePosition(PVector thePVector);
 
-	/**
-	 * 
-	 */
 	public void updateAbsolutePosition();
 
-	/**
-	 * 
-	 */
 	public void update();
 
-	/**
-	 * 
-	 */
 	public void setUpdate(boolean theFlag);
 
-	/**
-	 * 
-	 * @return boolean
-	 */
 	public boolean isUpdate();
 
-	/**
-	 * 
-	 */
 	public void updateEvents();
 
-	/**
-	 * 
-	 */
 	public void continuousUpdateEvents();
 
 	/**
 	 * a method for putting input events like e.g. mouse or keyboard events and
-	 * queries. this has been taken out of the draw method for better
-	 * overwriting capability.
+	 * queries. this has been taken out of the draw method for better overwriting
+	 * capability.
 	 * 
 	 * 
 	 */
 	public void updateInternalEvents(PApplet theApplet);
 
-	/**
-	 * 
-	 * @param theApplet
-	 *        PApplet
-	 */
 	public void draw(PApplet theApplet);
 
-	/**
-	 * 
-	 * @param theElement
-	 *        ControllerInterface
-	 */
 	public void add(ControllerInterface theElement);
 
-	/**
-	 * 
-	 * @param theElement
-	 *        ControllerInterface
-	 */
 	public void remove(ControllerInterface theElement);
 
-	/**
-	 * 
-	 */
 	public void remove();
 
-	/**
-	 * 
-	 * @return String
-	 */
 	public String name();
 
-	/**
-	 * 
-	 * @return ControlWindow
-	 */
 	public ControlWindow getWindow();
 
-	/**
-	 * 
-	 * @return Tab
-	 */
 	public Tab getTab();
 
-	/**
-	 * 
-	 * @param theStatus
-	 *        boolean
-	 * @return boolean
-	 */
 	public boolean setMousePressed(boolean theStatus);
 
-	/**
-	 * 
-	 * @param theEvent
-	 *        KeyEvent
-	 */
 	public void keyEvent(KeyEvent theEvent);
 
-	/**
-	 * 
-	 * @param theValue
-	 *        int
-	 */
 	public void setId(int theValue);
 
-	/**
-	 * 
-	 * @return int
-	 */
 	public int id();
 
-	/**
-	 * 
-	 * @param theString
-	 *        String
-	 */
 	public void setLabel(String theString);
 
-	/**
-	 * 
-	 * @param theColor
-	 *        int
-	 */
 	public void setColorActive(int theColor);
 
-	/**
-	 * 
-	 * @param theColor
-	 *        int
-	 */
 	public void setColorForeground(int theColor);
 
-	/**
-	 * 
-	 * @param theColor
-	 *        int
-	 */
 	public void setColorBackground(int theColor);
 
-	/**
-	 * 
-	 * @param theColor
-	 *        int
-	 */
 	public void setColorLabel(int theColor);
 
-	/**
-	 * 
-	 * @param theColor
-	 *        int
-	 */
 	public void setColorValue(int theColor);
 
 	public CColor color();
 
-	/**
-	 * 
-	 * @param theXMLElement
-	 *        ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theXMLElement);
-
-	/**
-	 * 
-	 * @return ControlP5XMLElement
-	 */
-	public ControlP5XMLElement getAsXML();
-
-	/**
-	 * 
-	 */
 	public void show();
 
-	/**
-	 * 
-	 */
 	public void hide();
 
-	/**
-	 * 
-	 * @return boolean
-	 */
 	public boolean isVisible();
 
-	/**
-	 * 
-	 * @param theGroup
-	 *        ControlGroup
-	 * @param theTab
-	 *        Tab
-	 * @param theWindow
-	 *        ControlWindow
-	 */
 	public void moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theWindow);
-
-	public float value();
 
 	public String stringValue();
 
-	public boolean isXMLsavable();
-
 	public int getPickingColor();
-	
+
 	public ControllerInterface parent();
+	
+	public ControllerProperty getProperty(String thePropertyName);
+	
+	public ControllerProperty getProperty(String theSetter, String theGetter);
+	
+	public ControllerInterface registerProperty(String thePropertyName);
+	
+	public ControllerInterface registerProperty(String theSetter, String theGetter);
+	
+	public void removeProperty(String thePropertyName);
+	
+	public void removeProperty(String theSetter, String theGetter);
+	
+	public void setColor(CColor theColor);
+
 }

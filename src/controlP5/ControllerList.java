@@ -63,13 +63,21 @@ public class ControllerList {
 	}
 
 	public ControllerInterface get(int theIndex) {
-		return (ControllerInterface) controllers.get(theIndex);
+		return controllers.get(theIndex);
+	}
+	
+	public List<ControllerInterface> get() {
+		return controllers;
 	}
 
 	public CDrawable getDrawable(int theIndex) {
-		return (CDrawable) drawables.get(theIndex);
+		return drawables.get(theIndex);
 	}
 
+	public List<CDrawable> getDrawables() {
+		return drawables;
+	}
+	
 	public int sizeDrawable() {
 		return drawables.size();
 	}

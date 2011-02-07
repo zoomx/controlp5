@@ -1,5 +1,7 @@
 package controlP5;
 
+import processing.core.PVector;
+
 /**
  * controlP5 is a processing gui library.
  *
@@ -143,7 +145,7 @@ public class CRect {
 		return x0 + " " + y0 + " " + x1 + " " + y1;
 	}
 
-	public static boolean inside(CRect theRect, CVector3f theVector) {
+	public static boolean inside(CRect theRect, PVector theVector) {
 		return (theVector.x > theRect.x0 && theVector.x < theRect.x1 && theVector.y > theRect.y0 && theVector.y < theRect.y1);
 	}
 

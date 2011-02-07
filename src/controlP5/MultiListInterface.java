@@ -47,8 +47,6 @@ public interface MultiListInterface {
 
     public void draw(PApplet theApplet);
 
-    void addToXMLElement(ControlP5XMLElement theElement);
-
     String name();
 
     List<Controller> subelements();

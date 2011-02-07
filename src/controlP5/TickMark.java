@@ -28,7 +28,7 @@ package controlP5;
 
 import processing.core.PApplet;
 
-public class TickMark implements CDrawable, ControlP5Constants {
+public class TickMark implements CDrawable {
 
 	protected Controller _myParent;
 
@@ -43,21 +43,21 @@ public class TickMark implements CDrawable, ControlP5Constants {
 	}
 
 	public void draw(PApplet theApplet) {
-		draw(theApplet, HORIZONTAL);
+		draw(theApplet, ControlP5Constants.HORIZONTAL);
 	}
 
 	public void draw(PApplet theApplet, int theDirection) {
 		theApplet.pushMatrix();
 		theApplet.stroke(255);
 		switch (theDirection) {
-			case (HORIZONTAL):
+			case (ControlP5Constants.HORIZONTAL):
 				theApplet.translate(0, _myLen);
 				theApplet.line(0, 0, 0, _myLen);
 				if(isLabel) {
 					_myLabel.draw(theApplet,0,_myLen + 4);
 				}
 				break;
-			case (VERTICAL):
+			case (ControlP5Constants.VERTICAL):
 				theApplet.translate(-_myLen, 0);
 				theApplet.line(0, 0, _myLen, 0);
 				if(isLabel) {

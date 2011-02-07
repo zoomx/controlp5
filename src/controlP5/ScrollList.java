@@ -160,7 +160,7 @@ public class ScrollList extends ControlGroup implements ControlListener {
 		        * _myItemHeight;
 		for (int i = 1; i < controllers.size(); i++) {
 			controllers.get(i).position().y = (int) myValue + ((i - 1) * _myItemHeight);
-			if (controllers.get(i).position().y() < 0 || controllers.get(i).position().y() > (_myAdjustedListHeight)) {
+			if (controllers.get(i).getPosition().y < 0 || controllers.get(i).getPosition().y > (_myAdjustedListHeight)) {
 				controllers.get(i).hide();
 			} else {
 				controllers.get(i).show();
@@ -249,27 +249,6 @@ public class ScrollList extends ControlGroup implements ControlListener {
 			scroll();
 		}
 
-	}
-
-	/**
-	 * 
-	 * @param theElement
-	 *            ControlP5XMLElement
-	 */
-	public void addToXMLElement(
-	        ControlP5XMLElement theElement) {
-		theElement.setName("controller");
-		theElement.setAttribute("type", "scrolllist");
-		theElement.setAttribute("width", new Integer(_myWidth));
-		theElement.setAttribute("height", new Integer(_myAdjustedListHeight + 1));
-		for (int i = 1; i < controllers.size(); i++) {
-			ControlP5XMLElement myXMLElement = new ControlP5XMLElement(new Hashtable(), true, false);
-			myXMLElement.setName("item");
-			myXMLElement.setAttribute("name", ((Controller) controllers.get(i)).name());
-			myXMLElement.setAttribute("id", new Integer(((Controller) controllers.get(i)).id()));
-			myXMLElement.setAttribute("value", new Float(((Controller) controllers.get(i)).value()));
-			theElement.addChild(myXMLElement);
-		}
 	}
 
 }

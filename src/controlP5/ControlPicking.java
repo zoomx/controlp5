@@ -62,8 +62,8 @@ class ControlPicking {
 			_myLookupImage.beginDraw();
 			_myLookupImage.noStroke();
 			_myLookupImage.fill(theController.getPickingColor());
-			float x = theController.position().x() + theController.parent().absolutePosition().x();
-			float y = theController.position().y() + theController.parent().absolutePosition().y();
+			float x = theController.getPosition().x + theController.parent().getAbsolutePosition().x;
+			float y = theController.getPosition().y + theController.parent().getAbsolutePosition().y;
 			_myLookupImage.rect(x, y, theController.getWidth(), theController.getHeight());
 			_myLookupImage.endDraw();
 		}

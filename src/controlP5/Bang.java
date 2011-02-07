@@ -123,7 +123,10 @@ public class Bang extends Controller {
 	public void setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
 	}
-
+	
+	public int getTriggerEvent() {
+		return triggerId;
+	}
 	/**
 	 * set the value of the bang controller. since bang can be true or false,
 	 * false=0 and true=1
@@ -142,17 +145,6 @@ public class Bang extends Controller {
 	 */
 	public void update() {
 		setValue(_myValue);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * controlP5.ControllerInterface#addToXMLElement(controlP5.ControlP5XMLElement
-	 * )
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "bang");
 	}
 
 	/*
@@ -178,7 +170,7 @@ public class Bang extends Controller {
 		}
 	}
 
-	class BangSpriteDisplay implements ControllerDisplay {
+	private class BangSpriteDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				sprite.setState(1);
@@ -194,16 +186,16 @@ public class Bang extends Controller {
 		}
 	}
 
-	class BangDisplay implements ControllerDisplay {
+	private class BangDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
-				theApplet.fill(color.colorActive);
+				theApplet.fill(color.getActive());
 			} else {
-				theApplet.fill(color.colorForeground);
+				theApplet.fill(color.getForeground());
 			}
 
 			if (cnt < 0) {
-				theApplet.fill(color.colorForeground);
+				theApplet.fill(color.getForeground());
 				cnt++;
 			}
 			theApplet.rect(0, 0, width, height);
@@ -213,7 +205,7 @@ public class Bang extends Controller {
 		}
 	}
 
-	class BangImageDisplay implements ControllerDisplay {
+	private class BangImageDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
@@ -232,6 +224,6 @@ public class Bang extends Controller {
 
 	@Override
 	public String toString() {
-		return "type:\tBang\n"+super.toString();
+		return "type:\tBang\n" + super.toString();
 	}
 }

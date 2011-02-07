@@ -41,6 +41,8 @@ public abstract class ControlCanvas {
 	
 	public ControlCanvas() {}
 	
+	public void setup(PApplet theApplet) {}
+	
 	/**
 	 * controlCanvas is an abstract class and therefore needs to be extended by
 	 * your class. draw(PApplet theApplet) is the only method that needs to be

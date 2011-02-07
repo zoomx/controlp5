@@ -25,7 +25,6 @@ package controlP5;
  *
  */
 
-
 import java.awt.event.KeyEvent;
 
 public class ControlWindowKeyHandler implements ControlP5Constants {
@@ -53,86 +52,95 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 	}
 
 	public void keyEvent(final KeyEvent theKeyEvent, final ControlWindow theControlWindow, final boolean isMasterWindow) {
-		
-			if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
-				switch (theKeyEvent.getKeyCode()) {
-					case (KeyEvent.VK_SHIFT):
-						isShiftDown = true;
-						break;
-					case (KeyEvent.VK_ALT):
-						isAltDown = true;
-						break;
-				}
-				key = theKeyEvent.getKeyChar();
-				keyCode = theKeyEvent.getKeyCode();
-				isKeyDown = true;
-			}
-			if (theKeyEvent.getID() == KeyEvent.KEY_RELEASED) {
-				switch (theKeyEvent.getKeyCode()) {
-					case (KeyEvent.VK_SHIFT):
-						isShiftDown = false;
-						break;
-					case (KeyEvent.VK_ALT):
-						isAltDown = false;
-						break;
 
-				}
-				isKeyDown = false;
+		if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
+			switch (theKeyEvent.getKeyCode()) {
+			case (KeyEvent.VK_SHIFT):
+				isShiftDown = true;
+				break;
+			case (KeyEvent.VK_ALT):
+				isAltDown = true;
+				break;
 			}
+			key = theKeyEvent.getKeyChar();
+			keyCode = theKeyEvent.getKeyCode();
+			isKeyDown = true;
+		}
+		if (theKeyEvent.getID() == KeyEvent.KEY_RELEASED) {
+			switch (theKeyEvent.getKeyCode()) {
+			case (KeyEvent.VK_SHIFT):
+				isShiftDown = false;
+				break;
+			case (KeyEvent.VK_ALT):
+				isAltDown = false;
+				break;
 
-			if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
-				if (isAltDown) {
-					if (theKeyEvent.getKeyCode() == KEYCONTROL) {
-						isKeyMenu = !isKeyMenu;
-						// _myMasterControlWindow.keyMenu(isKeyMenu);
-					}
+			}
+			isKeyDown = false;
+		}
+
+		if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
+			if (isAltDown) {
+				if (theKeyEvent.getKeyCode() == KEYCONTROL) {
+					isKeyMenu = !isKeyMenu;
+					// _myMasterControlWindow.keyMenu(isKeyMenu);
 				}
 			}
-			if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED && isAltDown && _myMasterControlWindow.controlP5.isShortcuts) {
-				if (isKeyMenu) {
-					handleInputEvent(theKeyEvent.getKeyCode());
+		}
+		if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED && isAltDown && _myMasterControlWindow.controlP5.isShortcuts) {
+			if (isKeyMenu) {
+				handleInputEvent(theKeyEvent.getKeyCode());
+			}
+			if (theKeyEvent.getKeyCode() == SAVE) {
+				if (isShiftDown) {
+					_myMasterControlWindow.controlP5.saveProperties(); // save properties
 				}
-				if (theKeyEvent.getKeyCode() == SAVE) {
-					_myMasterControlWindow.controlP5.save(_myMasterControlWindow.controlP5.filePath());
-				}
-				if (theKeyEvent.getKeyCode() == LOAD) {
-					if (isMasterWindow) {
-						_myMasterControlWindow.controlP5.load(_myMasterControlWindow.controlP5.filePath());
-						isAltDown = false;
-						isShiftDown = false;
-					}
-				}
-				if (theKeyEvent.getKeyCode() == HIDE) {
-					if (_myMasterControlWindow.isVisible) {
-						_myMasterControlWindow.controlP5.hide();
-					} else {
-						_myMasterControlWindow.controlP5.show();
-					}
+//				else {
+//					ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
+//				}
+			}
+			if (theKeyEvent.getKeyCode() == LOAD) {
+				if (isShiftDown) {
+					// load properties
+					_myMasterControlWindow.controlP5.loadProperties();
+				} 
+//			else {
+//					if (isMasterWindow) {
+//						ControlP5.logger().info("Loading ControlP5 from an XML file has been removed, have a look at controlP5's properties instead.");
+//						isAltDown = false;
+//						isShiftDown = false;
+//					}
+//				}
+			}
+			if (theKeyEvent.getKeyCode() == HIDE) {
+				if (_myMasterControlWindow.isVisible) {
+					_myMasterControlWindow.controlP5.hide();
+				} else {
+					_myMasterControlWindow.controlP5.show();
 				}
 			}
-	
-			/*
-			 * during re/loading period of settings theControlWindow might be
-			 * null
-			 */
-			if (theControlWindow != null) {
-				theControlWindow.keyEvent(theKeyEvent);
-			}
+		}
+
+		/*
+		 * during re/loading period of settings theControlWindow might be null
+		 */
+		if (theControlWindow != null) {
+			theControlWindow.keyEvent(theKeyEvent);
+		}
 	}
 
 	/**
-	 * @param theKey
-	 *        char
+	 * @param theKey char
 	 */
 	protected void handleInputEvent(int theKeyCode) {
 		switch (theKeyCode) {
-			case (SWITCH_FORE):
-			case (SWITCH_BACK):
-			case (PRINT):
-			case (DECREASE):
-			case (INCREASE):
-			case (RESET):
-				ControlP5.logger().warning("Key controls are not supported in this version anymore.");
+		case (SWITCH_FORE):
+		case (SWITCH_BACK):
+		case (PRINT):
+		case (DECREASE):
+		case (INCREASE):
+		case (RESET):
+			ControlP5.logger().warning("Key controls are not supported in this version anymore.");
 		}
 	}
 

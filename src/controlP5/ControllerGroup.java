@@ -27,11 +27,10 @@ package controlP5;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 /**
  * ControllerGroup is an abstract class and is extended by e.g. ControlGroup,
@@ -41,11 +40,11 @@ import processing.core.PApplet;
  */
 public abstract class ControllerGroup implements ControllerInterface, ControlP5Constants {
 
-	protected CVector3f position;
+	protected PVector position;
 
-	protected CVector3f positionBuffer;
+	protected PVector positionBuffer;
 
-	protected CVector3f absolutePosition;
+	protected PVector absolutePosition;
 
 	protected ControllerList controllers;
 
@@ -79,8 +78,6 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	protected int _myHeight = 9;
 
-	protected boolean isXMLsavable = true;
-
 	protected boolean isUpdate;
 
 	protected List<ControlCanvas> _myControlCanvas;
@@ -95,7 +92,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	protected int _myPickingColor = 0x6600ffff;
 
-	protected CVector3f autoPosition = new CVector3f(10, 30, 0);
+	protected PVector autoPosition = new PVector(10, 30, 0);
 
 	protected float tempAutoPositionHeight = 0;
 
@@ -110,20 +107,21 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theY float
 	 */
 	public ControllerGroup(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY) {
-		position = new CVector3f(theX, theY, 0);
+		position = new PVector(theX, theY, 0);
 		controlP5 = theControlP5;
 		color.set((theParent == null) ? controlP5.color : theParent.color);
 		_myName = theName;
 		controllers = new ControllerList();
-		_myControlCanvas = new Vector<ControlCanvas>();
-		_myLabel = new Label(_myName, color.colorCaptionLabel);
+		_myControlCanvas = new ArrayList<ControlCanvas>();
+		_myLabel = new Label(_myName, color.getCaptionLabel());
 		setParent((theParent == null) ? this : theParent);
+
 	}
 
 	protected ControllerGroup(int theX, int theY) {
-		position = new CVector3f(theX, theY, 0);
+		position = new PVector(theX, theY, 0);
 		controllers = new ControllerList();
-		_myControlCanvas = new Vector<ControlCanvas>();
+		_myControlCanvas = new ArrayList<ControlCanvas>();
 	}
 
 	/**
@@ -150,9 +148,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		if (_myParent != this) {
 			_myParent.add(this);
 		}
-		absolutePosition = new CVector3f(position);
-		absolutePosition.add(_myParent.absolutePosition());
-		positionBuffer = new CVector3f(position);
+		absolutePosition = new PVector(position.x, position.y);
+		absolutePosition.add(_myParent.absolutePosition);
+		positionBuffer = new PVector(position.x, position.y);
 		_myControlWindow = _myParent.getWindow();
 
 		for (int i = 0; i < controllers.size(); i++) {
@@ -280,19 +278,33 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	}
 
 	/**
-	 * 
+	 * @deprecated
 	 * @return CVector3f
 	 */
-	public CVector3f position() {
-		return position;
+	public PVector absolutePosition() {
+		return getAbsolutePosition();
+	}
+
+	public PVector getAbsolutePosition() {
+		return new PVector(absolutePosition.x, absolutePosition.y);
+	}
+
+	public void setAbsolutePosition(PVector thePVector) {
+		// TODO
+		// doesnt work properly yet.
+		absolutePosition.set(thePVector.x, thePVector.y, thePVector.z);
 	}
 
 	/**
-	 * 
+	 * @deprecated
 	 * @return CVector3f
 	 */
-	public CVector3f absolutePosition() {
-		return absolutePosition;
+	public PVector position() {
+		return getPosition();
+	}
+
+	public PVector getPosition() {
+		return new PVector(position.x, position.y);
 	}
 
 	/**
@@ -302,26 +314,24 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theY float
 	 */
 	public void setPosition(float theX, float theY) {
-		position.set((int) theX, (int) theY);
+		position.set((int) theX, (int) theY, 0);
 		positionBuffer.set(position);
 		updateAbsolutePosition();
 	}
 
-	/**
-	 * 
-	 */
+	public void setPosition(PVector thePVector) {
+		setPosition(thePVector.x, thePVector.y);
+	}
+
 	public void updateAbsolutePosition() {
 		absolutePosition.set(position);
-		absolutePosition.add(_myParent.absolutePosition());
+		absolutePosition.add(_myParent.getAbsolutePosition());
 		for (int i = 0; i < controllers.size(); i++) {
-			((ControllerInterface) controllers.get(i)).updateAbsolutePosition();
+			controllers.get(i).updateAbsolutePosition();
 		}
 
 	}
 
-	/**
-	 * 
-	 */
 	public void continuousUpdateEvents() {
 		if (controllers.size() <= 0) {
 			return;
@@ -423,7 +433,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public final void draw(PApplet theApplet) {
 		if (isVisible) {
 			theApplet.pushMatrix();
-			theApplet.translate(position.x(), position.y());
+			theApplet.translate(position.x, position.y);
 			preDraw(theApplet);
 			_myControlWindow._myPicking.update(this);
 			drawControllers(theApplet);
@@ -434,26 +444,26 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	protected void drawControllers(PApplet theApplet) {
 		if (isOpen) {
-
-			for (int i = 0; i < _myControlCanvas.size(); i++) {
-				if (((ControlCanvas) _myControlCanvas.get(i)).mode() == ControlCanvas.PRE) {
-					((ControlCanvas) _myControlCanvas.get(i)).draw(theApplet);
+			
+			for(ControlCanvas cc:_myControlCanvas) {
+				if(cc.mode()==ControlCanvas.PRE) {
+					cc.draw(theApplet);
+				}
+			}
+			for(ControllerInterface ci:controllers.get()) {
+				if(ci.isVisible()) {
+					ci.updateInternalEvents(theApplet);
+					ci.draw(theApplet);
 				}
 			}
 
-			for (int i = 0; i < controllers.size(); i++) {
-				if (((ControllerInterface) controllers.get(i)).isVisible()) {
-					((ControllerInterface) controllers.get(i)).updateInternalEvents(theApplet);
-					((ControllerInterface) controllers.get(i)).draw(theApplet);
-				}
+			for(CDrawable cd:controllers.getDrawables()) {
+				cd.draw(theApplet);
 			}
-			for (int i = 0; i < controllers.sizeDrawable(); i++) {
-				((CDrawable) controllers.getDrawable(i)).draw(theApplet);
-			}
-
-			for (int i = 0; i < _myControlCanvas.size(); i++) {
-				if (((ControlCanvas) _myControlCanvas.get(i)).mode() == ControlCanvas.POST) {
-					((ControlCanvas) _myControlCanvas.get(i)).draw(theApplet);
+			
+			for(ControlCanvas cc:_myControlCanvas) {
+				if(cc.mode()==ControlCanvas.POST) {
+					cc.draw(theApplet);
 				}
 			}
 		}
@@ -473,6 +483,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	public ControlCanvas addCanvas(ControlCanvas theCanvas) {
 		_myControlCanvas.add(theCanvas);
+		theCanvas.setup(controlP5.papplet);
 		return theCanvas;
 	}
 
@@ -626,15 +637,21 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		return _myId;
 	}
 
+	public void setColor(CColor theColor) {
+		for (ControllerInterface ci:controllers.get()) {
+			ci.setColor(theColor);
+		}
+	}
+	
 	/**
 	 * set the color for the group when active.
 	 * 
 	 * @param theColor int
 	 */
 	public void setColorActive(int theColor) {
-		color.colorActive = theColor;
-		for (int i = 0; i < controllers.size(); i++) {
-			((ControllerInterface) controllers.get(i)).setColorActive(theColor);
+		color.setActive(theColor);
+		for (ControllerInterface ci:controllers.get()) {
+			ci.setColorActive(theColor);
 		}
 	}
 
@@ -644,9 +661,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theColor int
 	 */
 	public void setColorForeground(int theColor) {
-		color.colorForeground = theColor;
-		for (int i = 0; i < controllers.size(); i++) {
-			((ControllerInterface) controllers.get(i)).setColorForeground(theColor);
+		color.setForeground(theColor);
+		for (ControllerInterface ci:controllers.get()) {
+			ci.setColorForeground(theColor);
 		}
 	}
 
@@ -656,9 +673,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theColor int
 	 */
 	public void setColorBackground(int theColor) {
-		color.colorBackground = theColor;
-		for (int i = 0; i < controllers.size(); i++) {
-			((ControllerInterface) controllers.get(i)).setColorBackground(theColor);
+		color.setBackground(theColor);
+		for (ControllerInterface ci:controllers.get()) {
+			ci.setColorBackground(theColor);
 		}
 	}
 
@@ -668,12 +685,12 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theColor int
 	 */
 	public void setColorLabel(int theColor) {
-		color.colorCaptionLabel = theColor;
+		color.setCaptionLabel(theColor);
 		if (_myLabel != null) {
-			_myLabel.set(_myLabel.toString(), color.colorCaptionLabel);
+			_myLabel.set(_myLabel.toString(), color.getCaptionLabel());
 		}
-		for (int i = 0; i < controllers.size(); i++) {
-			((ControllerInterface) controllers.get(i)).setColorLabel(theColor);
+		for (ControllerInterface ci:controllers.get()) {
+			ci.setColorLabel(theColor);
 		}
 	}
 
@@ -683,12 +700,12 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theColor int
 	 */
 	public void setColorValue(int theColor) {
-		color.colorValueLabel = theColor;
+		color.setValueLabel(theColor);
 		if (_myValueLabel != null) {
-			_myValueLabel.set(_myValueLabel.toString(), color.colorValueLabel);
+			_myValueLabel.set(_myValueLabel.toString(), color.getValueLabel());
 		}
-		for (int i = 0; i < controllers.size(); i++) {
-			((ControllerInterface) controllers.get(i)).setColorValue(theColor);
+		for (ControllerInterface ci:controllers.get()) {
+			ci.setColorValue(theColor);
 		}
 	}
 
@@ -802,19 +819,35 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		return color;
 	}
 
+	public void setValue(float theValue) {
+		_myValue = theValue;
+	}
+
 	/**
 	 * !!! experimental, have to check if this spoils anything. implemented for
 	 * ScrollList and MultiList to forward values to a dedicated method
 	 */
 	public float value() {
+		return value();
+	}
+
+	public float getValue() {
 		return _myValue;
 	}
 
 	public String stringValue() {
+		return getStringValue();
+	}
+
+	public String getStringValue() {
 		return _myStringValue;
 	}
 
 	public float[] arrayValue() {
+		return getArrayValue();
+	}
+
+	public float[] getArrayValue() {
 		return _myArrayValue;
 	}
 
@@ -867,38 +900,40 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	}
 
 	protected boolean inside() {
-		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
-				&& _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myWidth
-				&& _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() - _myHeight && _myControlWindow.mouseY < position.y()
-				+ _myParent.absolutePosition().y());
+		return (_myControlWindow.mouseX > position.x + _myParent.absolutePosition.x
+				&& _myControlWindow.mouseX < position.x + _myParent.absolutePosition.x + _myWidth
+				&& _myControlWindow.mouseY > position.y + _myParent.absolutePosition.y - _myHeight && _myControlWindow.mouseY < position.y
+				+ _myParent.absolutePosition.y);
 	}
 
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public boolean isXMLsavable() {
-		return isXMLsavable;
+	public ControllerProperty getProperty(String thePropertyName) {
+		return controlP5.getProperties().getProperty(this, thePropertyName);
 	}
-
-	/**
-	 * 
-	 * @return ControlP5XMLElement
-	 */
-	public ControlP5XMLElement getAsXML() {
-		ControlP5XMLElement myXMLElement = new ControlP5XMLElement(new Hashtable(), true, false);
-		myXMLElement.setAttribute("name", name());
-		myXMLElement.setAttribute("label", _myLabel.toString());
-		myXMLElement.setAttribute("id", new Integer(id()));
-		myXMLElement.setAttribute("x", new Float(position().x()));
-		myXMLElement.setAttribute("y", new Float(position().y()));
-		myXMLElement.setAttribute("open", new Float(isOpen == true ? 1 : 0));
-		myXMLElement.setAttribute("visible", new Float(isVisible == true ? 1 : 0));
-		myXMLElement.setAttribute("moveable", new Float(isMoveable == true ? 1 : 0));
-		addToXMLElement(myXMLElement);
-		return myXMLElement;
+	
+	public ControllerProperty getProperty(String theSetter, String theGetter) {
+		return controlP5.getProperties().getProperty(this, theSetter, theGetter);
 	}
-
+	
+	public ControllerInterface registerProperty(String thePropertyName) {
+		controlP5.getProperties().register(this, thePropertyName);
+		return this;
+	}
+	
+	public ControllerInterface registerProperty(String theSetter, String theGetter) {
+		controlP5.getProperties().register(this, theSetter, theGetter);
+		return this;
+	}
+	
+	public void removeProperty(String thePropertyName) {
+		controlP5.getProperties().remove(this, thePropertyName);
+	}
+	
+	public void removeProperty(String theSetter, String theGetter) {
+		controlP5.getProperties().remove(this, theSetter, theGetter);
+	}
+	
+	
+	
 	@Override
 	public String toString() {
 		return "\nname:\t" + _myName + "\n" + "label:\t" + _myLabel.getText() + "\n" + "id:\t" + _myId + "\n" + "value:\t"
