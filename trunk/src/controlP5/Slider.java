@@ -26,11 +26,7 @@ package controlP5;
  */
 
 import java.util.ArrayList;
-import java.util.Vector;
 
-import controlP5.Button.ButtonDisplay;
-import controlP5.Button.ButtonImageDisplay;
-import controlP5.Button.ButtonSpriteDisplay;
 
 import processing.core.PApplet;
 
@@ -108,14 +104,14 @@ public class Slider extends Controller {
 			int theWidth,
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName, color.colorCaptionLabel);
+		_myCaptionLabel = new Label(theName, color.getCaptionLabel());
 		_myMin = theMin;
 		_myMax = theMax;
 		// initialize the valueLabel with the longest string available, which is
 		// either theMax or theMin.
 		_myValueLabel = new Label(""
 				+ (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax)
-						: adjustValue(_myMin)), color.colorValueLabel);
+						: adjustValue(_myMin)), color.getValueLabel());
 		// after initializing valueLabel, set the value to
 		// the default value.
 		_myValueLabel.set("" + adjustValue(_myValue));
@@ -157,9 +153,9 @@ public class Slider extends Controller {
 		if (isVisible) {
 			if (isMousePressed && !ControlP5.keyHandler.isAltDown) {
 				if (_myDirection == HORIZONTAL) {
-					setValue(_myMin + (_myControlWindow.mouseX - (_myParent.absolutePosition().x() + position.x)) * _myUnit);
+					setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
 				} else {
-					setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.absolutePosition().y() + position.y) - height))
+					setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height))
 							* _myUnit);
 				}
 			}
@@ -187,6 +183,15 @@ public class Slider extends Controller {
 		_myValuePosition = ((_myValue - _myMin) / _myUnit);
 		_myValueLabel.set(adjustValue(_myValue));
 		broadcast(FLOAT);
+	}
+	
+	
+	/**
+	 * assigns a random value to the controller.
+	 */
+	public void shuffle() {
+		float r = (float)Math.random();
+		setValue(PApplet.map(r,0,1,getMin(),getMax()));
 	}
 
 	public void update() {
@@ -235,16 +240,6 @@ public class Slider extends Controller {
 		return this;
 	}
 
-	/**
-	 * 
-	 * @param theElement ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "slider");
-		theElement.setAttribute("min", new Float(min()));
-		theElement.setAttribute("max", new Float(max()));
-	}
-
 	public void onEnter() {
 	}
 
@@ -262,11 +257,9 @@ public class Slider extends Controller {
 	}
 
 	public void setNumberOfTickMarks(int theNumber) {
-		int n = theNumber - _myTickMarks.size();
-		if (n <= theNumber) {
-			for (int i = 0; i < n; i++) {
-				_myTickMarks.add(new TickMark(this));
-			}
+		_myTickMarks.clear();
+		for (int i = 0; i < theNumber; i++) {
+			_myTickMarks.add(new TickMark(this));
 		}
 		showTickMarks(true);
 		snapToTickMarks(true);
@@ -342,10 +335,10 @@ public class Slider extends Controller {
 	class SliderDisplay implements ControllerDisplay {
 
 		public void display(PApplet theApplet, Controller theController) {
-			theApplet.fill(color.colorBackground);
+			theApplet.fill(color.getBackground());
 			theApplet.noStroke();
 			theApplet.rect(0, 0, width, height);
-			theApplet.fill(getIsInside() ? color.colorActive : color.colorForeground);
+			theApplet.fill(getIsInside() ? color.getActive() : color.getForeground());
 			if (_myDirection == HORIZONTAL) {
 				if (_mySliderMode == FIX) {
 					theApplet.rect(0, 0, _myValuePosition, height);

@@ -148,4 +148,24 @@ public interface ControlP5Constants {
 	public static final int ELLIPSE = 2;
 	
 	public static final int ARC = 3;
+	
+	
+	public static final int INACTIVE = 0;
+	
+	public static final int WAIT = 1;
+	
+	public static final int FADEIN = 2;
+	
+	public static final int IDLE = 3;
+	
+	public static final int FADEOUT = 4;
+	
+	public static final int DONE = 5;
+	
+	
+	public static final int SINGLE_COLUMN = 0;
+	
+	public static final int SINGLE_ROW = 1;
+	
+	public static final int MULTIPLES = 2;
 }

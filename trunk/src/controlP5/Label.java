@@ -26,7 +26,9 @@ package controlP5;
  */
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PImage;
+import processing.core.PVector;
 
 /**
  * Label description tbd.
@@ -68,7 +70,7 @@ public class Label implements CDrawable {
 
 	protected boolean isVisible = true;
 
-	public CVector3f position = new CVector3f();
+	public PVector position = new PVector(0,0,0);
 
 	protected int _myLetterSpacing = 0;
 
@@ -76,9 +78,9 @@ public class Label implements CDrawable {
 
 	protected boolean isColorBackground = false;
 
-	public static int LABEL_WIDTH_OFFSET = 4;
+	public static int LABEL_WIDTH_OFFSET = 0;//4;
 
-	public ControllerStyle _myControllerStyle = new ControllerStyle();
+	public ControllerStyle _myControllerStyle;
 
 	protected int _myOffsetX = 0;
 
@@ -123,15 +125,16 @@ public class Label implements CDrawable {
 	}
 
 	private void init(String theText, final int theWidth, final int theHeight, final int theColor) {
+		_myControllerStyle = new ControllerStyle();
 		_myText = (theText == null) ? "" : theText;
 		_myWidth = theWidth + LABEL_WIDTH_OFFSET;
-		_myHeight = theHeight;
+		
 		_myColor = theColor;
 		isControlFont = ControlP5.isControlFont;
 		if (isControlFont && ControlP5.getControlFont() != null) {
 			setControlFont(ControlP5.getControlFont());
 		}
-
+		_myHeight = (isControlFont) ? theHeight : BitFontRenderer.font[_myFontIndex].height;
 		_myImage = new PImage(_myWidth, _myHeight);
 		_myImageMask = new PImage(_myWidth, _myHeight);
 		setFixedSize(true);
@@ -365,6 +368,7 @@ public class Label implements CDrawable {
 		// boolean myFixedSize = isFixedSize;
 		_myFontIndex = theFont;
 		// isFixedSize = false;
+		System.out.println("setting font!");
 		update();
 		// isFixedSize = myFixedSize;
 		return this;
@@ -380,9 +384,14 @@ public class Label implements CDrawable {
 	}
 	
 
+	public ControlFont setControlFont(PFont thePFont) {
+		return setControlFont(new ControlFont(thePFont));
+	}
+	
 	public ControlFont setControlFont(ControlFont theControlFont) {
 		_myControlFont = theControlFont;
 		setControlFontSize(_myControlFont.size());
+		toUpperCase(false);
 		isControlFont = true;
 		return _myControlFont;
 	}
@@ -445,7 +454,6 @@ public class Label implements CDrawable {
 				_myHeight = BitFontRenderer.font[_myFontIndex].height;
 				_myWidth = bitFontRenderer.getWidth(this);
 				_myWidth += _myText.length() * _myLetterSpacing;
-
 			}
 			_myImage = new PImage(_myWidth, _myHeight);
 			_myImageMask = new PImage(_myWidth, _myHeight);
@@ -523,6 +531,7 @@ public class Label implements CDrawable {
 
 	/**
 	 * @deprecated
+	 * use getLineHeight instead
 	 * @return
 	 */
 	public int lineHeight() {
@@ -537,7 +546,16 @@ public class Label implements CDrawable {
 		return isMultiline;
 	}
 
+	/**
+	 * @deprecated
+	 * use getTextHeight instead
+	 * @return
+	 */
 	public int textHeight() {
+		return textHeight;
+	}
+	
+	public int getTextHeight() {
 		return textHeight;
 	}
 
@@ -588,11 +606,27 @@ public class Label implements CDrawable {
 		isColorBackground = true;
 	}
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public int width() {
 		return _myWidth;
 	}
+	
+	public int getWidth() {
+		return _myWidth;
+	}
 
+	/**
+	 * @deprecated
+	 * @return
+	 */
 	public int height() {
+		return _myHeight;
+	}
+	
+	public int getHeight() {
 		return _myHeight;
 	}
 
@@ -601,6 +635,7 @@ public class Label implements CDrawable {
 	}
 
 	public void setHeight(int theValue) {
+		// !!!
 		_myHeight = theValue;
 	}
 
@@ -618,6 +653,11 @@ public class Label implements CDrawable {
 
 	public ControllerStyle style() {
 		return _myControllerStyle;
+	}
+	
+	public void setPosition(float theX, float theY) {
+		position.x = theX;
+		position.y = theY;
 	}
 
 }

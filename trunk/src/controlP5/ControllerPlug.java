@@ -101,7 +101,7 @@ public class ControllerPlug {
 			} catch (SecurityException e) {
 				printSecurityWarning(e);
 			} catch (NoSuchMethodException e) {
-				ControlP5.logger().warning(" plug() failed." + e);
+				ControlP5.logger().warning(" plug() failed. If function "+theName+" does exist, make it public. " + e);
 			}
 
 			/* check for controlEvent */
@@ -113,7 +113,7 @@ public class ControllerPlug {
 			} catch (SecurityException e) {
 				printSecurityWarning(e);
 			} catch (NoSuchMethodException e) {
-				ControlP5.logger().warning(" plug() failed." + e);
+				ControlP5.logger().warning(" plug() failed. If function "+theName+" does exist, make it public. " + e);
 			}
 			/* check for fields */
 		} else if (_myType == ControlP5Constants.FIELD) {

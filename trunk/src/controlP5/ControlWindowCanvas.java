@@ -42,7 +42,9 @@ public abstract class ControlWindowCanvas {
 	public final static int PRE = 0;
 	public final static int POST = 1;
 	protected int _myMode = PRE;
-
+	
+	public void setup(PApplet theApplet) {}
+	
 	/**
 	 * controlWindowCanvas is an abstract class and therefore needs to be extended
 	 * by your class. draw(PApplet theApplet) is the only method that needs to be

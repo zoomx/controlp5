@@ -62,6 +62,8 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	protected boolean pulldown;
 
+	private int itemOffset = 0;
+
 	protected ListBox(
 			ControlP5 theControlP5,
 			ControllerGroup theGroup,
@@ -77,7 +79,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 		_myWidth = theW;
 		_myName = theName;
-		_myBackgroundHeight = theH;
+
+		// workaround fix see code.goode.com/p/controlp5 issue 7
+		_myBackgroundHeight = theH < 10 ? 10 : theH;
 
 		_myScrollbar = new Slider(controlP5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth + 1, 0, 10, _myBackgroundHeight);
 		_myScrollbar.setBroadcast(false);
@@ -90,7 +94,6 @@ public class ListBox extends ControlGroup implements ControlListener {
 		_myScrollbar.hide();
 		_myScrollbar.updateDisplayMode(DEFAULT);
 		add(_myScrollbar);
-		
 		setHeight(_myBackgroundHeight);
 	}
 
@@ -136,18 +139,25 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * internal scroll updates.
 	 */
 	private void scroll() {
-		int n = 0;
+		itemOffset = 0;
 		if (buttons.size() < items.size() && isScrollbarVisible) {
 			_myScrollbar.show();
-			n = (int) Math.abs(_myScrollValue * (items.size() - buttons.size()));
+			itemOffset = (int) Math.abs(_myScrollValue * (items.size() - buttons.size()));
 		} else {
 			_myScrollbar.hide();
 		}
 		for (int i = 0; i < buttons.size(); i++) {
-			buttons.get(i).setColor(items.get(n + i).getColor());
-			buttons.get(i).captionLabel().set((items.get(n + i)).text);
-			buttons.get(i)._myValue = (items.get(n + i)).value;
+			ListBoxItem item = items.get(itemOffset + i);
+			Button b = buttons.get(i);
+			b.captionLabel().toUpperCase(item.getToUpperCase());
+			b.setColor(item.getColor());
+			b.captionLabel().set(item.getText());
+			b._myValue = item.getValue();
 		}
+	}
+
+	public void updateListBoxItems() {
+		scroll();
 	}
 
 	/**
@@ -194,7 +204,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 		scroll();
 		return this;
 	}
-	
+
 	private void updateScroll() {
 		_myScrollValue = _myScrollbar.value();
 		_myScrollbar.setValue(_myScrollValue);
@@ -204,18 +214,18 @@ public class ListBox extends ControlGroup implements ControlListener {
 		updateBackground();
 		scroll();
 	}
-	
+
 	private void updateBackground() {
 		if (items.size() * (_myItemHeight + spacing) < _myOriginalBackgroundHeight) {
 			_myBackgroundHeight = items.size() * (_myItemHeight + spacing);
 		}
-		if (buttons.size()<items.size()) {
+		if (buttons.size() < items.size()) {
 			_myScrollbar.setHeight(_myBackgroundHeight - spacing);
 			_myScrollbar.show();
 		} else {
 			_myScrollbar.hide();
 		}
-		
+
 	}
 
 	public ListBox setWidth(int theWidth) {
@@ -241,8 +251,6 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 		updateScroll();
 	}
-
-
 
 	/**
 	 * Adds an item to the ListBox.
@@ -292,7 +300,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @return
 	 */
 	public ListBoxItem item(int theIndex) {
-		return ((ListBoxItem) items.get(theIndex));
+		return items.get(theIndex);
 	}
 
 	/**
@@ -305,6 +313,22 @@ public class ListBox extends ControlGroup implements ControlListener {
 		for (int i = items.size() - 1; i >= 0; i--) {
 			if ((items.get(i)).name.equals(theItemName)) {
 				return items.get(i);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * returns a ListBoxItem based on its Button reference.
+	 * 
+	 * @param theButton
+	 * @return
+	 */
+	public ListBoxItem item(Controller theButton) {
+		if (theButton instanceof Button) {
+			int n = buttons.indexOf(theButton);
+			if (n >= 0) {
+				return items.get(n + itemOffset);
 			}
 		}
 		return null;
@@ -371,8 +395,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void setColorActive(int theColor) {
 		super.setColorActive(theColor);
 		for (int i = 0; i < items.size(); i++) {
-			(items.get(i)).getColor().colorActive = theColor;
+			(items.get(i)).getColor().setActive(theColor);
 		}
+		scroll();
 	}
 
 	/**
@@ -381,8 +406,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void setColorForeground(int theColor) {
 		super.setColorForeground(theColor);
 		for (int i = 0; i < items.size(); i++) {
-			(items.get(i)).getColor().colorForeground = theColor;
+			(items.get(i)).getColor().setForeground(theColor);
 		}
+		scroll();
 	}
 
 	/**
@@ -391,8 +417,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void setColorBackground(int theColor) {
 		super.setColorBackground(theColor);
 		for (int i = 0; i < items.size(); i++) {
-			(items.get(i)).getColor().colorBackground = theColor;
+			(items.get(i)).getColor().setBackground(theColor);
 		}
+		scroll();
 	}
 
 	/**
@@ -401,8 +428,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void setColorLabel(int theColor) {
 		super.setColorLabel(theColor);
 		for (int i = 0; i < items.size(); i++) {
-			(items.get(i)).getColor().colorCaptionLabel = theColor;
+			(items.get(i)).getColor().setCaptionLabel(theColor);
 		}
+		scroll();
 	}
 
 	/**
@@ -411,17 +439,24 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void setColorValue(int theColor) {
 		super.setColorValue(theColor);
 		for (int i = 0; i < items.size(); i++) {
-			(items.get(i)).getColor().colorValueLabel = theColor;
+			(items.get(i)).getColor().setValueLabel(theColor);
 		}
+		scroll();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.ControlGroup#addToXMLElement(controlP5.ControlP5XMLElement)
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "listBox");
+	public String[][] getListBoxItems() {
+		String[][] l = new String[items.size()][3];
+		for (int i = 0; i < l.length; i++) {
+			l[i] = new String[] { items.get(i).name, items.get(i).text, Integer.toString(items.get(i).value) };
+		}
+		return l;
+	}
+
+	public void setListBoxItems(String[][] l) {
+		clear();
+		for (String[] s : l) {
+			addItem(s[0], new Integer(s[2]).intValue()).setText(s[1]);
+		}
 	}
 
 }

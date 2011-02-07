@@ -30,11 +30,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PVector;
 
 /**
  * the purpose of a control window is to out-source controllers so that they
@@ -90,9 +91,11 @@ public class ControlWindow implements MouseWheelListener {
 
 	public final static int ECONOMIC = PAppletWindow.ECONOMIC;
 
-	protected Vector<ControlWindowCanvas> _myControlWindowCanvas;
+	protected List<ControlWindowCanvas> _myControlWindowCanvas;
 
-	protected Vector<ControlCanvas> _myControlCanvas;
+	protected List<ControlCanvas> _myControlCanvas;
+
+	private List<Controller> mouseoverlist;
 
 	protected boolean isMouseOver;
 
@@ -102,13 +105,15 @@ public class ControlWindow implements MouseWheelListener {
 
 	protected boolean is3D;
 
-	protected CVector3f autoPosition = new CVector3f(10, 30, 0);
+	protected PVector autoPosition = new PVector(10, 30, 0);
 
 	protected float tempAutoPositionHeight = 0;
 
 	protected ControlPicking _myPicking;
 
 	protected boolean rendererNotification = false;
+
+	protected PVector positionOfTabs = new PVector(0, 0, 0);
 
 	/**
 	 * 
@@ -131,8 +136,9 @@ public class ControlWindow implements MouseWheelListener {
 		_myPicking = new ControlPicking(this);
 
 		_myTabs = new ControllerList();
-		_myControlWindowCanvas = new Vector<ControlWindowCanvas>();
-		_myControlCanvas = new Vector<ControlCanvas>();
+		_myControlWindowCanvas = new ArrayList<ControlWindowCanvas>();
+		_myControlCanvas = new ArrayList<ControlCanvas>();
+		mouseoverlist = new ArrayList<Controller>();
 
 		// TODO next section conflicts with Android
 		if (_myApplet instanceof PAppletWindow) {
@@ -266,6 +272,44 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
+	 * sets the position of the tab bar which is set to 0,0 by default. to move
+	 * the tabs to y-position 100, use cp5.window().setPositionOfTabs(new
+	 * PVector(0,100,0));
+	 * 
+	 * @param thePVector
+	 */
+	public void setPositionOfTabs(PVector thePVector) {
+		positionOfTabs.set(thePVector);
+	}
+
+	public void setPositionOfTabs(int theX, int theY) {
+		positionOfTabs.set(theX, theY, positionOfTabs.z);
+	}
+
+	/**
+	 * returns the position of the tab bar as PVector. to move the tabs to
+	 * y-position 100, use cp5.window().getPositionOfTabs().y = 100; or
+	 * cp5.window().setPositionOfTabs(new PVector(0,100,0));
+	 * 
+	 * @return PVector
+	 */
+	public PVector getPositionOfTabs() {
+		return positionOfTabs;
+	}
+
+	void setAllignmentOfTabs(int theValue, int theWidth) {
+		// TODO
+	}
+
+	void setAllignmentOfTabs(int theValue, int theWidth, int theHeight) {
+		// TODO
+	}
+
+	void setAllignmentOfTabs(int theValue) {
+		// TODO
+	}
+
+	/**
 	 * remove a control window from controlP5.
 	 */
 	public void remove() {
@@ -302,7 +346,7 @@ public class ControlWindow implements MouseWheelListener {
 	 * 
 	 */
 	public void updateEvents() {
-		isMouseOver = false;
+		handleMouseOver();
 		if (_myTabs.size() <= 0) {
 			return;
 		}
@@ -324,6 +368,32 @@ public class ControlWindow implements MouseWheelListener {
 	public boolean isMouseOver() {
 		// TODO doesnt work for groups yet, implement.
 		return isMouseOver;
+	}
+
+	public boolean isMouseOver(Controller theController) {
+		return mouseoverlist.contains(theController);
+	}
+
+	public List<Controller> getMouseOverList() {
+		// TODO mouseoverlist should be immutable so it cant be changed when
+		// returned.
+		return mouseoverlist;
+	}
+
+	private void handleMouseOver() {
+		for (int i = mouseoverlist.size() - 1; i >= 0; i--) {
+			if (!mouseoverlist.get(i).isMouseOver()) {
+				mouseoverlist.remove(i);
+			}
+		}
+		isMouseOver = mouseoverlist.size() > 0;
+	}
+
+	protected void setMouseOverController(Controller theController) {
+		if (!mouseoverlist.contains(theController)) {
+			mouseoverlist.add(theController);
+		}
+		isMouseOver = true;
 	}
 
 	/**
@@ -361,6 +431,7 @@ public class ControlWindow implements MouseWheelListener {
 	public void addCanvas(ControlWindowCanvas theCanvas) {
 		_myControlWindowCanvas.add(theCanvas);
 		theCanvas.setControlWindow(this);
+		theCanvas.setup(_myApplet);
 	}
 
 	public void removeCanvas(ControlWindowCanvas theCanvas) {
@@ -381,7 +452,25 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * 
+	 * enable smooth controlWindow rendering.
+	 */
+	public void smooth() {
+		if (isPAppletWindow) {
+			_myApplet.smooth();
+		}
+	}
+
+	/**
+	 * disable smooth controlWindow rendering.
+	 */
+	public void noSmooth() {
+		if (isPAppletWindow) {
+			_myApplet.noSmooth();
+		}
+	}
+
+	/**
+	 * draw content.
 	 */
 	public void draw() {
 		if (controlP5.blockDraw == false) {
@@ -401,12 +490,12 @@ public class ControlWindow implements MouseWheelListener {
 				_myApplet.rectMode(PConstants.CORNER);
 				_myApplet.ellipseMode(PConstants.CORNER);
 				_myApplet.imageMode(PConstants.CORNER);
-				
-			// TODO next section conflicts with Android
+
+				// TODO next section conflicts with Android
 				if (isPAppletWindow) {
 					_myApplet.background(background);
 				}
-				
+
 				if (_myDrawable != null) {
 					_myDrawable.draw(_myApplet);
 				}
@@ -417,31 +506,31 @@ public class ControlWindow implements MouseWheelListener {
 					}
 				}
 
-				
-
 				_myApplet.noStroke();
 				_myApplet.noFill();
-				int myOffsetX = 0;
-				int myOffsetY = 0;
-				int myHeight = 0;			
+				int myOffsetX = (int) getPositionOfTabs().x;
+				int myOffsetY = (int) getPositionOfTabs().y;
+				int myHeight = 0;
 				if (_myTabs.size() > 0) {
 					for (int i = 1; i < _myTabs.size(); i++) {
 						if (((Tab) _myTabs.get(i)).isVisible()) {
 							if (myHeight < ((Tab) _myTabs.get(i)).height()) {
 								myHeight = ((Tab) _myTabs.get(i)).height();
 							}
-							if (myOffsetX > component().getWidth() - ((Tab) _myTabs.get(i)).width()) {
+							if (myOffsetX > (component().getWidth()) - ((Tab) _myTabs.get(i)).width()) {
 								myOffsetY += myHeight + 1;
-								myOffsetX = 0;
+								myOffsetX = (int) getPositionOfTabs().x;
 								myHeight = 0;
 							}
 
 							((Tab) _myTabs.get(i)).setOffset(myOffsetX, myOffsetY);
-							if (((Tab) _myTabs.get(i)).updateLabel()) {
-								((Tab) _myTabs.get(i)).drawLabel(_myApplet);
-							}
+
 							if (((Tab) _myTabs.get(i)).isActive()) {
 								((Tab) _myTabs.get(i)).draw(_myApplet);
+							}
+
+							if (((Tab) _myTabs.get(i)).updateLabel()) {
+								((Tab) _myTabs.get(i)).drawLabel(_myApplet);
 							}
 							myOffsetX += ((Tab) _myTabs.get(i)).width();
 						}
@@ -456,6 +545,10 @@ public class ControlWindow implements MouseWheelListener {
 
 				pmouseX = mouseX;
 				pmouseY = mouseY;
+
+				// draw Tooltip here.
+				controlP5.getTooltip().draw(this);
+
 				_myApplet.rectMode(myRectMode);
 				_myApplet.ellipseMode(myEllipseMode);
 				_myApplet.imageMode(myImageMode);
@@ -569,7 +662,7 @@ public class ControlWindow implements MouseWheelListener {
 	 * @param theColor int
 	 */
 	public void setColorActive(int theColor) {
-		color.colorActive = theColor;
+		color.setActive(theColor);
 		for (int i = 0; i < tabs().size(); i++) {
 			((Tab) tabs().get(i)).setColorActive(theColor);
 		}
@@ -582,7 +675,7 @@ public class ControlWindow implements MouseWheelListener {
 	 * @param theColor int
 	 */
 	public void setColorForeground(int theColor) {
-		color.colorForeground = theColor;
+		color.setForeground(theColor);
 		for (int i = 0; i < tabs().size(); i++) {
 			((Tab) tabs().get(i)).setColorForeground(theColor);
 		}
@@ -595,7 +688,7 @@ public class ControlWindow implements MouseWheelListener {
 	 * @param theColor int
 	 */
 	public void setColorBackground(int theColor) {
-		color.colorBackground = theColor;
+		color.setBackground(theColor);
 		for (int i = 0; i < tabs().size(); i++) {
 			((Tab) tabs().get(i)).setColorBackground(theColor);
 		}
@@ -608,7 +701,7 @@ public class ControlWindow implements MouseWheelListener {
 	 * @param theColor int
 	 */
 	public void setColorLabel(int theColor) {
-		color.colorCaptionLabel = theColor;
+		color.setCaptionLabel(theColor);
 		for (int i = 0; i < tabs().size(); i++) {
 			((Tab) tabs().get(i)).setColorLabel(theColor);
 		}
@@ -620,7 +713,7 @@ public class ControlWindow implements MouseWheelListener {
 	 * @param theColor int
 	 */
 	public void setColorValue(int theColor) {
-		color.colorValueLabel = theColor;
+		color.setValueLabel(theColor);
 		for (int i = 0; i < tabs().size(); i++) {
 			((Tab) tabs().get(i)).setColorValue(theColor);
 		}
@@ -799,21 +892,6 @@ public class ControlWindow implements MouseWheelListener {
 
 	public void setLocation(int theX, int theY) {
 		_myApplet.frame.setLocation(theX, theY);
-	}
-
-	protected ControlP5XMLElement getAsXML() {
-		ControlP5XMLElement myXMLElement = new ControlP5XMLElement(new Hashtable(), true, false);
-		myXMLElement.setName("window");
-		myXMLElement.setAttribute("class", _myApplet.getClass().getName());
-		myXMLElement.setAttribute("name", name());
-		myXMLElement.setAttribute("width", "" + _myApplet.width);
-		myXMLElement.setAttribute("height", "" + _myApplet.height);
-		myXMLElement.setAttribute("background", ControlP5IOHandler.intToString(background));
-		if (_myApplet.getClass().getName().indexOf("controlP5.PAppletWindow") != -1) {
-			myXMLElement.setAttribute("x", "" + ((PAppletWindow) _myApplet).x);
-			myXMLElement.setAttribute("y", "" + ((PAppletWindow) _myApplet).y);
-		}
-		return myXMLElement;
 	}
 
 }

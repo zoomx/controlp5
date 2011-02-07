@@ -183,7 +183,7 @@ public class BitFontRenderer {
 
 		int[] mywh = new int[numFonts];
 		System.arraycopy(mywh, 0, mywh, 0, mywh.length);
-//		mywh = mywh;
+		// mywh = mywh;
 
 		try {
 			font[numFonts - 1] = (PImage) (theImage.get().clone());
@@ -214,6 +214,7 @@ public class BitFontRenderer {
 
 	protected int getWidth(String theText, final Label theLabel, int theLength) {
 		int myWidth = 0;
+		int myTotalWidth = 0;
 		if (theText == null) {
 			theText = " ";
 		}
@@ -223,10 +224,17 @@ public class BitFontRenderer {
 			if (myIndex >= 0 && myIndex <= 95) {
 				myWidth += charWidth[theLabel.getFontIndex()][myIndex] + theLabel.getLetterSpacing();
 			} else {
-				ControlP5.logger().warning("You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example).");
+				if ((int) theText.charAt(i) != 10 && (int) theText.charAt(i) != 13) {
+					ControlP5.logger().warning("You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example).");
+				} else {
+					if(myWidth>myTotalWidth) {
+						myTotalWidth = myWidth;
+						myWidth = 0; 
+					}
+				}
 			}
 		}
-		return myWidth;
+		return (myWidth>myTotalWidth) ? myWidth:myTotalWidth;
 	}
 
 	private void putchar(
@@ -245,13 +253,12 @@ public class BitFontRenderer {
 			final int xpos = theX + i % charWidth[theFontIndex][theC];
 			final int pos = xpos + w + (i / charWidth[theFontIndex][theC]) * theImage.width;
 			if (chars[theFontIndex][theC][i] == 0xff000000 && xpos < theImage.width && xpos >= 0 && pos >= 0 && pos < myWH) {
-				theImage.pixels[pos] = (!theHighlight) ? theColor : 0xff999999;
+				theImage.pixels[pos] = theColor; //(!theHighlight) ? theColor : 0xff999999;
 				theMask.pixels[pos] = 0xffffffff;
 			}
 		}
 	}
 
-	
 	private int writeCharacters(final Label theLabel) {
 		int indent = 0;
 		final int myOriginalY = theLabel.getOffsetY();
@@ -262,7 +269,7 @@ public class BitFontRenderer {
 		int err = 0;
 		for (int i = 0; i < myText.length(); i++) {
 			int c = (int) myText.charAt(i);
-			
+
 			if (c != 10) {
 				if ((myWrap > 0 && indent > myWrap)) {
 					indent = theLabel.getOffsetX(); // 0;
@@ -284,11 +291,11 @@ public class BitFontRenderer {
 						}
 					}
 				}
-				
-				if (c >= 127 || c<=32) {
+
+				if (c >= 127 || c <= 32) {
 					c = 32;
 				}
-				
+
 				letters[i] = new Letter(indent, c - 32, myY, (i == theLabel.getCursorPosition() - 1));
 				indent += charWidth[theLabel.getFontIndex()][c - 32] + theLabel.getLetterSpacing();
 			} else {

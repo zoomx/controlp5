@@ -169,12 +169,6 @@ public class Button extends Controller {
 		setValue(_myValue);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "button");
-	}
 
 	/**
 	 * turn a button into a switch, or use toggle instead.
@@ -254,7 +248,7 @@ public class Button extends Controller {
 	}
 
 
-	class ButtonSpriteDisplay implements ControllerDisplay {
+	private class ButtonSpriteDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isOn && isSwitch) {
 				sprite.setState(2);
@@ -274,20 +268,20 @@ public class Button extends Controller {
 		}
 	}
 
-	class ButtonDisplay implements ControllerDisplay {
+	private class ButtonDisplay implements ControllerDisplay {
 
 		public void display(PApplet theApplet, Controller theController) {
 			if (isOn && isSwitch) {
-				theApplet.fill(color.colorActive);
+				theApplet.fill(color.getActive());
 			} else {
 				if (getIsInside()) {
 					if (isPressed) {
-						theApplet.fill(color.colorActive);
+						theApplet.fill(color.getActive());
 					} else {
-						theApplet.fill(color.colorForeground);
+						theApplet.fill(color.getForeground());
 					}
 				} else {
-					theApplet.fill(color.colorBackground);
+					theApplet.fill(color.getBackground());
 				}
 			}
 			theApplet.rect(0, 0, width, height);
@@ -297,7 +291,7 @@ public class Button extends Controller {
 		}
 	}
 
-	class ButtonImageDisplay implements ControllerDisplay {
+	private class ButtonImageDisplay implements ControllerDisplay {
 
 		public void display(PApplet theApplet, Controller theController) {
 			if (isOn && isSwitch) {

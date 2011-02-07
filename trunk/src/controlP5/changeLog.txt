@@ -1,4 +1,112 @@
-2010-09-30  Andreas Schlegel  <andi@sojamo.de>
+2011-02-07  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.5.7
+      
+      * src controlP5/ControlWindowKeyHandler.java:
+      Key combination ALT-L and ALT-S have been removed. 
+      ControlP5 setups cant be saved at this point anymore. But 
+      ControllerProperties have been introduced instead to save
+      properties for single controllers - how to use ControllerProperties
+      see the examples and source code of controlP5/ControllerProperties.java
+      and controlP5/ControllerProperty.java
+            
+      * src controlP5/Textfield.java:
+      Introducing a new text-cursor. Frame which surrounds a textfield has been removed.
+      	
+      * src controlP5/Slider.java, Slider2D.java,
+      controlP5/Knob.java, controlP5/Numberbox.java:
+      adding shuffle() command, when called, a random value will be set
+      for the controller.
+       
+      * src controlP5/Knob.java:
+      Caption Label was missing, now back.
+      
+      * controlP5/Slider2D.java:
+      absolute, relative positioning issue resolved.
+      see http://forum.processing.org/topic/three-problems-i-m-having-with-controlp5
+      
+      * src controlP5/ControlP5IOHandler.java:
+      Loading and saving controllers in xml format has been removed due
+      to incompletness. Alternatively ControllerProperties are introduced 
+      with this release, see below for more details.
+       
+      * src controlP5/ControlWindow.java:
+      Adding setPositionOfTabs() to change the origin of the tab bar. 
+      Use controlP5.window().setPositionOfTabs(PVector) or 
+      controlP5.window().setPositionOfTabs(int,int)  
+      
+      * src controlP5/ControlP5Base.java:
+      Adding saveProperties(String) and loadProperties(String) to 
+      save and load  serialized controller properties inside a file.
+       The range of controllers implementing save/load properties is yet 
+      limited to Slider, Knob, Numberbox, Toggle, Checkbox, 
+      RadioButton, Textlabel, Matrix,Range, textarea, ListBox, Dropdown, 
+      colorPicker. Properties are currently saved in the java serialization 
+      format but xml and possibily json alternatives are being worked out. 	
+      
+      * src controlP5/ControllerProperty.java:
+      Adding controller property. Controllers can register properties which 
+      can be saved in a serialized format. 
+      
+      * src controlP5/Matrix.java:
+      Adding setMode(int), please refer to to the documentation which 
+      constants to use - cells can be activated by row, column, many-per-row-and-colum
+      
+      * src controlP5/CColor.java:
+      Fields changed from protected to private, use setter and getter 
+      to change color values. CColor is serializable so that instances can
+      be saved as properties.
+      
+      * src controlP5/Accordion.java:
+      Adding new class Accordion, an Accordion allows similar behavior 
+      as a common UI accordion, here it combines ControlGroups where 
+      one or no group can be active at a time.
+      
+      * src controlP5/CVector3f.java:
+      Removed. Replaced with processing.core.PVector.
+      
+      * src controlP5/ControlP5.java:
+      Removing setFilePath(), setUrlPath(), urlPath(), filePath()
+      
+      * src controlP5/ControlP5XMLElement.java,
+      ControlP5/ControlP5XMLParseException:
+      removed.
+      
+      * src controlP5/ControlP5.java:
+      Adding convenience method window() which returns the controlWindow 
+      of the sketch, before one had to use window(PApplet)
+      
+      
+2010-11-07  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.5.6	
+      
+      * src/controlP5/ListBox.java: 
+      adding updateListBoxItems() to update color changes.
+      adding scoll() calls to color related methods to update color 
+      changes for currently active listBox buttons.
+      
+      * src/controlP5/ListBox.java:
+       adding item(Controller) to access a ListBoxItem by it's Button reference.
+            
+      * src/controlP5/ControlWindow.java:
+      use isMouseOver(Controller), getMouseOverList() to check 
+      if the mouse is inside a specific controller. This does not work for 
+      groups, only for controllers.
+      
+       
+      
+
+2010-10-07  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.5.5	
+      
+      * src/controlP5/ControlP5.java: 
+      enableShortcuts() and disableShortcuts() were interchanged, fixed now.
+      
+       
+      
+2010-09-30  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.5.4	
       
@@ -24,9 +132,15 @@
       * src/controlP5/ControlP5.java:
       disabled clear() call (called from within dispose()) when in applet mode. 
       Reason: all controllers will be cleared due to dispose call 
-      when switching tabs. Fix required.   
+      when switching tabs. Fix required. 
       
-2010-08-18  Andreas Schlegel  <andi@sojamo.de>
+      * src/controlP5/Button.java:
+      colorForeground and colorActive are reveresed due to adding an active state to buttons
+      when clicked. Rollovers no display colorForeground, clicked buttons will display
+      colorActive. This also affects ListBoxItems.
+      
+      
+2010-08-18  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.5.3
       

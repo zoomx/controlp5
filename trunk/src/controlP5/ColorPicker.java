@@ -1,6 +1,5 @@
 package controlP5;
 
-import processing.core.PApplet;
 
 /**
  * controlP5 is a processing gui library.
@@ -25,7 +24,11 @@ import processing.core.PApplet;
  * 
  */
 
+import processing.core.PApplet;
 
+/**
+ * @example ControlP5colorPicker
+ */
 public class ColorPicker extends ControlGroup {
 
 	protected Slider sliderRed;
@@ -50,6 +53,7 @@ public class ColorPicker extends ControlGroup {
 		currentColor = addCanvas(new ColorField());
 
 		sliderRed = controlP5.addSlider(theName + "-red", 0, 255, 0, 0, theWidth, 10);
+		controlP5.removeProperty(sliderRed);
 		sliderRed.setId(0);
 		sliderRed.isBroadcast = false;
 		sliderRed.addListener(this);
@@ -63,6 +67,7 @@ public class ColorPicker extends ControlGroup {
 		sliderRed.setDecimalPrecision(0);
 
 		sliderGreen = controlP5.addSlider(theName + "-green", 0, 255, 0, 11, theWidth, 10);
+		controlP5.removeProperty(sliderGreen);
 		sliderGreen.setId(1);
 		sliderGreen.isBroadcast = false;
 		sliderGreen.addListener(this);
@@ -76,6 +81,7 @@ public class ColorPicker extends ControlGroup {
 		sliderGreen.setDecimalPrecision(0);
 
 		sliderBlue = controlP5.addSlider(theName + "-blue", 0, 255, 0, 22, theWidth, 10);
+		controlP5.removeProperty(sliderBlue);
 		sliderBlue.setId(2);
 		sliderBlue.isBroadcast = false;
 		sliderBlue.addListener(this);
@@ -89,6 +95,7 @@ public class ColorPicker extends ControlGroup {
 		sliderBlue.setDecimalPrecision(0);
 
 		sliderAlpha = controlP5.addSlider(theName + "-alpha", 0, 255, 0, 33, theWidth, 10);
+		controlP5.removeProperty(sliderAlpha);
 		sliderAlpha.setId(3);
 		sliderAlpha.isBroadcast = false;
 		sliderAlpha.addListener(this);
@@ -114,7 +121,8 @@ public class ColorPicker extends ControlGroup {
 		sliderAlpha.setValue(theArray[3]);
 		_myArrayValue = theArray;
 	}
-
+	
+	
 	public void setColorValue(int theColor) {
 		setArrayValue(new float[] { theColor >> 16 & 0xff, theColor >> 8 & 0xff, theColor >> 0 & 0xff,
 				theColor >> 24 & 0xff });
@@ -126,7 +134,7 @@ public class ColorPicker extends ControlGroup {
 				| (int) (_myArrayValue[2]) << 0;
 	}
 
-	class ColorField extends ControlCanvas {
+	private class ColorField extends ControlCanvas {
 		public void draw(PApplet theApplet) {
 			theApplet.fill(_myArrayValue[0], _myArrayValue[1], _myArrayValue[2], _myArrayValue[3]);
 			theApplet.rect(0, 44, getWidth(), 15);

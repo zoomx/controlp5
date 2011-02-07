@@ -1,5 +1,7 @@
 package controlP5;
 
+import java.io.Serializable;
+
 /**
  * controlP5 is a processing gui library.
  *
@@ -39,10 +41,8 @@ public class ControllerStyle {
 	public int backgroundWidth = -1;
 	public int backgroundHeight = -1;
 	public int color;
-
-	/*
-	 * 
-	 */
+	
+	
 	public void margin(int theValue) {
 		marginTop = theValue;
 		marginRight = theValue;
@@ -140,4 +140,5 @@ public class ControllerStyle {
 		paddingBottom += theBottom;
 		paddingLeft += theLeft;
 	}
+	
 }

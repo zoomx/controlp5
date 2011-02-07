@@ -25,7 +25,6 @@ package controlP5;
  *
  */
 
-
 import processing.core.PApplet;
 import processing.core.PMatrix;
 
@@ -40,9 +39,7 @@ import processing.core.PMatrix;
  * atrget="_blank">http://www.asciitable.com/</a>
  * 
  * @example ControlP5textlabel
- * @nosuperclasses Controller
- *  Controller
- *  Textarea
+ * @nosuperclasses Controller Controller Textarea
  */
 public class Textlabel extends Controller {
 
@@ -50,26 +47,20 @@ public class Textlabel extends Controller {
 
 	/**
 	 * 
-	 * @param theControlP5
-	 *        ControlP5
-	 * @param theParent
-	 *        Tab
-	 * @param theName
-	 *        String
-	 * @param theValue
-	 *        String
-	 * @param theX
-	 *        int
-	 * @param theY
-	 *        int
+	 * @param theControlP5 ControlP5
+	 * @param theParent Tab
+	 * @param theName String
+	 * @param theValue String
+	 * @param theX int
+	 * @param theY int
 	 */
 	protected Textlabel(
-	  final ControlP5 theControlP5,
-	  final Tab theParent,
-	  final String theName,
-	  final String theValue,
-	  final int theX,
-	  final int theY) {
+			final ControlP5 theControlP5,
+			final Tab theParent,
+			final String theName,
+			final String theValue,
+			final int theX,
+			final int theY) {
 		super(theControlP5, theParent, theName, theX, theY, 200, 20);
 		_myStringValue = theValue;
 		setup();
@@ -77,12 +68,9 @@ public class Textlabel extends Controller {
 
 	/**
 	 * 
-	 * @param theValue
-	 *        String
-	 * @param theX
-	 *        int
-	 * @param theY
-	 *        int
+	 * @param theValue String
+	 * @param theX int
+	 * @param theY int
 	 */
 	protected Textlabel(final String theValue, final int theX, final int theY) {
 		super(theX, theY);
@@ -91,12 +79,12 @@ public class Textlabel extends Controller {
 	}
 
 	protected Textlabel(
-	  final String theValue,
-	  final int theX,
-	  final int theY,
-	  final int theW,
-	  final int theH,
-	  final int theColor) {
+			final String theValue,
+			final int theX,
+			final int theY,
+			final int theW,
+			final int theH,
+			final int theColor) {
 		super(theX, theY);
 		_myStringValue = theValue;
 		_myValueLabel = new Label(_myStringValue, theW, theH, theColor);
@@ -111,32 +99,24 @@ public class Textlabel extends Controller {
 	/**
 	 * ..
 	 * 
-	 * @param theComponent
-	 *        PApplet
-	 * @param theValue
-	 *        String
-	 * @param theX
-	 *        int
-	 * @param theY
-	 *        int
-	 * @param theW
-	 *        int
-	 * @param theH
-	 *        int
-	 * @param theColor
-	 *        int
-	 * @param theFont
-	 *        int
+	 * @param theComponent PApplet
+	 * @param theValue String
+	 * @param theX int
+	 * @param theY int
+	 * @param theW int
+	 * @param theH int
+	 * @param theColor int
+	 * @param theFont int
 	 */
 	public Textlabel(
-	  final PApplet theComponent,
-	  final String theValue,
-	  final int theX,
-	  final int theY,
-	  final int theW,
-	  final int theH,
-	  final int theColor,
-	  final int theFont) {
+			final PApplet theComponent,
+			final String theValue,
+			final int theX,
+			final int theY,
+			final int theW,
+			final int theH,
+			final int theColor,
+			final int theFont) {
 		super(theX, theY);
 		_myStringValue = theValue;
 		_myValueLabel = new Label(theComponent, _myStringValue, theW, theH, theColor);
@@ -149,14 +129,10 @@ public class Textlabel extends Controller {
 	/**
 	 * ..
 	 * 
-	 * @param theComponent
-	 *        PApplet
-	 * @param theValue
-	 *        String
-	 * @param theX
-	 *        int
-	 * @param theY
-	 *        int
+	 * @param theComponent PApplet
+	 * @param theValue String
+	 * @param theX int
+	 * @param theY int
 	 */
 	public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY) {
 		super(theX, theY);
@@ -180,12 +156,12 @@ public class Textlabel extends Controller {
 	 * @param theH
 	 */
 	public Textlabel(
-	  final PApplet theComponent,
-	  final String theValue,
-	  final int theX,
-	  final int theY,
-	  final int theW,
-	  final int theH) {
+			final PApplet theComponent,
+			final String theValue,
+			final int theX,
+			final int theY,
+			final int theW,
+			final int theH) {
 		super(theX, theY);
 		_myStringValue = theValue;
 		_myValueLabel = new Label(theComponent, _myStringValue, theW, theH, 0xffffffff);
@@ -221,20 +197,18 @@ public class Textlabel extends Controller {
 	/**
 	 * draw the textlabel.
 	 * 
-	 * @param theApplet
-	 *        PApplet
+	 * @param theApplet PApplet
 	 */
 	public void draw(final PApplet theApplet) {
 		theApplet.pushMatrix();
-		theApplet.translate(position().x(), position().y());
-			_myValueLabel.draw(theApplet, 0, 0);
+		theApplet.translate(position.x, position.y);
+		_myValueLabel.draw(theApplet, 0, 0);
 		theApplet.popMatrix();
 	}
 
 	/**
 	 * 
-	 * @param theValue
-	 *        float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 	}
@@ -245,8 +219,7 @@ public class Textlabel extends Controller {
 	/**
 	 * set the text of the textlabel.
 	 * 
-	 * @param theText
-	 *        String
+	 * @param theText String
 	 */
 	public Textlabel setValue(final String theText) {
 		_myStringValue = theText;
@@ -259,10 +232,8 @@ public class Textlabel extends Controller {
 	/**
 	 * set the position of the textlabel.
 	 * 
-	 * @param theX
-	 *        float
-	 * @param theY
-	 *        float
+	 * @param theX float
+	 * @param theY float
 	 */
 	public void setPosition(final float theX, final float theY) {
 		position.x = theX;
@@ -272,8 +243,7 @@ public class Textlabel extends Controller {
 	/**
 	 * set the letter spacing of the font.
 	 * 
-	 * @param theValue
-	 *        int
+	 * @param theValue int
 	 * @return Textlabel
 	 */
 	public Textlabel setLetterSpacing(final int theValue) {
@@ -284,16 +254,15 @@ public class Textlabel extends Controller {
 
 	/**
 	 * a textlabel is an image containing text rendered from a bitfont source
-	 * image. available bit fonts are: standard56, standard58, synt24, grixel.
-	 * the font of a textlabel can be changed by using setFont(int theFontIndex)
+	 * image. available bit fonts are: standard56, standard58, synt24, grixel. the
+	 * font of a textlabel can be changed by using setFont(int theFontIndex)
 	 * theFontIndex is of type int and available indexes are stored in the
 	 * constants ControlP5.standard56, ControlP5.standard58, ControlP5.synt24,
 	 * ControlP5.grixel available characters for each pixelfont range from ascii
 	 * code 32-126
 	 * 
 	 * @shortdesc set the Pixel-Font-Family of the Textlabel.
-	 * @param theFont
-	 *        int
+	 * @param theFont int
 	 */
 	public void setFont(final int theFont) {
 		_myValueLabel.setFont(theFont);
@@ -303,28 +272,16 @@ public class Textlabel extends Controller {
 		_myValueLabel.setControlFont(theControlFont);
 		return theControlFont;
 	}
-	
+
 	protected boolean inside() {
-		return (_myControlWindow.mouseX > position.x() + _myParent.absolutePosition().x()
-		  && _myControlWindow.mouseX < position.x() + _myParent.absolutePosition().x() + _myValueLabel.width()
-		  && _myControlWindow.mouseY > position.y() + _myParent.absolutePosition().y() && _myControlWindow.mouseY < position
-		  .y()
-		  + _myParent.absolutePosition().y()
-		  + _myValueLabel.height());
+		return (_myControlWindow.mouseX > position.x + _myParent.absolutePosition().x
+				&& _myControlWindow.mouseX < position.x + _myParent.absolutePosition().x + _myValueLabel.width()
+				&& _myControlWindow.mouseY > position.y + _myParent.absolutePosition().y && _myControlWindow.mouseY < position.y
+				+ _myParent.absolutePosition().y + _myValueLabel.height());
 	}
 
 	public Label valueLabel() {
 		return _myValueLabel;
-	}
-
-	/**
-	 * 
-	 * @param theElement
-	 *        ControlP5XMLElement
-	 */
-	public void addToXMLElement(final ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "textlabel");
-		theElement.setContent(stringValue());
 	}
 
 }

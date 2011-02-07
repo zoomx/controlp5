@@ -26,8 +26,6 @@ package controlP5;
  */
 
 import java.util.ArrayList;
-import java.util.Vector;
-
 import processing.core.PImage;
 
 /**
@@ -114,6 +112,7 @@ public class RadioButton extends ControlGroup {
 		color().copyTo(theToggle);
 		theToggle.addListener(this);
 		updateValues(false);
+		controlP5.removeProperty(theToggle);
 		return theToggle;
 	}
 
@@ -243,8 +242,8 @@ public class RadioButton extends ControlGroup {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			Toggle t = _myRadioToggles.get(i);
-			t.position().y = yy;
-			t.position().x = xx;
+			t.position.y = yy;
+			t.position.x = xx;
 
 			xx += t.width + columnSpacing;
 			nn++;
@@ -450,6 +449,22 @@ public class RadioButton extends ControlGroup {
 	public void setNoneSelectedAllowed(boolean theValue) {
 		noneSelectedAllowed = theValue;
 	}
+	
+	
+	@Override
+	public void setArrayValue(float[] theArray) {
+		for(int i=0;i<theArray.length;i++) {
+			if(_myArrayValue[i]!=theArray[i]) {
+				if(theArray[i]==0) {
+					deactivate(i);
+				} else {
+					activate(i);
+				}
+			}
+		}
+		super.setArrayValue(theArray);
+	} 
+	
 	
 	@Override
 	public String toString() {

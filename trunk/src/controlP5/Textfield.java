@@ -47,9 +47,12 @@ public class Textfield extends Controller {
 	 * changes and adjustments. implement new fonts, current one is too small.
 	 * make the text go to the left when cursor goes beyond right border. make
 	 * textfield work for controlWindow
+	 * 
+	 * text-editor reference: http://www.cs.cmu.edu/~wjh/papers/byte.html via
+	 * http://forum.processing.org/#Topic/25080000000412071
 	 */
 
-  protected ArrayList<String> myTextList = new ArrayList<String>();
+	protected ArrayList<String> myTextList = new ArrayList<String>();
 
 	int myIndex = 1;
 
@@ -67,8 +70,7 @@ public class Textfield extends Controller {
 
 	/**
 	 * 
-	 * @param theControllerProperties
-	 *          ControllerProperties
+	 * @param theControllerProperties ControllerProperties
 	 */
 	public Textfield(
 			ControlP5 theControlP5,
@@ -80,13 +82,12 @@ public class Textfield extends Controller {
 			int theWidth,
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName.toUpperCase(), color.colorCaptionLabel);
+		_myCaptionLabel = new Label(theName.toUpperCase(), color.getCaptionLabel());
 		_myCaptionLabel.setFixedSize(false);
-		myBroadcastType = STRING;
-		_myValueLabel.setWidth(width - 10);
-		_myValueLabel.setHeight(15);
-		_myValueLabel.set("|");
-		_myValueLabel.setColor(color.colorValueLabel);
+		_myBroadcastType = STRING;
+		_myValueLabel.setWidth(width - 7);
+		_myValueLabel.set("");
+		_myValueLabel.setColor(color.getValueLabel());
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.setFixedSize(true);
 		_myValueLabel.setFont(ControlP5.standard56);
@@ -95,8 +96,7 @@ public class Textfield extends Controller {
 
 	/**
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 	}
@@ -105,8 +105,7 @@ public class Textfield extends Controller {
 	 * set the mode of the textfield to password mode, each character is shown as
 	 * a "*" like e.g. in online password forms.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setPasswordMode(boolean theFlag) {
 		isPasswordMode = theFlag;
@@ -115,8 +114,7 @@ public class Textfield extends Controller {
 	/**
 	 * set the textfield's focus to true or false.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public void setFocus(boolean theFlag) {
 		if (theFlag == true) {
@@ -155,8 +153,7 @@ public class Textfield extends Controller {
 	 * value, but only updates the content of a textfield. for further information
 	 * about how setText works, see the setText documentation.
 	 * 
-	 * @param theValue
-	 *          String
+	 * @param theValue String
 	 */
 	public void setValue(String theValue) {
 		myTextline = new StringBuffer(theValue);
@@ -164,7 +161,7 @@ public class Textfield extends Controller {
 		_myStringValue = theValue;
 		myPosition = myTextline.length();
 		_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition);
-		broadcast(myBroadcastType);
+		broadcast(_myBroadcastType);
 	}
 
 	/**
@@ -186,10 +183,9 @@ public class Textfield extends Controller {
 	 */
 	public void setText(String theValue) {
 		myTextline = new StringBuffer(theValue);
-		// myPosition = myTextline.length() - 1;
 		_myStringValue = theValue;
 		myPosition = myTextline.length();
-		_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition);
+		updateField();
 	}
 
 	/**
@@ -221,21 +217,19 @@ public class Textfield extends Controller {
 
 	/**
 	 * 
-	 * @param theApplet
-	 *          PApplet
+	 * @param theApplet PApplet
 	 */
 	public void draw(PApplet theApplet) {
-		if (isTexfieldActive && isActive) {
-			theApplet.stroke(color.colorActive);
-		} else {
-			theApplet.stroke(color.colorForeground);
-		}
-		theApplet.fill(color.colorBackground);
+		theApplet.noStroke();
+		theApplet.fill(color.getBackground());
 		theApplet.pushMatrix();
-		theApplet.translate(position().x(), position().y());
+		theApplet.translate(position.x, position.y);
 		theApplet.rect(0, 0, width, height);
 		theApplet.noStroke();
-		_myValueLabel.draw(theApplet, 4, 7);
+		theApplet.fill(255, 60);
+		int yy = ((height - BitFontRenderer.font[_myValueLabel.getFont()].height) / 2) + 2;
+		theApplet.rect(cursorPosition + 2, 1, (isTexfieldActive && isActive) ? 5 : 1, height - 2);
+		_myValueLabel.draw(theApplet, 2, yy);
 		_myCaptionLabel.draw(theApplet, 0, height + 4);
 		theApplet.noFill();
 		theApplet.popMatrix();
@@ -248,7 +242,8 @@ public class Textfield extends Controller {
 	 * 
 	 */
 	public void keyEvent(KeyEvent theKeyEvent) {
-		if (!ControlP5.keyHandler.isAltDown && isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
+		if (!ControlP5.keyHandler.isAltDown && isUserInteraction && isTexfieldActive && isActive
+				&& theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
 			if (ControlP5.keyHandler.keyCode == UP) {
 				if (myTextList.size() > 0 && myIndex > 0) {
 					myIndex--;
@@ -290,9 +285,13 @@ public class Textfield extends Controller {
 			}
 			updateField();
 		}
+
 	}
 
+	private float cursorPosition = 0;
+
 	private void updateField() {
+		cursorPosition = Label.bitFontRenderer.getWidth(myTextline.toString(), _myValueLabel, myPosition);
 		if (isPasswordMode) {
 			String myPasswordTextline = "";
 			for (int i = 0; i < myTextline.length(); i++) {
@@ -301,8 +300,9 @@ public class Textfield extends Controller {
 			_myValueLabel.setWithCursorPosition(myPasswordTextline, myPosition);
 		} else {
 			int offset = 0;
-			int m = _myValueLabel.bitFontRenderer.getWidth(myTextline.toString(), _myValueLabel, myPosition);
-			offset = (m > _myValueLabel.width()) ? _myValueLabel.width() - m : 0;
+			int m = Label.bitFontRenderer.getWidth(myTextline.toString(), _myValueLabel, myPosition);
+			offset = (m > _myValueLabel.getWidth()) ? _myValueLabel.getWidth() - m : 0;
+			cursorPosition = PApplet.min(m, _myValueLabel.getWidth() - 2);
 			_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition, offset);
 		}
 	}
@@ -379,22 +379,11 @@ public class Textfield extends Controller {
 		}
 	}
 
-	
 	protected void adjust() {
 		myPosition = myTextline.length();
 		if (myPosition < 0) {
 			myPosition = 0;
 		}
-	}
-
-	/**
-	 * 
-	 * @param theElement
-	 *          ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "textfield");
-		theElement.setAttribute("value", "" + stringValue());
 	}
 
 }

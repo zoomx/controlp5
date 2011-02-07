@@ -25,9 +25,7 @@ package controlP5;
  *
  */
 
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 
 /**
@@ -61,8 +59,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 				theValue, theX, theY, theWidth, theHeight);
 		parent = theParent;
 		root = theRoot;
-		isXMLsavable = false;
-		updateRect(position().x(), position().y(), width, height);
+		updateRect(position.x, position.y, width, height);
 	}
 
 	public void remove() {
@@ -127,9 +124,9 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 *            float
 	 */
 	public void updateLocation(float theX, float theY) {
-		position().x += theX;
-		position().y += theY;
-		updateRect(position().x, position().y, width, height);
+		position.x += theX;
+		position.y += theY;
+		updateRect(position.x, position.y, width, height);
 		for (int i = 0; i < subelements.size(); i++) {
 			((MultiListInterface) subelements.get(i)).updateLocation(theX, theY);
 		}
@@ -186,14 +183,14 @@ public class MultiListButton extends Button implements MultiListInterface {
 		}
 		// negative direction, this is static now, make it dynamic depending on the
 		// location of the list.
-		int xx = ((int) position().x + (width + 1));
-		MultiListButton b = new MultiListButton(controlP5, theName, theValue,xx, (int) position().y+ (height + 1) + myHeight, (int) width, (int) height,this, root);
+		int xx = ((int) position.x + (width + 1));
+		MultiListButton b = new MultiListButton(controlP5, theName, theValue,xx, (int) position.y+ (height + 1) + myHeight, (int) width, (int) height,this, root);
 		b.isMoveable = false;
 		b.hide();
 		controlP5.register(b);
 		b.addListener(root);
 		subelements.add(b);
-		updateRect(xx, position().y(), width,(height + 1) + myHeight);
+		updateRect(xx, position.y, width,(height + 1) + myHeight);
 		return b;
 	}
 
@@ -272,21 +269,4 @@ public class MultiListButton extends Button implements MultiListInterface {
 		}
 	}
 
-	/**
-	 * 
-	 * @param theElement
-	 *            ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		ControlP5XMLElement myXMLElement = new ControlP5XMLElement(
-				new Hashtable(), true, false);
-		myXMLElement.setName("mlbutton");
-		myXMLElement.setAttribute("name", name());
-		myXMLElement.setAttribute("parent", parent.name());
-		theElement.addChild(myXMLElement);
-		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListInterface) subelements.get(i))
-					.addToXMLElement(theElement);
-		}
-	}
 }

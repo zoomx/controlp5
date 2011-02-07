@@ -41,7 +41,7 @@ public class Matrix extends Controller {
 
 	protected int cnt;
 
-	protected int[][] myMarkers;
+	protected int[][] _myCells;
 
 	protected int stepX;
 
@@ -67,6 +67,8 @@ public class Matrix extends Controller {
 
 	protected int currentY = -1;
 
+	protected int _myMode = SINGLE_ROW;
+
 	public Matrix(
 			ControlP5 theControlP5,
 			ControllerGroup theParent,
@@ -78,19 +80,23 @@ public class Matrix extends Controller {
 			int theWidth,
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
+		_myInterval = 100;
+		initCells(theCellX, theCellY);
+	}
+
+	private void initCells(int theCellX, int theCellY) {
 		_myCellX = theCellX;
 		_myCellY = theCellY;
 		sum = _myCellX * _myCellY;
 		stepX = width / _myCellX;
 		stepY = height / _myCellY;
-		myMarkers = new int[_myCellX][_myCellY];
+		_myCells = new int[_myCellX][_myCellY];
 		for (int x = 0; x < _myCellX; x++) {
 			for (int y = 0; y < _myCellY; y++) {
-				myMarkers[x][y] = -1;
+				_myCells[x][y] = -1;
 			}
 		}
 		_myTime = System.currentTimeMillis();
-		_myInterval = 100;
 	}
 
 	/**
@@ -101,7 +107,7 @@ public class Matrix extends Controller {
 	public void setInterval(int theInterval) {
 		_myInterval = theInterval;
 	}
-	
+
 	public int getInterval() {
 		return _myInterval;
 	}
@@ -116,7 +122,7 @@ public class Matrix extends Controller {
 			cnt %= _myCellX;
 			_myTime = System.currentTimeMillis();
 			for (int i = 0; i < _myCellY; i++) {
-				if (myMarkers[cnt][i] == 1) {
+				if (_myCells[cnt][i] == 1) {
 					_myValue = 0;
 					_myValue = (cnt << 0) + (i << 8);
 					setValue(_myValue);
@@ -131,12 +137,24 @@ public class Matrix extends Controller {
 				int tX = (int) ((theApplet.mouseX - position.x) / stepX);
 				int tY = (int) ((theApplet.mouseY - position.y) / stepY);
 				if (tX != currentX || tY != currentY) {
-					boolean isMarkerActive = (myMarkers[tX][tY] == 1) ? true : false;
-					for (int i = 0; i < _myCellY; i++) {
-						myMarkers[tX][i] = 0;
-					}
-					if (!isMarkerActive) {
-						myMarkers[tX][tY] = 1;
+					boolean isMarkerActive = (_myCells[tX][tY] == 1) ? true : false;
+					switch (_myMode) {
+					default:
+					case (SINGLE_COLUMN):
+						for (int i = 0; i < _myCellY; i++) {
+							_myCells[tX][i] = 0;
+						}
+						_myCells[tX][tY] = (!isMarkerActive) ? 1:_myCells[tX][tY];
+						break;
+					case (SINGLE_ROW):
+						for (int i = 0; i < _myCellX; i++) {
+							_myCells[tX][i] = 0;
+						}
+						_myCells[tX][tY] = (!isMarkerActive) ? 1:_myCells[tX][tY];
+						break;
+					case (MULTIPLES):
+						_myCells[tX][tY] = (_myCells[tX][tY]==1) ? 0:1;
+						break;
 					}
 					currentX = tX;
 					currentY = tY;
@@ -218,7 +236,7 @@ public class Matrix extends Controller {
 	}
 
 	/**
-	 * set the state of a particular cell in a matrix. use true or false for
+	 * set the state of a particular cell inside a matrix. use true or false for
 	 * parameter theValue
 	 * 
 	 * @param theX
@@ -226,7 +244,7 @@ public class Matrix extends Controller {
 	 * @param theValue
 	 */
 	public void set(int theX, int theY, boolean theValue) {
-		myMarkers[theX][theY] = (theValue == true) ? 1 : 0;
+		_myCells[theX][theY] = (theValue == true) ? 1 : 0;
 	}
 
 	public static int getX(int thePosition) {
@@ -245,16 +263,31 @@ public class Matrix extends Controller {
 		return (((int) thePosition >> 8) & 0xff);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * controlP5.ControllerInterface#addToXMLElement(controlP5.ControlP5XMLElement
-	 * )
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "matrix");
+	public void setCells(int[][] theCells) {
+		initCells(theCells.length, theCells[0].length);
+		_myCells = theCells;
 	}
+
+	public int[][] getCells() {
+		return _myCells;
+	}
+	
+	
+	/**
+	 * use setMode to change the cell-activation which by default is 
+	 * ControlP5.SINGLE_ROW, 1 active cell per row, but can be changed to
+	 * ControlP5.SINGLE_COLUMN or ControlP5.MULTIPLES
+	 *  
+	 * @param theMode
+	 */
+	public void setMode(int theMode) {
+		_myMode = theMode;
+	}
+	
+	public int getMode() {
+		return _myMode;
+	}
+	
 
 	public void updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
@@ -273,23 +306,22 @@ public class Matrix extends Controller {
 	class MatrixDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.noStroke();
-			theApplet.fill(color.colorBackground);
+			theApplet.fill(color.getBackground());
 			theApplet.rect(0, 0, width, height);
 			theApplet.noStroke();
 			if (isInside()) {
-				theApplet.fill(color.colorForeground);
+				theApplet.fill(color.getForeground());
 				theApplet.rect((int) ((theApplet.mouseX - position.x) / stepX) * stepX, (int) ((theApplet.mouseY - position.y) / stepY)
 						* stepY, stepX, stepY);
 			}
-			theApplet.stroke(color.colorActive);
+			theApplet.stroke(color.getActive());
 			theApplet.line(cnt * stepX, 0, cnt * stepX, height);
 			theApplet.noStroke();
-			theApplet.fill(color.colorActive);
+			theApplet.fill(color.getActive());
 			for (int x = 0; x < _myCellX; x++) {
 				for (int y = 0; y < _myCellY; y++) {
-					if (myMarkers[x][y] == 1) {
+					if (_myCells[x][y] == 1) {
 						theApplet.rect(x * stepX, y * stepY, stepX - 1, stepY - 1);
-
 					}
 				}
 			}

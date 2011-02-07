@@ -157,6 +157,23 @@ public class CheckBox extends RadioButton {
 		updateValues(true);
 	}
 	
+	
+	@Override
+	public void setArrayValue(float[] theArray) {
+		for(int i=0;i<theArray.length;i++) {
+			if(_myArrayValue[i]!=theArray[i]) {
+				if(theArray[i]==0) {
+					_myRadioToggles.get(i).deactivate();
+				} else {
+					_myRadioToggles.get(i).activate();
+				}
+			}
+		}
+		super.setArrayValue(theArray);
+	} 
+	
+	
+	
 	@Override
 	public String toString() {
 		return "type:\tCheckBox\n"+super.toString();

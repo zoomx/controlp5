@@ -32,7 +32,7 @@ public class ChartDataSet extends ArrayList<ChartData> {
 		return _myStrokeWeight;
 	}
 	
-	public float[] values() {
+	public float[] getValues() {
 		float[] v = new float[size()];
 		int n = 0;
 		ListIterator<ChartData> litr = listIterator();

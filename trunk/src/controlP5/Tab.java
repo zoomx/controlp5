@@ -27,6 +27,7 @@ package controlP5;
  */
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 /**
  * Tab extends ControllerGroup, for more available methods
@@ -67,9 +68,8 @@ public class Tab extends ControllerGroup {
 		super(theControlP5, null, theName, 0, 0);
 		_myControlWindow = theControlWindow;
 
-		position = new CVector3f();
-		positionBuffer = new CVector3f();
-		absolutePosition = new CVector3f();
+		position = new PVector();
+		absolutePosition = new PVector();
 		isMoveable = false;
 		isEventActive = theControlP5.isTabEventsActive;
 		_myHeight = 16;
@@ -94,9 +94,9 @@ public class Tab extends ControllerGroup {
 
 	protected void drawLabel(PApplet theApplet) {
 		theApplet.pushMatrix();
-		theApplet.fill(isInside ? color.colorForeground : color.colorBackground);
+		theApplet.fill(isInside ? color.getForeground() : color.getBackground());
 		if (isActive) {
-			theApplet.fill(color.colorActive);
+			theApplet.fill(color.getActive());
 		}
 		theApplet.rect(_myOffsetX, _myOffsetY, _myWidth - 1 + _myRightBorder, _myHeight);
 		_myLabel.draw(theApplet, _myOffsetX + 4, _myOffsetY + 5);
@@ -185,18 +185,6 @@ public class Tab extends ControllerGroup {
 		return this;
 	}
 
-	/**
-	 * 
-	 * @param theElement ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setName("tab");
-		theElement.setAttribute("name", name());
-		theElement.setAttribute("id", new Integer(id()));
-		theElement.setAttribute("width", new Integer(width()));
-		theElement.removeAttribute("x");
-		theElement.removeAttribute("y");
-	}
 
 	/**
 	 * get the string value of the tab.

@@ -47,9 +47,7 @@ public class ControlP5 extends ControlP5Base {
 
 	protected ControlBroadcaster _myControlBroadcaster;
 
-	private String _myUrlPath = "";
-
-	private String _myFilePath = "controlP5.xml";
+	private String _myPropertiesPath = "controlP5.properties";
 
 	public CColor color = new CColor();
 
@@ -61,45 +59,20 @@ public class ControlP5 extends ControlP5Base {
 
 	protected boolean isGlobalControllersAlwaysVisible = true;
 
-	/**
-	 * 
-	 */
 	public static final int standard58 = 0;
 
-	/**
-	 * 
-	 */
 	public static final int standard56 = 1;
 
-	/**
-	 * 
-	 */
 	public static final int synt24 = 2;
 
-	/**
-	 * 
-	 */
 	public static final int grixel = 3;
 
-	/**
-	 * 
-	 */
 	public static ControlWindowKeyHandler keyHandler;
 
-	/**
-	 * 
-	 */
 	public static PApplet papplet;
 
-	/**
-	 * 
-	 */
-	public static final String VERSION = "0.5.4";// "##version##"; // compiles
-	// before replacing ##version##
+	public static final String VERSION = "0.5.7";// "##version##";
 
-	/**
-	 * 
-	 */
 	public static boolean isApplet;
 
 	/**
@@ -123,7 +96,9 @@ public class ControlP5 extends ControlP5Base {
 	// this is useful when using clear() or load()
 	protected boolean blockDraw;
 
-	private static final Logger logger = Logger.getLogger("controlP5.ControlP5");
+	private static final Logger logger = Logger.getLogger(ControlP5.class.getName());
+
+	protected Tooltip _myTooltip;
 
 	/**
 	 * instantiate controlP5.
@@ -158,6 +133,7 @@ public class ControlP5 extends ControlP5Base {
 		_myControllerMap = new Hashtable<String, ControllerInterface>();
 		controlWindowList.add(controlWindow);
 		isApplet = papplet.online;
+		_myTooltip = new Tooltip();
 		super.init(this);
 	}
 
@@ -172,10 +148,10 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * autoInitialization can be very handy when it comes to initializing values,
-	 * e.g. you load a set of controllers from an xml file, then the values that
-	 * are attached to the controllers will be reset to its state saved in the xml
-	 * file. to turn of auto intialization, call setAutoInitialization(false)
-	 * right after initializing controlP5 and before creating any controller.
+	 * e.g. you load a set of controllers, then the values that are attached to
+	 * the controllers will be reset to its saved state. to turn of auto
+	 * intialization, call setAutoInitialization(false) right after initializing
+	 * controlP5 and before creating any controller.
 	 * 
 	 * @param theFlag boolean
 	 */
@@ -383,13 +359,17 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theName String
 	 * @return Controller
 	 */
-	public Controller controller(String theName) {
+	public Controller getController(String theName) {
 		if (_myControllerMap.containsKey(theName)) {
 			if (_myControllerMap.get(theName) instanceof Controller) {
 				return (Controller) _myControllerMap.get(theName);
 			}
 		}
 		return null;
+	}
+
+	public Controller controller(String theName) {
+		return getController(theName);
 	}
 
 	/**
@@ -423,6 +403,10 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+	public ControlWindow window() {
+		return window(papplet);
+	}
+	
 	public ControlWindow window(PApplet theApplet) {
 		if (theApplet.equals(papplet)) {
 			return controlWindow;
@@ -457,71 +441,23 @@ public class ControlP5 extends ControlP5Base {
 		return false;
 	}
 
-	/**
-	 * set the path / filename of the xml file your controlP5 setup will be saved
-	 * to.
-	 * 
-	 * @param theFilename String setUrlPath ( ) save ( ) load ( ) loadUrl ( )
-	 */
-	public void setFilePath(String theFilePath) {
-		if (theFilePath == null) {
-			theFilePath = "";
-		}
-		_myFilePath = theFilePath;
-	}
-
-	/**
-	 * you can set an url an e.g. index.php file on a server where you want to
-	 * save your controlP5 setup to.
-	 * 
-	 * @param theUrlPath String setFilePath ( ) loadUrl ( ) load ( ) save ( )
-	 */
-	public void setUrlPath(String theUrlPath) {
-		setUrlPath(theUrlPath, "controlP5.xml");
-	}
-
-	/**
-	 * you can set an url e.g. an index.php file on a server where you want to
-	 * save your controlP5 setup to.
-	 * 
-	 * @param theUrlPath String
-	 * @param theFilename String setFilePath ( ) loadUrl ( ) load ( ) save ( )
-	 * 
-	 */
-	public void setUrlPath(String theUrlPath, String theFilename) {
-		if (theUrlPath == null) {
-			theUrlPath = "";
+	
+	public void setPropertiesPath(String thePropertiesPath) {
+		if (thePropertiesPath == null) {
 			return;
 		}
-		theUrlPath = ControlP5IOHandler.replace(theUrlPath, "&amp;", "&");
-		if (theUrlPath.indexOf('?') == -1) {
-			theUrlPath += '?';
-		} else {
-			if (!theUrlPath.endsWith("&") && !theUrlPath.endsWith("?")) {
-				theUrlPath += "&";
-			}
-		}
-		_myUrlPath = theUrlPath + "filename=" + theFilename;
+		_myPropertiesPath = thePropertiesPath;
 	}
 
+
 	/**
-	 * get the current file path where your controlP5 setup will be save to on
-	 * your local disk.
+	 * returns the name to the properties file, default name is
+	 * 'controlP5.properties', use setPropertiesPath to change the default.
 	 * 
 	 * @return String
 	 */
-	public String filePath() {
-		return _myFilePath;
-	}
-
-	/**
-	 * get the current url path where your controlP5 setup will be save to a
-	 * remote server e.g. a webserver.
-	 * 
-	 * @return String
-	 */
-	public String urlPath() {
-		return _myUrlPath;
+	public String propertiesPath() {
+		return _myPropertiesPath;
 	}
 
 	/**
@@ -530,7 +466,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theColor int
 	 */
 	public void setColorActive(int theColor) {
-		color.colorActive = theColor;
+		color.setActive(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorActive(theColor);
@@ -543,7 +479,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theColor int
 	 */
 	public void setColorForeground(int theColor) {
-		color.colorForeground = theColor;
+		color.setForeground(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorForeground(theColor);
@@ -556,7 +492,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theColor int
 	 */
 	public void setColorBackground(int theColor) {
-		color.colorBackground = theColor;
+		color.setBackground(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorBackground(theColor);
@@ -569,7 +505,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theColor int
 	 */
 	public void setColorLabel(int theColor) {
-		color.colorCaptionLabel = theColor;
+		color.setCaptionLabel(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorLabel(theColor);
@@ -582,7 +518,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theColor int
 	 */
 	public void setColorValue(int theColor) {
-		color.colorValueLabel = theColor;
+		color.setValueLabel(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorValue(theColor);
@@ -631,71 +567,52 @@ public class ControlP5 extends ControlP5Base {
 		isMoveable = true;
 	}
 
+	public boolean saveProperties() {
+		return saveProperties(propertiesPath());
+	}
+
+	public boolean saveProperties(String theFilePath) {
+		theFilePath = checkPropertiesPath(theFilePath);
+		return _myProperties.save(theFilePath);
+	}
+
+	public boolean loadProperties() {
+		return loadProperties(propertiesPath());
+	}
+
+	public boolean loadProperties(String theFilePath) {
+		theFilePath = checkPropertiesPath(theFilePath);
+		return _myProperties.load(theFilePath);
+	}
+
+	private String checkPropertiesPath(String theFilePath) {
+		theFilePath = (theFilePath.startsWith("/") || theFilePath.startsWith(".")) ? theFilePath
+				: papplet.sketchPath(theFilePath);
+		return theFilePath;
+	}
+
 	/**
-	 * save controlP5 settings to your local disk or to a remote server. a file
-	 * controlP5.xml will be written to the data folder of your sketch. you can
-	 * set another file path with method setFilePath(). to save a file to a remote
-	 * server set the url with setUrlPath() e.g.
-	 * setUrlPath("http://yourdomain.com/controlP5/upload.php");
-	 * 
-	 * @shortdesc save controlP5 settings to your local disk or to a remote
-	 *            server.
-	 * @param theFilename String
-	 * @return boolean setFilePath ( ) setUrlPath ( ) load ( ) loadUrl ( )
-	 * @todo saving in application mode does write the xml file into a folder data
-	 *       on top level, but does not load from there. therefore loading in
-	 *       application mode one would have to use the inputstreamreader used
-	 *       before switching to loadStrings.
+	 * @deprecated
 	 */
 	public boolean save(String theFilePath) {
-		return _myControlP5IOHandler.save(this, theFilePath);
+		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
+		return false;
 	}
 
 	/**
-	 * save controlP5 settings to your local disk or to a remote server. a file
-	 * controlP5.xml will be written to the data folder of your sketch. you can
-	 * set another file path with method setFilePath(). to save a file to a remote
-	 * server set the url with setUrlPath() e.g.
-	 * setUrlPath("http://yourdomain.com/controlP5/upload.php");
-	 * 
-	 * @shortdesc save controlP5 settings to your local disk or to a remote
-	 *            server.
-	 * @return boolean load ( ) setUrlPath ( ) setFilePath ( )
+	 * @deprecated
 	 */
 	public boolean save() {
-		if (_myFilePath != null) {
-			return _myControlP5IOHandler.save(this, _myFilePath);
-		} else {
-			return false;
-		}
+		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
+		return false;
 	}
 
 	/**
-	 * load an xml file, containing a controlP5 setup
-	 * 
-	 * @param theFileName
+	 * @deprecated
 	 */
 	public boolean load(String theFileName) {
-		System.out.println("loading (1)");
-		blockDraw = true;
-		clear();
-		ControlP5.logger().info("loading " + theFileName);
-		String[] myStrings = papplet.loadStrings(theFileName);
-		String myString = "";
-		for (int i = 0; i < myStrings.length; i++) {
-			myString += myStrings[i];
-		}
-		if (myString.length() == 0) {
-			return false;
-		}
-
-		try {
-			Thread.sleep(200);
-		} catch (Exception e) {
-		}
-		_myControlP5IOHandler.parse(myString);
-		blockDraw = false;
-		return true;
+		ControlP5.logger().info("Loading ControlP5 from an XML file has been removed, have a look at controlP5's properties instead.");
+		return false;
 	}
 
 	/**
@@ -808,14 +725,26 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * disable shortcuts such as alt-h for hiding/showing controllers
+	 * disables shortcuts such as alt-h for hiding/showing controllers
+	 * 
 	 */
 	public void disableShortcuts() {
+		isShortcuts = false;
+	}
+
+	/**
+	 * enables shortcuts.
+	 */
+	public void enableShortcuts() {
 		isShortcuts = true;
 	}
 
-	public void enableShortcuts() {
-		isShortcuts = false;
+	public Tooltip getTooltip() {
+		return _myTooltip;
+	}
+
+	public void setTooltip(Tooltip theTooltip) {
+		_myTooltip = theTooltip;
 	}
 
 	public ControllerGroup begin() {

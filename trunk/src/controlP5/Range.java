@@ -26,6 +26,7 @@ package controlP5;
  */
 
 import java.util.Vector;
+import java.util.logging.Level;
 
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -90,7 +91,7 @@ public class Range extends Controller {
 
 	protected static int autoHeight = 10;
 
-	protected static CVector3f autoSpacing = new CVector3f(0, 5, 0);
+	protected static PVector autoSpacing = new PVector(0, 5, 0);
 
 	public int alignValueLabel = CENTER;
 
@@ -122,7 +123,7 @@ public class Range extends Controller {
 			int theWidth,
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName, color.colorCaptionLabel);
+		_myCaptionLabel = new Label(theName, color.getCaptionLabel());
 		_myArrayValue = new float[] { theDefaultMinValue, theDefaultMaxValue };
 
 		_myMin = theMin;
@@ -133,10 +134,10 @@ public class Range extends Controller {
 		minHandle = (theDefaultMinValue / _myValueRange) * width;
 		maxHandle = (theDefaultMaxValue / _myValueRange) * width;
 
-		_myValueLabel = new Label("" + adjustValue(_myMin), color.colorValueLabel);
+		_myValueLabel = new Label("" + adjustValue(_myMin), color.getValueLabel());
 		_myValueLabel.set("" + adjustValue(theDefaultMinValue));
 
-		_myHighValueLabel = new Label(adjustValue(_myMax), color.colorValueLabel);
+		_myHighValueLabel = new Label(adjustValue(_myMax), color.getValueLabel());
 		_myHighValueLabel.set("" + adjustValue(theDefaultMaxValue));
 
 		_myValue = theDefaultMinValue;
@@ -163,7 +164,7 @@ public class Range extends Controller {
 	 */
 	public void updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
-			float p = _myControlWindow.mouseX - (absolutePosition().x());
+			float p = _myControlWindow.mouseX - (absolutePosition.x);
 			if (!isMousePressed && getIsInside()) {
 				float hh1 = minHandle + handleSize;
 				float hh2 = maxHandle + handleSize;
@@ -206,64 +207,6 @@ public class Range extends Controller {
 
 		}
 
-	}
-
-	/**
-	 * 
-	 * @param theApplet PApplet
-	 */
-	public void draw(PApplet theApplet) {
-		if (isVisible) {
-			theApplet.pushMatrix();
-			theApplet.translate(position().x(), position().y());
-			theApplet.fill(color.colorBackground);
-			theApplet.noStroke();
-			theApplet.rect(0, 0, width, height);
-			// if(isInside) {
-			theApplet.fill(color.colorForeground);
-
-			if (isShowTickMarks) {
-				theApplet.rect(minHandle + handleSize / 2, 0, maxHandle - minHandle, height);
-				theApplet.fill((isMinHandle) ? color.colorActive : color.colorForeground);
-				theApplet.triangle(minHandle, 0, minHandle + handleSize, 0, minHandle + handleSize / 2, height);
-				theApplet.fill((isMaxHandle) ? color.colorActive : color.colorForeground);
-				theApplet.triangle(maxHandle, 0, maxHandle + handleSize, 0, maxHandle + handleSize / 2, height);
-			} else {
-				theApplet.rect(minHandle, 0, maxHandle - minHandle, height);
-				theApplet.fill((isMinHandle) ? color.colorActive : color.colorForeground);
-				theApplet.rect(minHandle, 0, handleSize, height);
-				theApplet.fill((isMaxHandle) ? color.colorActive : color.colorForeground);
-				theApplet.rect(maxHandle, 0, handleSize, height);
-
-			}
-
-			if (isLabelVisible) {
-				// if (_myDirection == HORIZONTAL) {
-				_myCaptionLabel.draw(theApplet, width + 3, height / 2 - 3);
-				_myValueLabel.draw(theApplet, 3, height / 2 - 3);
-				_myHighValueLabel.draw(theApplet, width - _myHighValueLabel.width(), height / 2 - 3);
-			} else {
-				_myCaptionLabel.draw(theApplet, 0, height + 3);
-				_myValueLabel.draw(theApplet, width + 4, -(int) _myValuePosition + height - 8);
-			}
-			// }
-
-			if (isShowTickMarks) {
-				theApplet.pushStyle();
-				theApplet.pushMatrix();
-
-				theApplet.translate((_mySliderMode == FIX) ? 0 : 5, getHeight());
-				float x = (getWidth() - ((_mySliderMode == FIX) ? 0 : 10)) / (_myTickMarks.size() - 1);
-				for (TickMark tm : _myTickMarks) {
-					tm.draw(theApplet);
-					theApplet.translate(x, 0);
-				}
-				theApplet.popMatrix();
-				theApplet.popStyle();
-			}
-
-			theApplet.popMatrix();
-		}
 	}
 
 	/**
@@ -310,19 +253,32 @@ public class Range extends Controller {
 	 * @param theValue float
 	 */
 	public void setMax(float theValue) {
-		_myMax = theValue;		
+		_myMax = theValue;
 		_myValueRange = _myMax - _myMin;
 		update();
 	}
 
+	@Deprecated
 	public float lowValue() {
+		return getLowValue();
+	}
+
+	@Deprecated
+	public float highValue() {
+		return getHighValue();
+	}
+
+	
+
+	public float getLowValue() {
 		return _myArrayValue[0];
 	}
 
-	public float highValue() {
+	public float getHighValue() {
 		return _myArrayValue[1];
 	}
-
+	
+	
 	public void setLowValue(float theValue) {
 		_myArrayValue[0] = PApplet.max(_myMin, theValue);
 		update();
@@ -396,14 +352,94 @@ public class Range extends Controller {
 		return null;
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param theElement ControlP5XMLElement
+	 * @see controlP5.Controller#updateDisplayMode(int)
 	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "range");
-		theElement.setAttribute("min", new Float(min()));
-		theElement.setAttribute("max", new Float(max()));
+	public void updateDisplayMode(int theMode) {
+		_myDisplayMode = theMode;
+		switch (theMode) {
+		case (DEFAULT):
+			_myDisplay = new RangeDisplay();
+			break;
+		case (SPRITE):
+			_myDisplay = new RangeSpriteDisplay();
+			break;
+		case (IMAGE):
+			_myDisplay = new RangeImageDisplay();
+			break;
+		case (CUSTOM):
+		default:
+			break;
+		}
+	}
+
+	class RangeSpriteDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			ControlP5.logger().log(Level.INFO, "RangeSpriteDisplay not available.");
+		}
+	}
+
+	class RangeDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			theApplet.fill(color.getBackground());
+			theApplet.noStroke();
+			theApplet.rect(0, 0, width, height);
+			// if(isInside) {
+			theApplet.fill(color.getForeground());
+
+			if (isShowTickMarks) {
+				theApplet.rect(minHandle + handleSize / 2, 0, maxHandle - minHandle, height);
+				theApplet.fill((isMinHandle) ? color.getActive() : color.getForeground());
+				theApplet.triangle(minHandle, 0, minHandle + handleSize, 0, minHandle + handleSize / 2, height);
+				theApplet.fill((isMaxHandle) ? color.getActive() : color.getForeground());
+				theApplet.triangle(maxHandle, 0, maxHandle + handleSize, 0, maxHandle + handleSize / 2, height);
+			} else {
+				theApplet.rect(minHandle, 0, maxHandle - minHandle, height);
+				theApplet.fill((isMinHandle) ? color.getActive() : color.getForeground());
+				theApplet.rect(minHandle, 0, handleSize, height);
+				theApplet.fill((isMaxHandle) ? color.getActive() : color.getForeground());
+				theApplet.rect(maxHandle, 0, handleSize, height);
+
+			}
+
+			if (isLabelVisible) {
+				// if (_myDirection == HORIZONTAL) {
+				_myCaptionLabel.draw(theApplet, width + 3, height / 2 - 3);
+				_myValueLabel.draw(theApplet, 3, height / 2 - 3);
+				_myHighValueLabel.draw(theApplet, width - _myHighValueLabel.width(), height / 2 - 3);
+			} else {
+				_myCaptionLabel.draw(theApplet, 0, height + 3);
+				_myValueLabel.draw(theApplet, width + 4, -(int) _myValuePosition + height - 8);
+			}
+			// }
+
+			if (isShowTickMarks) {
+				theApplet.pushStyle();
+				theApplet.pushMatrix();
+
+				theApplet.translate((_mySliderMode == FIX) ? 0 : 5, getHeight());
+				float x = (getWidth() - ((_mySliderMode == FIX) ? 0 : 10)) / (_myTickMarks.size() - 1);
+				for (TickMark tm : _myTickMarks) {
+					tm.draw(theApplet);
+					theApplet.translate(x, 0);
+				}
+				theApplet.popMatrix();
+				theApplet.popStyle();
+			}
+		}
+	}
+
+	class RangeImageDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			ControlP5.logger().log(Level.INFO, "RangeImageDisplay not implemented.");
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "type:\tBang\n" + super.toString();
 	}
 
 }

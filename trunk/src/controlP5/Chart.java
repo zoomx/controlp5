@@ -6,15 +6,19 @@ import processing.core.PApplet;
 
 public class Chart extends Controller {
 
-	// pie-chart
-	// histogram-chart
-	// bar chart
-	// line chart
-
-	// what is the difference in meaning between chart and graph
-	// http://answers.yahoo.com/question/index?qid=20090101193325AA3mgMl
-
-	// setType(int type,int allignment HORIZONTAL/VERTICAL);
+	
+	// STATUS unfinished
+	// 
+	// TODO pie-chart, histogram-chart, bar chart, line chart
+	// TODO setType(int type,int allignment HORIZONTAL/VERTICAL);
+	
+	/*
+	* NOTES
+	* what is the difference in meaning between chart and graph
+	* http://answers.yahoo.com/question/index?qid=20090101193325AA3mgMl
+	*/
+	
+	
 	public final static int LINE = 0;
 	public final static int BAR = 1;
 	public final static int HISTOGRAM = 2;
@@ -26,8 +30,7 @@ public class Chart extends Controller {
 	protected float resolution = 1;
 
 	protected float strokeWeight = 1;
-	
-	
+
 	protected Chart(
 			ControlP5 theControlP5,
 			ControllerGroup theParent,
@@ -73,7 +76,7 @@ public class Chart extends Controller {
 	}
 
 	public ChartData push(int theSetIndex, float theValue) {
-		if(getDataSet(theSetIndex).size()>(width/resolution)) {
+		if (getDataSet(theSetIndex).size() > (width / resolution)) {
 			removeLast(theSetIndex);
 		}
 		return addFirst(theSetIndex, theValue);
@@ -208,15 +211,9 @@ public class Chart extends Controller {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
-	public void addToXMLElement(ControlP5XMLElement theXMLElement) {
-		// TODO Auto-generated method stub
-	}
-
 	public void setStrokeWeight(float theWeight) {
 		strokeWeight = theWeight;
 	}
-
 
 	public float getStrokeWeight() {
 		return strokeWeight;
@@ -225,11 +222,11 @@ public class Chart extends Controller {
 	public void setResolution(int theValue) {
 		resolution = theValue;
 	}
-	
+
 	public int getResolution() {
-		return (int)resolution;
+		return (int) resolution;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -253,12 +250,12 @@ public class Chart extends Controller {
 		}
 	}
 
-	class ChartDisplay implements ControllerDisplay {
+	private class ChartDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.pushStyle();
 			theApplet.fill(getColor().getBackground());
 			theApplet.rect(0, 0, getWidth(), getHeight());
-			
+
 			for (int n = 0; n < size(); n++) {
 				theApplet.stroke(getDataSet(n).getColor().getForeground());
 				theApplet.strokeWeight(getDataSet(n).getStrokeWeight());

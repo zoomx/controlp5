@@ -26,6 +26,7 @@ package controlP5;
  */
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 /**
  * press the mouse inside a numberbox and move up and down to change the values
@@ -70,28 +71,18 @@ public class Numberbox extends Controller {
 
 	protected static int autoHeight = 15;
 
-	protected CVector3f autoSpacing = new CVector3f(10, 20, 0);
+	protected PVector autoSpacing = new PVector(10, 20, 0);
 
 	/**
 	 * 
-	 * 
-	 * 
-	 * @param theControlP5
-	 *          ControlP5
-	 * @param theParent
-	 *          Tab
-	 * @param theName
-	 *          String
-	 * @param theDefaultValue
-	 *          float
-	 * @param theX
-	 *          int
-	 * @param theY
-	 *          int
-	 * @param theWidth
-	 *          int
-	 * @param theHeight
-	 *          int
+	 * @param theControlP5 ControlP5
+	 * @param theParent Tab
+	 * @param theName String
+	 * @param theDefaultValue float
+	 * @param theX int
+	 * @param theY int
+	 * @param theWidth int
+	 * @param theHeight int
 	 */
 	public Numberbox(
 			ControlP5 theControlP5,
@@ -104,7 +95,7 @@ public class Numberbox extends Controller {
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
-		_myValueLabel = new Label("" + _myValue, theWidth, 12, color.colorValueLabel);
+		_myValueLabel = new Label("" + _myValue, theWidth, 12, color.getValueLabel());
 		_myMin = -1000000;
 		_myMax = 1000000;
 	}
@@ -164,14 +155,21 @@ public class Numberbox extends Controller {
 	/**
 	 * set the value of the numberbox.
 	 * 
-	 * @param theValue
-	 *          float
+	 * @param theValue float
 	 */
 	public void setValue(float theValue) {
 		_myValue = theValue;
 		_myValue = Math.max(_myMin, Math.min(_myMax, _myValue));
 		broadcast(FLOAT);
 		_myValueLabel.set(adjustValue(_myValue));
+	}
+
+	/**
+	 * assigns a random value to the controller.
+	 */
+	public void shuffle() {
+		float r = (float) Math.random();
+		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
 	}
 
 	/**
@@ -204,15 +202,6 @@ public class Numberbox extends Controller {
 		return this;
 	}
 
-	/**
-	 * 
-	 * @param theElement
-	 *          ControlP5XMLElement
-	 */
-	public void addToXMLElement(ControlP5XMLElement theElement) {
-		theElement.setAttribute("type", "numberbox");
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -234,9 +223,9 @@ public class Numberbox extends Controller {
 
 	class NumberboxDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
-			theApplet.fill(color.colorBackground);
+			theApplet.fill(color.getBackground());
 			theApplet.rect(0, 0, width, height);
-			theApplet.fill((isActive) ? color.colorActive : color.colorForeground);
+			theApplet.fill((isActive) ? color.getActive() : color.getForeground());
 			int h = height / 2;
 			theApplet.triangle(0, h - 6, 6, h, 0, h + 6);
 
