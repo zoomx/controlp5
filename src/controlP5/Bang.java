@@ -223,7 +223,12 @@ public class Bang extends Controller {
 	}
 
 	@Override
+	public String info() {
+		return "type:\tBang\n" + super.info();
+	}
+	
+	@Override
 	public String toString() {
-		return "type:\tBang\n" + super.toString();
+		return "Bang "+super.toString()+" ["+value()+"]";
 	}
 }

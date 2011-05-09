@@ -156,11 +156,11 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	protected boolean isSprite;
 
-	protected int autoWidth = 50;
+	public static int autoWidth = 50;
 
-	protected int autoHeight = 20;
+	public static int autoHeight = 20;
 
-	protected PVector autoSpacing = new PVector(10, 10, 0);
+	public static PVector autoSpacing = new PVector(10, 10, 0);
 
 	protected boolean isLock = false;
 
@@ -600,11 +600,12 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 * @param theApplet PApplet
 	 */
 	public void draw(final PApplet theApplet) {
+		theApplet.pushStyle();
 		theApplet.pushMatrix();
 		theApplet.translate(position.x, position.y);
 		_myDisplay.display(theApplet, this);
 		theApplet.popMatrix();
-
+		theApplet.popStyle();
 		// theApplet.pushMatrix();
 		// _myDebugDisplay.display(theApplet, this);
 		// theApplet.popMatrix();
@@ -1738,6 +1739,10 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	@Override
 	public String toString() {
+		return name();
+	}
+	
+	public String info() {
 		return "\ntype:\t" + this.getClass() + "\nname:\t" + _myName + "\n" + "label:\t" + _myCaptionLabel.getText() + "\n"
 				+ "id:\t" + _myId + "\n" + "value:\t" + _myValue + "\n" + "position:\t" + position + "\n" + "absolute:\t"
 				+ absolutePosition + "\n" + "width:\t" + getWidth() + "\n" + "height:\t" + getHeight() + "\n" + "color:\t"

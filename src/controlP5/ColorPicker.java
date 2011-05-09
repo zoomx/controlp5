@@ -26,6 +26,10 @@ package controlP5;
 
 import processing.core.PApplet;
 
+
+
+
+
 /**
  * @example ControlP5colorPicker
  */
@@ -143,6 +147,10 @@ public class ColorPicker extends ControlGroup {
 	
 	@Override
 	public String toString() {
+		return "ColorPicker "+name()+" "+ControlP5IOHandler.arrayToString(arrayValue());
+	}
+	
+	public String info() {
 		return "type:\tColorPicker\n"+super.toString();
 	}
 }

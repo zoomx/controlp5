@@ -1,7 +1,36 @@
-2011-02-07  Andreas Schlegel  <andi at sojamo.de>
+2011-05-08  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.5.8
+
+      * src controlP5/ListBox.java:
+      Scrollbar (when visible) is now included inside the dimensions of a listbox (and its derivatives).
+
+      * src controlP5/Textfield.java:
+      Frame which surrounds a textfield is back again after being removed in version 0.5.7.
+      
+      * src controlP5/ListBox.java, controlP5/DropdownList.java:
+      adding key support. up and down arrows can be used to scroll listbox or dropdownList,
+      up and down, use shift+up/down for faster scrolling, use alt+up/down to jump to the
+      top or bottom.  
+      
+      * shuffle    
+
+2011-02-14  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.5.7
+
+      * src controlP5/Controller.java, controlP5/ControllerGroup.java:
+      toString now prints out Type, name and value instead of all details including position, etc.
+      detailed information can now be accessed through method info().
       
+      * src controlP5/Controller.java, controlP5/ControllerGroup.java:
+      adding method info() print out details such as position, visibility, label, id, etc. of
+      a Controller or ControllerGroup.
+       
+      * src controlP5/ListBox.java:
+      adding ControlListeners to ListBox, will also be inherited 
+      by DropdownList.
+		      
       * src controlP5/ControlWindowKeyHandler.java:
       Key combination ALT-L and ALT-S have been removed. 
       ControlP5 setups cant be saved at this point anymore. But 

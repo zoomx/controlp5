@@ -1,5 +1,7 @@
 package controlP5;
 
+import java.util.Arrays;
+
 /**
  * controlP5 is a processing gui library.
  *
@@ -175,7 +177,13 @@ public class CheckBox extends RadioButton {
 	
 	
 	@Override
-	public String toString() {
+	public String info() {
 		return "type:\tCheckBox\n"+super.toString();
 	}
+	
+	@Override
+	public String toString() {
+		return "CheckBox "+name()+" "+ControlP5IOHandler.arrayToString(arrayValue())+"";
+	}
+
 }

@@ -47,8 +47,6 @@ public class ControlP5 extends ControlP5Base {
 
 	protected ControlBroadcaster _myControlBroadcaster;
 
-	private String _myPropertiesPath = "controlP5.properties";
-
 	public CColor color = new CColor();
 
 	protected Vector<ControlWindow> controlWindowList;
@@ -71,7 +69,7 @@ public class ControlP5 extends ControlP5Base {
 
 	public static PApplet papplet;
 
-	public static final String VERSION = "0.5.7";// "##version##";
+	public static final String VERSION = "0.5.8.1";// "##version##";
 
 	public static boolean isApplet;
 
@@ -96,7 +94,7 @@ public class ControlP5 extends ControlP5Base {
 	// this is useful when using clear() or load()
 	protected boolean blockDraw;
 
-	private static final Logger logger = Logger.getLogger(ControlP5.class.getName());
+	public static final Logger logger = Logger.getLogger(ControlP5.class.getName());
 
 	protected Tooltip _myTooltip;
 
@@ -367,7 +365,8 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return null;
 	}
-
+	
+	@Deprecated
 	public Controller controller(String theName) {
 		return getController(theName);
 	}
@@ -378,6 +377,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theGroupName String
 	 * @return ControllerGroup
 	 */
+	@Deprecated
 	public ControllerGroup group(String theGroupName) {
 		return getGroup(theGroupName);
 	}
@@ -439,25 +439,6 @@ public class ControlP5 extends ControlP5Base {
 			return true;
 		}
 		return false;
-	}
-
-	
-	public void setPropertiesPath(String thePropertiesPath) {
-		if (thePropertiesPath == null) {
-			return;
-		}
-		_myPropertiesPath = thePropertiesPath;
-	}
-
-
-	/**
-	 * returns the name to the properties file, default name is
-	 * 'controlP5.properties', use setPropertiesPath to change the default.
-	 * 
-	 * @return String
-	 */
-	public String propertiesPath() {
-		return _myPropertiesPath;
 	}
 
 	/**
@@ -549,7 +530,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * lock ControlP5 to disable moving Controllers around. Other key events are
 	 * still available like ALT-h to hide and show the controllers To disable all
-	 * key events, use disableKeys() use setMoveable(false) instead
+	 * key events, use disableShortcuts() use setMoveable(false) instead
 	 * 
 	 * @deprecated
 	 */
@@ -568,7 +549,7 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public boolean saveProperties() {
-		return saveProperties(propertiesPath());
+		return _myProperties.save();
 	}
 
 	public boolean saveProperties(String theFilePath) {
@@ -577,12 +558,13 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public boolean loadProperties() {
-		return loadProperties(propertiesPath());
+		return _myProperties.load();
 	}
 
 	public boolean loadProperties(String theFilePath) {
 		theFilePath = checkPropertiesPath(theFilePath);
-		return _myProperties.load(theFilePath);
+//		return _myProperties.load(theFilePath);
+		return false;
 	}
 
 	private String checkPropertiesPath(String theFilePath) {

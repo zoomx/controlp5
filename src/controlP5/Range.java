@@ -87,11 +87,11 @@ public class Range extends Controller {
 
 	protected boolean isSnapToTickMarks;
 
-	protected static int autoWidth = 200;
+	public static int autoWidth = 200;
 
-	protected static int autoHeight = 10;
+	public static int autoHeight = 10;
 
-	protected static PVector autoSpacing = new PVector(0, 5, 0);
+	public static PVector autoSpacing = new PVector(0, 5, 0);
 
 	public int alignValueLabel = CENTER;
 

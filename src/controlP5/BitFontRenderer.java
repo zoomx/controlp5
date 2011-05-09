@@ -30,6 +30,8 @@ package controlP5;
  */
 
 import java.awt.Component;
+
+import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
@@ -98,10 +100,15 @@ public class BitFontRenderer {
 
 	private void loadFonts(Component theComponent) {
 		if (!isInit) {
-			font[0] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("standard58.gif")));
-			font[1] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("standard56.gif")));
-			font[2] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("synt24.gif")));
-			font[3] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("GrixelKyrou9.gif")));
+//			font[0] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("standard58.gif")));
+//			font[1] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("standard56.gif")));
+//			font[2] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("synt24.gif")));
+//			font[3] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("GrixelKyrou9.gif")));
+			font[0] = ControlP5.papplet.loadImage(getClass().getResource("standard58.gif").toString());
+			font[1] = ControlP5.papplet.loadImage(getClass().getResource("standard56.gif").toString());
+			font[2] = ControlP5.papplet.loadImage(getClass().getResource("synt24.gif").toString());
+			font[3] = ControlP5.papplet.loadImage(getClass().getResource("GrixelKyrou9.gif").toString());
+//			ControlP5.papplet.createImage(_myWidth, _myHeight,PApplet.ARGB);
 		}
 	}
 

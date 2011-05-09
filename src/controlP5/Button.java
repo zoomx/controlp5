@@ -43,9 +43,9 @@ public class Button extends Controller {
 
 	protected boolean isOn = false;
 
-	protected static int autoWidth = 70;
+	public static int autoWidth = 70;
 
-	protected static int autoHeight = 20;
+	public static int autoHeight = 20;
 
 	protected int activateBy = RELEASE;
 
@@ -140,8 +140,9 @@ public class Button extends Controller {
 			if (parent() instanceof Tab) {
 				setIsInside(false);
 			}
-			setValue(_myValue);
 			isOn = !isOn;
+			setValue(_myValue);
+			
 		}
 	}
 
@@ -168,7 +169,6 @@ public class Button extends Controller {
 	public void update() {
 		setValue(_myValue);
 	}
-
 
 	/**
 	 * turn a button into a switch, or use toggle instead.
@@ -213,18 +213,18 @@ public class Button extends Controller {
 	}
 
 	/**
-	 * Returns true or false and indicates the switch state of the
-	 * button. {@link setSwitch(boolean) setSwitch} should have been set before.
+	 * Returns true or false and indicates the switch state of the button. {@link
+	 * setSwitch(boolean) setSwitch} should have been set before.
 	 * 
 	 * @see controlP5.Button#setSwitch(boolean)
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public boolean booleanValue() {
 		return isOn;
 	}
 
 	/**
-	 * {@inheritDoc}}
+	 * {@inheritDoc}
 	 * 
 	 * @see controlP5.Controller#updateDisplayMode(int)
 	 */
@@ -246,7 +246,6 @@ public class Button extends Controller {
 
 		}
 	}
-
 
 	private class ButtonSpriteDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
@@ -309,9 +308,15 @@ public class Button extends Controller {
 			}
 		}
 	}
-	
+
+	@Override
+	public String info() {
+		return "type:\tButton\n" + super.toString();
+	}
+
 	@Override
 	public String toString() {
-		return "type:\tButton\n"+super.toString();
+		return "Button " + super.toString() + " [" + value() + "]";
 	}
+
 }

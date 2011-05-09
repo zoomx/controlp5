@@ -870,6 +870,7 @@ public class ControlWindow implements MouseWheelListener {
 		isControllerActive = theController;
 	}
 
+	
 	public void toggleUndecorated() {
 		setUndecorated(!isUndecorated());
 	}

@@ -55,6 +55,8 @@ public class Slider extends Controller {
 	protected float _myValuePosition;
 
 	protected float _mySliderbarSize = 0;
+	
+	protected int triggerId = PRESSED;
 
 	protected ArrayList<TickMark> _myTickMarks;
 
@@ -65,6 +67,7 @@ public class Slider extends Controller {
 	protected static int autoWidth = 150;
 
 	protected static int autoHeight = 10;
+	
 
 	// TODO replace and include Label alignments
 	// and positioning in Controller class
@@ -158,9 +161,41 @@ public class Slider extends Controller {
 					setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height))
 							* _myUnit);
 				}
+				if (triggerId == PRESSED) {
+					broadcast(FLOAT);
+				}
+			
 			}
 		}
 	}
+	
+	public void setTriggerEvent(int theEventID) {
+		triggerId = theEventID;
+	}
+	
+	public int getTriggerEvent() {
+		return triggerId;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see controlP5.Controller#mouseReleased()
+	 */
+	protected void mouseReleased() {
+		if (triggerId == RELEASE) {
+
+			if (_myDirection == HORIZONTAL) {
+				setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
+			} else {
+				setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height))
+						* _myUnit);
+			}
+			broadcast(FLOAT);
+		}
+	}
+	
+	
 
 	protected void snapValue(float theValue) {
 		if (isSnapToTickMarks) {
@@ -182,7 +217,7 @@ public class Slider extends Controller {
 		_myValue = (_myValue >= _myMax) ? _myMax : _myValue;
 		_myValuePosition = ((_myValue - _myMin) / _myUnit);
 		_myValueLabel.set(adjustValue(_myValue));
-		broadcast(FLOAT);
+		
 	}
 	
 	
@@ -342,15 +377,18 @@ public class Slider extends Controller {
 			if (_myDirection == HORIZONTAL) {
 				if (_mySliderMode == FIX) {
 					theApplet.rect(0, 0, _myValuePosition, height);
+					
 				} else {
 					if (isShowTickMarks) {
 						theApplet.triangle(_myValuePosition, 0, _myValuePosition + _mySliderbarSize, 0, _myValuePosition
 								+ _mySliderbarSize / 2, height);
 					} else {
+						
 						theApplet.rect(_myValuePosition, 0, _mySliderbarSize, height);
 					}
 
 				}
+				theApplet.fill(255);
 			} else {
 				if (_mySliderMode == FIX) {
 					theApplet.rect(0, height, width, -_myValuePosition);

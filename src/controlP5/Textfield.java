@@ -50,6 +50,11 @@ public class Textfield extends Controller {
 	 * 
 	 * text-editor reference: http://www.cs.cmu.edu/~wjh/papers/byte.html via
 	 * http://forum.processing.org/#Topic/25080000000412071
+	 * 
+	 * TODO
+	 * pattern filter, see this post
+	 * http://forum.processing.org/topic/controlip5-questions-regarding-textfield-dropdownlist-and-buttons
+	 * 
 	 */
 
 	protected ArrayList<String> myTextList = new ArrayList<String>();
@@ -147,7 +152,7 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * set the value of the textfield and will broadcast the new string value
+	 * sets the value of the textfield and will broadcast the new string value
 	 * immediately. what is the difference between setValue and setText? setValue
 	 * does broadcast the value that has been set, setText does not broadcast the
 	 * value, but only updates the content of a textfield. for further information
@@ -160,7 +165,7 @@ public class Textfield extends Controller {
 		// myPosition = myTextline.length() - 1;
 		_myStringValue = theValue;
 		myPosition = myTextline.length();
-		_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition);
+		_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition);		
 		broadcast(_myBroadcastType);
 	}
 
@@ -220,7 +225,7 @@ public class Textfield extends Controller {
 	 * @param theApplet PApplet
 	 */
 	public void draw(PApplet theApplet) {
-		theApplet.noStroke();
+		theApplet.stroke(isTexfieldActive ? color.getActive():color.getForeground());
 		theApplet.fill(color.getBackground());
 		theApplet.pushMatrix();
 		theApplet.translate(position.x, position.y);
@@ -228,7 +233,9 @@ public class Textfield extends Controller {
 		theApplet.noStroke();
 		theApplet.fill(255, 60);
 		int yy = ((height - BitFontRenderer.font[_myValueLabel.getFont()].height) / 2) + 2;
-		theApplet.rect(cursorPosition + 2, 1, (isTexfieldActive && isActive) ? 5 : 1, height - 2);
+		if (isTexfieldActive) {
+			theApplet.rect(cursorPosition + 2, 1, 5, height - 2);
+		}
 		_myValueLabel.draw(theApplet, 2, yy);
 		_myCaptionLabel.draw(theApplet, 0, height + 4);
 		theApplet.noFill();
