@@ -936,9 +936,14 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	
 	@Override
 	public String toString() {
+		return name();
+	}
+	
+	public String info() {
 		return "\nname:\t" + _myName + "\n" + "label:\t" + _myLabel.getText() + "\n" + "id:\t" + _myId + "\n" + "value:\t"
 				+ _myValue + "\n" + "position:\t" + position + "\n" + "absolute:\t" + absolutePosition + "\n" + "width:\t"
 				+ getWidth() + "\n" + "height:\t" + getHeight() + "\n" + "color:\t" + getColor() + "\n" + "visible:\t"
 				+ isVisible + "\n" + "moveable:\t" + isMoveable + "\n";
 	}
+	
 }

@@ -67,9 +67,9 @@ public class Numberbox extends Controller {
 
 	protected float _myMultiplier = 1;
 
-	protected static int autoWidth = 70;
+	public static int autoWidth = 70;
 
-	protected static int autoHeight = 15;
+	public static int autoHeight = 15;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
 
@@ -230,7 +230,7 @@ public class Numberbox extends Controller {
 			theApplet.triangle(0, h - 6, 6, h, 0, h + 6);
 
 			_myCaptionLabel.draw(theApplet, 0, height + 4);
-			_myValueLabel.draw(theApplet, 10, h - _myValueLabel.height() / 2 + 3);
+			_myValueLabel.draw(theApplet, 10, (height -_myValueLabel.getHeight()+4) / 2);
 		}
 	}
 

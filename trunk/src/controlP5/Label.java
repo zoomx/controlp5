@@ -135,8 +135,9 @@ public class Label implements CDrawable {
 			setControlFont(ControlP5.getControlFont());
 		}
 		_myHeight = (isControlFont) ? theHeight : BitFontRenderer.font[_myFontIndex].height;
-		_myImage = new PImage(_myWidth, _myHeight);
-		_myImageMask = new PImage(_myWidth, _myHeight);
+		
+		_myImage = ControlP5.papplet.createImage(_myWidth, _myHeight,PApplet.ARGB);//new PImage(_myWidth, _myHeight);
+		_myImageMask = ControlP5.papplet.createImage(_myWidth, _myHeight,PApplet.RGB);//new PImage(_myWidth, _myHeight);
 		setFixedSize(true);
 		set(_myText);
 	}
@@ -368,7 +369,6 @@ public class Label implements CDrawable {
 		// boolean myFixedSize = isFixedSize;
 		_myFontIndex = theFont;
 		// isFixedSize = false;
-		System.out.println("setting font!");
 		update();
 		// isFixedSize = myFixedSize;
 		return this;
@@ -455,8 +455,8 @@ public class Label implements CDrawable {
 				_myWidth = bitFontRenderer.getWidth(this);
 				_myWidth += _myText.length() * _myLetterSpacing;
 			}
-			_myImage = new PImage(_myWidth, _myHeight);
-			_myImageMask = new PImage(_myWidth, _myHeight);
+			_myImage = ControlP5.papplet.createImage(_myWidth, _myHeight,PApplet.ARGB);//new PImage(_myWidth, _myHeight);
+			_myImageMask = ControlP5.papplet.createImage(_myWidth, _myHeight,PApplet.RGB);//new PImage(_myWidth, _myHeight);
 
 			set(_myText, _myColor, _myCursorPosition);
 		}
@@ -494,8 +494,8 @@ public class Label implements CDrawable {
 				int myWidth = bitFontRenderer.getWidth(this); // + 8
 				if (myWidth > _myWidth) {
 					_myWidth = myWidth;
-					_myImage = new PImage(myWidth, _myHeight);
-					_myImageMask = new PImage(_myWidth, _myHeight);
+					_myImage = ControlP5.papplet.createImage(myWidth, _myHeight,PApplet.ARGB);
+					_myImageMask = ControlP5.papplet.createImage(_myWidth, _myHeight,PApplet.RGB);
 				}
 			}
 

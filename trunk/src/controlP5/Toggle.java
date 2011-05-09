@@ -43,9 +43,9 @@ public class Toggle extends Controller {
 
 	protected float internalValue = -1;
 
-	protected static int autoWidth = 40;
+	public static int autoWidth = 40;
 
-	protected static int autoHeight = 20;
+	public static int autoHeight = 20;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
 

@@ -28,6 +28,7 @@ package controlP5;
 import processing.core.PApplet;
 import processing.core.PImage;
 
+@Deprecated
 public class ControllerSprite implements Cloneable {
 
 	// cc - andreas - I had to remove comment so I could post to BB
@@ -55,7 +56,6 @@ public class ControllerSprite implements Cloneable {
 		wh = width * height;
 		_myState = 0;
 
-		display = new PImage(theWidth, theHeight);
 		display = ControlP5.papplet.createImage(theWidth, theHeight, PApplet.RGB);
 		update();
 

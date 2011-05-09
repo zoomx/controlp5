@@ -29,17 +29,12 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-
-import processing.core.PVector;
 
 public class ControlP5IOHandler {
 
@@ -250,9 +245,11 @@ public class ControlP5IOHandler {
 	 * @author Jerome Lacoste
 	 * @author www.javapractices.com
 	 */
-	public static String get(Object aArray) {
-		if (aArray == null)
+	public static String arrayToString(Object aArray) {
+		if (aArray == null) {
 			return fNULL;
+		}
+
 		checkObjectIsArray(aArray);
 
 		StringBuilder result = new StringBuilder(fSTART_CHAR);
@@ -261,7 +258,7 @@ public class ControlP5IOHandler {
 			Object item = Array.get(aArray, idx);
 			if (isNonNullArray(item)) {
 				// recursive call!
-				result.append(get(item));
+				result.append(arrayToString(item));
 			} else {
 				result.append(item);
 			}

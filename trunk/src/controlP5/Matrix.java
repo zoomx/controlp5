@@ -61,7 +61,7 @@ public class Matrix extends Controller {
 
 	protected long _myTime;
 
-	protected int _myInterval;
+	protected int _myInterval = 100;
 
 	protected int currentX = -1;
 
@@ -93,7 +93,7 @@ public class Matrix extends Controller {
 		_myCells = new int[_myCellX][_myCellY];
 		for (int x = 0; x < _myCellX; x++) {
 			for (int y = 0; y < _myCellY; y++) {
-				_myCells[x][y] = -1;
+				_myCells[x][y] = 0;
 			}
 		}
 		_myTime = System.currentTimeMillis();
@@ -212,8 +212,8 @@ public class Matrix extends Controller {
 			isActive = false;
 		}
 		isPressed = false;
-		currentX = -1;
-		currentY = -1;
+		currentX = 0;
+		currentY = 0;
 	}
 
 	/*

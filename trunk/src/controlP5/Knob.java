@@ -71,9 +71,9 @@ public class Knob extends Controller {
 
 	protected int displayStyle = LINE;
 
-	protected static int autoWidth = 40;
+	public static int autoWidth = 40;
 
-	protected static int autoHeight = 40;
+	public static int autoHeight = 40;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
 

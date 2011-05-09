@@ -1,7 +1,6 @@
 package controlP5;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 
 @SuppressWarnings("serial")
 public class ControllerProperty implements Serializable {

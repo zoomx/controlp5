@@ -188,7 +188,7 @@ public class ControlP5Base implements ControlP5Constants {
 			final float theY,
 			final int theWidth,
 			final int theHeight) {
-		Toggle myController = new Toggle(controlP5, (Tab) controlP5.controlWindow.tabs().get(1), theName, Float.NaN, theX, theY, theWidth, theHeight);
+		Toggle myController = new Toggle(controlP5, (Tab) controlP5.controlWindow.tabs().get(1), theName, 0, theX, theY, theWidth, theHeight);
 		myController.registerProperty("value");
 		controlP5.register(myController);
 		return myController;
@@ -355,7 +355,7 @@ public class ControlP5Base implements ControlP5Constants {
 			final int theY,
 			final int theWidth,
 			final int theHeight) {
-		return addSlider(theName, theMin, theMax, Float.NaN, theX, theY, theWidth, theHeight);
+		return addSlider(theName, theMin, theMax, theMin, theX, theY, theWidth, theHeight);
 	}
 
 	public Slider addSlider(
@@ -520,7 +520,7 @@ public class ControlP5Base implements ControlP5Constants {
 			final int theX,
 			final int theY,
 			final int theDiameter) {
-		return addKnob(theName, theMin, theMax, Float.NaN, theX, theY, theDiameter);
+		return addKnob(theName, theMin, theMax, theMin, theX, theY, theDiameter);
 	}
 
 	public Knob addKnob(
@@ -889,6 +889,8 @@ public class ControlP5Base implements ControlP5Constants {
 
 	protected boolean isCurrentGroupPointerClosed = true;
 
+	protected int autoDirection = HORIZONTAL;
+
 	protected void setCurrentPointer(ControllerGroup theGroup) {
 		currentGroupPointer = theGroup;
 		isCurrentGroupPointerClosed = false;
@@ -903,14 +905,31 @@ public class ControlP5Base implements ControlP5Constants {
 		}
 	}
 
+	public void setAutoAddDirection(int theDirection) {
+		if (theDirection == HORIZONTAL) {
+			autoDirection = HORIZONTAL;
+			return;
+		}
+		autoDirection = VERTICAL;
+	}
+
 	protected void linebreak(Controller theController, boolean theFlag, int theW, int theH, PVector theSpacing) {
+		if (currentGroupPointer.autoPosition.x + theController.autoSpacing.x + theW > theController.controlP5.papplet.width) {
+			currentGroupPointer.autoPosition.y += currentGroupPointer.tempAutoPositionHeight;
+			currentGroupPointer.autoPosition.x = currentGroupPointer.autoPositionOffsetX;
+			currentGroupPointer.tempAutoPositionHeight = 0;
+			theController.position.x = currentGroupPointer.autoPosition.x;
+			theController.position.y = currentGroupPointer.autoPosition.y; 
+			theFlag = false;
+		}
+		
 		if (theFlag == true) {
 			currentGroupPointer.autoPosition.y += currentGroupPointer.tempAutoPositionHeight;
 			currentGroupPointer.autoPosition.x = currentGroupPointer.autoPositionOffsetX;
 			currentGroupPointer.tempAutoPositionHeight = 0;
 		} else {
 			if (theController instanceof Slider) {
-				currentGroupPointer.autoPosition.x += theController.captionLabel().width();
+				currentGroupPointer.autoPosition.x += theController.captionLabel().getWidth();
 			}
 			currentGroupPointer.autoPosition.x += theController.autoSpacing.x + theW;
 			if ((theH + theSpacing.y) > currentGroupPointer.tempAutoPositionHeight) {
@@ -920,9 +939,11 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	public Slider addSlider(String theName, float theMin, float theMax) {
-		Slider s = addSlider(theName, theMin, theMax, (int) currentGroupPointer.autoPosition.x, (int) currentGroupPointer.autoPosition.y, Slider.autoWidth, Slider.autoHeight);
+		Slider s = addSlider(theName, theMin, theMax, theMin, (int) currentGroupPointer.autoPosition.x, (int) currentGroupPointer.autoPosition.y, Slider.autoWidth, Slider.autoHeight);
 		linebreak(s, false, Slider.autoWidth, Slider.autoHeight, s.autoSpacing);
 		s.moveTo(currentGroupPointer);
+		if (autoDirection == VERTICAL)
+			s.linebreak();
 		return s;
 	}
 

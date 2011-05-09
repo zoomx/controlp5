@@ -26,6 +26,8 @@ package controlP5;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import processing.core.PImage;
 
 /**
@@ -467,7 +469,13 @@ public class RadioButton extends ControlGroup {
 	
 	
 	@Override
-	public String toString() {
+	public String info() {
 		return "type:\tRadioButton\n"+super.toString();
 	}
+	
+	@Override
+	public String toString() {
+		return "RadioButton "+name()+" "+ControlP5IOHandler.arrayToString(arrayValue())+"";
+	}
+
 }

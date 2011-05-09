@@ -25,6 +25,7 @@ package controlP5;
  *
  */
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import processing.core.PApplet;
@@ -64,6 +65,8 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	private int itemOffset = 0;
 
+	private int _myScrollbarWidth = 9;
+
 	protected ListBox(
 			ControlP5 theControlP5,
 			ControllerGroup theGroup,
@@ -83,7 +86,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 		// workaround fix see code.goode.com/p/controlp5 issue 7
 		_myBackgroundHeight = theH < 10 ? 10 : theH;
 
-		_myScrollbar = new Slider(controlP5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth + 1, 0, 10, _myBackgroundHeight);
+		_myScrollbar = new Slider(controlP5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth - _myScrollbarWidth, 0, _myScrollbarWidth, _myBackgroundHeight);
 		_myScrollbar.setBroadcast(false);
 		_myScrollbar.setSliderMode(Slider.FLEXIBLE);
 		_myScrollbar.setMoveable(false);
@@ -225,15 +228,26 @@ public class ListBox extends ControlGroup implements ControlListener {
 		} else {
 			_myScrollbar.hide();
 		}
+		updateButtonWidth();
+	}
 
+	private void updateButtonWidth() {
+		boolean b = (buttons.size() < items.size() && isScrollbarVisible);
+		if (b) {
+			for (int i = 1; i < controllers.size(); i++) {
+				((Button) controllers.get(i)).width = _myWidth - _myScrollbarWidth - 1;
+			}
+		} else {
+			for (int i = 1; i < controllers.size(); i++) {
+				((Button) controllers.get(i)).width = _myWidth;
+			}
+		}
 	}
 
 	public ListBox setWidth(int theWidth) {
 		_myWidth = theWidth;
-		for (int i = 1; i < controllers.size(); i++) {
-			((Button) controllers.get(i)).width = theWidth;
-		}
-		_myScrollbar.position.x = _myWidth + 1;
+		updateButtonWidth();
+		_myScrollbar.position.x = _myWidth - _myScrollbarWidth;
 		return this;
 	}
 
@@ -348,17 +362,53 @@ public class ListBox extends ControlGroup implements ControlListener {
 					close();
 					setLabel(theEvent.label());
 				}
+				for (ControlListener cl : _myControlListener) {
+					cl.controlEvent(myEvent);
+				}
 				controlP5.controlbroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
 				((Button) theEvent.controller()).onLeave();
 				((Button) theEvent.controller()).setIsInside(false);
 			} catch (Exception e) {
-				ControlP5.logger().warning("ScrollList.controlEvent exception:" + e);
+				ControlP5.logger().warning("ListBox.controlEvent exception:" + e);
 			}
 		} else {
 			_myScrollValue = -(1 - theEvent.value());
 			scroll();
 		}
 
+	}
+
+	/**
+	 * adding key support. up and down arrows can be used to scroll listbox or
+	 * dropdownList,up and down, use shift+up/down for faster scrolling, use
+	 * alt+up/down to jump to the top or bottom. 
+	 * 
+	 * {@inheritDoc}
+	 */
+	public void keyEvent(final KeyEvent theEvent) {
+		super.keyEvent(theEvent);
+		float x = getAbsolutePosition().x;
+		float y = getAbsolutePosition().y;
+		boolean b = (getWindow().mouseX > x && getWindow().mouseX < (x + _myWidth)
+				&& getWindow().mouseY > (y - getBarHeight()) && getWindow().mouseY < y + _myOriginalBackgroundHeight);
+		if (b && isOpen()) {
+			float step = (1.0f / (float) items.size());
+			if (ControlP5.keyHandler.isShiftDown) {
+				step *= 10;
+			} else if (ControlP5.keyHandler.isAltDown) {
+				step = 1;
+			}
+			if (theEvent.getID() == KeyEvent.KEY_PRESSED) {
+				switch (theEvent.getKeyCode()) {
+				case (KeyEvent.VK_UP):
+					_myScrollbar.setValue(PApplet.constrain(_myScrollbar.getValue() + step, 0, 1));
+					break;
+				case (KeyEvent.VK_DOWN):
+					_myScrollbar.setValue(PApplet.constrain(_myScrollbar.getValue() - step, 0, 1));
+					break;
+				}
+			}
+		}
 	}
 
 	/**
