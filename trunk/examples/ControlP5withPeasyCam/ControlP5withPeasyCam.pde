@@ -30,6 +30,7 @@ void setup() {
 void draw() {
   
   background(0);
+  hint(ENABLE_DEPTH_TEST);
   fill(myColor);
   box(30);
   pushMatrix();
@@ -37,7 +38,9 @@ void draw() {
   fill(0,0,255);
   box(5);
   popMatrix();
-  
+  // makes the gui stay on top of elements
+  // drawn before.
+  hint(DISABLE_DEPTH_TEST);
   gui();
   
 }

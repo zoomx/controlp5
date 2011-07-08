@@ -16,7 +16,7 @@ void setup() {
   size(600,400);
   frameRate(30);
   controlP5 = new ControlP5(this);
-  controlP5.addMatrix("someMatrix", 20, 20, 10, 10, 400, 100);
+  controlP5.addMatrix("someMatrix", 20, 20, 10, 10, 400, 300);
 }
 
 void draw() {

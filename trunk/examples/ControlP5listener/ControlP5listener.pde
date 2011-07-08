@@ -1,5 +1,9 @@
 /**
- * ControlP5 Listener
+ * ControlP5 Listener.
+ * the ControlListener interface can be used to implement a custom 
+ * ControlListener which listens for incoming ControlEvent from specific
+ * controller(s). MyControlListener in the example below listens to
+ * ControlEvents coming in from controller 'mySlider'.
  * by andreas schlegel, 2009
  */
 import controlP5.*;

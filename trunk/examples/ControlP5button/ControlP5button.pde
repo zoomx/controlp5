@@ -12,7 +12,7 @@ ControlP5 controlP5;
 // we will not use variable b in the code below.
 // we have to use controlP5.Button here since there
 // would be a conflict if we only use Button to declare button b.
-controlP5.Button b;
+Button b;
 
 // a button-controller with name buttonValue will change the
 // value of this variable when pressed.

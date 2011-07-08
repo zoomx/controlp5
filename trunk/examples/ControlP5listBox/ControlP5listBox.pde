@@ -21,32 +21,35 @@ void setup() {
   l.setBarHeight(15);
 
   l.captionLabel().toUpperCase(true);
-  l.captionLabel().set("something else");
+  l.captionLabel().set("A Listbox");
   l.captionLabel().style().marginTop = 3;
-  l.valueLabel().style().marginTop = 3; // the +/- sign
-  //l.setBackgroundColor(color(100,0,0));
+  l.valueLabel().style().marginTop = 3;
   for(int i=0;i<80;i++) {
     l.addItem("item "+i,i);
   }
-  l.setColorBackground(color(255,128));
-  l.setColorActive(color(0,0,255,128));
+  l.setColorBackground(color(40,128));
+  l.setColorActive(color(255,128));
 }
 
 void keyPressed() {
   if(key=='1') {
-    // set the height of a listBox should alwyays be a multiple of itemHeight
+    // set the height of a listBox should always be a multiple of itemHeight
     l.setHeight(210); 
+    
   } 
   else if(key=='2') {
-    // set the height of a listBox should alwyays be a multiple of itemHeight
+    // set the height of a listBox should always be a multiple of itemHeight
     l.setHeight(120);
+  } else if(key=='3') {
+    // set the width of a listBox
+    l.setWidth(200);
   }
   else if(key=='i') {
-    // set the height of a listBoxItem, should alwyays be a fraction of the listBox
+    // set the height of a listBoxItem, should always be a fraction of the listBox
     l.setItemHeight(30); 
   } 
   else if(key=='u') {
-    // set the height of a listBoxItem, should alwyays be a fraction of the listBox
+    // set the height of a listBoxItem, should always be a fraction of the listBox
     l.setItemHeight(10);
     l.setBackgroundColor(color(100,0,0));
   } 
