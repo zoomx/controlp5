@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -102,7 +102,8 @@ public class ControllerSprite implements Cloneable {
 
 		int state = _forceState > 0 ? _forceState : _myState;
 
-		if (state > _totalStates) state = _totalStates;
+		if (state > _totalStates)
+			state = _totalStates;
 
 		display.loadPixels();
 		System.arraycopy(sprite.pixels, wh * state, display.pixels, 0, wh);

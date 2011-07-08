@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -40,22 +40,24 @@ public interface ControllerInterface {
 
 	public float value();
 	
-	public void setValue(float theValue);
-	
+	public float[] arrayValue();
+
+	public ControllerInterface setValue(float theValue);
+
 	public float getValue();
-	
+
 	public PVector position();
-	
+
 	public PVector getPosition();
 
 	public void setPosition(float theX, float theY);
-	
-	public void setPosition(PVector thePVector); 
+
+	public void setPosition(PVector thePVector);
 
 	public PVector absolutePosition();
-	
+
 	public PVector getAbsolutePosition();
-	
+
 	public void setAbsolutePosition(PVector thePVector);
 
 	public void updateAbsolutePosition();
@@ -128,19 +130,19 @@ public interface ControllerInterface {
 	public int getPickingColor();
 
 	public ControllerInterface parent();
-	
+
 	public ControllerProperty getProperty(String thePropertyName);
-	
+
 	public ControllerProperty getProperty(String theSetter, String theGetter);
-	
+
 	public ControllerInterface registerProperty(String thePropertyName);
-	
+
 	public ControllerInterface registerProperty(String theSetter, String theGetter);
-	
+
 	public void removeProperty(String thePropertyName);
-	
+
 	public void removeProperty(String theSetter, String theGetter);
-	
+
 	public void setColor(CColor theColor);
 
 }

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -95,22 +95,22 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 				if (isShiftDown) {
 					_myMasterControlWindow.controlP5.saveProperties(); // save properties
 				}
-//				else {
-//					ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
-//				}
+				// else {
+				// ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
+				// }
 			}
 			if (theKeyEvent.getKeyCode() == LOAD) {
 				if (isShiftDown) {
 					// load properties
 					_myMasterControlWindow.controlP5.loadProperties();
-				} 
-//			else {
-//					if (isMasterWindow) {
-//						ControlP5.logger().info("Loading ControlP5 from an XML file has been removed, have a look at controlP5's properties instead.");
-//						isAltDown = false;
-//						isShiftDown = false;
-//					}
-//				}
+				}
+				// else {
+				// if (isMasterWindow) {
+				// ControlP5.logger().info("Loading ControlP5 from an XML file has been removed, have a look at controlP5's properties instead.");
+				// isAltDown = false;
+				// isShiftDown = false;
+				// }
+				// }
 			}
 			if (theKeyEvent.getKeyCode() == HIDE) {
 				if (_myMasterControlWindow.isVisible) {

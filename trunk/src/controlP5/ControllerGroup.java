@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -113,9 +113,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		_myName = theName;
 		controllers = new ControllerList();
 		_myControlCanvas = new ArrayList<ControlCanvas>();
-		_myLabel = new Label(_myName, color.getCaptionLabel());
+		_myLabel = new Label(_myName);
+		_myLabel.setColor(color.getCaptionLabel());
 		setParent((theParent == null) ? this : theParent);
-
 	}
 
 	protected ControllerGroup(int theX, int theY) {
@@ -202,8 +202,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		moveTo(theGroup, null, null);
 	}
 
+	
 	public void moveTo(Tab theTab) {
-		moveTo(null, theTab, null);
+		moveTo(null, theTab, theTab.getWindow());
 	}
 
 	public void moveTo(ControlWindow theControlWindow) {
@@ -431,6 +432,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theApplet PApplet
 	 */
 	public final void draw(PApplet theApplet) {
+		
 		if (isVisible) {
 			theApplet.pushMatrix();
 			theApplet.translate(position.x, position.y);
@@ -438,31 +440,34 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 			_myControlWindow._myPicking.update(this);
 			drawControllers(theApplet);
 			postDraw(theApplet);
+			if(_myValueLabel!=null) {
+				_myValueLabel.draw(theApplet);
+			}
 			theApplet.popMatrix();
 		}
 	}
 
 	protected void drawControllers(PApplet theApplet) {
 		if (isOpen) {
-			
-			for(ControlCanvas cc:_myControlCanvas) {
-				if(cc.mode()==ControlCanvas.PRE) {
+
+			for (ControlCanvas cc : _myControlCanvas) {
+				if (cc.mode() == ControlCanvas.PRE) {
 					cc.draw(theApplet);
 				}
 			}
-			for(ControllerInterface ci:controllers.get()) {
-				if(ci.isVisible()) {
+			for (ControllerInterface ci : controllers.get()) {
+				if (ci.isVisible()) {
 					ci.updateInternalEvents(theApplet);
 					ci.draw(theApplet);
 				}
 			}
 
-			for(CDrawable cd:controllers.getDrawables()) {
+			for (CDrawable cd : controllers.getDrawables()) {
 				cd.draw(theApplet);
 			}
-			
-			for(ControlCanvas cc:_myControlCanvas) {
-				if(cc.mode()==ControlCanvas.POST) {
+
+			for (ControlCanvas cc : _myControlCanvas) {
+				if (cc.mode() == ControlCanvas.POST) {
 					cc.draw(theApplet);
 				}
 			}
@@ -638,11 +643,11 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	}
 
 	public void setColor(CColor theColor) {
-		for (ControllerInterface ci:controllers.get()) {
+		for (ControllerInterface ci : controllers.get()) {
 			ci.setColor(theColor);
 		}
 	}
-	
+
 	/**
 	 * set the color for the group when active.
 	 * 
@@ -650,7 +655,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	public void setColorActive(int theColor) {
 		color.setActive(theColor);
-		for (ControllerInterface ci:controllers.get()) {
+		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorActive(theColor);
 		}
 	}
@@ -662,7 +667,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	public void setColorForeground(int theColor) {
 		color.setForeground(theColor);
-		for (ControllerInterface ci:controllers.get()) {
+		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorForeground(theColor);
 		}
 	}
@@ -674,7 +679,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	public void setColorBackground(int theColor) {
 		color.setBackground(theColor);
-		for (ControllerInterface ci:controllers.get()) {
+		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorBackground(theColor);
 		}
 	}
@@ -687,9 +692,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public void setColorLabel(int theColor) {
 		color.setCaptionLabel(theColor);
 		if (_myLabel != null) {
-			_myLabel.set(_myLabel.toString(), color.getCaptionLabel());
+			_myLabel.setColor( color.getCaptionLabel());
 		}
-		for (ControllerInterface ci:controllers.get()) {
+		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorLabel(theColor);
 		}
 	}
@@ -702,9 +707,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public void setColorValue(int theColor) {
 		color.setValueLabel(theColor);
 		if (_myValueLabel != null) {
-			_myValueLabel.set(_myValueLabel.toString(), color.getValueLabel());
+			_myValueLabel.setColor(color.getValueLabel());
 		}
-		for (ControllerInterface ci:controllers.get()) {
+		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorValue(theColor);
 		}
 	}
@@ -819,8 +824,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		return color;
 	}
 
-	public void setValue(float theValue) {
+	public ControllerGroup setValue(float theValue) {
 		_myValue = theValue;
+		return this;
 	}
 
 	/**
@@ -858,7 +864,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @return Controller
 	 */
 	public Controller controller(String theController) {
-		return controlP5.controller(theController);
+		return controlP5.getController(theController);
 	}
 
 	public Label captionLabel() {
@@ -909,41 +915,39 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public ControllerProperty getProperty(String thePropertyName) {
 		return controlP5.getProperties().getProperty(this, thePropertyName);
 	}
-	
+
 	public ControllerProperty getProperty(String theSetter, String theGetter) {
 		return controlP5.getProperties().getProperty(this, theSetter, theGetter);
 	}
-	
+
 	public ControllerInterface registerProperty(String thePropertyName) {
 		controlP5.getProperties().register(this, thePropertyName);
 		return this;
 	}
-	
+
 	public ControllerInterface registerProperty(String theSetter, String theGetter) {
 		controlP5.getProperties().register(this, theSetter, theGetter);
 		return this;
 	}
-	
+
 	public void removeProperty(String thePropertyName) {
 		controlP5.getProperties().remove(this, thePropertyName);
 	}
-	
+
 	public void removeProperty(String theSetter, String theGetter) {
 		controlP5.getProperties().remove(this, theSetter, theGetter);
 	}
-	
-	
-	
+
 	@Override
 	public String toString() {
 		return name();
 	}
-	
+
 	public String info() {
-		return "\nname:\t" + _myName + "\n" + "label:\t" + _myLabel.getText() + "\n" + "id:\t" + _myId + "\n" + "value:\t"
-				+ _myValue + "\n" + "position:\t" + position + "\n" + "absolute:\t" + absolutePosition + "\n" + "width:\t"
+		return "type:\tControllerGroup" + "\nname:\t" + _myName + "\n" + "label:\t" + _myLabel.getText() + "\n" + "id:\t" + _myId + "\n" + "value:\t"
+				+ _myValue + "\n" + "arrayvalue:\t" + ControlP5IOHandler.arrayToString(_myArrayValue) + "\n" + "position:\t" + position + "\n" + "absolute:\t" + absolutePosition + "\n" + "width:\t"
 				+ getWidth() + "\n" + "height:\t" + getHeight() + "\n" + "color:\t" + getColor() + "\n" + "visible:\t"
 				+ isVisible + "\n" + "moveable:\t" + isMoveable + "\n";
 	}
-	
+
 }

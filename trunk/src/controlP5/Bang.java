@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -123,19 +123,21 @@ public class Bang extends Controller {
 	public void setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
 	}
-	
+
 	public int getTriggerEvent() {
 		return triggerId;
 	}
+
 	/**
 	 * set the value of the bang controller. since bang can be true or false,
 	 * false=0 and true=1
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
+		return this;
 	}
 
 	/*
@@ -223,12 +225,12 @@ public class Bang extends Controller {
 	}
 
 	@Override
-	public String info() {
-		return "type:\tBang\n" + super.info();
+	public String getInfo() {
+		return "type:\tBang\n" + super.getInfo();
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Bang "+super.toString()+" ["+value()+"]";
+		return super.toString() + " [ " + value() + " ] "+"Bang"+" ("+this.getClass().getSuperclass()+")";
 	}
 }

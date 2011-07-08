@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -42,24 +42,20 @@ public class ControlEvent {
 	protected boolean isController;
 
 	protected boolean isGroup;
-
-	public static final int PRESSED = 0;
-	public static final int ENTER = 1;
-	public static final int LEAVE = 2;
-	public static final int RELEASED = 3;
-	public static final int RELEASEDOUTSIDE = 3;
-
+	
 	public static int UNDEFINDED = -1;
+	
 	public static int CONTROLLER = 0;
+	
 	public static int TAB = 1;
+	
 	public static int GROUP = 2;
 
 	protected int myAction;
 
 	/**
 	 * 
-	 * @param theController
-	 *          Controller
+	 * @param theController Controller
 	 */
 	protected ControlEvent(Controller theController) {
 		_myController = theController;
@@ -70,8 +66,7 @@ public class ControlEvent {
 
 	/**
 	 * 
-	 * @param theController
-	 *          Controller
+	 * @param theController Controller
 	 */
 	public ControlEvent(Tab theController) {
 		_myController = theController;
@@ -82,8 +77,7 @@ public class ControlEvent {
 
 	/**
 	 * 
-	 * @param theController
-	 *          Controller
+	 * @param theController Controller
 	 */
 	public ControlEvent(ControllerGroup theController) {
 		_myController = theController;
@@ -93,67 +87,103 @@ public class ControlEvent {
 	}
 
 	/**
-	 * returns the value of the controller as float.
-	 * 
 	 * @return float
 	 */
 	public float value() {
-		return ((Controller) _myController).value();
+		return getValue();
 	}
 
+	/**
+	 * * returns the value of the controller as float.
+	 * @return float
+	 */
+	public float getValue() {
+		return _myController.value();
+	}
+
+	/**
+	 * @return String
+	 */
+	public String stringValue() {
+		return getStringValue();
+	}
+	
 	/**
 	 * returns a string value if applicable to the controller e.g. textfield has a
 	 * string value.
 	 * 
 	 * @return String
 	 */
-	public String stringValue() {
+	public String getStringValue() {
 		return ((Controller) _myController).stringValue();
 	}
 
+	public float[] arrayValue() {
+		return getArrayValue();
+	}
+	
 	/**
 	 * returns a float array, apllies for e.g. Range.
 	 * 
 	 * @return
 	 */
-	public float[] arrayValue() {
-		return ((Controller) _myController).arrayValue();
+	public float[] getArrayValue() {
+		return _myController.arrayValue();
 	}
 
+	
+	public Controller controller() {
+		return getController();
+	}
+	
 	/**
 	 * returns the instance of the controller.
 	 * 
 	 * @return Controller Bang Button Knob Numberbox Radio Slider Textfield Toggle
 	 *         MultiList Matrix
 	 */
-	public Controller controller() {
+	public Controller getController() {
 		return ((Controller) _myController);
 	}
 
+	public Tab tab() {
+		return getTab();
+	}
+	
 	/**
 	 * return the tab that evoked the event.
 	 * 
 	 * @return Tab Tab
 	 */
-	public Tab tab() {
+	public Tab getTab() {
 		return (Tab) _myController;
 	}
 
+	
+	
+	public ControlGroup group() {
+		return getGroup();
+	}
+	
 	/**
-	 * return the tab that evoked the event.
+	 * returns the tab that evoked the event.
 	 * 
 	 * @return Tab Tab
 	 */
-	public ControlGroup group() {
+	public ControlGroup getGroup() {
 		return (ControlGroup) _myController;
 	}
 
+	public String label() {
+		return getLabel();
+	}
+	
 	/**
-	 * get the label of the controller that evoked the event.
+	 * gets the label of the controller that evoked the event.
 	 * 
 	 * @return String
 	 */
-	public String label() {
+	public String getLabel() {
 		return ((Controller) _myController).label();
 	}
 
@@ -185,10 +215,18 @@ public class ControlEvent {
 	}
 
 	public String name() {
+		return getName();
+	}
+	
+	public String getName() {
 		return _myController.name();
 	}
 
 	public int id() {
+		return getId();
+	}
+	
+	public int getId() {
 		return _myController.id();
 	}
 
@@ -201,5 +239,28 @@ public class ControlEvent {
 			return GROUP;
 		}
 		return -1;
+	}
+
+	/**
+	 * checks if the ControlEvent originates from a specific Controller or
+	 * ControllerGroup.
+	 * 
+	 * @param theController
+	 * @return
+	 */
+	public boolean isFrom(ControllerInterface theController) {
+		return _myController.equals(theController);
+	}
+	
+	/**
+	 * checks if the ControlEvent originates from a specific Controller or
+	 * ControllerGroup identifiable by name.
+	 * 
+	 * @param theController
+	 * @return
+	 */
+	 
+	public boolean isFrom(String theControllerName) {
+		return _myController.name().equals(theControllerName);
 	}
 }

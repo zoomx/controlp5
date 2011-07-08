@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * controlP5 is a processing gui library.
  * 
- * 2007-2010 by Andreas Schlegel
+ * 2007-2011 by Andreas Schlegel
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -109,7 +109,7 @@ public class CColor implements Serializable {
 				+ (colorForeground >> 8 & 0xff) + "," + (colorForeground >> 0 & 0xff) + "), " + "active ("
 				+ (colorActive >> 16 & 0xff) + "," + (colorActive >> 8 & 0xff) + "," + (colorActive >> 0 & 0xff) + "), "
 				+ "captionlabel (" + (colorCaptionLabel >> 16 & 0xff) + "," + (colorCaptionLabel >> 8 & 0xff) + ","
-				+ (colorCaptionLabel >> 0 & 0xff) + "), " + "valuelabel " + (colorValueLabel >> 16 & 0xff) + ","
+				+ (colorCaptionLabel >> 0 & 0xff) + "), " + "valuelabel (" + (colorValueLabel >> 16 & 0xff) + ","
 				+ (colorValueLabel >> 8 & 0xff) + "," + (colorValueLabel >> 0 & 0xff) + ")");
 	}
 

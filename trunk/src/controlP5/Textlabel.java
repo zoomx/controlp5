@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -87,11 +87,12 @@ public class Textlabel extends Controller {
 			final int theColor) {
 		super(theX, theY);
 		_myStringValue = theValue;
-		_myValueLabel = new Label(_myStringValue, theW, theH, theColor);
+		_myValueLabel = new Label(ControlP5.papplet,_myStringValue, theW, theH, theColor);
 		if (!ControlP5.isControlFont) {
-			_myValueLabel.setFont(ControlP5.synt24);
+//			_myValueLabel.setFont(ControlP5.synt24);
+			_myValueLabel.setFont(ControlP5.standard58);
 		}
-		_myValueLabel.multiline(false);
+		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.update();
 	}
@@ -121,7 +122,7 @@ public class Textlabel extends Controller {
 		_myStringValue = theValue;
 		_myValueLabel = new Label(theComponent, _myStringValue, theW, theH, theColor);
 		_myValueLabel.setFont(theFont);
-		_myValueLabel.multiline(false);
+		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.update();
 	}
@@ -137,11 +138,15 @@ public class Textlabel extends Controller {
 	public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY) {
 		super(theX, theY);
 		_myStringValue = theValue;
-		_myValueLabel = new Label(theComponent, _myStringValue, 400, 300, 0xffffffff);
+		
+		_myValueLabel = new Label(theComponent, _myStringValue, 10,10, 0xffffffff);
+		_myValueLabel.set(_myStringValue);
+		
 		if (!ControlP5.isControlFont) {
-			_myValueLabel.setFont(ControlP5.synt24);
+			_myValueLabel.setFont(ControlP5.standard58);
 		}
-		_myValueLabel.multiline(false);
+		
+		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.update();
 	}
@@ -168,7 +173,7 @@ public class Textlabel extends Controller {
 		if (!ControlP5.isControlFont) {
 			_myValueLabel.setFont(ControlP5.synt24);
 		}
-		_myValueLabel.multiline(false);
+		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.update();
 	}
@@ -178,7 +183,7 @@ public class Textlabel extends Controller {
 		if (!ControlP5.isControlFont) {
 			_myValueLabel.setFont(ControlP5.standard56);
 		}
-		_myValueLabel.multiline(false);
+		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.update();
 	}
@@ -205,17 +210,31 @@ public class Textlabel extends Controller {
 		_myValueLabel.draw(theApplet, 0, 0);
 		theApplet.popMatrix();
 	}
+	
+	public void draw() {
+		draw(ControlP5.papplet);
+	}
 
 	/**
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
+		return this;
 	}
-
+	
 	public void update() {
 	}
 
+	public Textlabel setText(final String theText) {
+		return setValue(theText);
+	}
+	
+	public Textlabel setMultiline(final boolean theFlag) {
+		_myValueLabel.setMultiline(true);
+		return this;
+	}
+	
 	/**
 	 * set the text of the textlabel.
 	 * 
@@ -224,11 +243,15 @@ public class Textlabel extends Controller {
 	public Textlabel setValue(final String theText) {
 		_myStringValue = theText;
 		_myValueLabel.set(theText);
-		width = _myValueLabel.width();
-		height = _myValueLabel.height();
+		width = _myValueLabel.getWidth();
+		height = _myValueLabel.getHeight();
 		return this;
 	}
-
+	
+	public Textlabel setColor(int theColor) {
+		_myValueLabel.setColor(theColor, true);
+		return this;
+	}
 	/**
 	 * set the position of the textlabel.
 	 * 
@@ -269,19 +292,22 @@ public class Textlabel extends Controller {
 	}
 
 	public ControlFont setControlFont(ControlFont theControlFont) {
-		_myValueLabel.setControlFont(theControlFont);
+		_myValueLabel.setFont(theControlFont);
 		return theControlFont;
 	}
 
 	protected boolean inside() {
 		return (_myControlWindow.mouseX > position.x + _myParent.absolutePosition().x
-				&& _myControlWindow.mouseX < position.x + _myParent.absolutePosition().x + _myValueLabel.width()
+				&& _myControlWindow.mouseX < position.x + _myParent.absolutePosition().x + _myValueLabel.getWidth()
 				&& _myControlWindow.mouseY > position.y + _myParent.absolutePosition().y && _myControlWindow.mouseY < position.y
-				+ _myParent.absolutePosition().y + _myValueLabel.height());
+				+ _myParent.absolutePosition().y + _myValueLabel.getHeight());
 	}
 
 	public Label valueLabel() {
 		return _myValueLabel;
 	}
 
+	public Label get() {
+		return valueLabel();
+	}
 }

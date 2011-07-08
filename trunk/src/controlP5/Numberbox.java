@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -95,7 +95,7 @@ public class Numberbox extends Controller {
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
-		_myValueLabel = new Label("" + _myValue, theWidth, 12, color.getValueLabel());
+		_myValueLabel = new Label(ControlP5.papplet,"" + _myValue, theWidth, 12, color.getValueLabel());
 		_myMin = -1000000;
 		_myMax = 1000000;
 	}
@@ -157,11 +157,12 @@ public class Numberbox extends Controller {
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
 		_myValue = theValue;
 		_myValue = Math.max(_myMin, Math.min(_myMax, _myValue));
 		broadcast(FLOAT);
 		_myValueLabel.set(adjustValue(_myValue));
+		return this;
 	}
 
 	/**
@@ -230,7 +231,7 @@ public class Numberbox extends Controller {
 			theApplet.triangle(0, h - 6, 6, h, 0, h + 6);
 
 			_myCaptionLabel.draw(theApplet, 0, height + 4);
-			_myValueLabel.draw(theApplet, 10, (height -_myValueLabel.getHeight()+4) / 2);
+			_myValueLabel.draw(theApplet, 10, (height - _myValueLabel.getHeight() + 4) / 2);
 		}
 	}
 

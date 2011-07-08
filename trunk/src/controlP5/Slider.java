@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -27,16 +27,13 @@ package controlP5;
 
 import java.util.ArrayList;
 
-
 import processing.core.PApplet;
 
 /**
- * a slider is either used horizontally or vertically. when adding a slider to
- * controlP5, the width is compared versus the height. width is bigger, you get
- * a horizontal slider, height is bigger, you get a vertical slider. a slider
- * can have a fixed slide controller (one end of the slider is fixed to the left
- * or bottom side of the controller), or a flexible slide control (a knob that
- * you can drag).
+ * a slider is either used horizontally or vertically. when adding a slider to controlP5, the width is compared versus
+ * the height. width is bigger, you get a horizontal slider, height is bigger, you get a vertical slider. a slider can
+ * have a fixed slide controller (one end of the slider is fixed to the left or bottom side of the controller), or a
+ * flexible slide control (a knob that you can drag).
  * 
  * 
  * @example ControlP5slider
@@ -54,8 +51,10 @@ public class Slider extends Controller {
 
 	protected float _myValuePosition;
 
-	protected float _mySliderbarSize = 0;
-	
+	protected int _mySliderbarSize = 0;
+
+	protected int _myDefaultSliderbarSize = 10;
+
 	protected int triggerId = PRESSED;
 
 	protected ArrayList<TickMark> _myTickMarks;
@@ -67,7 +66,6 @@ public class Slider extends Controller {
 	protected static int autoWidth = 150;
 
 	protected static int autoHeight = 10;
-	
 
 	// TODO replace and include Label alignments
 	// and positioning in Controller class
@@ -77,8 +75,8 @@ public class Slider extends Controller {
 	public int valueLabelPositioning = FIX;
 
 	/*
-	 * @todo currently the slider value goes up and down linear, provide an option
-	 * to make it logarithmic, potential, curved.
+	 * @todo currently the slider value goes up and down linear, provide an option to make it logarithmic, potential,
+	 * curved.
 	 */
 	/**
 	 * 
@@ -95,26 +93,17 @@ public class Slider extends Controller {
 	 * @param theWidth int
 	 * @param theHeight int
 	 */
-	public Slider(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			float theMin,
-			float theMax,
-			float theDefaultValue,
-			int theX,
-			int theY,
-			int theWidth,
-			int theHeight) {
+	public Slider(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY,
+			int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName, color.getCaptionLabel());
+		_myCaptionLabel = new Label(theName);
+		_myCaptionLabel.setColor(color.getCaptionLabel());
 		_myMin = theMin;
 		_myMax = theMax;
 		// initialize the valueLabel with the longest string available, which is
 		// either theMax or theMin.
-		_myValueLabel = new Label(""
-				+ (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax)
-						: adjustValue(_myMin)), color.getValueLabel());
+		_myValueLabel = new Label("" + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax) : adjustValue(_myMin)));
+		_myCaptionLabel.setColor(color.getValueLabel());
 		// after initializing valueLabel, set the value to
 		// the default value.
 		_myValueLabel.set("" + adjustValue(_myValue));
@@ -132,20 +121,24 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * use the slider mode to set the mode of the slider bar, which can be
-	 * Slider.FLEXIBLE or Slider.FIX
+	 * use the slider mode to set the mode of the slider bar, which can be Slider.FLEXIBLE or Slider.FIX
 	 * 
 	 * @param theMode int
 	 */
 	public void setSliderMode(int theMode) {
 		_mySliderMode = theMode;
 		if (_mySliderMode == FLEXIBLE) {
-			_mySliderbarSize = 10;
+			_mySliderbarSize = (_myDefaultSliderbarSize >= getHeight() / 2) ? _myDefaultSliderbarSize / 2 : _myDefaultSliderbarSize;
 		} else {
 			_mySliderbarSize = 0;
 		}
 		_myUnit = (_myMax - _myMin) / ((width > height) ? width - _mySliderbarSize : height - _mySliderbarSize);
 		setValue(_myValue);
+	}
+
+	public void setSliderBarSize(int theSize) {
+		_myDefaultSliderbarSize = theSize;
+		setSliderMode(_mySliderMode);
 	}
 
 	/**
@@ -158,25 +151,20 @@ public class Slider extends Controller {
 				if (_myDirection == HORIZONTAL) {
 					setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
 				} else {
-					setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height))
-							* _myUnit);
+					setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
 				}
-				if (triggerId == PRESSED) {
-					broadcast(FLOAT);
-				}
-			
 			}
 		}
 	}
-	
+
 	public void setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
 	}
-	
+
 	public int getTriggerEvent() {
 		return triggerId;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -188,14 +176,11 @@ public class Slider extends Controller {
 			if (_myDirection == HORIZONTAL) {
 				setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
 			} else {
-				setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height))
-						* _myUnit);
+				setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
 			}
 			broadcast(FLOAT);
 		}
 	}
-	
-	
 
 	protected void snapValue(float theValue) {
 		if (isSnapToTickMarks) {
@@ -210,25 +195,29 @@ public class Slider extends Controller {
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	@Override
+	public Slider setValue(float theValue) {
 		_myValue = theValue;
 		snapValue(_myValue);
 		_myValue = (_myValue <= _myMin) ? _myMin : _myValue;
 		_myValue = (_myValue >= _myMax) ? _myMax : _myValue;
 		_myValuePosition = ((_myValue - _myMin) / _myUnit);
 		_myValueLabel.set(adjustValue(_myValue));
-		
+		if (triggerId == PRESSED) {
+			broadcast(FLOAT);
+		}
+		return this;
 	}
-	
-	
+
 	/**
 	 * assigns a random value to the controller.
 	 */
 	public void shuffle() {
-		float r = (float)Math.random();
-		setValue(PApplet.map(r,0,1,getMin(),getMax()));
+		float r = (float) Math.random();
+		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
 	}
 
+	@Override
 	public void update() {
 		setValue(_myValue);
 	}
@@ -238,6 +227,7 @@ public class Slider extends Controller {
 	 * 
 	 * @param theValue float
 	 */
+	@Override
 	public void setMin(float theValue) {
 		_myMin = theValue;
 		setSliderMode(_mySliderMode);
@@ -248,6 +238,7 @@ public class Slider extends Controller {
 	 * 
 	 * @param theValue float
 	 */
+	@Override
 	public void setMax(float theValue) {
 		_myMax = theValue;
 		setSliderMode(_mySliderMode);
@@ -282,9 +273,8 @@ public class Slider extends Controller {
 	}
 
 	/*
-	 * TODO new implementations follow:
-	 * http://www.ibm.com/developerworks/java/library/j-dynui/ take interface
-	 * builder as reference
+	 * TODO new implementations follow: http://www.ibm.com/developerworks/java/library/j-dynui/ take interface builder
+	 * as reference
 	 */
 
 	protected void setTickMarks() {
@@ -293,11 +283,18 @@ public class Slider extends Controller {
 
 	public void setNumberOfTickMarks(int theNumber) {
 		_myTickMarks.clear();
-		for (int i = 0; i < theNumber; i++) {
-			_myTickMarks.add(new TickMark(this));
+		if (theNumber > 0) {
+			for (int i = 0; i < theNumber; i++) {
+				_myTickMarks.add(new TickMark(this));
+			}
+			showTickMarks(true);
+			snapToTickMarks(true);
+			setSliderBarSize(20);
+		} else {
+			showTickMarks(false);
+			snapToTickMarks(false);
+			setSliderBarSize(_myDefaultSliderbarSize);
 		}
-		showTickMarks(true);
-		snapToTickMarks(true);
 		setValue(_myValue);
 	}
 
@@ -327,8 +324,7 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * use static variables ControlP5.TOP, ControlP5.CENTER, ControlP5.BOTTOM to
-	 * align the ValueLabel of a slider.
+	 * use static variables ControlP5.TOP, ControlP5.CENTER, ControlP5.BOTTOM to align the ValueLabel of a slider.
 	 * 
 	 * @param theValue
 	 */
@@ -372,18 +368,25 @@ public class Slider extends Controller {
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(color.getBackground());
 			theApplet.noStroke();
-			theApplet.rect(0, 0, width, height);
+			if ((color.getBackground() >> 24 & 0xff) > 0) {
+				theApplet.rect(0, 0, width, height);
+			}
 			theApplet.fill(getIsInside() ? color.getActive() : color.getForeground());
 			if (_myDirection == HORIZONTAL) {
 				if (_mySliderMode == FIX) {
 					theApplet.rect(0, 0, _myValuePosition, height);
-					
+
 				} else {
 					if (isShowTickMarks) {
-						theApplet.triangle(_myValuePosition, 0, _myValuePosition + _mySliderbarSize, 0, _myValuePosition
-								+ _mySliderbarSize / 2, height);
+						theApplet.triangle(
+								_myValuePosition,
+								0,
+								_myValuePosition + _mySliderbarSize,
+								0,
+								_myValuePosition + _mySliderbarSize / 2,
+								getHeight());
 					} else {
-						
+
 						theApplet.rect(_myValuePosition, 0, _mySliderbarSize, height);
 					}
 
@@ -394,10 +397,19 @@ public class Slider extends Controller {
 					theApplet.rect(0, height, width, -_myValuePosition);
 				} else {
 					if (isShowTickMarks) {
-						theApplet.triangle(width, height - _myValuePosition, width, height - _myValuePosition - _mySliderbarSize, 0, height
-								- _myValuePosition - _mySliderbarSize / 2);
+						theApplet.triangle(
+								width,
+								height - _myValuePosition,
+								width,
+								height - _myValuePosition - _mySliderbarSize,
+								0,
+								height - _myValuePosition - _mySliderbarSize / 2);
 					} else {
-						theApplet.rect(0, height - _myValuePosition - _mySliderbarSize, width, _mySliderbarSize);
+						theApplet.rect(
+								0,
+								height - _myValuePosition - _mySliderbarSize,
+								width,
+								_mySliderbarSize);
 					}
 				}
 			}
@@ -420,7 +432,10 @@ public class Slider extends Controller {
 						py = height + 3;
 						break;
 					}
-					_myValueLabel.draw(theApplet, (valueLabelPositioning == FIX) ? px : (int) (_myValuePosition), py);
+					_myValueLabel.draw(
+							theApplet,
+							(valueLabelPositioning == FIX) ? px : (int) (_myValuePosition),
+							py);
 
 				} else {
 					_myCaptionLabel.draw(theApplet, 0, height + 3);
@@ -437,8 +452,10 @@ public class Slider extends Controller {
 						py = height + 3;
 						break;
 					}
-					_myValueLabel.draw(theApplet, (valueLabelPositioning == FIX) ? 0 : width + 4, (valueLabelPositioning == FIX) ? py
-							: -(int) _myValuePosition + height - 8);
+					_myValueLabel.draw(
+							theApplet,
+							(valueLabelPositioning == FIX) ? 0 : width + 4,
+							(valueLabelPositioning == FIX) ? py : -(int) _myValuePosition + height - 8);
 				}
 			}
 

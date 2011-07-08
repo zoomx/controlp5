@@ -12,7 +12,7 @@ public class ControllerProperty implements Serializable {
 	String name;
 	transient boolean active;
 	transient ControllerInterface controller;
-	
+
 	ControllerProperty(ControllerInterface theController, String theSetter, String theGetter) {
 		controller = theController;
 		name = theController.name();
@@ -28,7 +28,7 @@ public class ControllerProperty implements Serializable {
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		 
+
 		ControllerProperty p = (ControllerProperty) o;
 		if (!name.equals(p.name) || !setter.equals(p.setter) || !getter.equals(p.getter)) {
 			return false;
@@ -36,7 +36,6 @@ public class ControllerProperty implements Serializable {
 		return true;
 	}
 
-	
 	public int hashCode() {
 		int result = 17;
 		result = 37 * result + (name != null ? name.hashCode() : 0);
@@ -44,17 +43,17 @@ public class ControllerProperty implements Serializable {
 		result = 37 * result + (getter != null ? getter.hashCode() : 0);
 		return result;
 	}
-	
+
 	public void disable() {
 		active = false;
-	} 
-	
+	}
+
 	public void enable() {
 		active = true;
 	}
-	
+
 	public String toString() {
-		return name+" "+setter+", "+getter;
+		return name + " " + setter + ", " + getter;
 	}
-	
+
 }

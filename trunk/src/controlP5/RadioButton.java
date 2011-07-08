@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -90,8 +90,8 @@ public class RadioButton extends ControlGroup {
 	public Toggle addItem(final String theName, final float theValue) {
 		Toggle t = controlP5.addToggle(theName, 0, 0, itemWidth, itemHeight);
 		t.setMode(ControlP5.DEFAULT);
-		t.captionLabel().style().marginLeft = t.width + 4;
-		t.captionLabel().style().marginTop = -t.height - 2;
+		t.captionLabel().getStyle().marginLeft = t.width + 4;
+		t.captionLabel().getStyle().marginTop = -t.height - 2;
 		t.setImages(images[0], images[1], images[2]);
 		t.setSize(images[0]);
 		return addItem(t, theValue);
@@ -297,7 +297,7 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 */
 	public void deactivateAll() {
-		if(!isMultipleChoice && !noneSelectedAllowed) {
+		if (!isMultipleChoice && !noneSelectedAllowed) {
 			return;
 		}
 		int n = _myRadioToggles.size();
@@ -333,7 +333,7 @@ public class RadioButton extends ControlGroup {
 	 * @param theIndex
 	 */
 	public void deactivate(int theIndex) {
-		if(!isMultipleChoice && !noneSelectedAllowed) {
+		if (!isMultipleChoice && !noneSelectedAllowed) {
 			return;
 		}
 		if (theIndex < _myRadioToggles.size()) {
@@ -345,7 +345,7 @@ public class RadioButton extends ControlGroup {
 			}
 		}
 	}
-	
+
 	/**
 	 * active an item of the Radio button by name.
 	 * 
@@ -403,9 +403,9 @@ public class RadioButton extends ControlGroup {
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		if (!isMultipleChoice) {
-			if(noneSelectedAllowed==false && theEvent.controller().value()<1) {
-				if(theEvent.controller() instanceof Toggle) {
-					Toggle t = ((Toggle) theEvent.controller());
+			if (noneSelectedAllowed == false && theEvent.getController().value() < 1) {
+				if (theEvent.getController() instanceof Toggle) {
+					Toggle t = ((Toggle) theEvent.getController());
 					boolean b = t.isBroadcast();
 					t.setBroadcast(false);
 					t.setState(true);
@@ -417,7 +417,7 @@ public class RadioButton extends ControlGroup {
 			int n = _myRadioToggles.size();
 			for (int i = 0; i < n; i++) {
 				Toggle t = _myRadioToggles.get(i);
-				if (!t.equals(theEvent.controller())) {
+				if (!t.equals(theEvent.getController())) {
 					t.deactivate();
 				} else {
 					if (t.isOn) {
@@ -451,13 +451,12 @@ public class RadioButton extends ControlGroup {
 	public void setNoneSelectedAllowed(boolean theValue) {
 		noneSelectedAllowed = theValue;
 	}
-	
-	
+
 	@Override
 	public void setArrayValue(float[] theArray) {
-		for(int i=0;i<theArray.length;i++) {
-			if(_myArrayValue[i]!=theArray[i]) {
-				if(theArray[i]==0) {
+		for (int i = 0; i < theArray.length; i++) {
+			if (_myArrayValue[i] != theArray[i]) {
+				if (theArray[i] == 0) {
 					deactivate(i);
 				} else {
 					activate(i);
@@ -465,17 +464,16 @@ public class RadioButton extends ControlGroup {
 			}
 		}
 		super.setArrayValue(theArray);
-	} 
-	
-	
+	}
+
 	@Override
 	public String info() {
-		return "type:\tRadioButton\n"+super.toString();
+		return "type:\tRadioButton\n" + super.info();
 	}
-	
+
 	@Override
 	public String toString() {
-		return "RadioButton "+name()+" "+ControlP5IOHandler.arrayToString(arrayValue())+"";
+		return super.toString() + " [ " + ControlP5IOHandler.arrayToString(arrayValue()) + " ] "+this.getClass()+" ("+this.getClass().getSuperclass()+")";
 	}
 
 }

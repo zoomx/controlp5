@@ -1,3 +1,37 @@
+2011-06-25  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.0
+
+      * src controlP5/ControllerGroup.java:
+      moveTo(Tab) changed according to issue http://code.google.com/p/controlp5/issues/detail?id=15
+      
+      * src controlP5/ControllerActionEvent.java, controlP5/ControllerActionListener.java:
+      adding new event listener for controller actions such as enter, leave, pressed, released, releasedoutside.
+      how to use see the ControlP5actionEvent example       
+      
+      * src controlP5/Radio.java:
+      removed, has be deprecated. Use RadioButton or CheckBox instead. 
+      
+      * src controlP5/ControlWindow.Pointer.java:
+      adding a pointer class which can be used as replacement for mouse activity. To make use of the Pointer, 
+      disable the mouse first and then set coordinates and events such as released and pressed from your program to 
+      control controllers. see example ControlP5pointer
+
+
+2011-05-08  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.5.9
+      
+      * src controlP5/ControllerInterface.java:
+      adding method float[] arrayValue()
+      
+      * src controlP5/ListBox.java:
+      adding addItems(String[]), which allows to add a string array to a ListBox or a DropdownList 
+      automatically resulting in a list of listBoxItems
+
+      * src controlP5/ControlEvent.java:
+      adding method isFrom(String) and isFrom(ControllerInterface) to identify the origin of a Control Event 
+
 2011-05-08  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.5.8

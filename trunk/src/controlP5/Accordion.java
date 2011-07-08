@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -28,12 +28,18 @@ package controlP5;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The accordion is a list of ControlGroups which can be expanded and collapsed.
+ * Only one item can be open at a time.
+ * 
+ * @example ControlP5accordion
+ */
 public class Accordion extends ControlGroup {
 
 	private List<ControlGroup> items;
-	
+
 	private int spacing = 1;
-	
+
 	private int minHeight = 100;
 
 	Accordion(ControlP5 theControlP5, Tab theTab, String theName, int theX, int theY, int theW) {
@@ -43,7 +49,8 @@ public class Accordion extends ControlGroup {
 	}
 
 	/**
-	 * add items of type ControlGroup to the Accordion. only ControlGroups can be added.
+	 * add items of type ControlGroup to the Accordion. only ControlGroups can be
+	 * added.
 	 * 
 	 * @param theGroup
 	 */
@@ -65,6 +72,7 @@ public class Accordion extends ControlGroup {
 	 * removes a ControlGroup from the accordion AND from controlP5
 	 * remove(ControllerInterface theGroup) overwrites it's super method.
 	 * if you want to remove a ControlGroup only from the accordion, use removeItem(ControlGroup).
+	 * 
 	 * @see #removeItem(ControlGroup)
 	 */
 	public void remove(ControllerInterface theGroup) {
@@ -127,7 +135,7 @@ public class Accordion extends ControlGroup {
 	}
 
 	/**
-	 * sets the height for each item to theHeight
+	 * sets the height for each item to the value given by parameter theHeight.
 	 * 
 	 * @param theHeight
 	 */
@@ -146,7 +154,7 @@ public class Accordion extends ControlGroup {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.isGroup()) {
@@ -162,5 +170,4 @@ public class Accordion extends ControlGroup {
 			}
 		}
 	}
-
 }

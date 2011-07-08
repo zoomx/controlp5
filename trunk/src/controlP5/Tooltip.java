@@ -1,6 +1,8 @@
 package controlP5;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -34,7 +36,7 @@ public class Tooltip {
 
 	private int _myAlpha = _myMaxAlpha;
 
-	private HashMap<Controller, String> map;
+	private Map<Controller, String> map;
 
 	private Label _myLabel;
 
@@ -48,9 +50,11 @@ public class Tooltip {
 		previousPosition = new PVector();
 		offset = new PVector(0, 24, 0);
 		map = new HashMap<Controller, String>();
-		_myLabel = new Label("", 100, 10);
+		_myLabel = new Label("");
+		_myLabel.setWidth(100);
+		_myLabel.setHeight(10);
 		_myLabel.setColor(0xff000000);
-		_myLabel.multiline(true);
+		_myLabel.setMultiline(true);
 		_myLabel.update();
 		setDisplay(new TooltipDisplay());
 		setBorder(4);
@@ -63,7 +67,7 @@ public class Tooltip {
 	 */
 	public void setBorder(int theValue) {
 		_myBorder = theValue;
-		_myLabel.style().setMargin(_myBorder, _myBorder, _myBorder, _myBorder);
+		_myLabel.getStyle().setMargin(_myBorder, _myBorder, _myBorder, _myBorder);
 	}
 
 	/**
@@ -91,13 +95,13 @@ public class Tooltip {
 				n++;
 			}
 		}
-		if (_myLabel.height() != _myLabel.getLineHeight() * n) {
+		if (_myLabel.getHeight() != _myLabel.getLineHeight() * n) {
 			_myLabel.setHeight(_myLabel.getLineHeight() * n);
 		}
 		_myLabel.set(theText);
 		_myLabel.update();
-		_myWidth = Label.bitFontRenderer.getWidth(_myLabel);
-		_myHeight = _myLabel.height();
+		_myWidth = _myLabel.getWidth();
+		_myHeight = _myLabel.getHeight();
 
 	}
 
@@ -107,7 +111,7 @@ public class Tooltip {
 			if (_myMode >= ControlP5.WAIT) {
 
 				previousPosition.set(currentPosition);
-				currentPosition.set(theWindow.mouseX, theWindow.mouseY,0);
+				currentPosition.set(theWindow.mouseX, theWindow.mouseY, 0);
 
 				if (_myController != null) {
 					if (_myController.controlWindow().equals(theWindow)) {
@@ -194,7 +198,7 @@ public class Tooltip {
 		if (map.containsKey(theController)) {
 			startTime = System.nanoTime();
 			_myController = theController;
-			currentPosition.set(theController.controlWindow().mouseX, theController.controlWindow().mouseY,0);
+			currentPosition.set(theController.controlWindow().mouseX, theController.controlWindow().mouseY, 0);
 			updateText(map.get(_myController));
 			_myMode = ControlP5.WAIT;
 		}
@@ -347,7 +351,7 @@ public class Tooltip {
 			theApplet.pushStyle();
 			theApplet.fill(_myBackgroundColor, _myAlpha);
 			theApplet.rect(0, 0, _myWidth + _myBorder * 2, _myHeight + _myBorder);
-			theApplet.triangle(3,0,7,-4,11,0);
+			theApplet.triangle(3, 0, 7, -4, 11, 0);
 			theApplet.tint(255, PApplet.map(_myAlpha, 0, _myMaxAlpha, 0, 255));
 			_myLabel.draw(theApplet);
 			theApplet.tint(255);

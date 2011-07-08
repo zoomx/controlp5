@@ -6,19 +6,15 @@ import processing.core.PApplet;
 
 public class Chart extends Controller {
 
-	
 	// STATUS unfinished
-	// 
 	// TODO pie-chart, histogram-chart, bar chart, line chart
 	// TODO setType(int type,int allignment HORIZONTAL/VERTICAL);
-	
+
 	/*
-	* NOTES
-	* what is the difference in meaning between chart and graph
-	* http://answers.yahoo.com/question/index?qid=20090101193325AA3mgMl
-	*/
-	
-	
+	 * NOTES what is the difference in meaning between chart and graph
+	 * http://answers.yahoo.com/question/index?qid=20090101193325AA3mgMl
+	 */
+
 	public final static int LINE = 0;
 	public final static int BAR = 1;
 	public final static int HISTOGRAM = 2;
@@ -207,8 +203,9 @@ public class Chart extends Controller {
 	}
 
 	@Override
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
 		// TODO Auto-generated method stub
+		return this;
 	}
 
 	public void setStrokeWeight(float theWeight) {
@@ -269,4 +266,16 @@ public class Chart extends Controller {
 			theApplet.popStyle();
 		}
 	}
+	
+
+	@Override
+	public String getInfo() {
+		return "type:\tChart\n" + super.toString();
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " [ " + value() + " ]"+" Chart "+"("+this.getClass().getSuperclass()+")";
+	}
+
 }

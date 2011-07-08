@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -27,7 +27,9 @@ package controlP5;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 import processing.core.PApplet;
 
 /**
@@ -194,7 +196,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 		if (n < pn) {
 			for (int i = buttons.size() - 1; i >= n; i--) {
-				controlP5.remove(controlP5.controller(buttons.get(i).name()));
+				controlP5.remove(controlP5.getController(buttons.get(i).name()));
 				controllers.remove(buttons.get(i));
 				buttons.remove(i);
 			}
@@ -281,6 +283,26 @@ public class ListBox extends ControlGroup implements ControlListener {
 	}
 
 	/**
+	 * add a list of items from a string array. when iterating through the array,
+	 * the index of each item will be used as value.
+	 * 
+	 * @param theItems
+	 */
+	public void addItems(String[] theItems) {
+		addItems(Arrays.asList(theItems), 0);
+	}
+	
+	public void addItems(List<?> theItems) {
+		addItems(theItems, 0);
+	}
+
+	public void addItems(List<?> theItems, int theOffset) {
+		for (int i = 0; i < theItems.size(); i++) {
+			addItem(theItems.get(i).toString(), i + theOffset);
+		}
+	}
+
+	/**
 	 * Removes an item from the ListBox using the unique name of the item given
 	 * when added to the list.
 	 * 
@@ -354,9 +376,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @see controlP5.ControlGroup#controlEvent(controlP5.ControlEvent)
 	 */
 	public void controlEvent(ControlEvent theEvent) {
-		if (theEvent.controller() instanceof Button) {
+		if (theEvent.getController() instanceof Button) {
 			try {
-				_myValue = theEvent.controller().value();
+				_myValue = theEvent.getController().value();
 				ControlEvent myEvent = new ControlEvent(this);
 				if (pulldown) {
 					close();
@@ -366,8 +388,8 @@ public class ListBox extends ControlGroup implements ControlListener {
 					cl.controlEvent(myEvent);
 				}
 				controlP5.controlbroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
-				((Button) theEvent.controller()).onLeave();
-				((Button) theEvent.controller()).setIsInside(false);
+				((Button) theEvent.getController()).onLeave();
+				((Button) theEvent.getController()).setIsInside(false);
 			} catch (Exception e) {
 				ControlP5.logger().warning("ListBox.controlEvent exception:" + e);
 			}
@@ -381,7 +403,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	/**
 	 * adding key support. up and down arrows can be used to scroll listbox or
 	 * dropdownList,up and down, use shift+up/down for faster scrolling, use
-	 * alt+up/down to jump to the top or bottom. 
+	 * alt+up/down to jump to the top or bottom.
 	 * 
 	 * {@inheritDoc}
 	 */

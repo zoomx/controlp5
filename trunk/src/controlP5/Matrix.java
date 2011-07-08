@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -144,16 +144,16 @@ public class Matrix extends Controller {
 						for (int i = 0; i < _myCellY; i++) {
 							_myCells[tX][i] = 0;
 						}
-						_myCells[tX][tY] = (!isMarkerActive) ? 1:_myCells[tX][tY];
+						_myCells[tX][tY] = (!isMarkerActive) ? 1 : _myCells[tX][tY];
 						break;
 					case (SINGLE_ROW):
 						for (int i = 0; i < _myCellX; i++) {
 							_myCells[tX][i] = 0;
 						}
-						_myCells[tX][tY] = (!isMarkerActive) ? 1:_myCells[tX][tY];
+						_myCells[tX][tY] = (!isMarkerActive) ? 1 : _myCells[tX][tY];
 						break;
 					case (MULTIPLES):
-						_myCells[tX][tY] = (_myCells[tX][tY]==1) ? 0:1;
+						_myCells[tX][tY] = (_myCells[tX][tY] == 1) ? 0 : 1;
 						break;
 					}
 					currentX = tX;
@@ -221,9 +221,11 @@ public class Matrix extends Controller {
 	 * 
 	 * @see controlP5.Controller#setValue(float)
 	 */
-	public void setValue(float theValue) {
+	@Override
+	public Controller setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
+		return this;
 	}
 
 	/*
@@ -271,23 +273,21 @@ public class Matrix extends Controller {
 	public int[][] getCells() {
 		return _myCells;
 	}
-	
-	
+
 	/**
-	 * use setMode to change the cell-activation which by default is 
+	 * use setMode to change the cell-activation which by default is
 	 * ControlP5.SINGLE_ROW, 1 active cell per row, but can be changed to
 	 * ControlP5.SINGLE_COLUMN or ControlP5.MULTIPLES
-	 *  
+	 * 
 	 * @param theMode
 	 */
 	public void setMode(int theMode) {
 		_myMode = theMode;
 	}
-	
+
 	public int getMode() {
 		return _myMode;
 	}
-	
 
 	public void updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;

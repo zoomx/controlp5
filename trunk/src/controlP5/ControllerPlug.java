@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -27,7 +27,6 @@ package controlP5;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Field;
-
 
 public class ControllerPlug {
 
@@ -101,7 +100,7 @@ public class ControllerPlug {
 			} catch (SecurityException e) {
 				printSecurityWarning(e);
 			} catch (NoSuchMethodException e) {
-				ControlP5.logger().warning(" plug() failed. If function "+theName+" does exist, make it public. " + e);
+				ControlP5.logger().warning(" plug() failed. If function " + theName + " does exist, make it public. " + e);
 			}
 
 			/* check for controlEvent */
@@ -113,7 +112,7 @@ public class ControllerPlug {
 			} catch (SecurityException e) {
 				printSecurityWarning(e);
 			} catch (NoSuchMethodException e) {
-				ControlP5.logger().warning(" plug() failed. If function "+theName+" does exist, make it public. " + e);
+				ControlP5.logger().warning(" plug() failed. If function " + theName + " does exist, make it public. " + e);
 			}
 			/* check for fields */
 		} else if (_myType == ControlP5Constants.FIELD) {

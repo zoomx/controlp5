@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -142,7 +142,7 @@ public class Button extends Controller {
 			}
 			isOn = !isOn;
 			setValue(_myValue);
-			
+
 		}
 	}
 
@@ -158,9 +158,10 @@ public class Button extends Controller {
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
+		return this;
 	}
 
 	/**
@@ -310,13 +311,13 @@ public class Button extends Controller {
 	}
 
 	@Override
-	public String info() {
-		return "type:\tButton\n" + super.toString();
+	public String getInfo() {
+		return "type:\tButton\n" + super.getInfo();
 	}
 
 	@Override
 	public String toString() {
-		return "Button " + super.toString() + " [" + value() + "]";
+		return super.toString() + " [ " + value() + " ] " + "Button" + " (" + this.getClass().getSuperclass() + ")";
 	}
 
 }

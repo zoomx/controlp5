@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -54,7 +54,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	protected boolean isBarVisible = true;
 
 	protected List<ControlListener> _myControlListener;
-	
+
 	public ControlGroup(
 			ControlP5 theControlP5,
 			ControllerGroup theParent,
@@ -88,8 +88,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	/**
 	 * activate or deactivate the Event status of a tab.
 	 * 
-	 * @param theFlag
-	 *          boolean
+	 * @param theFlag boolean
 	 */
 	public ControlGroup activateEvent(boolean theFlag) {
 		isEventActive = theFlag;
@@ -131,7 +130,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	public void setBarHeight(int theHeight) {
 		_myHeight = theHeight;
 	}
-	
+
 	public int getBarHeight() {
 		return _myHeight;
 	}
@@ -144,7 +143,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	protected void preDraw(PApplet theApplet) {
 		if (isOpen) {
 			theApplet.fill(_myBackgroundColor);
-			theApplet.rect(0, 0, _myWidth, _myBackgroundHeight-1);
+			theApplet.rect(0, 0, _myWidth, _myBackgroundHeight - 1);
 		}
 	}
 
@@ -168,7 +167,6 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 			}
 		}
 	}
-
 
 	/**
 	 * TODO redesign or deprecate add a close button to the controlbar of this
@@ -206,10 +204,11 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see controlP5.ControlListener#controlEvent(controlP5.ControlEvent)
 	 */
 	public void controlEvent(ControlEvent theEvent) {
-		if (theEvent.controller().name().equals(name() + "close")) {
+		if (theEvent.getController().name().equals(name() + "close")) {
 			hide();
 		}
 	}
@@ -241,13 +240,16 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	public void setArrayValue(float[] theArray) {
 		_myArrayValue = theArray;
 	}
-	
+
 	@Override
 	public String toString() {
 		return super.toString();
-	} 
+	}
 	
-	
+	@Override
+	public String info() {
+		return "type:\tControlGroup\n" + super.info();
+	}
 
 	/**
 	 * add a listener to the controller.
@@ -278,5 +280,5 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	public int listenerSize() {
 		return _myControlListener.size();
 	}
-	
+
 }
