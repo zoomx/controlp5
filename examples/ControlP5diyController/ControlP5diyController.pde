@@ -16,7 +16,7 @@ void setup() {
   controlP5 = new ControlP5(this);
 
   // create a new instance of the ControlPad controller.
-  cp = new ControlPad(controlP5,"DIY",60,40,100,100);
+  cp = new ControlPad(controlP5,"DIY",100,50,100,100);
   // register the newly created ControlPad with controlP5
   controlP5.register(cp);
 }
@@ -52,8 +52,8 @@ class ControlPad extends Controller {
   public void updateInternalEvents(PApplet theApplet) {
     if(getIsInside()) {
       if(isMousePressed && !controlP5.keyHandler.isAltDown) {
-        cX = constrain(mouseX-position.x(),0,width-cWidth);
-        cY = constrain(mouseY-position.y(),0,height-cHeight);
+        cX = constrain(mouseX-position().x,0,width-cWidth);
+        cY = constrain(mouseY-position().y,0,height-cHeight);
         setValue(0);
       }
     }
@@ -64,7 +64,7 @@ class ControlPad extends Controller {
     // use pushMatrix and popMatrix when drawing
     // the controller.
     theApplet.pushMatrix();
-    theApplet.translate(position().x(), position().y());
+    theApplet.translate(position().x, position().y);
     // draw the background of the controller.
     if(getIsInside()) {
       theApplet.fill(150);
@@ -101,11 +101,6 @@ class ControlPad extends Controller {
     broadcast(FLOAT);
   }
 
-  // needs to be implemented since it is an abstract method in controlP5.Controller
-  // nothing needs to be set since this method is only relevant for saving 
-  // controller settings and only applies to (most) default Controllers.
-  public void addToXMLElement(ControlP5XMLElement theElement) {
-  }
 }
 
 

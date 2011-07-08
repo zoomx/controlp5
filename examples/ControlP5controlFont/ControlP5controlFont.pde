@@ -3,7 +3,7 @@
  * (this example only works with processing version 1.1+ 
  * due to changes in PFont.)
  *
- * this example showshow to create a button with controlP5 (1), how to
+ * this example shows how to create a button with controlP5 (1), how to
  * load and use a PFont with controlP5 (2), apply a ControlFont to
  * the caption label of a button (3), and adjust the location of a
  * caption label using the style() property of a controller.

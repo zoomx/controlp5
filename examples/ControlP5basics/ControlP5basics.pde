@@ -1,16 +1,17 @@
 /**
-ControlP5 basics. 
-The following example demonstrates the basic use of controlP5.
-After initializing controlP5 you can add controllers to controlP5.
-Here we use three numberboxes, one slider and one textfield.
-The numberbox with name numberboxC will trigger function numberboxC()
-in the example below. Whenever controlP5 detects a function in your 
-sketch that corresponds to the name of a controller, it will forward
-an event to that function. 
-Any event triggered by a controller will alos be forwarded to function
-controlEvent in your sketch.
-by andreas schlegel, 2009
-*/
+ * <b>ControlP5basics</b><br />
+ * The following example demonstrates the basic use of controlP5.<br />
+ * After initializing controlP5 you can add controllers to controlP5.
+ * Here we use three numberboxes, one slider and one textfield.
+ * The numberbox with name numberboxC will trigger function numberboxC()
+ * in the example below. Whenever controlP5 detects a function in your 
+ * sketch that corresponds to the name of a controller, it will forward
+ * an event to that function. Any event triggered by a controller 
+ * will be forwarded to function controlEvent in your sketch. <br />
+ * related examples ControlP5numberbox, ControlP5slider, ControlP5textfield<br />
+ * by Andreas Schlegel 2010<br />
+ * 
+ */
 
 import controlP5.*;
 
@@ -46,13 +47,23 @@ public void numberboxC(int theValue) {
   println("### got an event from numberboxC : "+theValue);
 }
 
+// a slider event will change the value of textfield textA
+public void sliderA(int theValue) {
+  ((Textfield)controlP5.controller("textA")).setValue(""+theValue);
+}
+
+// for every change in textfield textA, this function will be called
+public void textA(String theValue) {
+  println("### got an event from textA : "+theValue);
+}
+
 public void controlEvent(ControlEvent theEvent) {
   println("got a control event from controller with id "+theEvent.controller().id());
   switch(theEvent.controller().id()) {
-    case(1):
+    case(1): // numberboxA
     myColorRect = (int)(theEvent.controller().value());
     break;
-    case(2):
+    case(2):  // numberboxB
     myColorBackground = (int)(theEvent.controller().value());
     break;  
   }

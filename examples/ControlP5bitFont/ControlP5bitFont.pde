@@ -31,7 +31,7 @@ void setup() {
   label.setFont(myBitFontIndex);
 
   // apply the newly loaded bit font to the below textfield.
-  myTextfield = controlP5.addTextfield("texting",100,160,200,20);
+  myTextfield = controlP5.addTextfield("textinput",100,160,200,20);
   myTextfield.setFocus(true);
   myTextfield.valueLabel().setFont(myBitFontIndex);
   myTextfield.valueLabel().style().marginTop = -2;
@@ -40,6 +40,10 @@ void setup() {
 void draw() {
   background(0);
   label.draw(this);
+}
+
+void textinput(String theValue) {
+  label.set(theValue);
 }
 
 

@@ -16,7 +16,7 @@ void setup() {
   smooth();
   controlP5 = new ControlP5(this);
   controlP5.addToggle("toggle",false,100,160,20,20);
-  controlP5.addToggle("toggleValue",true,100,240,20,20);
+  controlP5.addToggle("toggleValue",true,100,240,100,20).setMode(ControlP5.SWITCH);
 }
   
 void draw() {

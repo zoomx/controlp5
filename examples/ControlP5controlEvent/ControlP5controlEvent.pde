@@ -1,5 +1,9 @@
 /**
- * ControlP5 ControlEvent
+ * ControlP5 ControlEvent.
+ * every control event is automatically forwarded to the function controlEvent(ControlEvent)
+ * inside a sketch if such function is available. For further details about the API of 
+ * the ControlEvent class, please refer to the documentation.
+ *
  * by andreas schlegel, 2009
  */
 import controlP5.*;
