@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -38,10 +38,9 @@ import processing.core.PApplet;
 public interface ControllerDisplay {
 
 	/**
-	 * draw your custom controllers.
-	 * display() will be called by a controller's draw() function and will pass a
-	 * reference of PApplet as well as the Controller itself to your custom
-	 * display class.
+	 * draw your custom controllers. display() will be called by a controller's
+	 * draw() function and will pass a reference of PApplet as well as the
+	 * Controller itself to your custom display class.
 	 * 
 	 * @param theApplet
 	 * @param theController

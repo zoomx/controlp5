@@ -1,11 +1,10 @@
 package controlP5;
 
-import java.util.Arrays;
 
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -104,7 +103,7 @@ public class CheckBox extends RadioButton {
 			updateValues();
 		}
 	}
-	
+
 	/**
 	 * deactivate a single checkbox item (by name);
 	 */
@@ -158,13 +157,12 @@ public class CheckBox extends RadioButton {
 		_myValue = -1;
 		updateValues(true);
 	}
-	
-	
+
 	@Override
 	public void setArrayValue(float[] theArray) {
-		for(int i=0;i<theArray.length;i++) {
-			if(_myArrayValue[i]!=theArray[i]) {
-				if(theArray[i]==0) {
+		for (int i = 0; i < theArray.length; i++) {
+			if (_myArrayValue[i] != theArray[i]) {
+				if (theArray[i] == 0) {
 					_myRadioToggles.get(i).deactivate();
 				} else {
 					_myRadioToggles.get(i).activate();
@@ -172,18 +170,16 @@ public class CheckBox extends RadioButton {
 			}
 		}
 		super.setArrayValue(theArray);
-	} 
-	
-	
-	
+	}
+
 	@Override
 	public String info() {
-		return "type:\tCheckBox\n"+super.toString();
+		return "type:\tCheckBox\n" + super.info();
 	}
-	
+
 	@Override
 	public String toString() {
-		return "CheckBox "+name()+" "+ControlP5IOHandler.arrayToString(arrayValue())+"";
+		return super.toString();
 	}
 
 }

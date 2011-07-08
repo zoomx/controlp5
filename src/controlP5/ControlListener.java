@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -26,22 +26,20 @@ package controlP5;
  */
 
 /**
- * ControlListener is an interface that can be implemented by
- * a custom class. add the controlListener to a controller
- * with addListner()
+ * ControlListener is an interface that can be implemented by a custom class.
+ * add the controlListener to a controller with addListner()
  * 
- *  Controller
+ * Controller
+ * 
  * @example ControlP5listener
  */
 public interface ControlListener {
 
 	/**
-	 * ControlListener is an interface that can be implemented by
-	 * a custom class. add the controlListener to a controller
-	 * with Controller.addListner()
+	 * ControlListener is an interface that can be implemented by a custom class.
+	 * add the controlListener to a controller with Controller.addListner()
 	 * 
-	 * @param theEvent ControlEvent
-	 *  Controller
+	 * @param theEvent ControlEvent Controller
 	 * @example ControlP5listener
 	 */
 	public void controlEvent(ControlEvent theEvent);

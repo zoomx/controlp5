@@ -1,10 +1,9 @@
 package controlP5;
 
-
 /**
  * controlP5 is a processing gui library.
  * 
- * 2007-2010 by Andreas Schlegel
+ * 2007-2011 by Andreas Schlegel
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,10 +24,6 @@ package controlP5;
  */
 
 import processing.core.PApplet;
-
-
-
-
 
 /**
  * @example ControlP5colorPicker
@@ -125,8 +120,7 @@ public class ColorPicker extends ControlGroup {
 		sliderAlpha.setValue(theArray[3]);
 		_myArrayValue = theArray;
 	}
-	
-	
+
 	public void setColorValue(int theColor) {
 		setArrayValue(new float[] { theColor >> 16 & 0xff, theColor >> 8 & 0xff, theColor >> 0 & 0xff,
 				theColor >> 24 & 0xff });
@@ -144,18 +138,18 @@ public class ColorPicker extends ControlGroup {
 			theApplet.rect(0, 44, getWidth(), 15);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
-		return "ColorPicker "+name()+" "+ControlP5IOHandler.arrayToString(arrayValue());
+		return "ColorPicker " + name() + " " + ControlP5IOHandler.arrayToString(arrayValue());
 	}
-	
+
 	public String info() {
-		return "type:\tColorPicker\n"+super.toString();
+		return "type:\tColorPicker\n" + super.toString();
 	}
 }
 
-//this will become a color picker
-//some inspiration
-//http://www.nbdtech.com/blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
-//http://alienryderflex.com/hsp.html
+// this will become a color picker
+// some inspiration
+// http://www.nbdtech.com/blog/archive/2008/04/27/Calculating-the-Perceived-Brightness-of-a-Color.aspx
+// http://alienryderflex.com/hsp.html

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -30,8 +30,9 @@ package controlP5;
  */
 
 import java.awt.Component;
+import java.util.HashMap;
+import java.util.Map;
 
-import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
@@ -65,20 +66,6 @@ public class BitFontRenderer {
 
 	protected static int numFonts = 4;
 
-	protected int[] characters = new int[numFonts];
-
-	protected int[][] charWidth = new int[numFonts][255];
-
-	protected int[] charHeight = new int[numFonts];
-
-	protected int[][][] chars = new int[numFonts][][];
-
-	protected int[] lineHeight = new int[numFonts];
-
-	protected int[] wh = new int[numFonts];
-
-	protected static PImage[] font = new PImage[numFonts];
-
 	public static final int standard58 = ControlP5.standard58;
 
 	public static final int standard56 = ControlP5.standard56;
@@ -89,67 +76,23 @@ public class BitFontRenderer {
 
 	protected float height;
 
-	// protected int _mySpacing = 0;
-
-	public static boolean isInit = false;
+	protected static Map<Integer, BitFont> fonts;
 
 	protected BitFontRenderer(final Component theComponent) {
 		loadFonts(theComponent);
-		init(0, numFonts);
+	}
+
+	public BitFontRenderer() {
+		loadFonts(null);
 	}
 
 	private void loadFonts(Component theComponent) {
-		if (!isInit) {
-//			font[0] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("standard58.gif")));
-//			font[1] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("standard56.gif")));
-//			font[2] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("synt24.gif")));
-//			font[3] = new PImage(ControlP5IOHandler.loadImage(theComponent, getClass().getResource("GrixelKyrou9.gif")));
-			font[0] = ControlP5.papplet.loadImage(getClass().getResource("standard58.gif").toString());
-			font[1] = ControlP5.papplet.loadImage(getClass().getResource("standard56.gif").toString());
-			font[2] = ControlP5.papplet.loadImage(getClass().getResource("synt24.gif").toString());
-			font[3] = ControlP5.papplet.loadImage(getClass().getResource("GrixelKyrou9.gif").toString());
-//			ControlP5.papplet.createImage(_myWidth, _myHeight,PApplet.ARGB);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 */
-	public BitFontRenderer() {
-		loadFonts(null);
-		init(0, numFonts);
-	}
-
-	private void init(int theStart, int theEnd) {
-		isInit = true;
-
-		for (int f = theStart; f < theEnd; f++) {
-			charHeight[f] = font[f].height;
-			lineHeight[f] = charHeight[f];
-			int currWidth = 0;
-			int maxWidth = 0;
-
-			for (int i = 0; i < font[f].width; i++) {
-				currWidth++;
-				if (font[f].pixels[i] == 0xffff0000) {
-					charWidth[f][characters[f]] = currWidth;
-					characters[f]++;
-					if (currWidth > maxWidth) {
-						maxWidth = currWidth;
-					}
-					currWidth = 0;
-				}
-			}
-
-			// create the character sprites.
-			chars[f] = new int[characters[f]][maxWidth * charHeight[f]];
-			int indent = 0;
-			for (int i = 0; i < characters[f]; i++) {
-				for (int u = 0; u < charWidth[f][i] * charHeight[f]; u++) {
-					chars[f][i][u] = font[f].pixels[indent + (u / charWidth[f][i]) * font[f].width + (u % charWidth[f][i])];
-				}
-				indent += charWidth[f][i];
-			}
+		if (fonts == null) {
+			fonts = new HashMap<Integer, BitFont>();
+			fonts.put(standard58, new BitFont(standard58).setSource("standard58.gif"));
+			fonts.put(standard56, new BitFont(standard56).setSource("standard56.gif"));
+			fonts.put(synt24, new BitFont(synt24).setSource("synt24.gif"));
+			fonts.put(grixel, new BitFont(grixel).setSource("GrixelKyrou9.gif"));
 		}
 	}
 
@@ -160,91 +103,98 @@ public class BitFontRenderer {
 	 * @return
 	 */
 	public int addBitFont(PImage theImage) {
-		PImage[] myFonts = new PImage[numFonts];
-		System.arraycopy(font, 0, myFonts, 0, font.length);
-		numFonts++;
-
-		// increase the array size for all font related containers
-		font = new PImage[numFonts];
-		System.arraycopy(myFonts, 0, font, 0, myFonts.length);
-
-		int[] myCharacters = new int[numFonts];
-		System.arraycopy(characters, 0, myCharacters, 0, characters.length);
-		characters = myCharacters;
-
-		int[][] myCharWidth = new int[numFonts][255];
-		System.arraycopy(charWidth, 0, myCharWidth, 0, charWidth.length);
-		charWidth = myCharWidth;
-
-		int[] myCharHeight = new int[numFonts];
-		System.arraycopy(charHeight, 0, myCharHeight, 0, charHeight.length);
-		charHeight = myCharHeight;
-
-		int[][][] myChars = new int[numFonts][][];
-		System.arraycopy(chars, 0, myChars, 0, chars.length);
-		chars = myChars;
-
-		int[] myLineHeight = new int[numFonts];
-		System.arraycopy(lineHeight, 0, myLineHeight, 0, lineHeight.length);
-		lineHeight = myLineHeight;
-
-		int[] mywh = new int[numFonts];
-		System.arraycopy(mywh, 0, mywh, 0, mywh.length);
-		// mywh = mywh;
-
-		try {
-			font[numFonts - 1] = (PImage) (theImage.get().clone());
-		} catch (Exception e) {
-			ControlP5.logger().severe(e.toString());
-		}
-		init(numFonts - 1, numFonts);
-		return numFonts - 1;
+		// TODO
+		return -1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 */
-	public int getWidth(Label theLabel) {
-		return getWidth(theLabel.getText(), theLabel, theLabel.getText().length());
+	protected BitFont getFont(int theIndex) {
+		return fonts.get(theIndex);
+	}
+
+	protected static int getPosition(String theText, Label.BitFontLabel theLabel, int theX) {
+		theText = (theText == null) ? " " : theText;
+
+		BitFont f = fonts.get(theLabel.getFontIndex());
+		theText = (theLabel.isToUpperCase()) ? theText.toUpperCase() : theText;
+		int l = theText.length();
+		int x = 0;
+		for (int i = 0; i < l; i++) {
+			final int myIndex = ((int) theText.charAt(i) - 32);
+			if (myIndex >= 0 && myIndex <= 95) {
+				x += f.charWidth[myIndex] + theLabel.getLetterSpacing();
+				if(x>=theX) {
+					return i;
+				}
+			}
+		}
+		return l;
 	}
 
 	/**
-	 * get the width of a text line based on used bit font.
+	 * get the width of a text line based on the bit font used.
 	 * 
 	 * @param theText
 	 * @param theFontIndex
 	 * @return
 	 */
-	public int getWidth(String theText, final Label theLabel) {
+	public static int getWidth(Label.BitFontLabel theLabel) {
+		return getWidth(theLabel.getText(), theLabel, theLabel.getText().length());
+	}
+
+	public static int getWidth(String theText, final Label.BitFontLabel theLabel) {
 		return getWidth(theText, theLabel, theText.length());
 	}
 
-	protected int getWidth(String theText, final Label theLabel, int theLength) {
-		int myWidth = 0;
-		int myTotalWidth = 0;
-		if (theText == null) {
-			theText = " ";
-		}
-		theText = (theLabel.isToUpperCase) ? theText.toUpperCase() : theText;
+	protected static int getWidth(String theText, final Label.BitFontLabel theLabel, int theLength) {
+		return getDimension(theText, theLabel, theLength)[0];
+	}
+
+	protected static int[] getDimension(String theText, final Label.BitFontLabel theLabel) {
+		return getDimension(theText, theLabel, theText.length());
+	}
+
+	protected static int[] getDimension(String theText, final Label.BitFontLabel theLabel, int theLength) {
+		int[] dim = { 0, theLabel.getLineHeight() };
+		int tx = 0;
+		theText = (theText == null) ? " " : theText;
+
+		BitFont f = fonts.get(theLabel.getFontIndex());
+
+		theText = (theLabel.isToUpperCase()) ? theText.toUpperCase() : theText;
 		for (int i = 0; i < theLength; i++) {
 			final int myIndex = ((int) theText.charAt(i) - 32);
 			if (myIndex >= 0 && myIndex <= 95) {
-				myWidth += charWidth[theLabel.getFontIndex()][myIndex] + theLabel.getLetterSpacing();
+				dim[0] += f.charWidth[myIndex] + theLabel.getLetterSpacing();
 			} else {
-				if ((int) theText.charAt(i) != 10 && (int) theText.charAt(i) != 13) {
-					ControlP5.logger().warning("You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example).");
+				int c = theText.charAt(i);
+				if (c != 9 && c != 10 && c != 13) {
+					// 9 = tab, 10 = new line, 13 = carriage return
+					ControlP5.logger().warning("You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example). ("
+							+ ((int) theText.charAt(i)) + "," + theText.charAt(i) + ")");
 				} else {
-					if(myWidth>myTotalWidth) {
-						myTotalWidth = myWidth;
-						myWidth = 0; 
+					if (dim[0] > tx) {
+						tx = dim[0];
+						dim[0] = 0;
+					}
+					if (c == 10 || c == 13) {
+						dim[1] += theLabel.getLineHeight();
 					}
 				}
 			}
 		}
-		return (myWidth>myTotalWidth) ? myWidth:myTotalWidth;
+		dim[0] = (dim[0] > tx) ? dim[0] : tx;
+		return dim;
 	}
 
-	private void putchar(
+	public static int getHeight(int theFontIndex) {
+		return fonts.get(theFontIndex).texture.height;
+	}
+
+	public static int getHeight(Label.BitFontLabel theLabel) {
+		return fonts.get(theLabel.getFontIndex()).texture.height;
+	}
+
+	private static void putchar(
 			final int theC,
 			final int theX,
 			final int theY,
@@ -252,29 +202,45 @@ public class BitFontRenderer {
 			boolean theHighlight,
 			final PImage theImage,
 			final PImage theMask,
-			final int theFontIndex) {
+			final BitFont theBitFont) {
 		final int myWH = theImage.width * theImage.height;
-		final int len = charWidth[theFontIndex][theC] * charHeight[theFontIndex];
+		final int len = theBitFont.charWidth[theC] * theBitFont.charHeight;
 		final int w = theY * theImage.width;
 		for (int i = 0; i < len; i++) {
-			final int xpos = theX + i % charWidth[theFontIndex][theC];
-			final int pos = xpos + w + (i / charWidth[theFontIndex][theC]) * theImage.width;
-			if (chars[theFontIndex][theC][i] == 0xff000000 && xpos < theImage.width && xpos >= 0 && pos >= 0 && pos < myWH) {
-				theImage.pixels[pos] = theColor; //(!theHighlight) ? theColor : 0xff999999;
+			final int xpos = theX + i % theBitFont.charWidth[theC];
+			final int pos = xpos + w + (i / theBitFont.charWidth[theC]) * theImage.width;
+			if (theBitFont.chars[theC][i] == 0xff000000 && xpos < theImage.width && xpos >= 0 && pos >= 0 && pos < myWH) {
+				theImage.pixels[pos] = theColor;
 				theMask.pixels[pos] = 0xffffffff;
 			}
 		}
 	}
 
-	private int writeCharacters(final Label theLabel) {
+	private static int writeCharacters(final Label.BitFontLabel theLabel) {
+
 		int indent = 0;
+
 		final int myOriginalY = theLabel.getOffsetY();
+
 		int myY = theLabel.getOffsetY();
-		final String myText = theLabel.isToUpperCase ? theLabel.getText().toUpperCase() : theLabel.getText();
+
+		final String myText = theLabel.isToUpperCase() ? theLabel.getText().toUpperCase() : theLabel.getText();
+
 		int myWrap = (theLabel.isMultiline()) ? theLabel.getImage().width : -1;
-		final Letter[] letters = new Letter[myText.length()];
+
+		int l = myText.length();
+
+		final int[] letters_indent = new int[l];
+		final int[] letters_letter = new int[l];
+		final boolean[] letters_isHighlight = new boolean[l];
+		final int[] letters_lineheight = new int[l];
+
 		int err = 0;
-		for (int i = 0; i < myText.length(); i++) {
+
+		BitFont f = fonts.get(theLabel.getFontIndex());
+
+		for (int i = 0; i < l; i++) {
+
 			int c = (int) myText.charAt(i);
 
 			if (c != 10) {
@@ -303,17 +269,24 @@ public class BitFontRenderer {
 					c = 32;
 				}
 
-				letters[i] = new Letter(indent, c - 32, myY, (i == theLabel.getCursorPosition() - 1));
-				indent += charWidth[theLabel.getFontIndex()][c - 32] + theLabel.getLetterSpacing();
+				letters_indent[i] = indent;
+				letters_letter[i] = c - 32;
+				letters_isHighlight[i] = (i == theLabel.getCursorPosition() - 1);
+				letters_lineheight[i] = myY;
+
+				indent += f.charWidth[c - 32] + theLabel.getLetterSpacing();
 			} else {
 				myY += theLabel.getLineHeight();
 				indent = 0;
-				letters[i] = new Letter(0, -1, 0, false);
+				letters_indent[i] = 0;
+				letters_letter[i] = -1;
+				letters_isHighlight[i] = false;
+				letters_lineheight[i] = 0;
 			}
 		}
-		for (int i = 0; i < letters.length; i++) {
-			if (letters[i].letter != -1) {
-				putchar(letters[i].letter, theLabel.getOffsetX() + letters[i].indent, letters[i].lineheight, theLabel.getColor(), letters[i].isHighlight, theLabel.getImage(), theLabel.getImageMask(), theLabel.getFontIndex());
+		for (int i = 0; i < l; i++) {
+			if (letters_letter[i] != -1) {
+				putchar(letters_letter[i], theLabel.getOffsetX() + letters_indent[i], letters_lineheight[i], theLabel.getColor(), letters_isHighlight[i], theLabel.getImage(), theLabel.getImageMask(), f);
 			}
 		}
 		return myY - myOriginalY;
@@ -322,7 +295,7 @@ public class BitFontRenderer {
 	/*
 	 * (non-Javadoc)
 	 */
-	public int write(final Label theLabel) {
+	public static int write(final Label.BitFontLabel theLabel) {
 		final int myWH = theLabel.getImage().width * theLabel.getImage().height;
 		for (int i = 0; i < myWH; i++) {
 			theLabel.getImage().pixels[i] = 0x00ffffff;
@@ -333,17 +306,61 @@ public class BitFontRenderer {
 		return myHeight;
 	}
 
-	private class Letter {
-		int indent;
-		int letter;
-		boolean isHighlight;
-		int lineheight;
+	class BitFont {
 
-		Letter(final int theIndent, final int theLetter, final int theLine, final boolean theHighlight) {
-			indent = theIndent;
-			letter = theLetter;
-			isHighlight = theHighlight;
-			lineheight = theLine;
+		protected int characters;
+
+		protected int[] charWidth = new int[255];
+
+		protected int charHeight;
+
+		protected int[][] chars;
+
+		protected int lineHeight;
+
+		protected int wh;
+
+		protected PImage texture;
+
+		protected int id;
+
+		private String _mySource;
+
+		BitFont(int theId) {
+			id = theId;
 		}
+
+		BitFont setSource(String theSource) {
+			_mySource = theSource;
+			texture = ControlP5.papplet.loadImage(getClass().getResource(_mySource).toString());
+			charHeight = texture.height;
+			lineHeight = charHeight;
+			int currWidth = 0;
+			int maxWidth = 0;
+
+			for (int i = 0; i < texture.width; i++) {
+				currWidth++;
+				if (texture.pixels[i] == 0xffff0000) {
+					charWidth[characters] = currWidth;
+					characters++;
+					if (currWidth > maxWidth) {
+						maxWidth = currWidth;
+					}
+					currWidth = 0;
+				}
+			}
+
+			// create the character sprites.
+			chars = new int[characters][maxWidth * charHeight];
+			int indent = 0;
+			for (int i = 0; i < characters; i++) {
+				for (int u = 0; u < charWidth[i] * charHeight; u++) {
+					chars[i][u] = texture.pixels[indent + (u / charWidth[i]) * texture.width + (u % charWidth[i])];
+				}
+				indent += charWidth[i];
+			}
+			return this;
+		}
+
 	}
 }

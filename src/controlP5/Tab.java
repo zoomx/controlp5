@@ -1,10 +1,9 @@
 package controlP5;
 
-
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -30,18 +29,16 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * Tab extends ControllerGroup, for more available methods
- * see the ControllerGroup documentation.
+ * Tab extends ControllerGroup, for more available methods see the
+ * ControllerGroup documentation.
  * 
  * @example ControlP5tab
- * @nosuperclasses ControllerGroup
- *  ControllerGroup
+ * @nosuperclasses ControllerGroup ControllerGroup
  */
 public class Tab extends ControllerGroup {
 
 	/*
-	 * @todo
-	 * enable positioning of tabs.
+	 * @todo enable positioning of tabs.
 	 */
 
 	protected int _myOffsetX = -1000;
@@ -74,7 +71,7 @@ public class Tab extends ControllerGroup {
 		isEventActive = theControlP5.isTabEventsActive;
 		_myHeight = 16;
 		_myLabel.update();
-		_myWidth = _myLabel.width() + _myRightBorder;
+		_myWidth = _myLabel.getWidth() + _myRightBorder;
 		width();
 	}
 
@@ -104,25 +101,23 @@ public class Tab extends ControllerGroup {
 	}
 
 	/**
-	 * set the label of the group.
-	 * TODO overwriting COntrollerGroup.setLabel to set the Width of a tab
-	 * after renaming. this should be temporary and fixed in the future.
+	 * set the label of the group. TODO overwriting COntrollerGroup.setLabel to
+	 * set the Width of a tab after renaming. this should be temporary and fixed
+	 * in the future.
 	 * 
-	 * @param theLabel
-	 *        String
+	 * @param theLabel String
 	 */
 	public void setLabel(String theLabel) {
 		_myLabel.setFixedSize(false);
 		_myLabel.set(theLabel);
 		_myLabel.setFixedSize(true);
-		setWidth(_myLabel.width());
+		setWidth(_myLabel.getWidth());
 	}
 
 	protected int width() {
 		return _myWidth + _myRightBorder;
 	}
-	
-	
+
 	/**
 	 * @param theWidth
 	 * @return
@@ -131,17 +126,15 @@ public class Tab extends ControllerGroup {
 		_myWidth = theWidth + _myRightBorder;
 		return this;
 	}
-	
+
 	public Tab setHeight(int theHeight) {
 		_myHeight = theHeight;
 		return this;
 	}
-	
 
 	protected boolean inside() {
-		return (_myControlWindow.mouseX > _myOffsetX
-			&& _myControlWindow.mouseX < _myOffsetX + _myWidth + _myRightBorder
-			&& _myControlWindow.mouseY > _myOffsetY && _myControlWindow.mouseY < _myOffsetY + _myHeight);
+		return (_myControlWindow.mouseX > _myOffsetX && _myControlWindow.mouseX < _myOffsetX + _myWidth + _myRightBorder
+				&& _myControlWindow.mouseY > _myOffsetY && _myControlWindow.mouseY < _myOffsetY + _myHeight);
 	}
 
 	/**
@@ -185,7 +178,6 @@ public class Tab extends ControllerGroup {
 		return this;
 	}
 
-
 	/**
 	 * get the string value of the tab.
 	 * 
@@ -209,8 +201,9 @@ public class Tab extends ControllerGroup {
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	public ControllerGroup setValue(float theValue) {
 		_myValue = theValue;
+		return this;
 	}
 
 	/**

@@ -20,7 +20,7 @@ public class DropdownList extends ListBox {
 	}
 
 	@Override
-	public void setValue(float theValue) {
+	public ControllerGroup setValue(float theValue) {
 		for (ListBoxItem l : items) {
 			if ((l.value == theValue)) {
 				_myValue = l.value;
@@ -29,6 +29,7 @@ public class DropdownList extends ListBox {
 				break;
 			}
 		}
+		return this;
 	}
 
 	@Override

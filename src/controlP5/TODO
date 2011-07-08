@@ -1,4 +1,7 @@
 TODO
+2011-06-02  Andreas Schlegel
+
+
 2011-03-24  Andreas Schlegel
       * finish info to toString conversion
       * implement plugTo for ControllerGroups

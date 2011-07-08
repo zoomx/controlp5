@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -38,11 +38,13 @@ public abstract class ControlCanvas {
 	public final static int PRE = 0;
 	public final static int POST = 1;
 	protected int _myMode = PRE;
-	
-	public ControlCanvas() {}
-	
-	public void setup(PApplet theApplet) {}
-	
+
+	public ControlCanvas() {
+	}
+
+	public void setup(PApplet theApplet) {
+	}
+
 	/**
 	 * controlCanvas is an abstract class and therefore needs to be extended by
 	 * your class. draw(PApplet theApplet) is the only method that needs to be

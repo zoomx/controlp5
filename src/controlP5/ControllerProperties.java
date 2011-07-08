@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -56,21 +56,47 @@ import processing.core.PApplet;
 
 public class ControllerProperties {
 
-	public final static int SERIALIZED = 0;
+	public enum Format {
+		SERIALIZED("properties"), XML("xml"), JSON("json");
 
-	public final static int XML = 1;
+		final String extension;
 
-	public final static int JSON = 2;
+		PropertiesStorageFormat format;
+
+		Format(String theExtension) {
+			extension = theExtension;
+		}
+
+		protected void set(PropertiesStorageFormat theStorageFormat) {
+			format = theStorageFormat;
+		}
+
+		protected PropertiesStorageFormat get() {
+			return format;
+		}
+
+		protected void compile(Set<ControllerProperty> theProperties, String thePropertiesPath) {
+			if (!thePropertiesPath.endsWith("." + extension)) {
+				thePropertiesPath = thePropertiesPath + "." + extension;
+			}
+			get().compile(theProperties, thePropertiesPath);
+		}
+
+	}
+
+	{
+		Format.SERIALIZED.set(new SerializedFormat());
+		Format.XML.set(new XMLFormat());
+		Format.JSON.set(new JSONFormat());
+	}
 
 	final static int OPEN = 0;
 
 	final static int CLOSE = 1;
 
-	public static String[] extensions = { "properties", "xml", "json" };
-
 	public static String defaultName = "controlP5";
 
-	public static int defaultFormat = SERIALIZED;
+	public static Format format;
 
 	/**
 	 * all ControllerProperties will be stored inside Map allProperties.
@@ -90,21 +116,16 @@ public class ControllerProperties {
 
 	private ControlP5 controlP5;
 
-	private HashMap<Integer, PropertiesStorageFormat> _myStorageFormats;
-
 	private String _myDefaultSetName = "default";
 
 	public static final Logger logger = Logger.getLogger(ControllerProperties.class.getName());
 
 	public ControllerProperties(ControlP5 theControlP5) {
 		controlP5 = theControlP5;
+		setFormat(Format.SERIALIZED);
 		allProperties = new HashMap<ControllerProperty, HashSet<String>>();
 		allSets = new HashSet<String>();
 		addSet(_myDefaultSetName);
-		_myStorageFormats = new HashMap<Integer, PropertiesStorageFormat>();
-		_myStorageFormats.put(SERIALIZED, new SerializedFormat());
-//		_myStorageFormats.put(XML, new XMLFormat()); // TODO
-//		_myStorageFormats.put(JSON, new JSONFormat()); // TODO
 
 	}
 
@@ -351,37 +372,38 @@ public class ControllerProperties {
 		}
 	}
 
-	protected void compile(String thePropertiesPath) {
-		compile(allProperties.keySet(), thePropertiesPath);
-	}
-
-	protected void compile(Set<ControllerProperty> theProperties, String thePropertiesPath) {
-		for (PropertiesStorageFormat msf : _myStorageFormats.values()) {
-			msf.compile(theProperties, thePropertiesPath);
-		}
-	}
-
 	public boolean load() {
-		return load(ControlP5.papplet.dataPath(defaultName + "." + extensions[defaultFormat]));
+		return load(ControlP5.papplet.sketchPath(defaultName + "." + format.extension));
 	}
 
 	public boolean load(String thePropertiesPath) {
-		if (thePropertiesPath.toLowerCase().endsWith(extensions[XML])) {
-			return _myStorageFormats.get(XML).load(thePropertiesPath);
-		} else if (thePropertiesPath.toLowerCase().endsWith(extensions[JSON])) {
-			return _myStorageFormats.get(JSON).load(thePropertiesPath);
-		} else {
-			return _myStorageFormats.get(SERIALIZED).load(thePropertiesPath);
+		for (Format myFormat : Format.values()) {
+			if (thePropertiesPath.toLowerCase().endsWith(myFormat.extension)) {
+				return myFormat.get().load(thePropertiesPath);
+			}
 		}
+		return false;
+	}
+
+	/**
+	 * use ControllerProperties.SERIALIZED, ControllerProperties.XML or
+	 * ControllerProperties.JSON as parameter.
+	 * 
+	 * @param theFormatId
+	 */
+	public void setFormat(Format theFormatId) {
+		format = theFormatId;
 	}
 
 	protected boolean save() {
-		compile(ControlP5.papplet.dataPath(defaultName + "." + extensions[defaultFormat]));
+		System.out.println("saving with format " + format + " (" + format.extension + ") "
+				+ ControlP5.papplet.sketchPath(defaultName));
+		format.compile(allProperties.keySet(), ControlP5.papplet.sketchPath(defaultName));
 		return true;
 	}
 
 	protected boolean save(String thePropertiesPath) {
-		compile(thePropertiesPath);
+		format.compile(allProperties.keySet(), thePropertiesPath);
 		return true;
 	}
 
@@ -399,7 +421,7 @@ public class ControllerProperties {
 				}
 			}
 		}
-		compile(sets, thePropertiesPath);
+		format.compile(sets, thePropertiesPath);
 	}
 
 	public String toString() {
@@ -423,13 +445,16 @@ public class ControllerProperties {
 
 	}
 
-	private class XMLFormat implements PropertiesStorageFormat {
+	class XMLFormat implements PropertiesStorageFormat {
 		public void compile(Set<ControllerProperty> theProperties, String thePropertiesPath) {
+			System.out.println("Dont use the XMLFormat yet, it is not fully implemented with 0.5.9, use SERIALIZED instead.");
+			System.out.println("Compiling with XMLFormat");
 			StringBuffer xml = new StringBuffer();
 			xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 			xml.append("<properties name=\"" + thePropertiesPath + "\">\n");
 			for (ControllerProperty cp : theProperties) {
 				if (cp.active) {
+					updatePropertyValue(cp);
 					xml.append(getXML(cp));
 				}
 			}
@@ -466,15 +491,17 @@ public class ControllerProperties {
 						// String myClass = getElement(fstElmnt, "class");
 						// String myGetter = getElement(fstElmnt, "getter");
 						try {
+							System.out.print("setting controller " + myName + "   ");
 							ControllerInterface ci = controlP5.getController(myName);
 							ci = (ci == null) ? controlP5.getGroup(myName) : ci;
 							System.out.println(ci);
 							Method method;
 							try {
 								Class<?> c = getClass(myType);
+								System.out.println(myType + " / " + c);
 								method = ci.getClass().getMethod(mySetter, new Class[] { c });
 								method.setAccessible(true);
-								method.invoke(ci, new Object[] { getValue(myValue, c) });
+								method.invoke(ci, new Object[] { getValue(myValue, myType, c) });
 							} catch (Exception e) {
 								logger.severe(e.toString());
 							}
@@ -497,13 +524,22 @@ public class ControllerProperties {
 			return true;
 		}
 
-		private Object getValue(String theValue, Class<?> theClass) {
+		private Object getValue(String theValue, String theType, Class<?> theClass) {
 			if (theClass == int.class) {
 				return Integer.parseInt(theValue);
 			} else if (theClass == float.class) {
 				return Float.parseFloat(theValue);
-			}  else if (theClass == boolean.class) {
+			} else if (theClass == boolean.class) {
 				return Boolean.parseBoolean(theValue);
+			} else if (theClass.isArray()) {
+				System.out.println("this is an array: " + theType + ", " + theValue + ", " + theClass);
+				int dim = 0;
+				while (true) {
+					if (theType.charAt(dim) != '[' || dim >= theType.length()) {
+						break;
+					}
+					dim++;
+				}
 			} else {
 				System.out.println("is array? " + theClass.isArray());
 			}
@@ -536,7 +572,6 @@ public class ControllerProperties {
 		public String getXML(ControllerProperty theProperty) {
 			// Mapping Between JSON and Java Entities
 			// http://code.google.com/p/json-simple/wiki/MappingBetweenJSONAndJavaEntities
-			System.out.println(theProperty.value);
 			String s = "\t<property>\n";
 			s += "\t\t<name>" + theProperty.name + "</name>\n";
 			s += "\t\t<class>" + ControlP5IOHandler.formatGetClass(theProperty.controller.getClass()) + "</class>\n";
@@ -559,8 +594,10 @@ public class ControllerProperties {
 		}
 	}
 
-	private class JSONFormat implements PropertiesStorageFormat {
+	class JSONFormat implements PropertiesStorageFormat {
 		public void compile(Set<ControllerProperty> theProperties, String thePropertiesPath) {
+			System.out.println("Dont use the JSONFormat yet, it is not fully implemented with 0.5.9, use SERIALIZED instead.");
+			System.out.println("Compiling with JSONFormat");
 		}
 
 		public boolean load(String thePropertiesPath) {
@@ -568,10 +605,10 @@ public class ControllerProperties {
 		}
 	}
 
-	private class SerializedFormat implements PropertiesStorageFormat {
+	class SerializedFormat implements PropertiesStorageFormat {
 
 		public boolean load(String thePropertiesPath) {
-			System.out.println("serialized, loading file "+thePropertiesPath);
+			System.out.println("serialized, loading file " + thePropertiesPath);
 			try {
 				FileInputStream fis = new FileInputStream(thePropertiesPath);
 				ObjectInputStream ois = new ObjectInputStream(fis);
@@ -579,7 +616,6 @@ public class ControllerProperties {
 				logger.info("loading " + size + " property-items.");
 
 				for (int i = 0; i < size; i++) {
-
 					try {
 						ControllerProperty cp = (ControllerProperty) ois.readObject();
 						ControllerInterface ci = controlP5.getController(cp.name);
@@ -633,7 +669,6 @@ public class ControllerProperties {
 						oos.writeObject(cp);
 					}
 				}
-
 				logger.info(active + " items saved, " + (ignored) + " items ignored. Done saving properties.");
 				oos.flush();
 				oos.close();

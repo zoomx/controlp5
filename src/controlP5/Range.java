@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -123,7 +123,8 @@ public class Range extends Controller {
 			int theWidth,
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName, color.getCaptionLabel());
+		_myCaptionLabel = new Label(theName);
+		_myCaptionLabel.setColor( color.getCaptionLabel());
 		_myArrayValue = new float[] { theDefaultMinValue, theDefaultMaxValue };
 
 		_myMin = theMin;
@@ -134,10 +135,12 @@ public class Range extends Controller {
 		minHandle = (theDefaultMinValue / _myValueRange) * width;
 		maxHandle = (theDefaultMaxValue / _myValueRange) * width;
 
-		_myValueLabel = new Label("" + adjustValue(_myMin), color.getValueLabel());
+		_myValueLabel = new Label("" + adjustValue(_myMin));
+		_myCaptionLabel.setColor(color.getValueLabel());
 		_myValueLabel.set("" + adjustValue(theDefaultMinValue));
 
-		_myHighValueLabel = new Label(adjustValue(_myMax), color.getValueLabel());
+		_myHighValueLabel = new Label(adjustValue(_myMax));
+		_myCaptionLabel.setColor( color.getValueLabel());
 		_myHighValueLabel.set("" + adjustValue(theDefaultMaxValue));
 
 		_myValue = theDefaultMinValue;
@@ -214,9 +217,10 @@ public class Range extends Controller {
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(ARRAY);
+		return this;
 	}
 
 	public void update() {
@@ -268,8 +272,6 @@ public class Range extends Controller {
 		return getHighValue();
 	}
 
-	
-
 	public float getLowValue() {
 		return _myArrayValue[0];
 	}
@@ -277,8 +279,7 @@ public class Range extends Controller {
 	public float getHighValue() {
 		return _myArrayValue[1];
 	}
-	
-	
+
 	public void setLowValue(float theValue) {
 		_myArrayValue[0] = PApplet.max(_myMin, theValue);
 		update();
@@ -408,7 +409,7 @@ public class Range extends Controller {
 				// if (_myDirection == HORIZONTAL) {
 				_myCaptionLabel.draw(theApplet, width + 3, height / 2 - 3);
 				_myValueLabel.draw(theApplet, 3, height / 2 - 3);
-				_myHighValueLabel.draw(theApplet, width - _myHighValueLabel.width(), height / 2 - 3);
+				_myHighValueLabel.draw(theApplet, width - _myHighValueLabel.getWidth(), height / 2 - 3);
 			} else {
 				_myCaptionLabel.draw(theApplet, 0, height + 3);
 				_myValueLabel.draw(theApplet, width + 4, -(int) _myValuePosition + height - 8);

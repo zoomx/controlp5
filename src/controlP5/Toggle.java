@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -104,12 +104,13 @@ public class Toggle extends Controller {
 	 * 
 	 * @param theValue float
 	 */
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
 		if (theValue == 0) {
 			setState(false);
 		} else {
 			setState(true);
 		}
+		return this;
 	}
 
 	public void setValue(boolean theValue) {

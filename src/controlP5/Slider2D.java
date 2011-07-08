@@ -132,13 +132,14 @@ public class Slider2D extends Controller {
 	 * 
 	 * @see controlP5.Controller#setValue(float)
 	 */
-	public void setValue(float theValue) {
+	public Controller setValue(float theValue) {
 		_myArrayValue[0] = cursorX / ((float) (width - cursorWidth) / (float) width);
 		_myArrayValue[1] = cursorY / ((float) (height - cursorHeight) / (float) height);
 		_myArrayValue[0] = PApplet.map(_myArrayValue[0], 0, width, _myMinX, _myMaxX);
 		_myArrayValue[1] = PApplet.map(_myArrayValue[1], 0, height, _myMinY, _myMaxY);
 		_myValueLabel.set(adjustValue(_myArrayValue[0], 0) + _myValueLabelSeparator + adjustValue(_myArrayValue[1], 0));
 		broadcast(FLOAT);
+		return this;
 	}
 
 	/**

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -38,10 +38,9 @@ import processing.core.PConstants;
 import processing.core.PVector;
 
 /**
- * the purpose of a control window is to out-source controllers so that they
- * dont need to be drawn into the actual processing window. to save cpu, a
- * control window is not updated when not active - in focus. for the same reason
- * the framerate is set to 15.
+ * the purpose of a control window is to out-source controllers so that they dont need to be drawn into the actual
+ * processing window. to save cpu, a control window is not updated when not active - in focus. for the same reason the
+ * framerate is set to 15.
  * 
  * @example ControlP5window
  */
@@ -115,6 +114,10 @@ public class ControlWindow implements MouseWheelListener {
 
 	protected PVector positionOfTabs = new PVector(0, 0, 0);
 
+	private boolean isMouse = true;
+
+	private Pointer pointer;
+
 	/**
 	 * 
 	 * @param theControlP5 ControlP5
@@ -130,6 +133,7 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	protected void init() {
+		pointer = new Pointer();
 		String myRenderer = _myApplet.g.getClass().toString().toLowerCase();
 		is3D = (myRenderer.contains("gl") || myRenderer.contains("3d"));
 
@@ -166,8 +170,7 @@ public class ControlWindow implements MouseWheelListener {
 		activateTab((Tab) _myTabs.get(1));
 
 		/*
-		 * register a post event that will be called by processing after the draw
-		 * method has been finished.
+		 * register a post event that will be called by processing after the draw method has been finished.
 		 */
 
 		if (_myApplet.g.getClass().getName().indexOf("PGraphics2D") > -1
@@ -272,9 +275,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * sets the position of the tab bar which is set to 0,0 by default. to move
-	 * the tabs to y-position 100, use cp5.window().setPositionOfTabs(new
-	 * PVector(0,100,0));
+	 * sets the position of the tab bar which is set to 0,0 by default. to move the tabs to y-position 100, use
+	 * cp5.window().setPositionOfTabs(new PVector(0,100,0));
 	 * 
 	 * @param thePVector
 	 */
@@ -287,9 +289,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * returns the position of the tab bar as PVector. to move the tabs to
-	 * y-position 100, use cp5.window().getPositionOfTabs().y = 100; or
-	 * cp5.window().setPositionOfTabs(new PVector(0,100,0));
+	 * returns the position of the tab bar as PVector. to move the tabs to y-position 100, use
+	 * cp5.window().getPositionOfTabs().y = 100; or cp5.window().setPositionOfTabs(new PVector(0,100,0));
 	 * 
 	 * @return PVector
 	 */
@@ -360,8 +361,7 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * returns true if the mouse is inside a controller. !!! doesnt work for
-	 * groups yet.
+	 * returns true if the mouse is inside a controller. !!! doesnt work for groups yet.
 	 * 
 	 * @return
 	 */
@@ -397,8 +397,7 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * update all controllers contained in the control window if update is
-	 * enabled.
+	 * update all controllers contained in the control window if update is enabled.
 	 */
 	public void update() {
 		((ControllerInterface) _myTabs.get(0)).update();
@@ -545,7 +544,7 @@ public class ControlWindow implements MouseWheelListener {
 
 				pmouseX = mouseX;
 				pmouseY = mouseY;
-
+				
 				// draw Tooltip here.
 				controlP5.getTooltip().draw(this);
 
@@ -576,30 +575,43 @@ public class ControlWindow implements MouseWheelListener {
 		return _myName;
 	}
 
+
 	/**
 	 * 
 	 * @param theMouseEvent MouseEvent
 	 */
 	public void mouseEvent(MouseEvent theMouseEvent) {
-		mouseX = theMouseEvent.getX();
-		mouseY = theMouseEvent.getY();
-		if (isVisible) {
+		if (isMouse) {
+			mouseX = theMouseEvent.getX();
+			mouseY = theMouseEvent.getY();
 			if (theMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
-				mousePressed = true;
-				for (int i = 0; i < _myTabs.size(); i++) {
-					if (((ControllerInterface) _myTabs.get(i)).setMousePressed(true)) {
-						mouselock = true;
-						return;
-					}
-				}
+				mousePressedEvent();
 
 			}
 			if (theMouseEvent.getID() == MouseEvent.MOUSE_RELEASED) {
-				mousePressed = false;
-				mouselock = false;
-				for (int i = 0; i < _myTabs.size(); i++) {
-					((ControllerInterface) _myTabs.get(i)).setMousePressed(false);
+				mouseReleasedEvent();
+			}
+		}
+	}
+
+	private void mousePressedEvent() {
+		if (isVisible) {
+			mousePressed = true;
+			for (int i = 0; i < _myTabs.size(); i++) {
+				if (((ControllerInterface) _myTabs.get(i)).setMousePressed(true)) {
+					mouselock = true;
+					return;
 				}
+			}
+		}
+	}
+
+	private void mouseReleasedEvent() {
+		if (isVisible) {
+			mousePressed = false;
+			mouselock = false;
+			for (int i = 0; i < _myTabs.size(); i++) {
+				((ControllerInterface) _myTabs.get(i)).setMousePressed(false);
 			}
 		}
 	}
@@ -743,8 +755,7 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * set the title of a control window. only applies to control windows of type
-	 * PAppletWindow.
+	 * set the title of a control window. only applies to control windows of type PAppletWindow.
 	 */
 	public void setTitle(String theTitle) {
 		if (_myApplet instanceof PAppletWindow) {
@@ -753,8 +764,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * shows the xy coordinates displayed in the title of a control window. only
-	 * applies to control windows of type PAppletWindow.
+	 * shows the xy coordinates displayed in the title of a control window. only applies to control windows of type
+	 * PAppletWindow.
 	 * 
 	 * @param theFlag
 	 */
@@ -765,8 +776,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * hide the xy coordinates displayed in the title of a control window. only
-	 * applies to control windows of type PAppletWindow.
+	 * hide the xy coordinates displayed in the title of a control window. only applies to control windows of type
+	 * PAppletWindow.
 	 * 
 	 * @param theFlag
 	 */
@@ -795,11 +806,9 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * set the draw mode of a control window. a separate control window is only
-	 * updated when in focus. to update the context of the window continuously,
-	 * use yourControlWindow.setUpdateMode(ControlWindow.NORMAL); otherwise use
-	 * yourControlWindow.setUpdateMode(ControlWindow.ECONOMIC); for an economic,
-	 * less cpu intensive update.
+	 * set the draw mode of a control window. a separate control window is only updated when in focus. to update the
+	 * context of the window continuously, use yourControlWindow.setUpdateMode(ControlWindow.NORMAL); otherwise use
+	 * yourControlWindow.setUpdateMode(ControlWindow.ECONOMIC); for an economic, less cpu intensive update.
 	 * 
 	 * @param theMode
 	 */
@@ -830,9 +839,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * by default the background of a controlWindow is filled with a backgorund
-	 * color every frame. to enable or disable the background from drawing, use
-	 * setDrawBackgorund(true/false).
+	 * by default the background of a controlWindow is filled with a backgorund color every frame. to enable or disable
+	 * the background from drawing, use setDrawBackgorund(true/false).
 	 * 
 	 * @param theFlag
 	 */
@@ -841,8 +849,7 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * returns a boolean indicating if the background is drawn automatically or
-	 * not.
+	 * returns a boolean indicating if the background is drawn automatically or not.
 	 * 
 	 * @return
 	 */
@@ -870,7 +877,6 @@ public class ControlWindow implements MouseWheelListener {
 		isControllerActive = theController;
 	}
 
-	
 	public void toggleUndecorated() {
 		setUndecorated(!isUndecorated());
 	}
@@ -895,4 +901,47 @@ public class ControlWindow implements MouseWheelListener {
 		_myApplet.frame.setLocation(theX, theY);
 	}
 
+	
+	public Pointer getPointer() {
+		return pointer;
+	}
+
+	public class Pointer {
+
+		public Pointer setX(int theX) {
+			mouseX = theX;
+			return this;
+		}
+
+		public Pointer setY(int theY) {
+			mouseY = theY;
+			return this;
+		}
+
+		public Pointer set(int theX, int theY) {
+			setX(theX);
+			setY(theY);
+			return this;
+		}
+
+		public Pointer pressed() {
+			mousePressedEvent();
+			return this;
+		}
+
+		public Pointer released() {
+			mouseReleasedEvent();
+			return this;
+		}
+
+		
+		public void enable() {
+			isMouse = false;
+		}
+
+		public void disable() {
+			isMouse = true;
+		}
+
+	}
 }

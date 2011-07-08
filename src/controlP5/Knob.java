@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -392,8 +392,10 @@ public class Knob extends Controller {
 	 * 
 	 * @see controlP5.Controller#setValue(float)
 	 */
-	public void setValue(float theValue) {
+	@Override
+	public Controller setValue(float theValue) {
 		setInternalValue(PApplet.map(theValue, _myMin, _myMax, 0, 1));
+		return this;
 	}
 
 	/*
@@ -493,7 +495,8 @@ public class Knob extends Controller {
 			} else if (getDisplayStyle() == Controller.ARC) {
 				theApplet.noStroke();
 				theApplet.fill(c);
-				theApplet.arc(0, 0, getRadius() * 1.8f, getRadius() * 1.8f, getStartAngle(),getAngle() + ((getStartAngle()==getAngle()) ? 0.06f:0f));
+				theApplet.arc(0, 0, getRadius() * 1.8f, getRadius() * 1.8f, getStartAngle(), getAngle()
+						+ ((getStartAngle() == getAngle()) ? 0.06f : 0f));
 				theApplet.fill(color().getBackground());
 				theApplet.ellipse(0, 0, getRadius() * 1.2f, getRadius() * 1.2f);
 			}

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,7 +25,6 @@ package controlP5;
  *
  */
 
-
 import processing.core.PApplet;
 
 public class TickMark implements CDrawable {
@@ -33,10 +32,10 @@ public class TickMark implements CDrawable {
 	protected Controller _myParent;
 
 	protected int _myLen = 4;
-	
+
 	protected Label _myLabel;
-	
-	protected boolean isLabel; 
+
+	protected boolean isLabel;
 
 	protected TickMark(Controller theController) {
 		_myParent = theController;
@@ -50,20 +49,20 @@ public class TickMark implements CDrawable {
 		theApplet.pushMatrix();
 		theApplet.stroke(255);
 		switch (theDirection) {
-			case (ControlP5Constants.HORIZONTAL):
-				theApplet.translate(0, _myLen);
-				theApplet.line(0, 0, 0, _myLen);
-				if(isLabel) {
-					_myLabel.draw(theApplet,0,_myLen + 4);
-				}
-				break;
-			case (ControlP5Constants.VERTICAL):
-				theApplet.translate(-_myLen, 0);
-				theApplet.line(0, 0, _myLen, 0);
-				if(isLabel) {
-					_myLabel.draw(theApplet,- _myLabel.width(),0);
-				}
-				break;
+		case (ControlP5Constants.HORIZONTAL):
+			theApplet.translate(0, _myLen);
+			theApplet.line(0, 0, 0, _myLen);
+			if (isLabel) {
+				_myLabel.draw(theApplet, 0, _myLen + 4);
+			}
+			break;
+		case (ControlP5Constants.VERTICAL):
+			theApplet.translate(-_myLen, 0);
+			theApplet.line(0, 0, _myLen, 0);
+			if (isLabel) {
+				_myLabel.draw(theApplet, -_myLabel.getWidth(), 0);
+			}
+			break;
 		}
 		theApplet.popMatrix();
 	}
@@ -71,9 +70,9 @@ public class TickMark implements CDrawable {
 	public void setLength(int theLength) {
 		_myLen = theLength;
 	}
-	
+
 	public Label setLabel(String theLabeltext) {
-		if(_myLabel==null) {
+		if (_myLabel == null) {
 			_myLabel = new Label(theLabeltext);
 			isLabel = true;
 		} else {
@@ -81,12 +80,12 @@ public class TickMark implements CDrawable {
 		}
 		return _myLabel;
 	}
-	
+
 	public Label getLabel() {
-		if(_myLabel==null) {
+		if (_myLabel == null) {
 			setLabel("?");
 		}
 		return _myLabel;
 	}
-	
+
 }

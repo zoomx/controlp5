@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2010 by Andreas Schlegel
+ *  2007-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -29,6 +29,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ControlBroadcaster {
 
@@ -36,48 +38,74 @@ public class ControlBroadcaster {
 
 	private ControllerPlug _myControlEventPlug = null;
 
+	private ControllerPlug _myControllerActionEventPlug = null;
+
 	private ControlP5 _myControlP5;
 
 	private String _myEventMethod = "controlEvent";
-	
+
+	private String _myControllerActionEventMethod = "callbackEvent";
+
 	private ArrayList<ControlListener> _myControlListeners;
-	
+
+	private Map<ControlCallback, Controller> _myControllerCallbackListeners;
 
 	protected ControlBroadcaster(ControlP5 theControlP5) {
 		_myControlP5 = theControlP5;
 		_myControlListeners = new ArrayList<ControlListener>();
+		_myControllerCallbackListeners = new ConcurrentHashMap<ControlCallback, Controller>();
 		_myControlEventPlug = checkObject(ControlP5.papplet, getEventMethod(), new Class[] { ControlEvent.class });
+		_myControllerActionEventPlug = checkObject(ControlP5.papplet, _myControllerActionEventMethod, new Class[] { CallbackEvent.class });
 		if (_myControlEventPlug != null) {
 			_myControlEventType = ControlP5Constants.METHOD;
 		}
 	}
-	
+
 	public void addListener(ControlListener theListener) {
 		_myControlListeners.add(theListener);
 	}
-	
+
 	public void removeListener(ControlListener theListener) {
 		_myControlListeners.remove(theListener);
 	}
-	
+
 	public ControlListener getListener(int theIndex) {
-		if(theIndex<0 || theIndex>=_myControlListeners.size()) {
+		if (theIndex < 0 || theIndex >= _myControlListeners.size()) {
 			return null;
-		} 
+		}
 		return _myControlListeners.get(theIndex);
 	}
-	
+
 	public int listenerSize() {
 		return _myControlListeners.size();
 	}
 
-	@Deprecated
-	public void plug(final String theControllerName, final String theTargetMethod) {
-		plug(ControlP5.papplet, theControllerName, theTargetMethod);
+	public void addCallback(ControlCallback theAction) {
+		_myControllerCallbackListeners.put(theAction, new EmptyController());
 	}
 
+	public void addCallback(ControlCallback theListener, Controller... theController) {
+		for (Controller c : theController) {
+			_myControllerCallbackListeners.put(theListener, c);
+		}
+	}
+
+	public void removeCallback(ControlCallback theListener) {
+		_myControllerCallbackListeners.remove(theListener);
+	}
+
+	public void removeCallback(Controller theController) {
+		for (Map.Entry<ControlCallback, Controller> entry : _myControllerCallbackListeners.entrySet()) {
+			if (theController != null && entry.getValue().equals(theController)) {
+				_myControllerCallbackListeners.remove(entry.getKey());
+			}
+		}
+	}
+
+	
+
 	public void plug(Object theObject, final String theControllerName, final String theTargetMethod) {
-		plug(theObject, _myControlP5.controller(theControllerName), theTargetMethod);
+		plug(theObject, _myControlP5.getController(theControllerName), theTargetMethod);
 	}
 
 	public void plug(Object theObject, final Controller theController, final String theTargetMethod) {
@@ -136,19 +164,19 @@ public class ControlBroadcaster {
 	}
 
 	public void broadcast(final ControlEvent theControlEvent, final int theType) {
-		for(ControlListener cl:_myControlListeners) {
+		for (ControlListener cl : _myControlListeners) {
 			cl.controlEvent(theControlEvent);
 		}
 		if (theControlEvent.isTab() == false && theControlEvent.isGroup() == false) {
-			if (theControlEvent.controller().getControllerPlugList().size() > 0) {
+			if (theControlEvent.getController().getControllerPlugList().size() > 0) {
 				if (theType == ControlP5Constants.STRING) {
-					for (ControllerPlug cp : theControlEvent.controller().getControllerPlugList()) {
-						callTarget(cp, theControlEvent.stringValue());
+					for (ControllerPlug cp : theControlEvent.getController().getControllerPlugList()) {
+						callTarget(cp, theControlEvent.getStringValue());
 					}
 				} else if (theType == ControlP5Constants.ARRAY) {
 
 				} else {
-					for (ControllerPlug cp : theControlEvent.controller().getControllerPlugList()) {
+					for (ControllerPlug cp : theControlEvent.getController().getControllerPlugList()) {
 						if (cp.checkType(ControlP5Constants.EVENT)) {
 							invokeMethod(cp.object(), cp.getMethod(), new Object[] { theControlEvent });
 						} else {
@@ -237,17 +265,56 @@ public class ControlBroadcaster {
 		return _myEventMethod;
 	}
 
+	protected void invokeAction(CallbackEvent theEvent) {
+		boolean invoke;
+		for (Map.Entry<ControlCallback, Controller> entry : _myControllerCallbackListeners.entrySet()) {
+			invoke = (entry.getValue().getClass().equals(EmptyController.class)) ? true
+					: (entry.getValue().equals(theEvent.getController())) ? true : false;
+			if (invoke) {
+				entry.getKey().controlEvent(theEvent);
+			}
+		}
+
+		if (_myControllerActionEventPlug != null) {
+			invokeMethod(ControlP5.papplet, _myControllerActionEventPlug.getMethod(), new Object[] { theEvent });
+		}
+	}
+
 	/**
 	 * 
 	 * @param theMethod Method
 	 * @param theException Exception
 	 */
 	private void printMethodError(Method theMethod, Exception theException) {
-		ControlP5.logger().severe("An error occured while forwarding a Controller value\n "
-				+ "to a method in your program. Please check your code for any \n"
-				+ "possible errors that might occur in this method .\n "
-				+ "e.g. check for casting errors, possible nullpointers, array overflows ... .\n" + "method: "
-				+ theMethod.getName() + "\n" + "exception:  " + theException);
+		ControlP5.logger().severe("An error occured while forwarding a Controller event \n "
+				+ "to a function inside your program. Please check your code for any \n"
+				+ "possible errors that might occur in this method such as \n "
+				+ "e.g. casting errors, potential nullpointers, array overflows ... .\n"
+				+ "this is most probably not a ControlP5 error.\n" + "method: " + theMethod.getName() + "\n" + "exception:  "
+				+ theException);
 	}
 
+	private class EmptyController extends Controller {
+
+		protected EmptyController() {
+			this(0, 0);
+		}
+
+		protected EmptyController(int theX, int theY) {
+			super(theX, theY);
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public Controller setValue(float theValue) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	}
+	
+	@Deprecated
+	public void plug(final String theControllerName, final String theTargetMethod) {
+		plug(ControlP5.papplet, theControllerName, theTargetMethod);
+	}
 }
