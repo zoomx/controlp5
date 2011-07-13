@@ -275,7 +275,7 @@ public class Chart extends Controller {
 
 	@Override
 	public String toString() {
-		return super.toString() + " [ " + value() + " ]"+" Chart "+"("+this.getClass().getSuperclass()+")";
+		return super.toString() + " [ " + getValue() + " ]"+" Chart "+"("+this.getClass().getSuperclass()+")";
 	}
 
 }

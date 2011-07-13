@@ -51,29 +51,12 @@ public class Button extends Controller {
 
 	protected boolean isSwitch = false;
 
-	protected Button(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			float theDefaultValue,
-			int theX,
-			int theY,
-			int theWidth,
-			int theHeight) {
+	protected Button(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 	}
 
-	protected Button(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			float theDefaultValue,
-			int theX,
-			int theY,
-			int theWidth,
-			int theHeight,
-			boolean theBroadcastFlag) {
+	protected Button(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theDefaultValue, int theX, int theY, int theWidth, int theHeight, boolean theBroadcastFlag) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 	}
@@ -99,6 +82,7 @@ public class Button extends Controller {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void mousePressed() {
 		isActive = getIsInside();
 		isPressed = true;
@@ -110,6 +94,7 @@ public class Button extends Controller {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void mouseReleased() {
 		isPressed = false;
 		if (activateBy == RELEASE) {
@@ -149,6 +134,7 @@ public class Button extends Controller {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void mouseReleasedOutside() {
 		mouseReleased();
 	}
@@ -158,6 +144,7 @@ public class Button extends Controller {
 	 * 
 	 * @param theValue float
 	 */
+	@Override
 	public Controller setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
@@ -167,6 +154,7 @@ public class Button extends Controller {
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	public void update() {
 		setValue(_myValue);
 	}
@@ -214,8 +202,8 @@ public class Button extends Controller {
 	}
 
 	/**
-	 * Returns true or false and indicates the switch state of the button. {@link
-	 * setSwitch(boolean) setSwitch} should have been set before.
+	 * Returns true or false and indicates the switch state of the button.
+	 * {@link setSwitch(boolean) setSwitch} should have been set before.
 	 * 
 	 * @see controlP5.Button#setSwitch(boolean)
 	 * @return boolean
@@ -229,6 +217,7 @@ public class Button extends Controller {
 	 * 
 	 * @see controlP5.Controller#updateDisplayMode(int)
 	 */
+	@Override
 	public void updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
@@ -248,6 +237,11 @@ public class Button extends Controller {
 		}
 	}
 
+	/**
+	 * @deprecated
+	 * @author andreas
+	 * 
+	 */
 	private class ButtonSpriteDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isOn && isSwitch) {
@@ -317,7 +311,7 @@ public class Button extends Controller {
 
 	@Override
 	public String toString() {
-		return super.toString() + " [ " + value() + " ] " + "Button" + " (" + this.getClass().getSuperclass() + ")";
+		return super.toString() + " [ " + getValue() + " ] " + "Button" + " (" + this.getClass().getSuperclass() + ")";
 	}
 
 }

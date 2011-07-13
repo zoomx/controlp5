@@ -34,8 +34,8 @@ import java.awt.event.KeyEvent;
  * <br />
  * controlP5.addTextfield(theName,theX,theY,theWidth,theHeight);
  * 
- * the Textfield implementation for ControlP5 tries its best to imitate the usage and behavior of a terminal, the
- * command line.
+ * the Textfield implementation for ControlP5 tries its best to imitate the
+ * usage and behavior of a terminal, the command line.
  * 
  * @example ControlP5textfield
  * @nosuperclasses Controller Controller
@@ -43,14 +43,16 @@ import java.awt.event.KeyEvent;
 public class Textfield extends Controller {
 
 	/*
-	 * TODO needs a lot of work! has gone through massive amounts of little changes and adjustments. implement new
-	 * fonts, current one is too small. make the text go to the left when cursor goes beyond right border. make
+	 * TODO needs a lot of work! has gone through massive amounts of little
+	 * changes and adjustments. implement new fonts, current one is too small.
+	 * make the text go to the left when cursor goes beyond right border. make
 	 * textfield work for controlWindow
 	 * 
 	 * text-editor reference: http://www.cs.cmu.edu/~wjh/papers/byte.html via
 	 * http://forum.processing.org/#Topic/25080000000412071
 	 * 
-	 * TODO pattern filter, see this post http://forum.processing.org/topic/controlip5
+	 * TODO pattern filter, see this post
+	 * http://forum.processing.org/topic/controlip5
 	 * -questions-regarding-textfield-dropdownlist-and-buttons
 	 */
 
@@ -76,12 +78,7 @@ public class Textfield extends Controller {
 	 */
 	public Textfield(ControlP5 theControlP5, ControllerGroup theParent, String theName, String theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(ControlP5.papplet, theName.toUpperCase(), 0, 0, color.getCaptionLabel()); // TODO
-		// replace
-		// 0,0
-		// with
-		// actual
-		// size
+		_myCaptionLabel = new Label(ControlP5.papplet, theName.toUpperCase(), 0, 0, color.getCaptionLabel());
 		_myCaptionLabel.setFixedSize(false);
 		_myBroadcastType = STRING;
 		_myValueLabel.setWidth(width - 7);
@@ -102,8 +99,8 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * set the mode of the textfield to password mode, each character is shown as a "*" like e.g. in online password
-	 * forms.
+	 * set the mode of the textfield to password mode, each character is shown
+	 * as a "*" like e.g. in online password forms.
 	 * 
 	 * @param theFlag boolean
 	 */
@@ -125,7 +122,8 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * use true as parameter to force the textfield to stay in focus. to go back to normal focus behavior, use false.
+	 * use true as parameter to force the textfield to stay in focus. to go back
+	 * to normal focus behavior, use false.
 	 * 
 	 * @param theFlag
 	 */
@@ -146,10 +144,12 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * sets the value of the textfield and will broadcast the new string value immediately. what is the difference
-	 * between setValue and setText? setValue does broadcast the value that has been set, setText does not broadcast the
-	 * value, but only updates the content of a textfield. for further information about how setText works, see the
-	 * setText documentation.
+	 * sets the value of the textfield and will broadcast the new string value
+	 * immediately. what is the difference between setValue and setText?
+	 * setValue does broadcast the value that has been set, setText does not
+	 * broadcast the value, but only updates the content of a textfield. for
+	 * further information about how setText works, see the setText
+	 * documentation.
 	 * 
 	 * @param theValue String
 	 */
@@ -164,15 +164,19 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * setText does set the text of a textfield, but will not broadcast its value. use setText to force the textfield to
-	 * change its text. you can call setText any time, nevertheless when autoClear is set to true (which is the
-	 * default), it will NOT work when called from within controlEvent or within a method that has been identified by
-	 * ControlP5 to forward messages to, when return has been pressed to confirm a textfield.<br />
-	 * use setAutoClear(false) to enable setText to be executed for the above case. use yourTextfield.isAutoClear() to
-	 * check if autoClear is true or false. <br />
-	 * setText replaces the current/latest content of a textfield but does NOT overwrite the content. when scrolling
-	 * through the list of textlines (use key up and down), the previous content that has been replaced will be put back
-	 * into place again - since it has not been confirmed with return.
+	 * setText does set the text of a textfield, but will not broadcast its
+	 * value. use setText to force the textfield to change its text. you can
+	 * call setText any time, nevertheless when autoClear is set to true (which
+	 * is the default), it will NOT work when called from within controlEvent or
+	 * within a method that has been identified by ControlP5 to forward messages
+	 * to, when return has been pressed to confirm a textfield.<br />
+	 * use setAutoClear(false) to enable setText to be executed for the above
+	 * case. use yourTextfield.isAutoClear() to check if autoClear is true or
+	 * false. <br />
+	 * setText replaces the current/latest content of a textfield but does NOT
+	 * overwrite the content. when scrolling through the list of textlines (use
+	 * key up and down), the previous content that has been replaced will be put
+	 * back into place again - since it has not been confirmed with return.
 	 * 
 	 * @param theValue
 	 */
@@ -193,19 +197,17 @@ public class Textfield extends Controller {
 
 	/**
 	 * click the texfield to activate.
-	 * 
-	 * 
-	 * 
 	 */
 	protected void mousePressed() {
-		if (isActive) {
+
+		boolean notyet = true;
+		if (isActive && notyet == false) {
 			// System.out.println("clicked onto textfield @ "+(controlWindow().mouseX-absolutePosition.x)+","+(controlWindow().mouseY-absolutePosition.y));
 			Label.BitFontLabel bfl = (Label.BitFontLabel) _myValueLabel.getFont();
-
 			int offset = 0;
 			int m = BitFontRenderer.getWidth(myTextline.toString(), bfl, myPosition);
 			offset = (m > _myValueLabel.getWidth()) ? _myValueLabel.getWidth() - m : 0;
-			myPosition = BitFontRenderer.getPosition(myTextline.toString(), bfl, (int) (controlWindow().mouseX - absolutePosition.x) - offset);
+			myPosition = BitFontRenderer.getPosition(myTextline.toString(), bfl, (int) (getControlWindow().mouseX - absolutePosition.x) - offset);
 			// System.out.println(m+". "+offset+" = "+myPosition);
 			updateField();
 		}
@@ -234,7 +236,9 @@ public class Textfield extends Controller {
 		theApplet.noStroke();
 		theApplet.fill(255, 60);
 		int yy = _myValueLabel.getHeight();
-		// int yy = ((height - BitFontRenderer.fonts.get(_myValueLabel.getFontIndex()).texture.height) / 2) + 2; // TODO
+		// int yy = ((height -
+		// BitFontRenderer.fonts.get(_myValueLabel.getFontIndex()).texture.height)
+		// / 2) + 2; // TODO
 		// replace BitFontRenderer.fonts.get with convenience method
 		if (isTexfieldActive) {
 			theApplet.rect(cursorPosition + 2, 1, 5, height - 2);
@@ -246,8 +250,8 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * flip throught the texfield history with cursor keys UP and DOWN. go back and forth with cursor keys LEFT and
-	 * RIGHT.
+	 * flip throught the texfield history with cursor keys UP and DOWN. go back
+	 * and forth with cursor keys LEFT and RIGHT.
 	 * 
 	 * 
 	 */
@@ -321,7 +325,8 @@ public class Textfield extends Controller {
 			// cursorPosition = PApplet.min(m, _myValueLabel.getWidth() - 2);
 			cursorPosition = PApplet.min(actualCursorPosition, _myValueLabel.getWidth() - 2);
 			// System.out.println(m+". "+offset+" = "+myPosition);
-			// _myValueLabel.setWithCursorPosition(myTextline.toString(), 0, offset);
+			// _myValueLabel.setWithCursorPosition(myTextline.toString(), 0,
+			// offset);
 			// System.out.println(myTextline.toString()+", "+actualCursorPosition+", "+cursorPosition+", "+myPosition);
 			_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition, offset);
 		}
@@ -337,7 +342,8 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * returns a string array that lists all text lines that have been confirmed with a return.
+	 * returns a string array that lists all text lines that have been confirmed
+	 * with a return.
 	 * 
 	 * @return
 	 */
@@ -367,7 +373,8 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * use setAutoClear(false) to not clear the content of the textfield after confirming with return.
+	 * use setAutoClear(false) to not clear the content of the textfield after
+	 * confirming with return.
 	 * 
 	 * @param theFlag
 	 */
@@ -385,7 +392,8 @@ public class Textfield extends Controller {
 	}
 
 	/**
-	 * make the controller execute a return event. submit the current content of the texfield.
+	 * make the controller execute a return event. submit the current content of
+	 * the texfield.
 	 * 
 	 */
 	public void submit() {

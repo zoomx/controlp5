@@ -62,7 +62,7 @@ public class ColorPicker extends ControlGroup {
 		sliderRed.setColorBackground(0xff660000);
 		sliderRed.setColorForeground(0xffaa0000);
 		sliderRed.setColorActive(0xffff0000);
-		sliderRed.captionLabel().setVisible(false);
+		sliderRed.getCaptionLabel().setVisible(false);
 		sliderRed.setDecimalPrecision(0);
 
 		sliderGreen = controlP5.addSlider(theName + "-green", 0, 255, 0, 11, theWidth, 10);
@@ -76,7 +76,7 @@ public class ColorPicker extends ControlGroup {
 		sliderGreen.setColorBackground(0xff006600);
 		sliderGreen.setColorForeground(0xff00aa00);
 		sliderGreen.setColorActive(0xff00ff00);
-		sliderGreen.captionLabel().setVisible(false);
+		sliderGreen.getCaptionLabel().setVisible(false);
 		sliderGreen.setDecimalPrecision(0);
 
 		sliderBlue = controlP5.addSlider(theName + "-blue", 0, 255, 0, 22, theWidth, 10);
@@ -90,7 +90,7 @@ public class ColorPicker extends ControlGroup {
 		sliderBlue.setColorBackground(0xff000066);
 		sliderBlue.setColorForeground(0xff0000aa);
 		sliderBlue.setColorActive(0xff0000ff);
-		sliderBlue.captionLabel().setVisible(false);
+		sliderBlue.getCaptionLabel().setVisible(false);
 		sliderBlue.setDecimalPrecision(0);
 
 		sliderAlpha = controlP5.addSlider(theName + "-alpha", 0, 255, 0, 33, theWidth, 10);
@@ -104,13 +104,13 @@ public class ColorPicker extends ControlGroup {
 		sliderAlpha.setColorBackground(0xff666666);
 		sliderAlpha.setColorForeground(0xffaaaaaa);
 		sliderAlpha.setColorActive(0xffffffff);
-		sliderAlpha.captionLabel().setVisible(false);
+		sliderAlpha.getCaptionLabel().setVisible(false);
 		sliderAlpha.setDecimalPrecision(0);
 		sliderAlpha.valueLabel().setColor(0xff000000);
 	}
 
 	public void controlEvent(ControlEvent theEvent) {
-		_myArrayValue[theEvent.id()] = theEvent.value();
+		_myArrayValue[theEvent.getId()] = theEvent.value();
 	}
 
 	public void setArrayValue(float[] theArray) {
@@ -121,9 +121,10 @@ public class ColorPicker extends ControlGroup {
 		_myArrayValue = theArray;
 	}
 
-	public void setColorValue(int theColor) {
+	public ControllerInterface setColorValue(int theColor) {
 		setArrayValue(new float[] { theColor >> 16 & 0xff, theColor >> 8 & 0xff, theColor >> 0 & 0xff,
 				theColor >> 24 & 0xff });
+		return this;
 	}
 
 	public int getColorValue() {

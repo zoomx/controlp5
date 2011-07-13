@@ -26,7 +26,6 @@ package controlP5;
  */
 
 import processing.core.PApplet;
-import processing.core.PMatrix;
 
 /**
  * a textlabel is an image containing text rendered from a bitfont source image.

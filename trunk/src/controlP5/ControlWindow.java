@@ -38,9 +38,10 @@ import processing.core.PConstants;
 import processing.core.PVector;
 
 /**
- * the purpose of a control window is to out-source controllers so that they dont need to be drawn into the actual
- * processing window. to save cpu, a control window is not updated when not active - in focus. for the same reason the
- * framerate is set to 15.
+ * the purpose of a control window is to out-source controllers so that they
+ * dont need to be drawn into the actual processing window. to save cpu, a
+ * control window is not updated when not active - in focus. for the same reason
+ * the framerate is set to 15.
  * 
  * @example ControlP5window
  */
@@ -116,7 +117,7 @@ public class ControlWindow implements MouseWheelListener {
 
 	private boolean isMouse = true;
 
-	private Pointer pointer;
+	private Pointer _myPointer;
 
 	/**
 	 * 
@@ -133,7 +134,7 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	protected void init() {
-		pointer = new Pointer();
+		_myPointer = new Pointer();
 		String myRenderer = _myApplet.g.getClass().toString().toLowerCase();
 		is3D = (myRenderer.contains("gl") || myRenderer.contains("3d"));
 
@@ -151,7 +152,7 @@ public class ControlWindow implements MouseWheelListener {
 			((PAppletWindow) _myApplet).setControlWindow(this);
 		}
 
-		if (isPAppletWindow) {
+		if (_myApplet instanceof PAppletWindow) {
 			background = 0xff000000;
 		}
 
@@ -170,15 +171,16 @@ public class ControlWindow implements MouseWheelListener {
 		activateTab((Tab) _myTabs.get(1));
 
 		/*
-		 * register a post event that will be called by processing after the draw method has been finished.
+		 * register a post event that will be called by processing after the
+		 * draw method has been finished.
 		 */
 
-		if (_myApplet.g.getClass().getName().indexOf("PGraphics2D") > -1
-				|| _myApplet.g.getClass().getName().indexOf("PGraphics3D") > -1) {
+		if (_myApplet.g.getClass().getName().indexOf("PGraphics2D") > -1 || _myApplet.g.getClass().getName().indexOf("PGraphics3D") > -1) {
 			if (rendererNotification == false) {
-				ControlP5.logger().info("You are using renderer " + _myApplet.g.getClass().getName() + ".\n"
-						+ "In order to render controlP5 elements you need to call the ControlP5's draw() manually.\n"
-						+ "Suggestion is to put controlP5.draw(); at the bottom of the draw function of your sketch.");
+				ControlP5.logger().info(
+						"You are using renderer " + _myApplet.g.getClass().getName() + ".\n"
+								+ "In order to render controlP5 elements you need to call the ControlP5's draw() manually.\n"
+								+ "Suggestion is to put controlP5.draw(); at the bottom of the draw function of your sketch.");
 				rendererNotification = true;
 			}
 		} else {
@@ -271,12 +273,13 @@ public class ControlWindow implements MouseWheelListener {
 	 * @return Tab
 	 */
 	public Tab tab(String theTabName) {
-		return controlP5.tab(this, theTabName);
+		return controlP5.getTab(this, theTabName);
 	}
 
 	/**
-	 * sets the position of the tab bar which is set to 0,0 by default. to move the tabs to y-position 100, use
-	 * cp5.window().setPositionOfTabs(new PVector(0,100,0));
+	 * sets the position of the tab bar which is set to 0,0 by default. to move
+	 * the tabs to y-position 100, use cp5.window().setPositionOfTabs(new
+	 * PVector(0,100,0));
 	 * 
 	 * @param thePVector
 	 */
@@ -289,8 +292,9 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * returns the position of the tab bar as PVector. to move the tabs to y-position 100, use
-	 * cp5.window().getPositionOfTabs().y = 100; or cp5.window().setPositionOfTabs(new PVector(0,100,0));
+	 * returns the position of the tab bar as PVector. to move the tabs to
+	 * y-position 100, use cp5.window().getPositionOfTabs().y = 100; or
+	 * cp5.window().setPositionOfTabs(new PVector(0,100,0));
 	 * 
 	 * @return PVector
 	 */
@@ -361,7 +365,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * returns true if the mouse is inside a controller. !!! doesnt work for groups yet.
+	 * returns true if the mouse is inside a controller. !!! doesnt work for
+	 * groups yet.
 	 * 
 	 * @return
 	 */
@@ -397,7 +402,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * update all controllers contained in the control window if update is enabled.
+	 * update all controllers contained in the control window if update is
+	 * enabled.
 	 */
 	public void update() {
 		((ControllerInterface) _myTabs.get(0)).update();
@@ -491,7 +497,7 @@ public class ControlWindow implements MouseWheelListener {
 				_myApplet.imageMode(PConstants.CORNER);
 
 				// TODO next section conflicts with Android
-				if (isPAppletWindow) {
+				if (_myApplet instanceof PAppletWindow) {
 					_myApplet.background(background);
 				}
 
@@ -544,7 +550,7 @@ public class ControlWindow implements MouseWheelListener {
 
 				pmouseX = mouseX;
 				pmouseY = mouseY;
-				
+
 				// draw Tooltip here.
 				controlP5.getTooltip().draw(this);
 
@@ -574,7 +580,6 @@ public class ControlWindow implements MouseWheelListener {
 	public String name() {
 		return _myName;
 	}
-
 
 	/**
 	 * 
@@ -617,12 +622,16 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		String message;
-		int notches = e.getWheelRotation();
-		if (notches < 0) {
-			message = "Mouse wheel moved UP " + -notches + " notch";
-		} else {
-			message = "Mouse wheel moved DOWN " + notches + " notch";
+		for (Controller c : mouseoverlist) {
+			if (c.parent() instanceof ListBox) {
+				((ListBox) c.parent()).scrolled(e.getWheelRotation());
+			} else if (c instanceof Slider) {
+				((Slider) c).scrolled(e.getWheelRotation());
+			} else if (c instanceof Knob) {
+				((Knob) c).scrolled(e.getWheelRotation());
+			} else if (c instanceof Numberbox) {
+				((Numberbox) c).scrolled(e.getWheelRotation());
+			}
 		}
 	}
 
@@ -755,7 +764,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * set the title of a control window. only applies to control windows of type PAppletWindow.
+	 * set the title of a control window. only applies to control windows of
+	 * type PAppletWindow.
 	 */
 	public void setTitle(String theTitle) {
 		if (_myApplet instanceof PAppletWindow) {
@@ -764,8 +774,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * shows the xy coordinates displayed in the title of a control window. only applies to control windows of type
-	 * PAppletWindow.
+	 * shows the xy coordinates displayed in the title of a control window. only
+	 * applies to control windows of type PAppletWindow.
 	 * 
 	 * @param theFlag
 	 */
@@ -776,8 +786,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * hide the xy coordinates displayed in the title of a control window. only applies to control windows of type
-	 * PAppletWindow.
+	 * hide the xy coordinates displayed in the title of a control window. only
+	 * applies to control windows of type PAppletWindow.
 	 * 
 	 * @param theFlag
 	 */
@@ -806,9 +816,11 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * set the draw mode of a control window. a separate control window is only updated when in focus. to update the
-	 * context of the window continuously, use yourControlWindow.setUpdateMode(ControlWindow.NORMAL); otherwise use
-	 * yourControlWindow.setUpdateMode(ControlWindow.ECONOMIC); for an economic, less cpu intensive update.
+	 * set the draw mode of a control window. a separate control window is only
+	 * updated when in focus. to update the context of the window continuously,
+	 * use yourControlWindow.setUpdateMode(ControlWindow.NORMAL); otherwise use
+	 * yourControlWindow.setUpdateMode(ControlWindow.ECONOMIC); for an economic,
+	 * less cpu intensive update.
 	 * 
 	 * @param theMode
 	 */
@@ -839,8 +851,9 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * by default the background of a controlWindow is filled with a backgorund color every frame. to enable or disable
-	 * the background from drawing, use setDrawBackgorund(true/false).
+	 * by default the background of a controlWindow is filled with a backgorund
+	 * color every frame. to enable or disable the background from drawing, use
+	 * setDrawBackgorund(true/false).
 	 * 
 	 * @param theFlag
 	 */
@@ -849,7 +862,8 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * returns a boolean indicating if the background is drawn automatically or not.
+	 * returns a boolean indicating if the background is drawn automatically or
+	 * not.
 	 * 
 	 * @return
 	 */
@@ -901,9 +915,18 @@ public class ControlWindow implements MouseWheelListener {
 		_myApplet.frame.setLocation(theX, theY);
 	}
 
-	
 	public Pointer getPointer() {
-		return pointer;
+		return _myPointer;
+	}
+
+	public ControlWindow disableMouse() {
+		_myPointer.enable();
+		return this;
+	}
+
+	public ControlWindow enableMouse() {
+		_myPointer.disable();
+		return this;
 	}
 
 	public class Pointer {
@@ -934,7 +957,6 @@ public class ControlWindow implements MouseWheelListener {
 			return this;
 		}
 
-		
 		public void enable() {
 			isMouse = false;
 		}

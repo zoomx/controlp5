@@ -35,8 +35,6 @@ import java.awt.event.ComponentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.Component;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
@@ -100,12 +98,7 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	/*
 	 * (non-Javadoc)
 	 */
-	public PAppletWindow(
-			final String theName,
-			final int theWidth,
-			final int theHeight,
-			final String theRenderer,
-			final int theFrameRate) {
+	public PAppletWindow(final String theName, final int theWidth, final int theHeight, final String theRenderer, final int theFrameRate) {
 		super();
 		_myName = theName;
 		_myTitle = theName;
@@ -126,14 +119,7 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	/*
 	 * (non-Javadoc)
 	 */
-	public PAppletWindow(
-			final String theName,
-			final int theX,
-			final int theY,
-			final int theWidth,
-			final int theHeight,
-			final String theRenderer,
-			final int theFrameRate) {
+	public PAppletWindow(final String theName, final int theX, final int theY, final int theWidth, final int theHeight, final String theRenderer, final int theFrameRate) {
 		super();
 		_myName = theName;
 		_myTitle = theName;
@@ -179,6 +165,7 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	 * 
 	 * @param theValue boolean
 	 */
+	@SuppressWarnings("deprecation")
 	protected void visible(boolean theValue) {
 		// frame.setVisible(theValue);
 		// frame.pack();
@@ -354,7 +341,7 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	 * (non-Javadoc)
 	 */
 	public void componentResized(ComponentEvent e) {
-		Component c = e.getComponent();
+		// Component c = e.getComponent();
 		// System.out.println("componentResized event from " +
 		// c.getClass().getName() + "; new size: " + c.getSize().width
 		// + ", " + c.getSize().height);
@@ -381,7 +368,7 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 		_myMode = NORMAL;
 	}
 
-	protected void dispose() {
+	public void dispose() {
 		controlWindow._myApplet.stop();
 		stop();
 		removeAll();

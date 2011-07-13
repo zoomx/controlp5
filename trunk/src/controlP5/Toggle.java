@@ -221,7 +221,12 @@ public class Toggle extends Controller {
 			}
 		}
 	}
-
+	
+	/**
+	 * @deprecated
+	 * @author andreas
+	 *
+	 */
 	class ToggleSpriteDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {

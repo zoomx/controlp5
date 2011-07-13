@@ -5,6 +5,9 @@
       * src controlP5/ControllerGroup.java:
       moveTo(Tab) changed according to issue http://code.google.com/p/controlp5/issues/detail?id=15
       
+      * src controlP5/ListBox.java,controlP5/DropdownList.java:
+      adding mousewheel support.
+      
       * src controlP5/ControllerActionEvent.java, controlP5/ControllerActionListener.java:
       adding new event listener for controller actions such as enter, leave, pressed, released, releasedoutside.
       how to use see the ControlP5actionEvent example       

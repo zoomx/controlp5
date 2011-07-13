@@ -76,6 +76,8 @@ public class Knob extends Controller {
 	public static int autoHeight = 40;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
+	
+	private float scrollSensitivity = 1.0f/resolution;
 
 	public Knob(
 			ControlP5 theControlP5,
@@ -394,7 +396,11 @@ public class Knob extends Controller {
 	 */
 	@Override
 	public Controller setValue(float theValue) {
-		setInternalValue(PApplet.map(theValue, _myMin, _myMax, 0, 1));
+		theValue = PApplet.map(theValue, _myMin, _myMax, 0, 1);
+		if (isConstrained) {
+			theValue = PApplet.constrain(theValue, 0, 1);
+		}
+		setInternalValue(theValue);
 		return this;
 	}
 
@@ -411,9 +417,39 @@ public class Knob extends Controller {
 	/**
 	 * assigns a random value to the controller.
 	 */
-	public void shuffle() {
+	public Knob shuffle() {
 		float r = (float) Math.random();
 		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
+		return this;
+	}
+	
+
+	/**
+	 * sets the sensitivity for the scroll behavior when using the mouse wheel
+	 * or the scroll function of a multi-touch track pad. The smaller the value (closer
+	 * to 0) the higher the sensitivity.
+	 * 
+	 * @param theValue
+	 * @return Knob
+	 */
+	public Knob setScrollSensitivity(float theValue) {
+		scrollSensitivity = theValue;
+		return this;
+	}
+	
+	/**
+	 * changes the value of the knob when hovering and using the mouse wheel
+	 * or the scroll function of a multi-touch track pad.
+	 * 
+	 * @param theRotationValue
+	 * @return Knob
+	 */
+	public Knob scrolled(int theRotationValue) {
+		float f = getValue();
+		float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity;
+		f += (getMax() - getMin()) * (-theRotationValue * steps);
+		setValue(f);
+		return this;
 	}
 
 	/*
@@ -478,10 +514,10 @@ public class Knob extends Controller {
 			theApplet.pushStyle();
 			theApplet.ellipseMode(PApplet.CENTER);
 			theApplet.noStroke();
-			theApplet.fill(color().getBackground());
+			theApplet.fill(getColor().getBackground());
 			theApplet.ellipse(0, 0, getRadius() * 2, getRadius() * 2);
 			theApplet.popMatrix();
-			int c = isActive() ? color().getActive() : color().getForeground();
+			int c = isActive() ? getColor().getActive() : getColor().getForeground();
 			theApplet.pushMatrix();
 			if (getDisplayStyle() == Controller.LINE) {
 				theApplet.rotate(getAngle());
@@ -497,7 +533,7 @@ public class Knob extends Controller {
 				theApplet.fill(c);
 				theApplet.arc(0, 0, getRadius() * 1.8f, getRadius() * 1.8f, getStartAngle(), getAngle()
 						+ ((getStartAngle() == getAngle()) ? 0.06f : 0f));
-				theApplet.fill(color().getBackground());
+				theApplet.fill(getColor().getBackground());
 				theApplet.ellipse(0, 0, getRadius() * 1.2f, getRadius() * 1.2f);
 			}
 			theApplet.popMatrix();
@@ -507,7 +543,7 @@ public class Knob extends Controller {
 
 			if (isShowTickMarks()) {
 				float step = getRange() / getNumberOfTickMarks();
-				theApplet.stroke(color().getForeground());
+				theApplet.stroke(getColor().getForeground());
 				theApplet.strokeWeight(getTickMarkWeight());
 				for (int i = 0; i <= getNumberOfTickMarks(); i++) {
 					theApplet.line(getRadius() + 2, 0, getRadius() + getTickMarkLength() + 2, 0);
@@ -515,7 +551,7 @@ public class Knob extends Controller {
 				}
 			} else {
 				if (isShowRange()) {
-					theApplet.stroke(color().getForeground());
+					theApplet.stroke(getColor().getForeground());
 					theApplet.strokeWeight(getTickMarkWeight());
 					theApplet.line(getRadius() + 2, 0, getRadius() + getTickMarkLength() + 2, 0);
 					theApplet.rotate(getRange());
@@ -525,7 +561,7 @@ public class Knob extends Controller {
 			theApplet.noStroke();
 			theApplet.popStyle();
 			theApplet.popMatrix();
-			captionLabel().draw(theApplet, -captionLabel().getWidth() / 2, getHeight() / 2 + 5);
+			getCaptionLabel().draw(theApplet, -getCaptionLabel().getWidth() / 2, getHeight() / 2 + 5);
 		}
 	}
 

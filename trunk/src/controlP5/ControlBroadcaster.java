@@ -48,12 +48,12 @@ public class ControlBroadcaster {
 
 	private ArrayList<ControlListener> _myControlListeners;
 
-	private Map<ControlCallback, Controller> _myControllerCallbackListeners;
+	private Map<CallbackListener, Controller> _myControllerCallbackListeners;
 
 	protected ControlBroadcaster(ControlP5 theControlP5) {
 		_myControlP5 = theControlP5;
 		_myControlListeners = new ArrayList<ControlListener>();
-		_myControllerCallbackListeners = new ConcurrentHashMap<ControlCallback, Controller>();
+		_myControllerCallbackListeners = new ConcurrentHashMap<CallbackListener, Controller>();
 		_myControlEventPlug = checkObject(ControlP5.papplet, getEventMethod(), new Class[] { ControlEvent.class });
 		_myControllerActionEventPlug = checkObject(ControlP5.papplet, _myControllerActionEventMethod, new Class[] { CallbackEvent.class });
 		if (_myControlEventPlug != null) {
@@ -80,22 +80,22 @@ public class ControlBroadcaster {
 		return _myControlListeners.size();
 	}
 
-	public void addCallback(ControlCallback theAction) {
+	public void addCallback(CallbackListener theAction) {
 		_myControllerCallbackListeners.put(theAction, new EmptyController());
 	}
 
-	public void addCallback(ControlCallback theListener, Controller... theController) {
+	public void addCallback(CallbackListener theListener, Controller... theController) {
 		for (Controller c : theController) {
 			_myControllerCallbackListeners.put(theListener, c);
 		}
 	}
 
-	public void removeCallback(ControlCallback theListener) {
+	public void removeCallback(CallbackListener theListener) {
 		_myControllerCallbackListeners.remove(theListener);
 	}
 
 	public void removeCallback(Controller theController) {
-		for (Map.Entry<ControlCallback, Controller> entry : _myControllerCallbackListeners.entrySet()) {
+		for (Map.Entry<CallbackListener, Controller> entry : _myControllerCallbackListeners.entrySet()) {
 			if (theController != null && entry.getValue().equals(theController)) {
 				_myControllerCallbackListeners.remove(entry.getKey());
 			}
@@ -267,7 +267,7 @@ public class ControlBroadcaster {
 
 	protected void invokeAction(CallbackEvent theEvent) {
 		boolean invoke;
-		for (Map.Entry<ControlCallback, Controller> entry : _myControllerCallbackListeners.entrySet()) {
+		for (Map.Entry<CallbackListener, Controller> entry : _myControllerCallbackListeners.entrySet()) {
 			invoke = (entry.getValue().getClass().equals(EmptyController.class)) ? true
 					: (entry.getValue().equals(theEvent.getController())) ? true : false;
 			if (invoke) {

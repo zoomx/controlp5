@@ -99,12 +99,11 @@ public class ControllerProperties {
 	public static Format format;
 
 	/**
-	 * all ControllerProperties will be stored inside Map allProperties.
-	 * ControllerProperties need to be unique or will otherwise be overwritten.
+	 * all ControllerProperties will be stored inside Map allProperties. ControllerProperties need to be unique or will
+	 * otherwise be overwritten.
 	 * 
-	 * A hashSet containing names of PropertiesSets is assigned to each
-	 * ControllerProperty. HashSets are used instead of ArrayList to only allow
-	 * unique elements.
+	 * A hashSet containing names of PropertiesSets is assigned to each ControllerProperty. HashSets are used instead of
+	 * ArrayList to only allow unique elements.
 	 */
 
 	private Map<ControllerProperty, HashSet<String>> allProperties;
@@ -134,16 +133,12 @@ public class ControllerProperties {
 	}
 
 	/**
-	 * adds a property based on names of setter and getter methods of a
-	 * controller.
+	 * adds a property based on names of setter and getter methods of a controller.
 	 * 
 	 * @param thePropertySetter
 	 * @param thePropertyGetter
 	 */
-	public ControllerProperty register(
-			ControllerInterface theController,
-			String thePropertySetter,
-			String thePropertyGetter) {
+	public ControllerProperty register(ControllerInterface theController, String thePropertySetter, String thePropertyGetter) {
 		ControllerProperty p = new ControllerProperty(theController, thePropertySetter, thePropertyGetter);
 		if (!allProperties.containsKey(p)) {
 			// register a new property with the main properties container
@@ -155,10 +150,9 @@ public class ControllerProperties {
 	}
 
 	/**
-	 * registering a property with only one parameter assumes that there is a
-	 * setter and getter function present for the Controller. register("value")
-	 * for example would create a property reference to setValue and getValue.
-	 * Notice that the first letter of value is being capitalized.
+	 * registering a property with only one parameter assumes that there is a setter and getter function present for the
+	 * Controller. register("value") for example would create a property reference to setValue and getValue. Notice that
+	 * the first letter of value is being capitalized.
 	 * 
 	 * @param theProperty
 	 * @return
@@ -386,8 +380,7 @@ public class ControllerProperties {
 	}
 
 	/**
-	 * use ControllerProperties.SERIALIZED, ControllerProperties.XML or
-	 * ControllerProperties.JSON as parameter.
+	 * use ControllerProperties.SERIALIZED, ControllerProperties.XML or ControllerProperties.JSON as parameter.
 	 * 
 	 * @param theFormatId
 	 */
@@ -396,8 +389,7 @@ public class ControllerProperties {
 	}
 
 	protected boolean save() {
-		System.out.println("saving with format " + format + " (" + format.extension + ") "
-				+ ControlP5.papplet.sketchPath(defaultName));
+		System.out.println("saving with format " + format + " (" + format.extension + ") " + ControlP5.papplet.sketchPath(defaultName));
 		format.compile(allProperties.keySet(), ControlP5.papplet.sketchPath(defaultName));
 		return true;
 	}
@@ -578,10 +570,9 @@ public class ControllerProperties {
 			s += "\t\t<setter>" + theProperty.setter + "</setter>\n";
 			s += "\t\t<getter>" + theProperty.getter + "</getter>\n";
 			s += "\t\t<type>" + ControlP5IOHandler.formatGetClass(theProperty.type) + "</type>\n";
-			s += "\t\t<value>"
-					+ cdata(OPEN, theProperty.value.getClass())
-					+ (theProperty.value.getClass().isArray() ? ControlP5IOHandler.arrayToString(theProperty.value)
-							: theProperty.value) + cdata(CLOSE, theProperty.value.getClass()) + "</value>\n";
+			s += "\t\t<value>" + cdata(OPEN, theProperty.value.getClass())
+					+ (theProperty.value.getClass().isArray() ? ControlP5IOHandler.arrayToString(theProperty.value) : theProperty.value)
+					+ cdata(CLOSE, theProperty.value.getClass()) + "</value>\n";
 			s += "\t</property>\n";
 			return s;
 		}

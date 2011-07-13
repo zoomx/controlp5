@@ -1,6 +1,5 @@
 package controlP5;
 
-import java.io.Serializable;
 
 /**
  * controlP5 is a processing gui library.

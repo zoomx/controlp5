@@ -1,6 +1,6 @@
 package controlP5;
 
-public interface ControlCallback {
+public interface CallbackListener {
 	
 	public void controlEvent(CallbackEvent theEvent);
 	

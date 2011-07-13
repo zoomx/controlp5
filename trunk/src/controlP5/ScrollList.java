@@ -25,8 +25,6 @@ package controlP5;
  *
  */
 
-import java.util.Hashtable;
-
 import processing.core.PApplet;
 
 /**
@@ -47,6 +45,7 @@ import processing.core.PApplet;
  * 
  * @example ControlP5scrollList
  * @nosuperclasses Controller Controller ControlGroup ControllerGroup
+ * @deprecated
  */
 public class ScrollList extends ControlGroup implements ControlListener {
 
@@ -176,7 +175,7 @@ public class ScrollList extends ControlGroup implements ControlListener {
 		add(b);
 		controlP5.register(b);
 		b.addListener(this);
-		_myScrollValue = _myScrollbar.value();
+		_myScrollValue = _myScrollbar.getValue();
 		_myScrollbar.setValue(_myScrollValue);
 		if ((controllers.size() - 1) * _myItemHeight > _myAdjustedListHeight && isScrollbarVisible) {
 			_myScrollbar.show();

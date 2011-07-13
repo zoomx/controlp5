@@ -49,12 +49,13 @@ public class Accordion extends ControlGroup {
 	}
 
 	/**
-	 * add items of type ControlGroup to the Accordion. only ControlGroups can be
-	 * added.
+	 * add items of type ControlGroup to the Accordion. only ControlGroups can
+	 * be added.
 	 * 
 	 * @param theGroup
+	 * @return Accordion
 	 */
-	public void addItem(ControlGroup theGroup) {
+	public Accordion addItem(ControlGroup theGroup) {
 		theGroup.close();
 		theGroup.moveTo(this);
 		theGroup.activateEvent(true);
@@ -65,40 +66,51 @@ public class Accordion extends ControlGroup {
 		}
 		items.add(theGroup);
 		updateItems();
+		return this;
 	}
 
-	@Override
 	/**
 	 * removes a ControlGroup from the accordion AND from controlP5
-	 * remove(ControllerInterface theGroup) overwrites it's super method.
-	 * if you want to remove a ControlGroup only from the accordion, use removeItem(ControlGroup).
+	 * remove(ControllerInterface theGroup) overwrites it's super method. if you
+	 * want to remove a ControlGroup only from the accordion, use
+	 * removeItem(ControlGroup).
 	 * 
 	 * @see #removeItem(ControlGroup)
+	 * @return ControllerInterface
 	 */
-	public void remove(ControllerInterface theGroup) {
+	@Override
+	public ControllerInterface remove(ControllerInterface theGroup) {
 		if (theGroup instanceof ControlGroup) {
 			items.remove(theGroup);
 			((ControlGroup) theGroup).removeListener(this);
 			updateItems();
 		}
 		super.remove(theGroup);
+		return this;
 	}
 
 	/**
-	 * removes a ControlGroup from the accordion and puts it back into the default
-	 * tab of controlP5. if you dont have access to a ControlGroup via a variable,
-	 * use controlP5.group("theNameOfTheGroup") which will return a
+	 * removes a ControlGroup from the accordion and puts it back into the
+	 * default tab of controlP5. if you dont have access to a ControlGroup via a
+	 * variable, use controlP5.group("theNameOfTheGroup") which will return a
+	 * 
+	 * @return Accordion
 	 */
-	public void removeItem(ControlGroup theGroup) {
+	public Accordion removeItem(ControlGroup theGroup) {
 		if (theGroup == null)
-			return;
+			return this;
 		items.remove(theGroup);
 		theGroup.removeListener(this);
 		theGroup.moveTo(controlP5.controlWindow);
 		updateItems();
+		return this;
 	}
 
-	public void updateItems() {
+	/**
+	 * 
+	 * @return Accordion
+	 */
+	public Accordion updateItems() {
 		int n = 0;
 		for (ControlGroup cg : items) {
 			n += cg.getBarHeight() + spacing;
@@ -107,15 +119,16 @@ public class Accordion extends ControlGroup {
 				n += cg.getBackgroundHeight();
 			}
 		}
-
+		return this;
 	}
 
 	/**
 	 * sets the minimum height of a collapsed item. Default value is 100.
 	 * 
 	 * @param theHeight
+	 * @return Accordion
 	 */
-	public void setMinItemHeight(int theHeight) {
+	public Accordion setMinItemHeight(int theHeight) {
 		minHeight = theHeight;
 		for (ControlGroup cg : items) {
 			if (cg.getBackgroundHeight() < minHeight) {
@@ -123,6 +136,7 @@ public class Accordion extends ControlGroup {
 			}
 		}
 		updateItems();
+		return this;
 	}
 
 	/**
@@ -138,14 +152,21 @@ public class Accordion extends ControlGroup {
 	 * sets the height for each item to the value given by parameter theHeight.
 	 * 
 	 * @param theHeight
+	 * @return Accordion
 	 */
-	public void setItemHeight(int theHeight) {
+	public Accordion setItemHeight(int theHeight) {
 		for (ControlGroup cg : items) {
 			cg.setBackgroundHeight(theHeight);
 		}
 		updateItems();
+		return this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @return ControllerGroup
+	 */
 	@Override
 	public ControllerGroup setWidth(int theWidth) {
 		super.setWidth(theWidth);
@@ -155,6 +176,9 @@ public class Accordion extends ControlGroup {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.isGroup()) {

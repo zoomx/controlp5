@@ -30,10 +30,12 @@ import java.util.ArrayList;
 import processing.core.PApplet;
 
 /**
- * a slider is either used horizontally or vertically. when adding a slider to controlP5, the width is compared versus
- * the height. width is bigger, you get a horizontal slider, height is bigger, you get a vertical slider. a slider can
- * have a fixed slide controller (one end of the slider is fixed to the left or bottom side of the controller), or a
- * flexible slide control (a knob that you can drag).
+ * a slider is either used horizontally or vertically. when adding a slider to
+ * controlP5, the width is compared versus the height. width is bigger, you get
+ * a horizontal slider, height is bigger, you get a vertical slider. a slider
+ * can have a fixed slide controller (one end of the slider is fixed to the left
+ * or bottom side of the controller), or a flexible slide control (a knob that
+ * you can drag).
  * 
  * 
  * @example ControlP5slider
@@ -74,9 +76,11 @@ public class Slider extends Controller {
 
 	public int valueLabelPositioning = FIX;
 
+	private float scrollSensitivity = 0.1f;
+
 	/*
-	 * @todo currently the slider value goes up and down linear, provide an option to make it logarithmic, potential,
-	 * curved.
+	 * TODO currently the slider value goes up and down linear, provide an
+	 * option to make it logarithmic, potential, curved.
 	 */
 	/**
 	 * 
@@ -93,8 +97,7 @@ public class Slider extends Controller {
 	 * @param theWidth int
 	 * @param theHeight int
 	 */
-	public Slider(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY,
-			int theWidth, int theHeight) {
+	public Slider(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel = new Label(theName);
 		_myCaptionLabel.setColor(color.getCaptionLabel());
@@ -121,7 +124,8 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * use the slider mode to set the mode of the slider bar, which can be Slider.FLEXIBLE or Slider.FIX
+	 * use the slider mode to set the mode of the slider bar, which can be
+	 * Slider.FLEXIBLE or Slider.FIX
 	 * 
 	 * @param theMode int
 	 */
@@ -212,9 +216,39 @@ public class Slider extends Controller {
 	/**
 	 * assigns a random value to the controller.
 	 */
-	public void shuffle() {
+	public Slider shuffle() {
 		float r = (float) Math.random();
 		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
+		return this;
+	}
+
+	/**
+	 * sets the sensitivity for the scroll behavior when using the mouse wheel
+	 * or the scroll function of a multi-touch track pad. The smaller the value
+	 * (closer to 0) the higher the sensitivity. by default this value is set to
+	 * 0.1
+	 * 
+	 * @param theValue
+	 * @return Slider
+	 */
+	public Slider setScrollSensitivity(float theValue) {
+		scrollSensitivity = theValue;
+		return this;
+	}
+
+	/**
+	 * changes the value of the slider when hovering and using the mouse wheel
+	 * or the scroll function of a multi-touch track pad.
+	 * 
+	 * @param theRotationValue
+	 * @return Slider
+	 */
+	public Slider scrolled(int theRotationValue) {
+		float f = getValue();
+		float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity * 0.1f;
+		f += (getMax() - getMin()) * (-theRotationValue * steps);
+		setValue(f);
+		return this;
 	}
 
 	@Override
@@ -273,8 +307,9 @@ public class Slider extends Controller {
 	}
 
 	/*
-	 * TODO new implementations follow: http://www.ibm.com/developerworks/java/library/j-dynui/ take interface builder
-	 * as reference
+	 * TODO new implementations follow:
+	 * http://www.ibm.com/developerworks/java/library/j-dynui/ take interface
+	 * builder as reference
 	 */
 
 	protected void setTickMarks() {
@@ -324,7 +359,8 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * use static variables ControlP5.TOP, ControlP5.CENTER, ControlP5.BOTTOM to align the ValueLabel of a slider.
+	 * use static variables ControlP5.TOP, ControlP5.CENTER, ControlP5.BOTTOM to
+	 * align the ValueLabel of a slider.
 	 * 
 	 * @param theValue
 	 */
@@ -378,13 +414,7 @@ public class Slider extends Controller {
 
 				} else {
 					if (isShowTickMarks) {
-						theApplet.triangle(
-								_myValuePosition,
-								0,
-								_myValuePosition + _mySliderbarSize,
-								0,
-								_myValuePosition + _mySliderbarSize / 2,
-								getHeight());
+						theApplet.triangle(_myValuePosition, 0, _myValuePosition + _mySliderbarSize, 0, _myValuePosition + _mySliderbarSize / 2, getHeight());
 					} else {
 
 						theApplet.rect(_myValuePosition, 0, _mySliderbarSize, height);
@@ -397,19 +427,10 @@ public class Slider extends Controller {
 					theApplet.rect(0, height, width, -_myValuePosition);
 				} else {
 					if (isShowTickMarks) {
-						theApplet.triangle(
-								width,
-								height - _myValuePosition,
-								width,
-								height - _myValuePosition - _mySliderbarSize,
-								0,
-								height - _myValuePosition - _mySliderbarSize / 2);
+						theApplet.triangle(width, height - _myValuePosition, width, height - _myValuePosition - _mySliderbarSize, 0, height - _myValuePosition - _mySliderbarSize
+								/ 2);
 					} else {
-						theApplet.rect(
-								0,
-								height - _myValuePosition - _mySliderbarSize,
-								width,
-								_mySliderbarSize);
+						theApplet.rect(0, height - _myValuePosition - _mySliderbarSize, width, _mySliderbarSize);
 					}
 				}
 			}
@@ -432,10 +453,7 @@ public class Slider extends Controller {
 						py = height + 3;
 						break;
 					}
-					_myValueLabel.draw(
-							theApplet,
-							(valueLabelPositioning == FIX) ? px : (int) (_myValuePosition),
-							py);
+					_myValueLabel.draw(theApplet, (valueLabelPositioning == FIX) ? px : (int) (_myValuePosition), py);
 
 				} else {
 					_myCaptionLabel.draw(theApplet, 0, height + 3);
@@ -452,10 +470,7 @@ public class Slider extends Controller {
 						py = height + 3;
 						break;
 					}
-					_myValueLabel.draw(
-							theApplet,
-							(valueLabelPositioning == FIX) ? 0 : width + 4,
-							(valueLabelPositioning == FIX) ? py : -(int) _myValuePosition + height - 8);
+					_myValueLabel.draw(theApplet, (valueLabelPositioning == FIX) ? 0 : width + 4, (valueLabelPositioning == FIX) ? py : -(int) _myValuePosition + height - 8);
 				}
 			}
 

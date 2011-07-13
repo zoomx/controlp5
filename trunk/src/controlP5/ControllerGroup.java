@@ -185,10 +185,10 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theTab Tab
 	 * @param theControlWindow ControlWindow
 	 */
-	public void moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theControlWindow) {
+	public ControllerInterface moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theControlWindow) {
 		if (theGroup != null) {
 			setGroup(theGroup);
-			return;
+			return this;
 		}
 
 		if (theControlWindow == null) {
@@ -196,6 +196,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		}
 
 		setTab(theControlWindow, theTab.name());
+		return this;
 	}
 
 	public void moveTo(ControlGroup theGroup) {
@@ -488,7 +489,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	public ControlCanvas addCanvas(ControlCanvas theCanvas) {
 		_myControlCanvas.add(theCanvas);
-		theCanvas.setup(controlP5.papplet);
+		theCanvas.setup(ControlP5.papplet);
 		return theCanvas;
 	}
 
@@ -506,8 +507,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theElement ControllerInterface
 	 */
-	public void add(ControllerInterface theElement) {
+	public ControllerInterface add(ControllerInterface theElement) {
 		controllers.add(theElement);
+		return this;
 	}
 
 	/**
@@ -516,8 +518,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @param theElement ControllerInterface
 	 */
 
-	public void remove(ControllerInterface theElement) {
+	public ControllerInterface remove(ControllerInterface theElement) {
 		controllers.remove(theElement);
+		return this;
 	}
 
 	/**
@@ -630,22 +633,28 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theId int
 	 */
-	public void setId(int theId) {
+	public ControllerInterface setId(int theId) {
 		_myId = theId;
+		return this;
 	}
 
 	/**
-	 * 
+	 * @deprecated 
 	 * @return int
 	 */
 	public int id() {
 		return _myId;
 	}
+	
+	public int getId() {
+		return _myId;
+	}
 
-	public void setColor(CColor theColor) {
+	public ControllerInterface setColor(CColor theColor) {
 		for (ControllerInterface ci : controllers.get()) {
 			ci.setColor(theColor);
 		}
+		return this;
 	}
 
 	/**
@@ -653,11 +662,12 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theColor int
 	 */
-	public void setColorActive(int theColor) {
+	public ControllerInterface setColorActive(int theColor) {
 		color.setActive(theColor);
 		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorActive(theColor);
 		}
+		return this;
 	}
 
 	/**
@@ -665,11 +675,12 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theColor int
 	 */
-	public void setColorForeground(int theColor) {
+	public ControllerInterface setColorForeground(int theColor) {
 		color.setForeground(theColor);
 		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorForeground(theColor);
 		}
+		return this;
 	}
 
 	/**
@@ -677,11 +688,12 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theColor int
 	 */
-	public void setColorBackground(int theColor) {
+	public ControllerInterface setColorBackground(int theColor) {
 		color.setBackground(theColor);
 		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorBackground(theColor);
 		}
+		return this;
 	}
 
 	/**
@@ -689,7 +701,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theColor int
 	 */
-	public void setColorLabel(int theColor) {
+	public ControllerInterface setColorLabel(int theColor) {
 		color.setCaptionLabel(theColor);
 		if (_myLabel != null) {
 			_myLabel.setColor( color.getCaptionLabel());
@@ -697,6 +709,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorLabel(theColor);
 		}
+		return this;
 	}
 
 	/**
@@ -704,7 +717,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theColor int
 	 */
-	public void setColorValue(int theColor) {
+	public ControllerInterface setColorValue(int theColor) {
 		color.setValueLabel(theColor);
 		if (_myValueLabel != null) {
 			_myValueLabel.setColor(color.getValueLabel());
@@ -712,6 +725,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		for (ControllerInterface ci : controllers.get()) {
 			ci.setColorValue(theColor);
 		}
+		return this;
 	}
 
 	/**
@@ -719,10 +733,11 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * 
 	 * @param theLabel String
 	 */
-	public void setLabel(String theLabel) {
+	public ControllerInterface setLabel(String theLabel) {
 		_myLabel.setFixedSize(false);
 		_myLabel.set(theLabel);
 		_myLabel.setFixedSize(true);
+		return this;
 	}
 
 	/**
@@ -746,15 +761,17 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	/**
 	 * hide the group.
 	 */
-	public void hide() {
+	public ControllerInterface hide() {
 		isVisible = false;
+		return this;
 	}
 
 	/**
 	 * show the group.
 	 */
-	public void show() {
+	public ControllerInterface show() {
 		isVisible = true;
+		return this;
 	}
 
 	/**
@@ -782,7 +799,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public void setOpen(boolean theFlag) {
 		isOpen = theFlag;
 		if (_myValueLabel != null) {
-			_myValueLabel.set(isOpen ? "-" : "+");
+//			_myValueLabel.set(isOpen ? "-" : "+");
 		}
 	}
 
@@ -825,6 +842,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	}
 
 	public ControllerGroup setValue(float theValue) {
+		System.out.println("setting value "+theValue+", ControllerGroup");
 		_myValue = theValue;
 		return this;
 	}
@@ -930,12 +948,14 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		return this;
 	}
 
-	public void removeProperty(String thePropertyName) {
+	public ControllerInterface removeProperty(String thePropertyName) {
 		controlP5.getProperties().remove(this, thePropertyName);
+		return this;
 	}
 
-	public void removeProperty(String theSetter, String theGetter) {
+	public ControllerInterface removeProperty(String theSetter, String theGetter) {
 		controlP5.getProperties().remove(this, theSetter, theGetter);
+		return this;
 	}
 
 	@Override
