@@ -208,7 +208,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 	 * @see controlP5.ControlListener#controlEvent(controlP5.ControlEvent)
 	 */
 	public void controlEvent(ControlEvent theEvent) {
-		if (theEvent.getController().name().equals(name() + "close")) {
+		if (theEvent.getController().getName().equals(name() + "close")) {
 			hide();
 		}
 	}

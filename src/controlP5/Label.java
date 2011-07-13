@@ -75,10 +75,6 @@ public class Label implements CDrawable {
 
 	private boolean isVisible = true;
 
-	private boolean isColorBackground = false;
-
-	private int _myColorBackground = 0x000000;
-
 	public PVector position = new PVector(0, 0, 0);
 
 	private int textHeight; // actual height of text, necessary for textarea
@@ -101,7 +97,7 @@ public class Label implements CDrawable {
 		if (ControlP5.isControlFont && ControlP5.getFont() != null) {
 			setFont(ControlP5.getFont());
 		} else {
-			int font = BitFontRenderer.standard58;
+			int font = ControlP5.bitFont;
 			setFont(font);
 			setLineHeight(BitFontRenderer.getHeight(font));
 			int[] dim = BitFontRenderer.getDimension(theText, (BitFontLabel) _myFont);
@@ -255,18 +251,14 @@ public class Label implements CDrawable {
 	}
 
 	public Label setColorBackground(int theColor) {
-		_myColorBackground = theColor;
-		isColorBackground = true;
 		return this;
 	}
 
 	public Label disableColorBackground() {
-		isColorBackground = false;
 		return this;
 	}
 
 	public Label enableColorBackground() {
-		isColorBackground = true;
 		return this;
 	}
 

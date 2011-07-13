@@ -107,11 +107,12 @@ public class Tab extends ControllerGroup {
 	 * 
 	 * @param theLabel String
 	 */
-	public void setLabel(String theLabel) {
+	public ControllerInterface setLabel(String theLabel) {
 		_myLabel.setFixedSize(false);
 		_myLabel.set(theLabel);
 		_myLabel.setFixedSize(true);
 		setWidth(_myLabel.getWidth());
+		return this;
 	}
 
 	protected int width() {

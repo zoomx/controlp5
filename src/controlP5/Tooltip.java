@@ -114,7 +114,7 @@ public class Tooltip {
 				currentPosition.set(theWindow.mouseX, theWindow.mouseY, 0);
 
 				if (_myController != null) {
-					if (_myController.controlWindow().equals(theWindow)) {
+					if (_myController.getControlWindow().equals(theWindow)) {
 						switch (_myMode) {
 						case (ControlP5.WAIT):
 							if (moved()) {
@@ -123,7 +123,7 @@ public class Tooltip {
 
 							if (System.nanoTime() > startTime + (_myDelayInMillis * 1000000)) {
 								position.set(currentPosition);
-								if (position.x > (_myController.controlWindow().papplet().width - _myWidth)) {
+								if (position.x > (_myController.getControlWindow().papplet().width - _myWidth)) {
 									position.sub(new PVector(_myWidth, 0, 0));
 								}
 								_myMode = ControlP5.FADEIN;
@@ -198,7 +198,7 @@ public class Tooltip {
 		if (map.containsKey(theController)) {
 			startTime = System.nanoTime();
 			_myController = theController;
-			currentPosition.set(theController.controlWindow().mouseX, theController.controlWindow().mouseY, 0);
+			currentPosition.set(theController.getControlWindow().mouseX, theController.getControlWindow().mouseY, 0);
 			updateText(map.get(_myController));
 			_myMode = ControlP5.WAIT;
 		}

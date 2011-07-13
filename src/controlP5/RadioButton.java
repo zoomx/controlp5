@@ -26,8 +26,6 @@ package controlP5;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import processing.core.PImage;
 
 /**
@@ -90,8 +88,8 @@ public class RadioButton extends ControlGroup {
 	public Toggle addItem(final String theName, final float theValue) {
 		Toggle t = controlP5.addToggle(theName, 0, 0, itemWidth, itemHeight);
 		t.setMode(ControlP5.DEFAULT);
-		t.captionLabel().getStyle().marginLeft = t.width + 4;
-		t.captionLabel().getStyle().marginTop = -t.height - 2;
+		t.getCaptionLabel().getStyle().marginLeft = t.width + 4;
+		t.getCaptionLabel().getStyle().marginTop = -t.height - 2;
 		t.setImages(images[0], images[1], images[2]);
 		t.setSize(images[0]);
 		return addItem(t, theValue);
@@ -127,7 +125,7 @@ public class RadioButton extends ControlGroup {
 	public void removeItem(final String theName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
-			if ((_myRadioToggles.get(i)).name().equals(theName)) {
+			if ((_myRadioToggles.get(i)).getName().equals(theName)) {
 				(_myRadioToggles.get(i)).removeListener(this);
 				_myRadioToggles.remove(i);
 			}
@@ -230,7 +228,7 @@ public class RadioButton extends ControlGroup {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			Toggle t = _myRadioToggles.get(i);
-			if (theRadioButtonName.equals(t.name())) {
+			if (theRadioButtonName.equals(t.getName())) {
 				return t.getState();
 			}
 		}
@@ -355,7 +353,7 @@ public class RadioButton extends ControlGroup {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			Toggle t = _myRadioToggles.get(i);
-			if (theRadioButtonName.equals(t.name())) {
+			if (theRadioButtonName.equals(t.getName())) {
 				activate(i);
 				return;
 			}
@@ -372,7 +370,7 @@ public class RadioButton extends ControlGroup {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			Toggle t = _myRadioToggles.get(i);
-			if (theRadioButtonName.equals(t.name())) {
+			if (theRadioButtonName.equals(t.getName())) {
 				t.deactivate();
 				_myValue = -1;
 				updateValues(true);
@@ -403,7 +401,7 @@ public class RadioButton extends ControlGroup {
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		if (!isMultipleChoice) {
-			if (noneSelectedAllowed == false && theEvent.getController().value() < 1) {
+			if (noneSelectedAllowed == false && theEvent.getController().getValue() < 1) {
 				if (theEvent.getController() instanceof Toggle) {
 					Toggle t = ((Toggle) theEvent.getController());
 					boolean b = t.isBroadcast();
@@ -434,7 +432,7 @@ public class RadioButton extends ControlGroup {
 		_myArrayValue = new float[n];
 		for (int i = 0; i < n; i++) {
 			Toggle t = ((Toggle) _myRadioToggles.get(i));
-			_myArrayValue[i] = t.value();
+			_myArrayValue[i] = t.getValue();
 		}
 		if (theBroadcastFlag) {
 			ControlEvent myEvent = new ControlEvent(this);

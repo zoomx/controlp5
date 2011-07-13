@@ -83,9 +83,9 @@ public interface ControllerInterface {
 
 	public void draw(PApplet theApplet);
 
-	public void add(ControllerInterface theElement);
+	public ControllerInterface add(ControllerInterface theElement);
 
-	public void remove(ControllerInterface theElement);
+	public ControllerInterface remove(ControllerInterface theElement);
 
 	public void remove();
 
@@ -99,31 +99,31 @@ public interface ControllerInterface {
 
 	public void keyEvent(KeyEvent theEvent);
 
-	public void setId(int theValue);
+	public ControllerInterface setId(int theValue);
 
 	public int id();
 
-	public void setLabel(String theString);
+	public ControllerInterface setLabel(String theString);
 
-	public void setColorActive(int theColor);
+	public ControllerInterface setColorActive(int theColor);
 
-	public void setColorForeground(int theColor);
+	public ControllerInterface setColorForeground(int theColor);
 
-	public void setColorBackground(int theColor);
+	public ControllerInterface setColorBackground(int theColor);
 
-	public void setColorLabel(int theColor);
+	public ControllerInterface setColorLabel(int theColor);
 
-	public void setColorValue(int theColor);
+	public ControllerInterface setColorValue(int theColor);
 
 	public CColor color();
 
-	public void show();
+	public ControllerInterface show();
 
-	public void hide();
+	public ControllerInterface hide();
 
 	public boolean isVisible();
 
-	public void moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theWindow);
+	public ControllerInterface moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theWindow);
 
 	public String stringValue();
 
@@ -139,10 +139,10 @@ public interface ControllerInterface {
 
 	public ControllerInterface registerProperty(String theSetter, String theGetter);
 
-	public void removeProperty(String thePropertyName);
+	public ControllerInterface removeProperty(String thePropertyName);
 
-	public void removeProperty(String theSetter, String theGetter);
+	public ControllerInterface removeProperty(String theSetter, String theGetter);
 
-	public void setColor(CColor theColor);
+	public ControllerInterface setColor(CColor theColor);
 
 }

@@ -122,7 +122,7 @@ public class BitFontRenderer {
 			final int myIndex = ((int) theText.charAt(i) - 32);
 			if (myIndex >= 0 && myIndex <= 95) {
 				x += f.charWidth[myIndex] + theLabel.getLetterSpacing();
-				if(x>=theX) {
+				if (x >= theX) {
 					return i;
 				}
 			}
@@ -169,8 +169,9 @@ public class BitFontRenderer {
 				int c = theText.charAt(i);
 				if (c != 9 && c != 10 && c != 13) {
 					// 9 = tab, 10 = new line, 13 = carriage return
-					ControlP5.logger().warning("You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example). ("
-							+ ((int) theText.charAt(i)) + "," + theText.charAt(i) + ")");
+					ControlP5.logger().warning(
+							"You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example). ("
+									+ ((int) theText.charAt(i)) + "," + theText.charAt(i) + ")");
 				} else {
 					if (dim[0] > tx) {
 						tx = dim[0];
@@ -194,15 +195,7 @@ public class BitFontRenderer {
 		return fonts.get(theLabel.getFontIndex()).texture.height;
 	}
 
-	private static void putchar(
-			final int theC,
-			final int theX,
-			final int theY,
-			final int theColor,
-			boolean theHighlight,
-			final PImage theImage,
-			final PImage theMask,
-			final BitFont theBitFont) {
+	private static void putchar(final int theC, final int theX, final int theY, final int theColor, boolean theHighlight, final PImage theImage, final PImage theMask, final BitFont theBitFont) {
 		final int myWH = theImage.width * theImage.height;
 		final int len = theBitFont.charWidth[theC] * theBitFont.charHeight;
 		final int w = theY * theImage.width;
@@ -286,7 +279,8 @@ public class BitFontRenderer {
 		}
 		for (int i = 0; i < l; i++) {
 			if (letters_letter[i] != -1) {
-				putchar(letters_letter[i], theLabel.getOffsetX() + letters_indent[i], letters_lineheight[i], theLabel.getColor(), letters_isHighlight[i], theLabel.getImage(), theLabel.getImageMask(), f);
+				putchar(letters_letter[i], theLabel.getOffsetX() + letters_indent[i], letters_lineheight[i], theLabel.getColor(), letters_isHighlight[i], theLabel.getImage(),
+						theLabel.getImageMask(), f);
 			}
 		}
 		return myY - myOriginalY;

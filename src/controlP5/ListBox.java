@@ -67,8 +67,10 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	private int itemOffset = 0;
 
-	private int _myScrollbarWidth = 9;
-
+	private int _myScrollbarWidth = 5;
+	
+	private boolean isToUpperCase =true;
+	
 	protected ListBox(
 			ControlP5 theControlP5,
 			ControllerGroup theGroup,
@@ -139,7 +141,15 @@ public class ListBox extends ControlGroup implements ControlListener {
 			_myScrollbar.setValue(PApplet.abs(1 - PApplet.min(PApplet.max(0, theValue), 1)));
 		}
 	}
-
+	
+	public float getScrollPosition() {
+		return _myScrollbar.getValue();
+	}
+	
+	public void scrolled(int theStep) {
+		float step = 1.0f/items.size();
+		scroll((1-getScrollPosition()) + (theStep*step));
+	}
 	/**
 	 * internal scroll updates.
 	 */
@@ -154,9 +164,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 		for (int i = 0; i < buttons.size(); i++) {
 			ListBoxItem item = items.get(itemOffset + i);
 			Button b = buttons.get(i);
-			b.captionLabel().toUpperCase(item.getToUpperCase());
+			b.getCaptionLabel().toUpperCase(isToUpperCase);
 			b.setColor(item.getColor());
-			b.captionLabel().set(item.getText());
+			b.getCaptionLabel().set(item.getText());
 			b._myValue = item.getValue();
 		}
 	}
@@ -164,7 +174,15 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void updateListBoxItems() {
 		scroll();
 	}
-
+	
+	
+	public ListBox toUpperCase(boolean theFlag) {
+		_myLabel.toUpperCase(theFlag);
+		_myLabel.update();
+		isToUpperCase = theFlag;
+		updateListBoxItems();
+		return this;
+	}
 	/**
 	 * set the height of list box items.
 	 * 
@@ -196,7 +214,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 		if (n < pn) {
 			for (int i = buttons.size() - 1; i >= n; i--) {
-				controlP5.remove(controlP5.getController(buttons.get(i).name()));
+				controlP5.remove(controlP5.getController(buttons.get(i).getName()));
 				controllers.remove(buttons.get(i));
 				buttons.remove(i);
 			}
@@ -211,7 +229,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	}
 
 	private void updateScroll() {
-		_myScrollValue = _myScrollbar.value();
+		_myScrollValue = _myScrollbar.getValue();
 		_myScrollbar.setValue(_myScrollValue);
 		if (buttons.size() < items.size() && isScrollbarVisible) {
 			_myScrollbar.show();
@@ -317,9 +335,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 				}
 			}
 			if ((buttons.size()) > items.size()) {
-				String buttonName = ((Button) controllers.get(buttons.size())).name();
-				buttons.remove(controlP5.controller(buttonName));
-				controllers.remove(controlP5.controller(buttonName));
+				String buttonName = ((Button) controllers.get(buttons.size())).getName();
+				buttons.remove(controlP5.getController(buttonName));
+				controllers.remove(controlP5.getController(buttonName));
 				controlP5.remove(buttonName);
 
 			}
@@ -378,11 +396,11 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.getController() instanceof Button) {
 			try {
-				_myValue = theEvent.getController().value();
+				_myValue = theEvent.getController().getValue();
 				ControlEvent myEvent = new ControlEvent(this);
 				if (pulldown) {
 					close();
-					setLabel(theEvent.label());
+					setLabel(theEvent.getController().getLabel());
 				}
 				for (ControlListener cl : _myControlListener) {
 					cl.controlEvent(myEvent);
@@ -464,56 +482,61 @@ public class ListBox extends ControlGroup implements ControlListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setColorActive(int theColor) {
+	public ControllerInterface setColorActive(int theColor) {
 		super.setColorActive(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setActive(theColor);
 		}
 		scroll();
+		return this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setColorForeground(int theColor) {
+	public ControllerInterface setColorForeground(int theColor) {
 		super.setColorForeground(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setForeground(theColor);
 		}
 		scroll();
+		return this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setColorBackground(int theColor) {
+	public ControllerInterface setColorBackground(int theColor) {
 		super.setColorBackground(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setBackground(theColor);
 		}
 		scroll();
+		return this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setColorLabel(int theColor) {
+	public ControllerInterface setColorLabel(int theColor) {
 		super.setColorLabel(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setCaptionLabel(theColor);
 		}
 		scroll();
+		return this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setColorValue(int theColor) {
+	public ControllerInterface setColorValue(int theColor) {
 		super.setColorValue(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setValueLabel(theColor);
 		}
 		scroll();
+		return this;
 	}
 
 	public String[][] getListBoxItems() {

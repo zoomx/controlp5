@@ -178,31 +178,31 @@ public class Slider2D extends Controller {
 			theApplet.pushStyle();
 
 			if (theController.isInside()) {
-				theApplet.fill(theController.color().getForeground());
+				theApplet.fill(theController.getColor().getForeground());
 			} else {
-				theApplet.fill(theController.color().getBackground());
+				theApplet.fill(theController.getColor().getBackground());
 			}
 
 			theApplet.rect(0, 0, getWidth(), getHeight());
 
 			if (isCrosshairs) {
 				if (theController.isInside()) {
-					theApplet.stroke(theController.color().getBackground());
+					theApplet.stroke(theController.getColor().getBackground());
 				} else {
-					theApplet.stroke(theController.color().getForeground());
+					theApplet.stroke(theController.getColor().getForeground());
 				}
 				theApplet.line(0, getCursorY(), getWidth(), getCursorY());
 				theApplet.line(getCursorX(), 0, getCursorX(), getHeight());
 				theApplet.noStroke();
 			}
 
-			theApplet.fill(theController.color().getActive());
+			theApplet.fill(theController.getColor().getActive());
 			theApplet.rect(getCursorX(), getCursorY(), getCursorWidth(), getCursorHeight());
 
 			theApplet.popStyle();
 
-			captionLabel().draw(theApplet, 0, getHeight() + 4);
-			valueLabel().draw(theApplet, captionLabel().getWidth() + 4, getHeight() + 4);
+			getCaptionLabel().draw(theApplet, 0, getHeight() + 4);
+			valueLabel().draw(theApplet, getCaptionLabel().getWidth() + 4, getHeight() + 4);
 		}
 
 	}

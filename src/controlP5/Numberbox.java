@@ -30,11 +30,9 @@ import processing.core.PVector;
 
 /**
  * press the mouse inside a numberbox and move up and down to change the values
- * of a numberbox.
- * 
- * by default you increase and decrease numbers by dragging the mouse up and
+ * of a numberbox. by default the value  changes when dragging the mouse up and
  * down. use setDirection(Controller.HORIZONTAL) to change the mouse control to
- * left and right.
+ * left and right. 
  * 
  * Why do I get -1000000 as initial value when creating a numberbox without a
  * default value? the value of a numberbox defaults back to its minValue, which
@@ -72,6 +70,8 @@ public class Numberbox extends Controller {
 	public static int autoHeight = 15;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
+	
+	float scrollSensitivity = 0.1f;
 
 	/**
 	 * 
@@ -168,11 +168,39 @@ public class Numberbox extends Controller {
 	/**
 	 * assigns a random value to the controller.
 	 */
-	public void shuffle() {
+	public Numberbox shuffle() {
 		float r = (float) Math.random();
 		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
+		return this;
 	}
 
+	/**
+	 * sets the sensitivity for the scroll behavior when using the mouse wheel
+	 * or the scroll function of a multi-touch track pad. The smaller the value (closer
+	 * to 0) the higher the sensitivity.
+	 * 
+	 * @param theValue
+	 * @return Knob
+	 */
+	public Numberbox setScrollSensitivity(float theValue) {
+		scrollSensitivity = theValue;
+		return this;
+	}
+	
+	/**
+	 * changes the value of the numberbox when hovering and using the mouse wheel
+	 * or the scroll function of a multi-touch track pad.
+	 * 
+	 * @param theRotationValue
+	 * @return Knob
+	 */
+	public Numberbox scrolled(int theRotationValue) {
+		float f = getValue();
+		f += (theRotationValue * scrollSensitivity) * _myMultiplier;
+		setValue(f);
+		return this;
+	}
+	
 	/**
 	 * set the direction for changing the numberbox value when dragging the mouse.
 	 * by default this is up/down (VERTICAL), use

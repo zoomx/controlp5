@@ -41,14 +41,7 @@ public class Bang extends Controller {
 
 	protected int triggerId = PRESSED;
 
-	protected Bang(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			float theX,
-			float theY,
-			int theWidth,
-			int theHeight) {
+	protected Bang(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = 1;
 	}
@@ -172,6 +165,11 @@ public class Bang extends Controller {
 		}
 	}
 
+	/**
+	 * @deprecated
+	 * @author andreas
+	 * 
+	 */
 	private class BangSpriteDisplay implements ControllerDisplay {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
@@ -231,6 +229,6 @@ public class Bang extends Controller {
 
 	@Override
 	public String toString() {
-		return super.toString() + " [ " + value() + " ] "+"Bang"+" ("+this.getClass().getSuperclass()+")";
+		return super.toString() + " [ " + getValue() + " ] " + "Bang" + " (" + this.getClass().getSuperclass() + ")";
 	}
 }

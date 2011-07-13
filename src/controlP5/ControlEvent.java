@@ -26,10 +26,10 @@ package controlP5;
  */
 
 /**
- * a controlEvent is sent to a PApplet whenever a controlP5 action has been
- * made. you can receive events from controllers and tabs. by default tab events
- * are disabled and have to be enabled with Tab.activateEvent(). for detailed
- * information see the tab documentation.
+ * A controlEvent is sent to a PApplet or a ControlListener whenever a
+ * controller value has changed or a tab has been activated. By default tab
+ * events are disabled and have to be enabled with Tab.activateEvent(). for
+ * detailed information see the tab documentation.
  * 
  * @example ControlP5controlEvent
  */
@@ -42,13 +42,13 @@ public class ControlEvent {
 	protected boolean isController;
 
 	protected boolean isGroup;
-	
+
 	public static int UNDEFINDED = -1;
-	
+
 	public static int CONTROLLER = 0;
-	
+
 	public static int TAB = 1;
-	
+
 	public static int GROUP = 2;
 
 	protected int myAction;
@@ -87,41 +87,26 @@ public class ControlEvent {
 	}
 
 	/**
-	 * @return float
-	 */
-	public float value() {
-		return getValue();
-	}
-
-	/**
 	 * * returns the value of the controller as float.
+	 * 
 	 * @return float
 	 */
 	public float getValue() {
 		return _myController.value();
 	}
 
+
+
 	/**
-	 * @return String
-	 */
-	public String stringValue() {
-		return getStringValue();
-	}
-	
-	/**
-	 * returns a string value if applicable to the controller e.g. textfield has a
-	 * string value.
+	 * returns a string value if applicable to the controller e.g. textfield has
+	 * a string value.
 	 * 
 	 * @return String
 	 */
 	public String getStringValue() {
-		return ((Controller) _myController).stringValue();
+		return ((Controller) _myController).getStringValue();
 	}
 
-	public float[] arrayValue() {
-		return getArrayValue();
-	}
-	
 	/**
 	 * returns a float array, apllies for e.g. Range.
 	 * 
@@ -131,25 +116,19 @@ public class ControlEvent {
 		return _myController.arrayValue();
 	}
 
-	
-	public Controller controller() {
-		return getController();
-	}
-	
+
+
 	/**
 	 * returns the instance of the controller.
 	 * 
-	 * @return Controller Bang Button Knob Numberbox Radio Slider Textfield Toggle
-	 *         MultiList Matrix
+	 * @return Controller Bang Button Knob Numberbox Radio Slider Textfield
+	 *         Toggle MultiList Matrix
 	 */
 	public Controller getController() {
 		return ((Controller) _myController);
 	}
 
-	public Tab tab() {
-		return getTab();
-	}
-	
+
 	/**
 	 * return the tab that evoked the event.
 	 * 
@@ -158,13 +137,9 @@ public class ControlEvent {
 	public Tab getTab() {
 		return (Tab) _myController;
 	}
+	
 
-	
-	
-	public ControlGroup group() {
-		return getGroup();
-	}
-	
+
 	/**
 	 * returns the tab that evoked the event.
 	 * 
@@ -174,21 +149,17 @@ public class ControlEvent {
 		return (ControlGroup) _myController;
 	}
 
-	public String label() {
-		return getLabel();
-	}
-	
 	/**
-	 * gets the label of the controller that evoked the event.
+	 * gets the text of the controller's label that has evoked the event.
 	 * 
 	 * @return String
 	 */
 	public String getLabel() {
-		return ((Controller) _myController).label();
+		return ((Controller) _myController).getLabel();
 	}
 
 	/**
-	 * check if the event was evoked by a tab.
+	 * checks if the event was evoked by a tab.
 	 * 
 	 * @return boolean
 	 */
@@ -197,7 +168,7 @@ public class ControlEvent {
 	}
 
 	/**
-	 * check if the event was evoked by a controller.
+	 * checks if the event was evoked by a controller.
 	 * 
 	 * @return boolean
 	 */
@@ -206,7 +177,7 @@ public class ControlEvent {
 	}
 
 	/**
-	 * check if the event was evoked by a controlGroup.
+	 * checks if the event was evoked by a controlGroup.
 	 * 
 	 * @return boolean
 	 */
@@ -214,23 +185,32 @@ public class ControlEvent {
 		return isGroup;
 	}
 
-	public String name() {
-		return getName();
-	}
-	
+
+	/**
+	 * returns the index name of the controller.
+	 * 
+	 * @return
+	 */
 	public String getName() {
 		return _myController.name();
 	}
 
-	public int id() {
-		return getId();
-	}
-	
+	/**
+	 * returns the ID of the controller.
+	 * 
+	 * @return
+	 */
 	public int getId() {
 		return _myController.id();
 	}
 
-	public int type() {
+	/**
+	 * returns the type of the controller which can be ControlP5.CONTROLLER,
+	 * ControlP5.TAB, ControlP5.GROUP
+	 * 
+	 * @return
+	 */
+	public int getType() {
 		if (isController) {
 			return CONTROLLER;
 		} else if (isTab) {
@@ -251,7 +231,7 @@ public class ControlEvent {
 	public boolean isFrom(ControllerInterface theController) {
 		return _myController.equals(theController);
 	}
-	
+
 	/**
 	 * checks if the ControlEvent originates from a specific Controller or
 	 * ControllerGroup identifiable by name.
@@ -259,8 +239,94 @@ public class ControlEvent {
 	 * @param theController
 	 * @return
 	 */
-	 
+
 	public boolean isFrom(String theControllerName) {
 		return _myController.name().equals(theControllerName);
+	}
+	
+	
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public int type() {
+		return getType();
+	}
+
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public int id() {
+		return getId();
+	}
+	
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public String name() {
+		return getName();
+	}
+	
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public String label() {
+		return getLabel();
+	}
+
+
+	/**
+	 * @return float
+	 * @deprecated
+	 */
+	public float value() {
+		return getValue();
+	}
+
+	/**
+	 * @deprecated
+	 * @return String
+	 */
+	public String stringValue() {
+		return getStringValue();
+	}
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public float[] arrayValue() {
+		return getArrayValue();
+	}
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public Controller controller() {
+		return getController();
+	}
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public ControlGroup group() {
+		return getGroup();
+	}
+
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	public Tab tab() {
+		return getTab();
 	}
 }

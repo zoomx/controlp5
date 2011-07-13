@@ -159,7 +159,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.getController() instanceof MultiListButton) {
-			_myValue = theEvent.getController().value();
+			_myValue = theEvent.getController().getValue();
 			ControlEvent myEvent = new ControlEvent(this);
 			controlP5.controlbroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
 		}

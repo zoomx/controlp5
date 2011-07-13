@@ -140,7 +140,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 */
 	public void controlEvent(ControlEvent theEvent) {
 		// reverse the value coming in from the scrollbar: 0 to 1 becomes -1 to 0
-		_myScrollValue = -(1 - theEvent.value());
+		_myScrollValue = -(1 - theEvent.getValue());
 		scroll();
 	}
 
@@ -161,9 +161,10 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		return isScrollbarVisible;
 	}
 
-	public void setColorBackground(int theColor) {
+	public ControllerInterface setColorBackground(int theColor) {
 		_myColorBackground = theColor;
 		isColorBackground = true;
+		return this;
 	}
 
 	public void disableColorBackground() {
