@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -26,10 +26,10 @@ package controlP5;
  */
 
 /**
- * A controlEvent is sent to a PApplet or a ControlListener whenever a
- * controller value has changed or a tab has been activated. By default tab
- * events are disabled and have to be enabled with Tab.activateEvent(). for
- * detailed information see the tab documentation.
+ * A controlEvent is sent to a PApplet or a ControlListener whenever a controller value has changed.
+ * Events can also be sent when a tab is activated, but by default tab events are disabled and have
+ * to be enabled with {@link Tab} Tab.activateEvent(). for detailed information see the tab
+ * documentation.
  * 
  * @example ControlP5controlEvent
  */
@@ -65,7 +65,7 @@ public class ControlEvent {
 	}
 
 	/**
-	 * 
+	 * @exclude
 	 * @param theController Controller
 	 */
 	public ControlEvent(Tab theController) {
@@ -76,7 +76,7 @@ public class ControlEvent {
 	}
 
 	/**
-	 * 
+	 * @exclude
 	 * @param theController Controller
 	 */
 	public ControlEvent(ControllerGroup theController) {
@@ -86,62 +86,43 @@ public class ControlEvent {
 		isController = false;
 	}
 
-	/**
-	 * * returns the value of the controller as float.
-	 * 
-	 * @return float
-	 */
 	public float getValue() {
-		return _myController.value();
+		return _myController.getValue();
 	}
 
-
-
-	/**
-	 * returns a string value if applicable to the controller e.g. textfield has
-	 * a string value.
-	 * 
-	 * @return String
-	 */
 	public String getStringValue() {
 		return ((Controller) _myController).getStringValue();
 	}
 
 	/**
-	 * returns a float array, apllies for e.g. Range.
+	 * Returns a float array, applies to e.g. Range.
 	 * 
-	 * @return
+	 * @return float[]
 	 */
 	public float[] getArrayValue() {
-		return _myController.arrayValue();
+		return _myController.getArrayValue();
 	}
 
-
-
 	/**
-	 * returns the instance of the controller.
+	 * Returns the instance of the controller sending the ControlEvent.
 	 * 
-	 * @return Controller Bang Button Knob Numberbox Radio Slider Textfield
-	 *         Toggle MultiList Matrix
+	 * @return Controller
 	 */
 	public Controller getController() {
 		return ((Controller) _myController);
 	}
 
-
 	/**
-	 * return the tab that evoked the event.
+	 * Returns the tab that triggered the ControlEvent
 	 * 
 	 * @return Tab Tab
 	 */
 	public Tab getTab() {
 		return (Tab) _myController;
 	}
-	
-
 
 	/**
-	 * returns the tab that evoked the event.
+	 * Returns the tab that evoked the ControlEvent
 	 * 
 	 * @return Tab Tab
 	 */
@@ -150,7 +131,7 @@ public class ControlEvent {
 	}
 
 	/**
-	 * gets the text of the controller's label that has evoked the event.
+	 * Gets the text of the controller's label that has evoked the event.
 	 * 
 	 * @return String
 	 */
@@ -159,8 +140,9 @@ public class ControlEvent {
 	}
 
 	/**
-	 * checks if the event was evoked by a tab.
+	 * Checks if the ControlEvent was triggered by a tab
 	 * 
+	 * @see controlP5.Tab
 	 * @return boolean
 	 */
 	public boolean isTab() {
@@ -168,8 +150,9 @@ public class ControlEvent {
 	}
 
 	/**
-	 * checks if the event was evoked by a controller.
+	 * Checks if the ControlEvent was triggered by a controller
 	 * 
+	 * @see controlP5.Controller
 	 * @return boolean
 	 */
 	public boolean isController() {
@@ -177,38 +160,36 @@ public class ControlEvent {
 	}
 
 	/**
-	 * checks if the event was evoked by a controlGroup.
+	 * Checks if the ControlEvent was triggered by a ControlGroup
 	 * 
+	 * @see controlP5.ControllerGroup
 	 * @return boolean
 	 */
 	public boolean isGroup() {
 		return isGroup;
 	}
 
-
 	/**
-	 * returns the index name of the controller.
+	 * returns the controller's name
 	 * 
-	 * @return
+	 * @return String
 	 */
 	public String getName() {
-		return _myController.name();
+		return _myController.getName();
 	}
 
 	/**
-	 * returns the ID of the controller.
+	 * Returns the controller's id, if an id has not been set before the default value -1 will be
+	 * returned.
 	 * 
 	 * @return
 	 */
 	public int getId() {
-		return _myController.id();
+		return _myController.getId();
 	}
 
 	/**
-	 * returns the type of the controller which can be ControlP5.CONTROLLER,
-	 * ControlP5.TAB, ControlP5.GROUP
-	 * 
-	 * @return
+	 * @return int returned is ControlP5.CONTROLLER, or ControlP5.TAB, or ControlP5.GROUP
 	 */
 	public int getType() {
 		if (isController) {
@@ -222,110 +203,113 @@ public class ControlEvent {
 	}
 
 	/**
-	 * checks if the ControlEvent originates from a specific Controller or
-	 * ControllerGroup.
+	 * Checks if the ControlEvent originates from a specific Controller or ControllerGroup.
 	 * 
 	 * @param theController
-	 * @return
+	 * @return boolean
 	 */
 	public boolean isFrom(ControllerInterface theController) {
 		return _myController.equals(theController);
 	}
 
 	/**
-	 * checks if the ControlEvent originates from a specific Controller or
-	 * ControllerGroup identifiable by name.
+	 * checks if the ControlEvent originates from a specific Controller or ControllerGroup
+	 * identifiable by name.
 	 * 
 	 * @param theController
-	 * @return
+	 * @return boolean
 	 */
 
 	public boolean isFrom(String theControllerName) {
-		return _myController.name().equals(theControllerName);
+		return _myController.getName().equals(theControllerName);
 	}
-	
-	
 
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public int type() {
 		return getType();
 	}
 
-
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public int id() {
 		return getId();
 	}
-	
 
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public String name() {
 		return getName();
 	}
-	
 
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public String label() {
 		return getLabel();
 	}
 
-
 	/**
-	 * @return float
+	 * @exclude
 	 * @deprecated
 	 */
+	@Deprecated
 	public float value() {
 		return getValue();
 	}
 
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return String
 	 */
+	@Deprecated
 	public String stringValue() {
 		return getStringValue();
 	}
 
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public float[] arrayValue() {
 		return getArrayValue();
 	}
+
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public Controller controller() {
 		return getController();
 	}
 
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public ControlGroup group() {
 		return getGroup();
 	}
 
-
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @return
 	 */
+	@Deprecated
 	public Tab tab() {
 		return getTab();
 	}

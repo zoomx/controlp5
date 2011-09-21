@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -29,40 +29,40 @@ package controlP5;
  * adopted from fasttext by Glen Murphy @ http://glenmurphy.com/
  */
 
-import java.awt.Component;
 import java.util.HashMap;
 import java.util.Map;
 
 import processing.core.PImage;
 
 /**
- * The bitfontRenderer is used to draw any text labels used by controlP5 by
- * default. The bitfontRenderer is based on a per pixel technique and is not
- * using processing's PFont renderer. To use PFonts within controlP5, take a
- * look at ControlFont
+ * <p>
+ * The BitfontRenderer is used to draw controlP5's text labels, by default it uses the bitfont
+ * standard58 by miniml. The bitfontRenderer is based on a per pixel technique and is not using
+ * processing's PFont renderer. To use PFonts within controlP5, take a look at ControlFont
+ * </p>
+ * <p>
+ * ftext - fast text for processing. to create a font graphic use the following string (first
+ * character being a space) !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`
+ * abcdefghijklmnopqrstuvwxyz{|}~
+ * </p>
+ * <ul>
+ * <li><a href="http://www.dafont.com/advocut.font" target="_blank">advocut.font</a></li> 
+ * <li><a href="http://www.dafont.com/grixel-kyrou-9.font" target="_blank">grixel-kyrou-9.font</a></li>
+ * <li><a href="http://www.dafont.com/david-sans.font" target="_blank">david-sans.font</a></li>
+ * <li><a href="http://www.dafont.com/sven-stuber.d516" target="_blank">sven-stuber.d516</a></li>
+ * <li><a href="http://www.dafont.com/supernatural.font" target="_blank">supernatural.font</a></li>
+ * <li><a href="http://www.dafont.com/supertext.font" target="_blank">supertext.font</a></li>
+ * <li><a href="http://www.dafont.com/regupix.font" target="_blank">regupix.font</a></li>
+ * <li><a href="http://www.dafont.com/optiate.font" target="_blank">optiate.font</a></li>
+ * <li><a href="http://www.dafont.com/superhelio.font" target="_blank">superhelio.font</a></li>
+ * <li><a href="http://www.dafont.com/superbly.font" target="_blank">superbly.font</a></li>
+ * <li><a href="http://www.fontsquirrel.com/fonts/Audimat-Mono" target="_blank">Audimat-Mono</a></li> 
+ * <li><a href="http://www.fontsquirrel.com/fonts/Envy-Code-R" target="_blank">Envy-Code-R</a></li>
+ * </ul>
  * 
  * @see controlP5.ControlFont
- * 
- * 
  */
 public class BitFontRenderer {
-	/**
-	 * ftext - fast text for processing. to create a font graphic use the
-	 * following string (first character being a space)
-	 * !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`
-	 * abcdefghijklmnopqrstuvwxyz{|}~
-	 * 
-	 * free fonts http://www.dafont.com/advocut.font
-	 * http://www.dafont.com/grixel-kyrou-9.font
-	 * http://www.dafont.com/david-sans.font
-	 * http://www.dafont.com/sven-stuber.d516
-	 * http://www.dafont.com/supernatural.font
-	 * http://www.dafont.com/supertext.font http://www.dafont.com/regupix.font
-	 * http://www.dafont.com/optiate.font http://www.dafont.com/superhelio.font
-	 * http://www.dafont.com/superbly.font
-	 * http://www.fontsquirrel.com/fonts/Audimat-Mono
-	 * http://www.fontsquirrel.com/fonts/Envy-Code-R
-	 */
 
 	protected static int numFonts = 4;
 
@@ -78,15 +78,14 @@ public class BitFontRenderer {
 
 	protected static Map<Integer, BitFont> fonts;
 
-	protected BitFontRenderer(final Component theComponent) {
-		loadFonts(theComponent);
+	private final ControlP5 cp5;
+
+	protected BitFontRenderer(ControlP5 theControlP5) {
+		cp5 = theControlP5;
+		loadFonts();
 	}
 
-	public BitFontRenderer() {
-		loadFonts(null);
-	}
-
-	private void loadFonts(Component theComponent) {
+	private void loadFonts() {
 		if (fonts == null) {
 			fonts = new HashMap<Integer, BitFont>();
 			fonts.put(standard58, new BitFont(standard58).setSource("standard58.gif"));
@@ -98,12 +97,12 @@ public class BitFontRenderer {
 
 	/**
 	 * TODO implement addBitFont
-	 * 
+	 * @exclude
 	 * @param theImage
 	 * @return
 	 */
-	public int addBitFont(PImage theImage) {
-		// TODO
+	public static int addBitFont(PImage theImage) {
+		ControlP5.logger.info("adding custom bitfonts is disabled with this version of controlP5.");
 		return -1;
 	}
 
@@ -131,7 +130,7 @@ public class BitFontRenderer {
 	}
 
 	/**
-	 * get the width of a text line based on the bit font used.
+	 * get the width of a text based on the bit font used.
 	 * 
 	 * @param theText
 	 * @param theFontIndex
@@ -326,7 +325,7 @@ public class BitFontRenderer {
 
 		BitFont setSource(String theSource) {
 			_mySource = theSource;
-			texture = ControlP5.papplet.loadImage(getClass().getResource(_mySource).toString());
+			texture = cp5.papplet.loadImage(getClass().getResource(_mySource).toString());
 			charHeight = texture.height;
 			lineHeight = charHeight;
 			int currWidth = 0;

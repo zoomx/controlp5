@@ -1,19 +1,115 @@
+2011-09-21  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.5      
+
+
+
+2011-09-20  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.4      
+      
+      * src controlP5/Textfield.java:
+      adding support for PFont
+      
+      * javadoc, new design
+      
+      
+      
+2011-08-27  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.3
+      
+      * src controlP5/ListBox.java, controlP5/DropdownList.java:
+      adding mouseover support.
+       
+      * src controlP5/ControlP5.java:
+      adding enableMouseWheel(), disableMouseWheel(), isMouseWheel()
+      by default the mouse wheel is active for Slider, Knob, Numberbox, 
+      ListBox  and DropdownList. The MouseWheelListener is handled 
+      by each ControlWindow individually.      
+      
+      * src controlP5/ControlWindow.java:
+      adding getFrame() to access the frame object of a ControlWindow.
+      
+            
+2011-08-25  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.2
+      
+      * src controlP5/ControlP5.java:
+      removing static from the papplet field, this had consequences for some internal 
+      calls to papplet but do not affect any publicly available methods or constructors 
+      except the Label class which requires a controlP5 instances as it's constructor's 
+      first parameter.
+      
+      * src controlP5/ControlP5.java:
+      field keyHandler is now non-static
+      
+      * src controlP5/Label.java:
+      adding a ControlP5 parameter to all Label constructors due to changes made
+      to field controlP5.papplet
+      
+      * src controlP5/Textlabel.java:
+      Constructors with the first parameter of type Component have been deprecated
+      and replaced with constructors using a reference to ControlP5 as first parameter.
+      if this affects your programs, please make changes accordingly.   
+
+
+2011-08-20  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.1
+      
+      * ongoing internal code refactoring, adding getter and setter methods for 
+      existing methods (which are deprecated accordingly) 
+      
+      * reference cleanup
+      
+      * preparing for release
+      
+      * src controlP5/ControllerSprite.java:
+      deprecated
+      
+      * src controlP5/ControlCanvas.java:
+      deprecated, use ControlWindowCanvas instead
+      
+      * Names of controllers now follows the OSC address pattern specs,
+      use controlP5.printControllerMap() to see the changed address space.
+      This has been added to controlP5 since controllers now can be directly 
+      linked to custom objects and not only to the instance of the main program.
+      http://opensoundcontrol.org/spec-1_0-examples
+      (OSC Address Parts not included)      
+      
+       
+      
 2011-06-25  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.6.0
-
+	
+	    * adding Annotation support, very much inspired by cp5magic by Karsten Schmidt (toxi)
+	    see the ControlP5annotation example for further details
+	    
+	   	* src controlP5/ControllerAutomator.java:
+	   	for internal use only, handles the reflection for the annotation implementation
+	   	
+	   	* src controlP5/FieldChangedListener.java:
+	   	for internal use only, listens for changes of variables linked to controllers 
+	   	(needs to be anabled, disabled by default)	   	
+	   	
+     	* src controlP5/ScrollList.java:
+     	ScrollList removed, use ListBox.
+     	
       * src controlP5/ControllerGroup.java:
       moveTo(Tab) changed according to issue http://code.google.com/p/controlp5/issues/detail?id=15
       
       * src controlP5/ListBox.java,controlP5/DropdownList.java:
       adding mousewheel support.
       
-      * src controlP5/ControllerActionEvent.java, controlP5/ControllerActionListener.java:
-      adding new event listener for controller actions such as enter, leave, pressed, released, releasedoutside.
-      how to use see the ControlP5actionEvent example       
+      * src controlP5/CallbackEvent.java, controlP5/CallbackListener.java:
+      adding new callback event and listener for controller actions such as enter, leave, pressed, released, releasedoutside.
+      how to use see the ControlP5callback example       
       
       * src controlP5/Radio.java:
-      removed, has be deprecated. Use RadioButton or CheckBox instead. 
+      removed, has been deprecated. Use RadioButton or CheckBox instead. 
       
       * src controlP5/ControlWindow.Pointer.java:
       adding a pointer class which can be used as replacement for mouse activity. To make use of the Pointer, 

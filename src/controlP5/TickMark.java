@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -27,6 +27,9 @@ package controlP5;
 
 import processing.core.PApplet;
 
+/**
+ * Tickmarks are used by the Slider and Knob controller.
+ */
 public class TickMark implements CDrawable {
 
 	protected Controller _myParent;
@@ -47,7 +50,6 @@ public class TickMark implements CDrawable {
 
 	public void draw(PApplet theApplet, int theDirection) {
 		theApplet.pushMatrix();
-		theApplet.stroke(255);
 		switch (theDirection) {
 		case (ControlP5Constants.HORIZONTAL):
 			theApplet.translate(0, _myLen);
@@ -64,6 +66,7 @@ public class TickMark implements CDrawable {
 			}
 			break;
 		}
+
 		theApplet.popMatrix();
 	}
 
@@ -73,7 +76,7 @@ public class TickMark implements CDrawable {
 
 	public Label setLabel(String theLabeltext) {
 		if (_myLabel == null) {
-			_myLabel = new Label(theLabeltext);
+			_myLabel = new Label(_myParent.cp5,theLabeltext);
 			isLabel = true;
 		} else {
 			_myLabel.set(theLabeltext);

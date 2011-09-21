@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -35,10 +35,13 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+/**
+ * A input/output helper class. 
+ *
+ */
+class ControlP5IOHandler {
 
-public class ControlP5IOHandler {
-
-	ControlP5 controlP5;
+	ControlP5 cp5;
 
 	String _myFilePath;
 
@@ -47,41 +50,9 @@ public class ControlP5IOHandler {
 	boolean isLock;
 
 	public ControlP5IOHandler(ControlP5 theControlP5) {
-		controlP5 = theControlP5;
+		cp5 = theControlP5;
 	}
-
-	public static Image loadImage(URL theURL) {
-		return loadImage(ControlP5.papplet, theURL);
-	}
-
-	/**
-	 * load an image with MediaTracker to prevent nullpointers e.g. in
-	 * BitFontRenderer
-	 * 
-	 * @param theURL
-	 * @return
-	 */
-	public static Image loadImage(Component theComponent, URL theURL) {
-		if (theComponent == null) {
-			theComponent = ControlP5.papplet;
-		}
-		Image img = null;
-
-		// TODO Toolkit causes problems inside a browser see forum.processing at
-		// http://forum.processing.org/#Topic/25080000000607069
-		img = Toolkit.getDefaultToolkit().createImage(theURL);
-
-		MediaTracker mt = new MediaTracker(theComponent);
-		mt.addImage(img, 0);
-		try {
-			mt.waitForAll();
-		} catch (InterruptedException e) {
-			ControlP5.logger().severe("loading image failed." + e.toString());
-		} catch (Exception e) {
-			ControlP5.logger().severe("loading image failed." + e.toString());
-		}
-		return img;
-	}
+	
 
 	/**
 	 * borrowed from http://www.javapractices.com/Topic96.cjp
@@ -217,6 +188,7 @@ public class ControlP5IOHandler {
 	/**
 	 * @deprecated
 	 */
+	@Deprecated
 	protected boolean save(ControlP5 theControlP5, String theFilePath) {
 		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
 		return false;
@@ -293,6 +265,42 @@ public class ControlP5IOHandler {
 			return null;
 		final String pattern = "class ";
 		return c.toString().startsWith(pattern) ? c.toString().substring(pattern.length()) : c.toString();
+	}
+
+	
+	@Deprecated
+	public Image loadImage2(URL theURL) {
+		return loadImage(cp5.papplet, theURL);
+	}
+
+	/**
+	 * load an image with MediaTracker to prevent nullpointers e.g. in
+	 * BitFontRenderer
+	 * 
+	 * @param theURL
+	 * @return
+	 */
+	@Deprecated
+	public Image loadImage(Component theComponent, URL theURL) {
+		if (theComponent == null) {
+			theComponent = cp5.papplet;
+		}
+		Image img = null;
+
+		// TODO Toolkit causes problems inside a browser see forum.processing at
+		// http://forum.processing.org/#Topic/25080000000607069
+		img = Toolkit.getDefaultToolkit().createImage(theURL);
+
+		MediaTracker mt = new MediaTracker(theComponent);
+		mt.addImage(img, 0);
+		try {
+			mt.waitForAll();
+		} catch (InterruptedException e) {
+			ControlP5.logger().severe("loading image failed." + e.toString());
+		} catch (Exception e) {
+			ControlP5.logger().severe("loading image failed." + e.toString());
+		}
+		return img;
 	}
 
 }

@@ -1,11 +1,9 @@
 package controlP5;
 
-import processing.core.PVector;
-
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -26,10 +24,14 @@ import processing.core.PVector;
  * @version		##version##
  *
  */
+
+import processing.core.PVector;
+
 /**
+ * Convenience class used for intersections.
  * 
  */
-public class CRect {
+class CRect {
 	private float x, y;
 
 	private float width, height;

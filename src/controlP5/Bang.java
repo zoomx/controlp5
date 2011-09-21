@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -28,13 +28,15 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * a bang controller triggers an event when pressed. A bang can only be assigned
- * to a function in your program but not to a field like other controllers. Bang
- * extends superclass Controller, for a full documentation follow this link, <a
- * href="./controller_class_controller.htm">controller</a>.
+ * <p>
+ * The Bang controller triggers an event when pressed. A bang can only be assigned to a function in
+ * your program but not to a field like other controllers. Bang extends superclass Controller, for a
+ * full documentation see the {@link Controller} reference.
+ * </p>
  * 
  * @example ControlP5bang
  */
+@ControlP5.Layout
 public class Bang extends Controller {
 
 	protected int cnt;
@@ -46,30 +48,18 @@ public class Bang extends Controller {
 		_myValue = 1;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onEnter()
-	 */
+	@Override
 	protected void onEnter() {
 		cnt = 0;
 		isActive = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onLeave()
-	 */
+	@Override
 	protected void onLeave() {
 		isActive = false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mousePressed()
-	 */
+	@Override
 	protected void mousePressed() {
 		if (triggerId == PRESSED) {
 			cnt = -3;
@@ -78,11 +68,7 @@ public class Bang extends Controller {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleased()
-	 */
+	@Override
 	protected void mouseReleased() {
 		if (triggerId == RELEASE) {
 			cnt = -3;
@@ -91,63 +77,57 @@ public class Bang extends Controller {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleasedOutside()
-	 */
+	@Override
 	protected void mouseReleasedOutside() {
-		// if _myTriggerId==RELEASE, the event is not
-		// triggered when mouse is released outside, since
-		// the event would be triggered for any mouse
-		// release even though the controller is not acitve.
-		// therefore mouseReleased() is not called in here.
 		onLeave();
 	}
 
 	/**
-	 * by default a bang is triggered when the mouse is pressed. use
-	 * setTriggerEvent(Bang.PRESSED) or setTriggerEvent(Bang.RELEASE) to define
-	 * the action for triggering a bang. currently only Bang.PRESSED and
-	 * Bang.RELEASE are supported.
+	 * By default a bang is triggered when the mouse is pressed. use setTriggerEvent(Bang.PRESSED)
+	 * or setTriggerEvent(Bang.RELEASE) to define the action for triggering a bang. currently only
+	 * Bang.PRESSED and Bang.RELEASE are supported.
 	 * 
 	 * @param theEventID
+	 * @return Bang
 	 */
-	public void setTriggerEvent(int theEventID) {
+	@ControlP5.Layout
+	public Bang setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
+		return this;
 	}
 
+	@ControlP5.Layout
 	public int getTriggerEvent() {
 		return triggerId;
 	}
 
 	/**
-	 * set the value of the bang controller. since bang can be true or false,
-	 * false=0 and true=1
+	 * Sets the value of the bang controller. since bang can be true or false, false=0 and true=1
 	 * 
 	 * @param theValue float
+	 * @return Bang
 	 */
-	public Controller setValue(float theValue) {
+	@Override
+	public Bang setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#update()
+	/**
+	 * @exclude
 	 */
-	public void update() {
-		setValue(_myValue);
+	@Override
+	public Bang update() {
+		return setValue(_myValue);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#updateDisplayMode(int)
+	/**
+	 * @exclude
 	 */
-	public void updateDisplayMode(int theMode) {
+	@Override
+	@ControlP5.Invisible
+	public Bang updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -163,27 +143,7 @@ public class Bang extends Controller {
 		default:
 			break;
 		}
-	}
-
-	/**
-	 * @deprecated
-	 * @author andreas
-	 * 
-	 */
-	private class BangSpriteDisplay implements ControllerDisplay {
-		public void display(PApplet theApplet, Controller theController) {
-			if (isActive) {
-				sprite.setState(1);
-			} else {
-				sprite.setState(0);
-			}
-			if (cnt < 0) {
-				sprite.setState(0);
-				cnt++;
-			}
-			theApplet.fill(0);
-			sprite.draw(theApplet);
-		}
+		return this;
 	}
 
 	private class BangDisplay implements ControllerDisplay {
@@ -222,13 +182,39 @@ public class Bang extends Controller {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @exclude
+	 */
 	@Override
 	public String getInfo() {
 		return "type:\tBang\n" + super.getInfo();
 	}
-
+	
+	/**
+	 * @exclude
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String toString() {
 		return super.toString() + " [ " + getValue() + " ] " + "Bang" + " (" + this.getClass().getSuperclass() + ")";
 	}
+
+	@Deprecated
+	private class BangSpriteDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			if (isActive) {
+				sprite.setState(1);
+			} else {
+				sprite.setState(0);
+			}
+			if (cnt < 0) {
+				sprite.setState(0);
+				cnt++;
+			}
+			theApplet.fill(0);
+			sprite.draw(theApplet);
+		}
+	}
+
 }

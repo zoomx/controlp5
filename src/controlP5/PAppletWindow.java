@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -39,16 +39,12 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 /**
- * PAppletWIndow description.
- * 
- * 
+ * The PAppletWindow class is used when creating separate ControlWindows to draw
+ * controllers outside of the main window.
  */
 
-public class PAppletWindow extends PApplet implements WindowListener, ComponentListener {
+class PAppletWindow extends PApplet implements WindowListener, ComponentListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1773456691122668251L;
 
 	protected int width = 600;
@@ -80,26 +76,30 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	protected String _myRenderer = "";
 
 	protected int _myFrameRate = 15;
+	
+	private final ControlP5 cp5;
 
 	/*
 	 * (non-Javadoc)
 	 */
-	public PAppletWindow() {
+	public PAppletWindow(ControlP5 theControlP5) {
 		super();
+		cp5 = theControlP5;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 */
-	public PAppletWindow(final String theName, final int theWidth, final int theHeight) {
-		this(theName, theWidth, theHeight, "", 15);
+	public PAppletWindow(ControlP5 theControlP5, final String theName, final int theWidth, final int theHeight) {
+		this(theControlP5, theName, theWidth, theHeight, "", 15);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 */
-	public PAppletWindow(final String theName, final int theWidth, final int theHeight, final String theRenderer, final int theFrameRate) {
+	public PAppletWindow(ControlP5 theControlP5, final String theName, final int theWidth, final int theHeight, final String theRenderer, final int theFrameRate) {
 		super();
+		cp5 = theControlP5;
 		_myName = theName;
 		_myTitle = theName;
 		width = theWidth;
@@ -112,15 +112,16 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	/*
 	 * (non-Javadoc)
 	 */
-	public PAppletWindow(final String theName, final int theX, final int theY, final int theWidth, final int theHeight) {
-		this(theName, theX, theY, theWidth, theHeight, "", 15);
+	public PAppletWindow(ControlP5 theControlP5, final String theName, final int theX, final int theY, final int theWidth, final int theHeight) {
+		this(theControlP5, theName, theX, theY, theWidth, theHeight, "", 15);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 */
-	public PAppletWindow(final String theName, final int theX, final int theY, final int theWidth, final int theHeight, final String theRenderer, final int theFrameRate) {
+	public PAppletWindow(ControlP5 theControlP5,final String theName, final int theX, final int theY, final int theWidth, final int theHeight, final String theRenderer, final int theFrameRate) {
 		super();
+		cp5 = theControlP5;
 		_myName = theName;
 		_myTitle = theName;
 		width = theWidth;
@@ -258,24 +259,24 @@ public class PAppletWindow extends PApplet implements WindowListener, ComponentL
 	 * (non-Javadoc)
 	 */
 	public void keyPressed(KeyEvent theKeyEvent) {
-		ControlP5.papplet.keyPressed(theKeyEvent);
-		ControlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
+		cp5.papplet.keyPressed(theKeyEvent);
+		cp5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 */
 	public void keyReleased(KeyEvent theKeyEvent) {
-		ControlP5.papplet.keyReleased(theKeyEvent);
-		ControlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
+		cp5.papplet.keyReleased(theKeyEvent);
+		cp5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 */
 	public void keyTyped(KeyEvent theKeyEvent) {
-		ControlP5.papplet.keyTyped(theKeyEvent);
-		ControlP5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
+		cp5.papplet.keyTyped(theKeyEvent);
+		cp5.keyHandler.keyEvent(theKeyEvent, this.controlWindow, false);
 	}
 
 	/*

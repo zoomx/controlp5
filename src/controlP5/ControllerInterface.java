@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -30,57 +30,73 @@ import java.awt.event.KeyEvent;
 import processing.core.PApplet;
 import processing.core.PVector;
 
+/**
+ * 
+ * The ControllerInterface is inherited by all ControllerGroup and Controller
+ * classes.
+ * 
+ */
 public interface ControllerInterface {
 
+	
+	@ControlP5.Invisible
 	public void init();
 
 	public int getWidth();
 
 	public int getHeight();
 
-	public float value();
-	
-	public float[] arrayValue();
-
 	public ControllerInterface setValue(float theValue);
 
 	public float getValue();
 
-	public PVector position();
+	public ControllerInterface setStringValue(String theValue);
+
+	public String getStringValue();
+
+	public float[] getArrayValue();
+
+	public int getId();
 
 	public PVector getPosition();
 
-	public void setPosition(float theX, float theY);
+	@ControlP5.Invisible
+	public ControllerInterface setPosition(float theX, float theY);
 
-	public void setPosition(PVector thePVector);
-
-	public PVector absolutePosition();
+	@ControlP5.Invisible
+	public ControllerInterface setPosition(PVector thePVector);
 
 	public PVector getAbsolutePosition();
 
-	public void setAbsolutePosition(PVector thePVector);
+	public ControllerInterface setAbsolutePosition(PVector thePVector);
 
-	public void updateAbsolutePosition();
+	public ControllerInterface updateAbsolutePosition();
 
-	public void update();
+	public ControllerInterface getParent();
 
-	public void setUpdate(boolean theFlag);
+	public ControllerInterface update();
+
+	public ControllerInterface setUpdate(boolean theFlag);
 
 	public boolean isUpdate();
 
-	public void updateEvents();
+	@ControlP5.Invisible
+	public ControllerInterface updateEvents();
 
+	@ControlP5.Invisible
 	public void continuousUpdateEvents();
 
 	/**
 	 * a method for putting input events like e.g. mouse or keyboard events and
-	 * queries. this has been taken out of the draw method for better overwriting
-	 * capability.
+	 * queries. this has been taken out of the draw method for better
+	 * overwriting capability.
 	 * 
 	 * 
 	 */
-	public void updateInternalEvents(PApplet theApplet);
+	@ControlP5.Invisible
+	public ControllerInterface updateInternalEvents(PApplet theApplet);
 
+	@ControlP5.Invisible
 	public void draw(PApplet theApplet);
 
 	public ControllerInterface add(ControllerInterface theElement);
@@ -89,7 +105,9 @@ public interface ControllerInterface {
 
 	public void remove();
 
-	public String name();
+	public String getName();
+
+	public String getAddress();
 
 	public ControlWindow getWindow();
 
@@ -97,11 +115,13 @@ public interface ControllerInterface {
 
 	public boolean setMousePressed(boolean theStatus);
 
+	@ControlP5.Invisible
 	public void keyEvent(KeyEvent theEvent);
 
-	public ControllerInterface setId(int theValue);
+	@ControlP5.Invisible
+	public ControllerInterface setAddress(String theAddress);
 
-	public int id();
+	public ControllerInterface setId(int theValue);
 
 	public ControllerInterface setLabel(String theString);
 
@@ -114,21 +134,26 @@ public interface ControllerInterface {
 	public ControllerInterface setColorLabel(int theColor);
 
 	public ControllerInterface setColorValue(int theColor);
-
-	public CColor color();
-
+	
+	public ControllerInterface setColor(CColor theColor);
+	
+	public CColor getColor();
+	
 	public ControllerInterface show();
 
 	public ControllerInterface hide();
 
 	public boolean isVisible();
 
-	public ControllerInterface moveTo(ControlGroup theGroup, Tab theTab, ControlWindow theWindow);
+	public ControllerInterface moveTo(ControllerGroup theGroup, Tab theTab, ControlWindow theWindow);
 
-	public String stringValue();
+	public ControllerInterface moveTo(ControllerGroup theGroup);
 
+
+	@ControlP5.Invisible
 	public int getPickingColor();
 
+	@ControlP5.Invisible
 	public ControllerInterface parent();
 
 	public ControllerProperty getProperty(String thePropertyName);
@@ -143,6 +168,20 @@ public interface ControllerInterface {
 
 	public ControllerInterface removeProperty(String theSetter, String theGetter);
 
-	public ControllerInterface setColor(CColor theColor);
+	public boolean isMouseOver();
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public String name();
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public String stringValue();
 
 }

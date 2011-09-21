@@ -1,11 +1,9 @@
 package controlP5;
 
-import java.io.Serializable;
-
 /**
  * controlP5 is a processing gui library.
  * 
- * 2007-2011 by Andreas Schlegel
+ * 2006-2011 by Andreas Schlegel
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,16 +23,16 @@ import java.io.Serializable;
  * 
  */
 
+import java.io.Serializable;
+
+/**
+ * A CColor instance contains the colors of a controller including the foreground-, background-,
+ * active-, captionlabel- and valuelabel-colors.
+ */
+
 @SuppressWarnings("serial")
 public class CColor implements Serializable {
 
-	/*
-	 * TODO referring to this thread
-	 * http://processing.org/discourse/yabb2/YaBB.pl?num=1246553397/2#2 the color
-	 * handling is not very user friendly and should be revised. naming: take out
-	 * color from the fields make fields public or add getter for each color how
-	 * to change/edit only the alpha channel of a color?
-	 */
 	private int colorBackground = 0xff003652;
 
 	private int colorForeground = 0xff00698c;
@@ -59,11 +57,11 @@ public class CColor implements Serializable {
 
 	private int maskA = 0x00ffffff;
 
-	private int maskR = 0xff00ffff;
+	int maskR = 0xff00ffff;
 
-	private int maskG = 0xffff00ff;
+	int maskG = 0xffff00ff;
 
-	private int maskB = 0xffffff00;
+	int maskB = 0xffffff00;
 
 	protected void set(CColor theColor) {
 		colorBackground = theColor.colorBackground;
@@ -85,31 +83,36 @@ public class CColor implements Serializable {
 		theControl.setColorLabel(colorCaptionLabel);
 	}
 
+	/**
+	 * @exclude {@inheritDoc}
+	 */
 	public String toString() {
 		// return "{\"CColor\":[ "+
 		// "{\"colorBackground\":[" +
-		// (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff) +
+		// (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff)
+		// +
 		// ","+ (colorBackground >> 0 & 0xff) +"]}, " +
 		// "{\"colorForeground\":[" +
-		// (colorForeground >> 16 & 0xff) + "," + (colorForeground >> 8 & 0xff) +
+		// (colorForeground >> 16 & 0xff) + "," + (colorForeground >> 8 & 0xff)
+		// +
 		// ","+ (colorForeground >> 0 & 0xff) +"]}, " +
 		// "{\"colorActive\":[" +
 		// (colorActive >> 16 & 0xff) + "," + (colorActive >> 8 & 0xff) + ","+
 		// (colorActive >> 0 & 0xff) +"]}, " +
 		// "{\"colorCaptionLabel\":[" +
-		// (colorCaptionLabel >> 16 & 0xff) + "," + (colorCaptionLabel >> 8 & 0xff)
+		// (colorCaptionLabel >> 16 & 0xff) + "," + (colorCaptionLabel >> 8 &
+		// 0xff)
 		// + ","+ (colorCaptionLabel >> 0 & 0xff) +"]}, " +
 		// "{\"colorValueLabel\":[" +
-		// (colorValueLabel >> 16 & 0xff) + "," + (colorValueLabel >> 8 & 0xff) +
+		// (colorValueLabel >> 16 & 0xff) + "," + (colorValueLabel >> 8 & 0xff)
+		// +
 		// ","+ (colorValueLabel >> 0 & 0xff) +"]}" +
 		// " ]}";
 
-		return ("bg (" + (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff) + ","
-				+ (colorBackground >> 0 & 0xff) + "), " + "fg (" + (colorForeground >> 16 & 0xff) + ","
-				+ (colorForeground >> 8 & 0xff) + "," + (colorForeground >> 0 & 0xff) + "), " + "active ("
-				+ (colorActive >> 16 & 0xff) + "," + (colorActive >> 8 & 0xff) + "," + (colorActive >> 0 & 0xff) + "), "
-				+ "captionlabel (" + (colorCaptionLabel >> 16 & 0xff) + "," + (colorCaptionLabel >> 8 & 0xff) + ","
-				+ (colorCaptionLabel >> 0 & 0xff) + "), " + "valuelabel (" + (colorValueLabel >> 16 & 0xff) + ","
+		return ("bg (" + (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff) + "," + (colorBackground >> 0 & 0xff) + "), " + "fg ("
+				+ (colorForeground >> 16 & 0xff) + "," + (colorForeground >> 8 & 0xff) + "," + (colorForeground >> 0 & 0xff) + "), " + "active (" + (colorActive >> 16 & 0xff)
+				+ "," + (colorActive >> 8 & 0xff) + "," + (colorActive >> 0 & 0xff) + "), " + "captionlabel (" + (colorCaptionLabel >> 16 & 0xff) + ","
+				+ (colorCaptionLabel >> 8 & 0xff) + "," + (colorCaptionLabel >> 0 & 0xff) + "), " + "valuelabel (" + (colorValueLabel >> 16 & 0xff) + ","
 				+ (colorValueLabel >> 8 & 0xff) + "," + (colorValueLabel >> 0 & 0xff) + ")");
 	}
 
@@ -120,6 +123,10 @@ public class CColor implements Serializable {
 		set(theColor);
 	}
 
+	/**
+	 * @exclude
+	 * @param theAlpha
+	 */
 	public void setAlpha(int theAlpha) {
 		alpha = theAlpha;
 		colorBackground = (colorBackground & maskA) | (int) (colorBackgroundAlpha * (alpha / 255.0f)) << 24;
@@ -179,6 +186,9 @@ public class CColor implements Serializable {
 		return colorValueLabel;
 	}
 
+	/**
+	 * @exclude {@inheritDoc}
+	 */
 	public int hashCode() {
 		int result = 23;
 		result = 37 * result + colorBackground;
@@ -187,6 +197,9 @@ public class CColor implements Serializable {
 		return result;
 	}
 
+	/**
+	 * @exclude {@inheritDoc}
+	 */
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
@@ -195,8 +208,8 @@ public class CColor implements Serializable {
 			return false;
 		}
 		CColor cc = (CColor) o;
-		if (colorBackground != cc.colorBackground || colorForeground != cc.colorForeground || colorActive != cc.colorActive
-				|| colorCaptionLabel != cc.colorCaptionLabel || colorValueLabel != cc.colorValueLabel) {
+		if (colorBackground != cc.colorBackground || colorForeground != cc.colorForeground || colorActive != cc.colorActive || colorCaptionLabel != cc.colorCaptionLabel
+				|| colorValueLabel != cc.colorValueLabel) {
 			return false;
 		}
 		return true;

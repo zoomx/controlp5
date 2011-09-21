@@ -2,6 +2,13 @@ package controlP5;
 
 import processing.core.PApplet;
 
+/**
+ * The Slider2D allows to control a handle within a 2D area. This controller
+ * returns an arrayValue with the current xy position of its handle.
+ * 
+ * @author andreas schlegel
+ * 
+ */
 public class Slider2D extends Controller {
 
 	protected int cursorWidth = 10, cursorHeight = 10;
@@ -16,14 +23,7 @@ public class Slider2D extends Controller {
 
 	private String _myValueLabelSeparator = ",";
 
-	protected Slider2D(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			int theX,
-			int theY,
-			int theWidth,
-			int theHeight) {
+	protected Slider2D(ControlP5 theControlP5, ControllerGroup theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myArrayValue = new float[] { 0.0f, 0.0f };
 		_myMinX = 0;
@@ -37,13 +37,12 @@ public class Slider2D extends Controller {
 	 * 
 	 * @see controlP5.Controller#updateInternalEvents(processing.core.PApplet)
 	 */
-	public void updateInternalEvents(PApplet theApplet) {
+	@ControlP5.Invisible
+	public Slider2D updateInternalEvents(PApplet theApplet) {
 		if (isInside()) {
-			if (!ControlP5.keyHandler.isAltDown) {
-				float tX = PApplet.constrain(_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x), 0, width
-						- cursorWidth);
-				float tY = PApplet.constrain(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y), 0, height
-						- cursorHeight);
+			if (!cp5.keyHandler.isAltDown) {
+				float tX = PApplet.constrain(_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x), 0, width - cursorWidth);
+				float tY = PApplet.constrain(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y), 0, height - cursorHeight);
 				if (isMousePressed) {
 					cursorX = tX;
 					cursorY = tY;
@@ -51,30 +50,55 @@ public class Slider2D extends Controller {
 				}
 			}
 		}
+		return this;
 	}
 
-	protected void updateValue() {
-		setValue(0);
+	Slider2D updateValue() {
+		return setValue(0);
 	}
 
-	public void setMinX(float theMinX) {
+	/**
+	 * sets the minimum value for the x-axis
+	 * 
+	 * @param theMinX
+	 * @return Slider2D
+	 */
+	public Slider2D setMinX(float theMinX) {
 		_myMinX = theMinX;
-		updateValue();
+		return updateValue();
 	}
 
-	public void setMinY(float theMinY) {
+	/**
+	 * sets the minimum value for the y-axis
+	 * 
+	 * @param theMinY
+	 * @return Slider2D
+	 */
+	public Slider2D setMinY(float theMinY) {
 		_myMinY = theMinY;
-		updateValue();
+		return updateValue();
 	}
 
-	public void setMaxX(float theMaxX) {
+	/**
+	 * sets the maximum value for the x-axis
+	 * 
+	 * @param theMaxX
+	 * @return Slider2D
+	 */
+	public Slider2D setMaxX(float theMaxX) {
 		_myMaxX = theMaxX;
-		updateValue();
+		return updateValue();
 	}
 
-	public void setMaxY(float theMaxY) {
+	/**
+	 * sets the maximum value for the y-axis
+	 * 
+	 * @param theMaxY
+	 * @return Slider2D
+	 */
+	public Slider2D setMaxY(float theMaxY) {
 		_myMaxY = theMaxY;
-		updateValue();
+		return updateValue();
 	}
 
 	public float getMinX() {
@@ -114,13 +138,14 @@ public class Slider2D extends Controller {
 	 * 
 	 * @see controlP5.Controller#setArrayValue(float[])
 	 */
-	public void setArrayValue(float[] theArray) {
+	@Override
+	public Slider2D setArrayValue(float[] theArray) {
 		_myArrayValue = theArray;
 		float rX = (width - cursorWidth) / (float) (_myMaxX - _myMinX);
 		float rY = (height - cursorHeight) / (float) (_myMaxY - _myMinY);
 		cursorX = PApplet.constrain(theArray[0] * rX, 0, width - cursorWidth);
 		cursorY = PApplet.constrain(theArray[1] * rY, 0, height - cursorHeight);
-		updateValue();
+		return updateValue();
 	}
 
 	public float[] getArrayValue() {
@@ -132,7 +157,7 @@ public class Slider2D extends Controller {
 	 * 
 	 * @see controlP5.Controller#setValue(float)
 	 */
-	public Controller setValue(float theValue) {
+	public Slider2D setValue(float theValue) {
 		_myArrayValue[0] = cursorX / ((float) (width - cursorWidth) / (float) width);
 		_myArrayValue[1] = cursorY / ((float) (height - cursorHeight) / (float) height);
 		_myArrayValue[0] = PApplet.map(_myArrayValue[0], 0, width, _myMinX, _myMaxX);
@@ -145,19 +170,24 @@ public class Slider2D extends Controller {
 	/**
 	 * assigns a random value to the controller.
 	 */
-	public void shuffle() {
+	public Slider2D shuffle() {
 		float rX = (float) Math.random();
 		float rY = (float) Math.random();
 		_myArrayValue[0] = rX * width;
 		_myArrayValue[0] = rY * height;
-		setValue(0);
+		return setValue(0);
 	}
 
 	public void setValueLabelSeparator(String theSeparator) {
 		_myValueLabelSeparator = theSeparator;
 	}
-
-	public void updateDisplayMode(int theMode) {
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@ControlP5.Invisible
+	public Slider2D updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -169,13 +199,12 @@ public class Slider2D extends Controller {
 		default:
 			break;
 		}
+		return this;
 	}
 
 	class Slider2DDisplay implements ControllerDisplay {
 
 		public void display(PApplet theApplet, Controller theController) {
-
-			theApplet.pushStyle();
 
 			if (theController.isInside()) {
 				theApplet.fill(theController.getColor().getForeground());
@@ -199,10 +228,8 @@ public class Slider2D extends Controller {
 			theApplet.fill(theController.getColor().getActive());
 			theApplet.rect(getCursorX(), getCursorY(), getCursorWidth(), getCursorHeight());
 
-			theApplet.popStyle();
-
 			getCaptionLabel().draw(theApplet, 0, getHeight() + 4);
-			valueLabel().draw(theApplet, getCaptionLabel().getWidth() + 4, getHeight() + 4);
+			getValueLabel().draw(theApplet, getCaptionLabel().getWidth() + 4, getHeight() + 4);
 		}
 
 	}

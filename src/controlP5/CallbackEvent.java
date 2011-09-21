@@ -1,10 +1,36 @@
 package controlP5;
 
 /**
- * A CallbackEvent is sent to a PApplet or a CallbackListener whenever a
- * controller action such as enter, leave, press, release, etc. has occurred.
+ * controlP5 is a processing gui library.
+ *
+ *  2006-2011 by Andreas Schlegel
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * as published by the Free Software Foundation; either version 2.1
+ * of the License, or (at your option) any later version.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General
+ * Public License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
+ * Boston, MA 02111-1307 USA
+ *
+ * @author 		Andreas Schlegel (http://www.sojamo.de)
+ * @modified	##date##
+ * @version		##version##
+ *
+ */
+
+/**
+ * <p>
+ * A CallbackEvent is send when a controller action such as enter, leave, press, etc has happened.
+ * </p>
  * 
- * @example ControlP5callbackEvent
+ * @example ControlP5callback
  */
 public class CallbackEvent {
 
@@ -18,19 +44,18 @@ public class CallbackEvent {
 	}
 
 	/**
-	 * returns an int value of either one of the following static variables
-	 * ControlP5.ACTION_PRESSED, ControlP5.ACTION_ENTER, ControlP5.ACTION_LEAVE,
-	 * ControlP5.ACTION_RELEASED, ControlP5.ACTION_RELEASEDOUTSIDE,
-	 * ControlP5.ACTION_BROADCAST
 	 * 
-	 * @return int
+	 * @return int Returns an int value of either one of the following static variables
+	 *         ControlP5.ACTION_PRESSED, ControlP5.ACTION_ENTER, ControlP5.ACTION_LEAVE,
+	 *         ControlP5.ACTION_RELEASED, ControlP5.ACTION_RELEASEDOUTSIDE,
+	 *         ControlP5.ACTION_BROADCAST
 	 */
 	public int getAction() {
 		return _myAction;
 	}
 
 	/**
-	 * returns the Controller that triggered the Callback Event.
+	 * Returns the Controller that triggered the Callback Event.
 	 * 
 	 * @return Controller
 	 */
