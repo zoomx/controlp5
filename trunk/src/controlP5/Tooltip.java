@@ -6,6 +6,13 @@ import java.util.Map;
 import processing.core.PApplet;
 import processing.core.PVector;
 
+/**
+ * A tooltip can be registered for individual controllers and is activated on
+ * rollover.
+ * 
+ * @example ControlP5tooltip
+ * 
+ */
 public class Tooltip {
 
 	private ControllerDisplay _myDisplay;
@@ -22,7 +29,7 @@ public class Tooltip {
 
 	private long startTime = 0;
 
-	private long _myDelayInMillis = 1000;
+	private long _myDelayInMillis = 500;
 
 	private int _myMode = ControlP5.INACTIVE;
 
@@ -44,13 +51,18 @@ public class Tooltip {
 
 	private int _myBorder;
 
-	Tooltip() {
+	private ControlP5 cp5;
+
+	private int _myAlignH = ControlP5.RIGHT;
+
+	Tooltip(ControlP5 theControlP5) {
+		cp5 = theControlP5;
 		position = new PVector();
 		currentPosition = new PVector();
 		previousPosition = new PVector();
 		offset = new PVector(0, 24, 0);
 		map = new HashMap<Controller, String>();
-		_myLabel = new Label("");
+		_myLabel = new Label(cp5,"");
 		_myLabel.setWidth(100);
 		_myLabel.setHeight(10);
 		_myLabel.setColor(0xff000000);
@@ -64,10 +76,12 @@ public class Tooltip {
 	 * sets the border of the tooltip, the default border is 4px.
 	 * 
 	 * @param theValue
+	 * @return Tooltip
 	 */
-	public void setBorder(int theValue) {
+	public Tooltip setBorder(int theValue) {
 		_myBorder = theValue;
 		_myLabel.getStyle().setMargin(_myBorder, _myBorder, _myBorder, _myBorder);
+		return this;
 	}
 
 	/**
@@ -83,9 +97,11 @@ public class Tooltip {
 	 * sets the transparency of the default background, default value is 200
 	 * 
 	 * @param theValue
+	 * @return Tooltip
 	 */
-	public void setAlpha(int theValue) {
+	public Tooltip setAlpha(int theValue) {
 		_myMaxAlpha = theValue;
+		return this;
 	}
 
 	private void updateText(String theText) {
@@ -101,11 +117,14 @@ public class Tooltip {
 		_myLabel.set(theText);
 		_myLabel.update();
 		_myWidth = _myLabel.getWidth();
-		_myHeight = _myLabel.getHeight();
+		_myHeight = _myLabel.getHeight() + 2;
 
 	}
 
-	public void draw(ControlWindow theWindow) {
+	/**
+	 * @param theWindow
+	 */
+	void draw(ControlWindow theWindow) {
 
 		if (enabled) {
 			if (_myMode >= ControlP5.WAIT) {
@@ -123,8 +142,10 @@ public class Tooltip {
 
 							if (System.nanoTime() > startTime + (_myDelayInMillis * 1000000)) {
 								position.set(currentPosition);
-								if (position.x > (_myController.getControlWindow().papplet().width - _myWidth)) {
+								_myAlignH = ControlP5.RIGHT;
+								if (position.x > (_myController.getControlWindow().papplet().width - (_myWidth + 20))) {
 									position.sub(new PVector(_myWidth, 0, 0));
+									_myAlignH = ControlP5.LEFT;
 								}
 								_myMode = ControlP5.FADEIN;
 								startTime = System.nanoTime();
@@ -179,14 +200,16 @@ public class Tooltip {
 	}
 
 	/**
-	 * A tooltip is activated when entered by the mouse, after a given delay time
-	 * the Tooltip starts to fade in. Use setDelay(long) to adjust the default
-	 * delay time of 1000 millis.
+	 * A tooltip is activated when entered by the mouse, after a given delay
+	 * time the Tooltip starts to fade in. Use setDelay(long) to adjust the
+	 * default delay time of 1000 millis.
 	 * 
 	 * @param theMillis
+	 * @return Tooltip
 	 */
-	public void setDelay(long theMillis) {
+	public Tooltip setDelay(long theMillis) {
 		_myDelayInMillis = theMillis;
+		return this;
 	}
 
 	/**
@@ -217,57 +240,85 @@ public class Tooltip {
 	}
 
 	/**
-	 * A custom display can be set for a Tooltip. The default display class can be
-	 * found at the bottom of the Tooltip source.
+	 * A custom display can be set for a Tooltip. The default display class can
+	 * be found at the bottom of the Tooltip source.
 	 * 
 	 * @see controlP5.ControllerDisplay
 	 * @param theDisplay
+	 * @return Tooltip
 	 */
-	public void setDisplay(ControllerDisplay theDisplay) {
+	public Tooltip setDisplay(ControllerDisplay theDisplay) {
 		_myDisplay = theDisplay;
+		return this;
 	}
 
 	/**
-	 * registers a controller with the Tooltip, when activating the tooltip for a
-	 * particular controller, the registered text (second parameter) will be
+	 * registers a controller with the Tooltip, when activating the tooltip for
+	 * a particular controller, the registered text (second parameter) will be
 	 * displayed.
 	 * 
 	 * @param theController
 	 * @param theText
+	 * @return Tooltip
 	 */
-	public void register(Controller theController, String theText) {
+	public Tooltip register(Controller theController, String theText) {
 		map.put(theController, theText);
 		theController.registerProperty("setTooltipEnabled", "isTooltipEnabled");
+		return this;
+	}
+
+	public Tooltip register(String theControllerName, String theText) {
+		Controller c = cp5.getController(theControllerName);
+		if (c == null) {
+			return this;
+		}
+		map.put(c, theText);
+		c.registerProperty("setTooltipEnabled", "isTooltipEnabled");
+		return this;
 	}
 
 	/**
 	 * removes a controller from the tooltip
 	 * 
 	 * @param theController
+	 * @return Tooltip
 	 */
-	public void unregister(Controller theController) {
+	public Tooltip unregister(Controller theController) {
 		map.remove(theController);
 		theController.removeProperty("setTooltipEnabled", "isTooltipEnabled");
+		return this;
+	}
+
+	public Tooltip unregister(String theControllerName) {
+		Controller c = cp5.getController(theControllerName);
+		if (c == null) {
+			return this;
+		}
+		return unregister(c);
 	}
 
 	/**
 	 * with the default display, the width of the tooltip is set automatically,
-	 * therefore setWidth() does not have any effect without changing the default
-	 * display to a custom ControllerDisplay.
+	 * therefore setWidth() does not have any effect without changing the
+	 * default display to a custom ControllerDisplay.
 	 * 
 	 * @see controlP5.ControllerDisplay
 	 * @see controlP5.Tooltip#setDisplay(ControllerDisplay)
+	 * @return Tooltip
 	 */
-	public void setWidth(int theWidth) {
+	public Tooltip setWidth(int theWidth) {
 		_myWidth = theWidth;
+		return this;
 	}
 
 	/**
 	 * @see controlP5.Tooltip#setWidth(int)
 	 * @param theHeight
+	 * @return Tooltip
 	 */
-	public void setHeight(int theHeight) {
+	public Tooltip setHeight(int theHeight) {
 		_myHeight = theHeight;
+		return this;
 	}
 
 	/**
@@ -276,28 +327,36 @@ public class Tooltip {
 	 * 
 	 * @param theX
 	 * @param theY
+	 * @return Tooltip
 	 */
-	public void setPositionOffset(float theX, float theY) {
+	public Tooltip setPositionOffset(float theX, float theY) {
 		offset.x = theX;
 		offset.y = theY;
+		return this;
 	}
 
 	/**
 	 * disables the Tooltip on a global level, when disabled, tooltip will not
-	 * respond to any registered controller. to disable a tooltip for aparticular
-	 * controller, used unregister(Controller)
+	 * respond to any registered controller. to disable a tooltip for
+	 * aparticular controller, used unregister(Controller)
 	 * 
 	 * @see controlP5.Tooltip#unregister(Controller)
+	 * @return Tooltip
 	 */
-	public void disable() {
+	public Tooltip disable() {
 		enabled = false;
+		return this;
 	}
 
 	/**
-	 * in case the tooltip is disabled, use enable() to turn the tooltip back on.
+	 * in case the tooltip is disabled, use enable() to turn the tooltip back
+	 * on.
+	 * 
+	 * @return Tooltip
 	 */
-	public void enable() {
+	public Tooltip enable() {
 		enabled = true;
+		return this;
 	}
 
 	/**
@@ -313,9 +372,11 @@ public class Tooltip {
 	 * sets the Label to a custom label and replaces the default label.
 	 * 
 	 * @param theLabel
+	 * @return Tooltip
 	 */
-	public void setLabel(Label theLabel) {
+	public Tooltip setLabel(Label theLabel) {
 		_myLabel = theLabel;
+		return this;
 	}
 
 	/**
@@ -328,34 +389,44 @@ public class Tooltip {
 	}
 
 	/**
-	 * sets the background color of the tooltip, the default color is a dark grey
+	 * sets the background color of the tooltip, the default color is a dark
+	 * grey
 	 * 
 	 * @param theColor
+	 * @return Tooltip
 	 */
-	public void setColorBackground(int theColor) {
+	public Tooltip setColorBackground(int theColor) {
 		_myBackgroundColor = theColor;
+		return this;
 	}
 
 	/**
 	 * sets the text color of the tooltip's label, the default color is a white
 	 * 
 	 * @param theColor
+	 * @return Tooltip
 	 */
-	public void setColorLabel(int theColor) {
+	public Tooltip setColorLabel(int theColor) {
 		_myLabel.setColor(theColor);
+		return this;
 	}
 
 	class TooltipDisplay implements ControllerDisplay {
 
 		public void display(PApplet theApplet, Controller theController) {
-			theApplet.pushStyle();
 			theApplet.fill(_myBackgroundColor, _myAlpha);
 			theApplet.rect(0, 0, _myWidth + _myBorder * 2, _myHeight + _myBorder);
-			theApplet.triangle(3, 0, 7, -4, 11, 0);
+			theApplet.pushMatrix();
+			if (_myAlignH == ControlP5.RIGHT) {
+				theApplet.translate(6, 0);
+			} else {
+				theApplet.translate(_myWidth - 6, 0);
+			}
+			theApplet.triangle(0, 0, 4, -4, 8, 0);
+			theApplet.popMatrix();
 			theApplet.tint(255, PApplet.map(_myAlpha, 0, _myMaxAlpha, 0, 255));
 			_myLabel.draw(theApplet);
 			theApplet.tint(255);
-			theApplet.popStyle();
 		}
 	}
 }

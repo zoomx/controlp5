@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,37 +25,74 @@ package controlP5;
  *
  */
 
+import java.io.File;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import controlP5.ControlWindow.Pointer;
 
 /**
- * controlP5 is a processing and java library for creating simple control GUIs.
+ * <p>
+ * controlP5 is a processing and java library for creating simple control GUIs. The ControlP5 class,
+ * the core of controlP5.
+ * </p>
+ * <p>
+ * All addController-Methods are located inside the ControlP5Base class.
+ * </p>
  * 
+ * @see controlP5.ControlP5Base
  * @example ControlP5basics
  */
 public class ControlP5 extends ControlP5Base {
 
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
 	public ControlWindow controlWindow;
 
-	private Hashtable<String, ControllerInterface> _myControllerMap;
-
-	protected ControlBroadcaster _myControlBroadcaster;
-
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
 	public CColor color = new CColor();
 
-	protected Vector<ControlWindow> controlWindowList = new Vector<ControlWindow>();
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public ControlWindowKeyHandler keyHandler;
 
-	protected static boolean isMoveable = false;
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public PApplet papplet;
 
-	protected boolean isAutoInitialization = false;
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public static final String VERSION = "0.6.4";// "##version##";
 
-	protected boolean isGlobalControllersAlwaysVisible = true;
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public static boolean isApplet;
 
 	public static final int standard58 = 0;
 
@@ -65,18 +102,28 @@ public class ControlP5 extends ControlP5Base {
 
 	public static final int grixel = 3;
 
-	public static ControlWindowKeyHandler keyHandler;
-
-	public static PApplet papplet;
-
-	public static final String VERSION = "0.5.9";// "##version##";
-
-	public static boolean isApplet;
-
 	/**
 	 * use this static variable to turn DEBUG on or off.
 	 */
 	public static boolean DEBUG;
+
+	/**
+	 *  @exclude
+	 */
+	@ControlP5.Invisible
+	public static final Logger logger = Logger.getLogger(ControlP5.class.getName());
+
+	private Map<String, ControllerInterface> _myControllerMap;
+
+	protected ControlBroadcaster _myControlBroadcaster;
+
+	protected Vector<ControlWindow> controlWindowList = new Vector<ControlWindow>();
+
+	protected boolean isMoveable = false;
+
+	protected boolean isAutoInitialization = false;
+
+	protected boolean isGlobalControllersAlwaysVisible = true;
 
 	protected ControlP5IOHandler _myControlP5IOHandler;
 
@@ -84,21 +131,19 @@ public class ControlP5 extends ControlP5Base {
 
 	protected boolean isUpdate;
 
-	protected static boolean isControlFont;
+	protected boolean isControlFont;
 
-	protected static ControlFont controlFont;
+	protected ControlFont controlFont;
 
 	protected static int bitFont = standard58;
 
 	protected boolean isShortcuts = true;
 
 	/*
-	 * use blockDraw to prevent controlp5 from drawing any elements. this is
-	 * useful when using clear() or load()
+	 * use blockDraw to prevent controlp5 from drawing any elements. this is useful when using
+	 * clear() or load()
 	 */
 	protected boolean blockDraw;
-
-	public static final Logger logger = Logger.getLogger(ControlP5.class.getName());
 
 	protected Tooltip _myTooltip;
 
@@ -109,7 +154,6 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public ControlP5(final PApplet theParent) {
 		papplet = theParent;
-		papplet = (PApplet) theParent;
 		init();
 	}
 
@@ -119,24 +163,23 @@ public class ControlP5 extends ControlP5Base {
 		init();
 	}
 
-	/**
-	 * 
-	 */
 	protected void init() {
-		new BitFontRenderer();
+		new BitFontRenderer(this);
 		isTabEventsActive = false;
 		_myControlP5IOHandler = new ControlP5IOHandler(this);
 		_myControlBroadcaster = new ControlBroadcaster(this);
 		keyHandler = new ControlWindowKeyHandler(this);
 		controlWindow = new ControlWindow(this, papplet);
+		papplet.registerPre(this);
 		papplet.registerKeyEvent(new ControlWindowKeyListener(this));
 		papplet.registerDispose(this);
-		_myControllerMap = new Hashtable<String, ControllerInterface>();
+		_myControllerMap = new TreeMap<String, ControllerInterface>();
 		controlWindowList.add(controlWindow);
 		isApplet = papplet.online;
-		_myTooltip = new Tooltip();
+		_myTooltip = new Tooltip(this);
 		super.init(this);
 		welcome();
+		addControllersFor("", papplet);
 	}
 
 	private void welcome() {
@@ -144,8 +187,8 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * By default event originating from tabs are disabled, use
-	 * setTabEventsActive(true) to receive controlEvents when tabs are clicked.
+	 * By default event originating from tabs are disabled, use setTabEventsActive(true) to receive
+	 * controlEvents when tabs are clicked.
 	 * 
 	 * @param theFlag
 	 */
@@ -154,10 +197,9 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * autoInitialization can be very handy when it comes to initializing
-	 * values, e.g. you load a set of controllers, then the values that are
-	 * attached to the controllers will be reset to its saved state. to turn of
-	 * auto intialization, call setAutoInitialization(false) right after
+	 * autoInitialization can be very handy when it comes to initializing values, e.g. you load a
+	 * set of controllers, then the values that are attached to the controllers will be reset to its
+	 * saved state. to turn of auto intialization, call setAutoInitialization(false) right after
 	 * initializing controlP5 and before creating any controller.
 	 * 
 	 * @param theFlag boolean
@@ -167,12 +209,11 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * by default controlP5 draws any controller on top of any drawing done in
-	 * the draw() function (this doesnt apply to P3D where controlP5.draw() has
-	 * to be called manually in the sketch's draw() function ). to turn off the
-	 * auto drawing of controlP5, use controlP5.setAutoDraw(false). now you can
-	 * call controlP5.draw() any time whenever controllers should be drawn into
-	 * the sketch.
+	 * by default controlP5 draws any controller on top of any drawing done in the draw() function
+	 * (this doesnt apply to P3D where controlP5.draw() has to be called manually in the sketch's
+	 * draw() function ). to turn off the auto drawing of controlP5, use
+	 * controlP5.setAutoDraw(false). now you can call controlP5.draw() any time whenever controllers
+	 * should be drawn into the sketch.
 	 * 
 	 * @param theFlag boolean
 	 */
@@ -187,72 +228,122 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * check if the autoDraw function for the main window is enabled(true) or
-	 * disabled(false).
+	 * check if the autoDraw function for the main window is enabled(true) or disabled(false).
 	 * 
 	 * @return boolean
 	 */
 	public boolean isAutoDraw() {
 		return controlWindow.isAutoDraw;
 	}
-
+	
 	/**
 	 * 
-	 * @return ControlBroadcaster
+	 * @see controlP5.ControlBroadcaster
 	 */
-	public ControlBroadcaster controlbroadcaster() {
+	public ControlBroadcaster getControlBroadcaster() {
 		return _myControlBroadcaster;
 	}
 
-	public void addListener(ControlListener theListener) {
-		controlbroadcaster().addListener(theListener);
+	/**
+	 * @see controlP5.ControlListener
+	 */
+	public ControlP5 addListener(ControlListener... theListeners) {
+		getControlBroadcaster().addListener(theListeners);
+		return this;
 	}
 
-	public void removeListener(ControlListener theListener) {
-		controlbroadcaster().removeListener(theListener);
+	/**
+	 * @see controlP5.ControlListener
+	 */
+	public ControlP5 removeListener(ControlListener... theListeners) {
+		getControlBroadcaster().removeListener(theListeners);
+		return this;
 	}
 
+	/**
+	 * @see controlP5.ControlListener
+	 */
+	public ControlP5 removeListener(ControlListener theListener) {
+		getControlBroadcaster().removeListener(theListener);
+		return this;
+	}
+
+	/**
+	 * @see controlP5.ControlListener
+	 */
 	public ControlListener getListener(int theIndex) {
-		return controlbroadcaster().getListener(theIndex);
-	}
-
-	public void addCallback(CallbackListener theAction) {
-		controlbroadcaster().addCallback(theAction);
-	}
-
-	public void addCallback(CallbackListener theAction, Controller... theControllers) {
-		controlbroadcaster().addCallback(theAction, theControllers);
-	}
-
-	public void removeCallback(CallbackListener theAction) {
-		controlbroadcaster().removeCallback(theAction);
-	}
-
-	public void removeCallback(Controller theController) {
-		controlbroadcaster().removeCallback(theController);
+		return getControlBroadcaster().getListener(theIndex);
 	}
 
 	/**
-	 * returns a tab by name.
-	 * 
-	 * @param theName String
-	 * @return Tab
+	 * @see controlP5.CallbackEvent
+	 * @see controlP5.CallbackListener
 	 */
-	public Tab tab(String theName) {
-		return getTab(theName);
+	public ControlP5 addCallback(CallbackListener... theListeners) {
+		getControlBroadcaster().addCallback(theListeners);
+		return this;
 	}
 
 	/**
-	 * get a tab by name.
-	 * 
-	 * @param theName String
-	 * @return Tab
+	 * @see controlP5.CallbackEvent
+	 * @see controlP5.CallbackListener
 	 */
+	public ControlP5 addCallback(CallbackListener theListener) {
+		getControlBroadcaster().addCallback(theListener);
+		return this;
+	}
+
+	/**
+	 * @see controlP5.CallbackEvent
+	 * @see controlP5.CallbackListener
+	 */
+	public ControlP5 addCallback(CallbackListener theListener, Controller... theControllers) {
+		getControlBroadcaster().addCallback(theListener, theControllers);
+		return this;
+	}
+
+	/**
+	 * @see controlP5.CallbackEvent
+	 * @see controlP5.CallbackListener
+	 */
+	public ControlP5 removeCallback(CallbackListener... theListeners) {
+		getControlBroadcaster().removeCallback(theListeners);
+		return this;
+	}
+
+	/**
+	 * @see controlP5.CallbackEvent
+	 * @see controlP5.CallbackListener
+	 */
+	public ControlP5 removeCallback(Controller... theControllers) {
+		getControlBroadcaster().removeCallback(theControllers);
+		return this;
+	}
+
+	/**
+	 * @see controlP5.CallbackEvent
+	 * @see controlP5.CallbackListener
+	 */
+	public ControlP5 removeCallback(Controller theController) {
+		getControlBroadcaster().removeCallback(theController);
+		return this;
+	}
+
+	/**
+	 * TODO
+	 * 
+	 * @exclude
+	 * @param theObject
+	 */
+	public void addControlsFor(Object theObject) {
+
+	}
+
 	public Tab getTab(String theName) {
 		for (int j = 0; j < controlWindowList.size(); j++) {
-			for (int i = 0; i < controlWindowList.get(j).tabs().size(); i++) {
-				if (((Tab) controlWindowList.get(j).tabs().get(i)).name().equals(theName)) {
-					return (Tab) (controlWindowList.get(j)).tabs().get(i);
+			for (int i = 0; i < controlWindowList.get(j).getTabs().size(); i++) {
+				if (((Tab) controlWindowList.get(j).getTabs().get(i)).getName().equals(theName)) {
+					return (Tab) (controlWindowList.get(j)).getTabs().get(i);
 				}
 			}
 		}
@@ -260,17 +351,10 @@ public class ControlP5 extends ControlP5Base {
 		return myTab;
 	}
 
-	/**
-	 * get a tab by name from a specific controlwindow.
-	 * 
-	 * @param theWindow ControlWindow
-	 * @param theName String
-	 * @return Tab
-	 */
 	public Tab getTab(ControlWindow theWindow, String theName) {
-		for (int i = 0; i < theWindow.tabs().size(); i++) {
-			if (((Tab) theWindow.tabs().get(i)).name().equals(theName)) {
-				return (Tab) theWindow.tabs().get(i);
+		for (int i = 0; i < theWindow.getTabs().size(); i++) {
+			if (((Tab) theWindow.getTabs().get(i)).getName().equals(theName)) {
+				return (Tab) theWindow.getTabs().get(i);
 			}
 		}
 		Tab myTab = theWindow.add(new Tab(this, theWindow, theName));
@@ -278,36 +362,101 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * registers a Controller with ControlP5, a Controller should/must be
-	 * registered with a unique name. If not referencing Controllers by name is
-	 * not guaranteed. the rule here is last come last serve, here, the
-	 * reference by name is only guaranteed for the last controller registered
-	 * with a given name, already existing Controllers with the same name will
-	 * be ignored.
+	 * registers a Controller with ControlP5, a Controller should/must be registered with a unique
+	 * name. If not, accessing Controllers by name is not guaranteed. the rule here is last come
+	 * last serve, existing Controllers with the same name will be overridden.
 	 * 
 	 * @param theController ControllerInterface
+	 * @return ControlP5
 	 */
-	public void register(ControllerInterface theController) {
-		if (checkName(theController.name())) {
-			remove(theController.name());
+	public ControlP5 register(Object theObject, String theIndex, ControllerInterface theController) {
+		String address = "";
+		if (theObject == papplet) {
+			address = (theController.getName().startsWith("/")) ? "" : "/";
+			address += theController.getName();
+		} else {
+			address = ((theIndex.isEmpty() || theIndex.startsWith("/")) ? "" : "/");
+			address += theIndex;
+			address += (theController.getName().startsWith("/") ? "" : "/");
+			address += theController.getName();
 		}
+		theController.setAddress(address);
+		if (checkName(theController.getAddress())) {
+			/*
+			 * in case a controller with name already existing is detected it will be deleted
+			 */
+			remove(theController.getAddress());
+		}
+		/* add the controller to the controller map */
+		_myControllerMap.put(theController.getAddress(), theController);
 
-		_myControllerMap.put(theController.name(), theController);
+		/* update the properties' controller address */
+		List<ControllerProperty> ps = getProperties().get(theController);
+		if (ps != null) {
+			for (ControllerProperty p : ps) {
+				p.setAddress(theController.getAddress());
+			}
+		}
+		/* initialize the controller */
 		theController.init();
+
+		/*
+		 * handle controller plugs and map controllers to its reference objects if applicable.
+		 */
+		if (theController instanceof Controller) {
+			if (theObject == null) {
+				theObject = papplet;
+			}
+			if (!theObject.equals(papplet)) {
+				((Controller) theController).unplugFrom(papplet).plugTo(theObject);
+			}
+
+			if (!_myObjectToControllerMap.containsKey(theObject)) {
+				_myObjectToControllerMap.put(theObject, new ArrayList<ControllerInterface>());
+			}
+			_myObjectToControllerMap.get(theObject).add(theController);
+		}
+		return this;
 	}
 
 	/**
-	 * returns a list of registered Controllers. Controllers with duplicated
-	 * reference names will be ignored, only the latest of such Controllers will
-	 * be included in the list.
+	 * returns a list of registered Controllers. Controllers with duplicated reference names will be
+	 * ignored, only the latest of such Controllers will be included in the list.
 	 * 
-	 * @see #register(ControllerInterface)
-	 * @return
+	 * @see controlP5.ControlP5#getAll(Class)
+	 * @return ControllerInterface[]
 	 */
 	public ControllerInterface[] getControllerList() {
 		ControllerInterface[] myControllerList = new ControllerInterface[_myControllerMap.size()];
 		_myControllerMap.values().toArray(myControllerList);
 		return myControllerList;
+	}
+
+	/**
+	 * Returns a list of controllers or groups of a particular type. The following example will
+	 * return a list of registered Bangs only:<br />
+	 * <code><pre>
+	 * List<Bang> list = controlP5.getAll(Bang.class);
+	 * println(list);
+	 * for(Bang b:list) {
+	 *   b.setColorForeground(color(255,255,0));
+	 * }
+	 * </pre></code> Here the foreground color of all Bangs is changed to yellow.
+	 * 
+	 * @param <T>
+	 * @param theClass A class that extends ControllerInterface, which applies to all Controllers
+	 *            and ControllerGroups
+	 * @return List<T>
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> List<T> getAll(Class<T> theClass) {
+		ArrayList<T> l = new ArrayList<T>();
+		for (ControllerInterface ci : _myControllerMap.values()) {
+			if (ci.getClass() == theClass || ci.getClass().getSuperclass() == theClass) {
+				l.add((T) ci);
+			}
+		}
+		return l;
 	}
 
 	protected void deactivateControllers() {
@@ -321,19 +470,30 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
-	protected void clear() {
-		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
-			controlWindowList.get(i).clear();
+	private String checkAddress(String theName) {
+		if (!theName.startsWith("/")) {
+			return "/" + theName;
 		}
+		return theName;
+	}
 
-		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
-			controlWindowList.remove(i);
+	/**
+	 * @excude
+	 */
+	public void printControllerMap() {
+		List<String> strs = new ArrayList<String>();
+		System.out.println("============================================");
+		for (Iterator it = _myControllerMap.entrySet().iterator(); it.hasNext();) {
+			Map.Entry entry = (Map.Entry) it.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+			strs.add(key + " = " + value);
 		}
-
-		_myControllerMap.clear();
-
-		// TODO ??? remove or keep?
-		// controlWindow.init();
+		Collections.sort(strs);
+		for (String s : strs) {
+			System.out.println(s);
+		}
+		System.out.println("============================================");
 	}
 
 	/**
@@ -349,13 +509,13 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * removes a controller by instance.
 	 * 
-	 * TODO Fix this. this only removes the reference to a controller from the
-	 * controller map but not its children, fatal for controller groups!
+	 * TODO Fix this. this only removes the reference to a controller from the controller map but
+	 * not its children, fatal for controller groups!
 	 * 
 	 * @param theController ControllerInterface
 	 */
 	protected void remove(ControllerInterface theController) {
-		_myControllerMap.remove(theController.name());
+		_myControllerMap.remove(theController.getAddress());
 	}
 
 	/**
@@ -364,72 +524,175 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theString String
 	 */
 	public void remove(String theName) {
-		if (getController(theName) != null) {
-			getController(theName).remove();
+		String address = checkAddress(theName);
+
+		if (getController(address) != null) {
+			getController(address).remove();
 		}
 
-		if (getGroup(theName) != null) {
-			getGroup(theName).remove();
+		if (getGroup(address) != null) {
+			getGroup(address).remove();
 		}
 
 		for (int j = 0; j < controlWindowList.size(); j++) {
-			for (int i = 0; i < controlWindowList.get(j).tabs().size(); i++) {
-				if (((Tab) (controlWindowList.get(j)).tabs().get(i)).name().equals(theName)) {
-					((Tab) (controlWindowList.get(j)).tabs().get(i)).remove();
+			for (int i = 0; i < controlWindowList.get(j).getTabs().size(); i++) {
+				if (((Tab) (controlWindowList.get(j)).getTabs().get(i)).getAddress().equals(address)) {
+					((Tab) (controlWindowList.get(j)).getTabs().get(i)).remove();
 				}
 			}
 		}
-		_myControllerMap.remove(theName);
+		_myControllerMap.remove(address);
 	}
-	
+
 	public ControllerInterface get(String theName) {
-		if (_myControllerMap.containsKey(theName)) {
-				return _myControllerMap.get(theName);
+		String address = checkAddress(theName);
+		if (_myControllerMap.containsKey(address)) {
+			return _myControllerMap.get(address);
 		}
 		return null;
 	}
 
 	/**
-	 * gets a controller by name. you will have to cast the controller.
-	 * 
-	 * @param theName String
-	 * @return Controller
+	 * @exclude
+	 * @see controlP5.ControlP5#getAll(Class)
+	 * @return List<ControllerInterface>
 	 */
+	@ControlP5.Invisible
+	public List<ControllerInterface> getList() {
+		LinkedList<ControllerInterface> l = new LinkedList<ControllerInterface>();
+		for (ControlWindow c : controlWindowList) {
+			l.addAll(c.getTabs().get());
+		}
+		l.addAll(Arrays.asList(getControllerList()));
+		return l;
+	}
+
 	public Controller getController(String theName) {
-		if (_myControllerMap.containsKey(theName)) {
-			if (_myControllerMap.get(theName) instanceof Controller) {
-				return (Controller) _myControllerMap.get(theName);
+		String address = checkAddress(theName);
+		if (_myControllerMap.containsKey(address)) {
+			if (_myControllerMap.get(address) instanceof Controller) {
+				return (Controller) _myControllerMap.get(address);
 			}
 		}
 		return null;
 	}
 
-	/**
-	 * get a group by name.
-	 * 
-	 * @param theGroupName String
-	 * @return ControllerGroup
-	 */
 	public ControllerGroup getGroup(String theGroupName) {
-		if (_myControllerMap.containsKey(theGroupName)) {
-			if (_myControllerMap.get(theGroupName) instanceof ControllerGroup) {
-				return (ControllerGroup) _myControllerMap.get(theGroupName);
+		String address = checkAddress(theGroupName);
+		if (_myControllerMap.containsKey(address)) {
+			if (_myControllerMap.get(address) instanceof ControllerGroup) {
+				return (ControllerGroup) _myControllerMap.get(address);
 			}
 		}
 		return null;
+	}
+
+	private boolean checkName(String theName) {
+		if (_myControllerMap.containsKey(checkAddress(theName))) {
+			ControlP5.logger().warning("Controller with name \"" + theName + "\" already exists. overwriting reference of existing controller.");
+			return true;
+		}
+		return false;
+	}
+
+	public void moveControllersForObject(Object theObject, ControllerGroup theGroup) {
+		if (_myObjectToControllerMap.containsKey(theObject)) {
+			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface c : cs) {
+				((Controller) c).moveTo(theGroup);
+			}
+		}
+	}
+
+	public void move(Object theObject, ControllerGroup theGroup) {
+		moveControllersForObject(theObject, theGroup);
+	}
+
+	protected void clear() {
+		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
+			controlWindowList.get(i).clear();
+		}
+
+		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
+			controlWindowList.remove(i);
+		}
+
+		_myControllerMap.clear();
+
+		// controlWindow.init(); // TODO ??? remove or keep?
+	}
+
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public void pre() {
+		Iterator<FieldChangedListener> itr = _myFieldChangedListenerMap.values().iterator();
+		while (itr.hasNext()) {
+			itr.next().update();
+		}
 	}
 
 	/**
 	 * call draw() from your program when autoDraw is disabled.
+	 * @exclude
 	 */
+	@ControlP5.Invisible
 	public void draw() {
 		if (blockDraw == false) {
 			controlWindow.draw();
 		}
 	}
 
+	/**
+	 * convenience method to access the main window (ControlWindow class).
+	 */
 	public ControlWindow getWindow() {
 		return getWindow(papplet);
+	}
+
+	/**
+	 * disables the mouse wheel as input for the main window, by default the mouse wheel is enabled.
+	 */
+	public ControlP5 disableMouseWheel() {
+		getWindow().disableMouseWheel();
+		return this;
+	}
+
+	/**
+	 * enables the mouse wheel as input for the main window, by default the mouse wheel is enabled.
+	 */
+	public ControlP5 enableMouseWheel() {
+		getWindow().enableMouseWheel();
+		return this;
+	}
+
+	/**
+	 * checks the status of the mouse wheel.
+	 */
+	public boolean isMouseWheel() {
+		return getWindow().isMouseWheel();
+	}
+
+	/**
+	 * convenience method to access the pointer of the main control window.
+	 */
+	public Pointer getPointer() {
+		return getWindow(papplet).getPointer();
+	}
+
+	/**
+	 * convenience method to check if the mouse (or pointer) is hovering over any controller.
+	 */
+	public boolean isMouseOver() {
+		return getWindow(papplet).isMouseOver();
+	}
+
+	/**
+	 * convenience method to check if the mouse (or pointer) is hovering over a specific controller.
+	 */
+	public boolean isMouseOver(ControllerInterface theController) {
+		return getWindow(papplet).isMouseOver(theController);
 	}
 
 	public ControlWindow getWindow(PApplet theApplet) {
@@ -441,12 +704,6 @@ public class ControlP5 extends ControlP5Base {
 		return controlWindow;
 	}
 
-	/**
-	 * gets a ControlWindow by name.
-	 * 
-	 * @param theName String
-	 * @return ControlWindow ControlWindow
-	 */
 	public ControlWindow getWindow(String theWindowName) {
 		for (int i = 0; i < controlWindowList.size(); i++) {
 			if (controlWindowList.get(i).name().equals(theWindowName)) {
@@ -457,77 +714,76 @@ public class ControlP5 extends ControlP5Base {
 		return null;
 	}
 
-	private boolean checkName(String theName) {
-		if (_myControllerMap.containsKey(theName)) {
-			ControlP5.logger().warning("Controller with name \"" + theName + "\" already exists. overwriting reference of existing controller.");
-			return true;
-		}
-		return false;
+	/**
+	 * adds a ControlWindowCanvas to the default sketch window.
+	 * @see controlP5.ControlWindowCanvas
+	 */
+	public ControlP5 addCanvas(ControlWindowCanvas theCanvas) {
+		getWindow().addCanvas(theCanvas);
+		return this;
 	}
 
 	/**
-	 * sets the active state color of tabs and controllers.
-	 * 
-	 * @param theColor int
+	 * sets the active state color of tabs and controllers, this cascades down to all known
+	 * controllers.
 	 */
-	public void setColorActive(int theColor) {
+	public ControlP5 setColorActive(int theColor) {
 		color.setActive(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorActive(theColor);
 		}
+		return this;
 	}
 
 	/**
-	 * sets the foreground color of tabs and controllers.
-	 * 
-	 * @param theColor int
+	 * sets the foreground color of tabs and controllers, this cascades down to all known
+	 * controllers.
 	 */
-	public void setColorForeground(int theColor) {
+	public ControlP5 setColorForeground(int theColor) {
 		color.setForeground(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorForeground(theColor);
 		}
+		return this;
 	}
 
 	/**
-	 * sets the backgorund color of tabs and controllers.
-	 * 
-	 * @param theColor int
+	 * sets the background color of tabs and controllers, this cascades down to all known
+	 * controllers.
 	 */
-	public void setColorBackground(int theColor) {
+	public ControlP5 setColorBackground(int theColor) {
 		color.setBackground(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorBackground(theColor);
 		}
+		return this;
 	}
 
 	/**
-	 * sets the label color of tabs and controllers.
-	 * 
-	 * @param theColor int
+	 * sets the label color of tabs and controllers, this cascades down to all known controllers.
 	 */
-	public void setColorLabel(int theColor) {
+	public ControlP5 setColorLabel(int theColor) {
 		color.setCaptionLabel(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorLabel(theColor);
 		}
+		return this;
 	}
 
 	/**
-	 * sets the value color of controllers.
-	 * 
-	 * @param theColor int
+	 * sets the value color of controllers, this cascades down to all known controllers.
 	 */
-	public void setColorValue(int theColor) {
+	public ControlP5 setColorValue(int theColor) {
 		color.setValueLabel(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
 			myControlWindow.setColorValue(theColor);
 		}
+		return this;
 	}
 
 	protected Vector<ControlWindow> getControlWindows() {
@@ -535,48 +791,49 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * disable Controllers to be moved around. Other key events are still
-	 * available like ALT-h to hide and show the controllers To disable all key
-	 * events, use disableKeys()
+	 * Enables/disables Controllers to be moved around when ALT-key is down and mouse is dragged.
+	 * Other key events are still available like ALT-h to hide and show the controllers To disable
+	 * all key events, use disableKeys()
 	 */
-	public void setMoveable(boolean theFlag) {
-		isMoveable = true;
+	public ControlP5 setMoveable(boolean theFlag) {
+		isMoveable = theFlag;
+		return this;
 	}
 
 	/**
-	 * checks if controllers are generally moveable
+	 * Checks if controllers are generally moveable
 	 * 
 	 */
-	public void isMoveable() {
-		isMoveable = false;
+	public boolean isMoveable() {
+		return isMoveable;
 	}
 
 	/**
-	 * saves the current values of controllers into a default file
+	 * Saves the current values of controllers into a default properties file
 	 * 
 	 * @see controlP5.ControllerProperties
-	 * @return
 	 */
 	public boolean saveProperties() {
 		return _myProperties.save();
 	}
 
 	/**
-	 * saves the current values of controllers into a file. the filepath is
-	 * given by parameter theFilePath.
+	 * Saves the current values of controllers into a file, the filepath is given by parameter
+	 * theFilePath.
 	 * 
 	 * @see controlP5.ControllerProperties
-	 * @param theFilePath
-	 * @return
 	 */
 	public boolean saveProperties(String theFilePath) {
-		theFilePath = checkPropertiesPath(theFilePath);
-		return _myProperties.save(theFilePath);
+		return _myProperties.saveAs(theFilePath);
+	}
+
+	public boolean saveProperties(String theFilePath, String... theSets) {
+		return _myProperties.saveAs(theFilePath, theSets);
 	}
 
 	/**
-	 * loads properties from a default properties file and changes values of
-	 * controllers accordinlgy.
+	 * Loads properties from a default properties file and changes values of controllers
+	 * accordingly.
 	 * 
 	 * @see controlP5.ControllerProperties
 	 * @return
@@ -586,25 +843,54 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * loads properties from a properties file and changes values of controllers
-	 * accordinlgy. The filepath is given by parameter theFilePath.
+	 * Loads properties from a properties file and changes values of controllers accordingly, the
+	 * filepath is given by parameter theFilePath.
 	 * 
 	 * @param theFilePath
 	 * @return
 	 */
 	public boolean loadProperties(String theFilePath) {
 		theFilePath = checkPropertiesPath(theFilePath);
-		// TODO return _myProperties.load(theFilePath);
+		File f = new File(theFilePath);
+		if (f.exists()) {
+			return _myProperties.load(theFilePath);
+		}
+		logger.info("Properties File " + theFilePath + " does not exist.");
 		return false;
 	}
 
-	private String checkPropertiesPath(String theFilePath) {
+	String checkPropertiesPath(String theFilePath) {
 		theFilePath = (theFilePath.startsWith("/") || theFilePath.startsWith(".")) ? theFilePath : papplet.sketchPath(theFilePath);
 		return theFilePath;
 	}
 
 	/**
-	 * get the current version of controlP5
+	 * @exclude
+	 * @param theFilePath
+	 * @return
+	 */
+	@ControlP5.Invisible
+	public boolean loadLayout(String theFilePath) {
+		theFilePath = checkPropertiesPath(theFilePath);
+		File f = new File(theFilePath);
+		if (f.exists()) {
+			getLayout().load(theFilePath);
+			return true;
+		}
+		logger.info("Layout File " + theFilePath + " does not exist.");
+		return false;
+	}
+
+	/**
+	 * @exclude
+	 * @param theFilePath
+	 */
+	public void saveLayout(String theFilePath) {
+		getLayout().save(theFilePath);
+	}
+
+	/**
+	 * Returns the current version of controlP5
 	 * 
 	 * @return String
 	 */
@@ -615,8 +901,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * shows all controllers and tabs in your sketch.
 	 * 
-	 * @see #isVisible()
-	 * @see #hide()
+	 * @see controlP5.ControlP5#isVisible()
+	 * @see controlP5.ControlP5#hide()
 	 */
 
 	public void show() {
@@ -626,9 +912,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * returns true or false according to the current visibility flag.
 	 * 
-	 * @see #show()
-	 * @see #hide()
-	 * @return
+	 * @see controlP5.ControlP5#show()
+	 * @see controlP5.ControlP5#hide()
 	 */
 	public boolean isVisible() {
 		return controlWindow.isVisible();
@@ -637,8 +922,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * hide all controllers and tabs inside your sketch window.
 	 * 
-	 * @see #show()
-	 * @see #isVisible()
+	 * @see controlP5.ControlP5#show()
+	 * @see controlP5.ControlP5#isVisible()
 	 */
 	public void hide() {
 		controlWindow.hide();
@@ -647,8 +932,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * forces all controllers to update.
 	 * 
-	 * @see #isUpdate()
-	 * @see #setUpdate()
+	 * @see controlP5.ControlP5#isUpdate()
+	 * @see controlP5.ControlP5#setUpdate()
 	 */
 	public void update() {
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
@@ -660,8 +945,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * checks if automatic updates are enabled. By default this is true.
 	 * 
-	 * @see #update()
-	 * @see #setUpdate(boolean)
+	 * @see controlP5.ControlP5#update()
+	 * @see controlP5.ControlP5#setUpdate(boolean)
 	 * @return
 	 */
 	public boolean isUpdate() {
@@ -671,8 +956,8 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * changes the update behavior according to parameter theFlag
 	 * 
-	 * @see #update()
-	 * @see #isUpdate()
+	 * @see controlP5.ControlP5#update()
+	 * @see controlP5.ControlP5#isUpdate()
 	 * @param theFlag
 	 */
 	public void setUpdate(boolean theFlag) {
@@ -720,7 +1005,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
-	public static ControlFont getFont() {
+	public ControlFont getFont() {
 		return controlFont;
 	}
 
@@ -755,7 +1040,7 @@ public class ControlP5 extends ControlP5Base {
 	public ControllerGroup begin() {
 		// TODO replace controlWindow.tab("default") with
 		// controlWindow.tabs().get(1);
-		return begin(controlWindow.tab("default"));
+		return begin(controlWindow.getTab("default"));
 	}
 
 	public ControllerGroup begin(ControllerGroup theGroup) {
@@ -766,7 +1051,7 @@ public class ControlP5 extends ControlP5Base {
 	public ControllerGroup begin(int theX, int theY) {
 		// TODO replace controlWindow.tab("default") with
 		// controlWindow.tabs().get(1);
-		return begin(controlWindow.tab("default"), theX, theY);
+		return begin(controlWindow.getTab("default"), theX, theY);
 	}
 
 	public ControllerGroup begin(ControllerGroup theGroup, int theX, int theY) {
@@ -778,11 +1063,11 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public ControllerGroup begin(ControlWindow theWindow) {
-		return begin(theWindow.tab("default"));
+		return begin(theWindow.getTab("default"));
 	}
 
 	public ControllerGroup begin(ControlWindow theWindow, int theX, int theY) {
-		return begin(theWindow.tab("default"), theX, theY);
+		return begin(theWindow.getTab("default"), theX, theY);
 	}
 
 	public ControllerGroup end(ControllerGroup theGroup) {
@@ -791,99 +1076,114 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public ControllerGroup end() {
-		return end(controlWindow.tab("default"));
+		return end(controlWindow.getTab("default"));
 	}
 
 	/**
-	 * disposes and clears all controlP5 elements. When running in applet mode,
-	 * opening new tabs or switching to another tab causes the applet to call
-	 * dispose(). therefore dispose() is disabled when running ing applet mode.
-	 * TODO implement better dispose handling for applets.
+	 * disposes and clears all controlP5 elements. When running in applet mode, opening new tabs or
+	 * switching to another tab causes the applet to call dispose(). therefore dispose() is disabled
+	 * when running ing applet mode. TODO implement better dispose handling for applets.
+	 * @exclude
 	 */
 	public void dispose() {
 		if (!isApplet) {
 			clear();
 		}
-
 	}
+
+	/* add Objects with Annotation */
 
 	public static Logger logger() {
 		return logger;
 	}
 
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface Invisible {
+	}
+
+	@Retention(RetentionPolicy.RUNTIME)
+	@interface Layout {
+	}
+
 	/**
+	 * @exclude
 	 * @deprecated
 	 * @param theControlFont
 	 * @return
 	 */
+	@Deprecated
 	public boolean setControlFont(ControlFont theControlFont) {
 		return setFont(theControlFont);
 	}
 
 	/**
+	 * @exclude
 	 * @deprecated
 	 * @param thePFont
 	 * @param theFontSize
 	 * @return
 	 */
+	@Deprecated
 	public boolean setControlFont(PFont thePFont, int theFontSize) {
 		return setFont(thePFont, theFontSize);
 	}
 
 	/**
+	 * @exclude
 	 * @deprecated
 	 * @param thePFont
 	 * @return
 	 */
+	@Deprecated
 	public boolean setControlFont(PFont thePFont) {
 		return setFont(thePFont);
 	}
 
 	/**
+	 * @exclude
 	 * @deprecated
 	 * @return
 	 */
-	public static ControlFont getControlFont() {
+	@Deprecated
+	public ControlFont getControlFont() {
 		return getFont();
 	}
 
 	/**
-	 * @see #saveProperties()
-	 * @see #saveProperties(String)
 	 * @deprecated
+	 * @exclude
 	 */
+	@Deprecated
 	public boolean save(String theFilePath) {
 		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
 		return false;
 	}
 
 	/**
-	 * @see #saveProperties()
-	 * @see #saveProperties(String)
 	 * @deprecated
+	 * @exclude
 	 */
+	@Deprecated
 	public boolean save() {
 		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
 		return false;
 	}
 
 	/**
-	 * @see #loadProperties()
-	 * @see #loadProperties(String)
 	 * @deprecated
+	 * @exclude
 	 */
+	@Deprecated
 	public boolean load(String theFileName) {
 		ControlP5.logger().info("Loading ControlP5 from an XML file has been removed, have a look at controlP5's properties instead.");
 		return false;
 	}
 
 	/**
-	 * forces each available controller to broadcast its value. Deprecated, use
-	 * .update() instead.
-	 * 
-	 * @see #update()
 	 * @deprecated
+	 * @exclude
 	 */
+	@Deprecated
 	public void trigger() {
 		Iterator<?> iter = _myControllerMap.keySet().iterator();
 		while (iter.hasNext()) {
@@ -896,106 +1196,126 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * @deprecated use disableShortcuts()
+	 * @exclude
 	 */
+	@Deprecated
 	public void disableKeys() {
 		isShortcuts = false;
 	}
 
 	/**
 	 * @deprecated use enableShortcuts()
+	 * @exclude
 	 */
+	@Deprecated
 	public void enableKeys() {
 		isShortcuts = true;
 	}
 
 	/**
-	 * lock ControlP5 to disable moving Controllers around. Other key events are
-	 * still available like ALT-h to hide and show the controllers To disable
-	 * all key events, use disableShortcuts() use setMoveable(false) instead
+	 * lock ControlP5 to disable moving Controllers around. Other key events are still available
+	 * like ALT-h to hide and show the controllers To disable all key events, use disableShortcuts()
+	 * use setMoveable(false) instead
 	 * 
-	 * @see #disableShortcuts()
-	 * @see #setMoveable(boolean)
 	 * @deprecated
+	 * @exclude
 	 */
+	@Deprecated
 	public void lock() {
 		isMoveable = false;
 	}
 
 	/**
-	 * unlock ControlP5 to enable moving Controllers around. use
-	 * setMoveable(true) instead
+	 * unlock ControlP5 to enable moving Controllers around. use setMoveable(true) instead
 	 * 
-	 * @see #setMoveable(boolean)
+	 * @see controlP5.ControlP5#setMoveable(boolean)
 	 * @deprecated
+	 * @exclude
 	 */
+	@Deprecated
 	public void unlock() {
 		isMoveable = true;
 	}
 
 	/**
 	 * @deprecated
-	 * @return
+	 * @exclude
 	 */
+	@Deprecated
 	protected Vector<ControlWindow> controlWindows() {
 		return getControlWindows();
 	}
 
 	/**
 	 * @deprecated
-	 * @param theName
-	 * @return
+	 * @exclude
 	 */
+	@Deprecated
 	public Controller controller(String theName) {
 		return getController(theName);
 	}
 
 	/**
-	 * get a group by name
-	 * 
 	 * @deprecated
-	 * @param theGroupName String
-	 * @return ControllerGroup
+	 * @exclude
 	 */
+	@Deprecated
 	public ControllerGroup group(String theGroupName) {
 		return getGroup(theGroupName);
 	}
 
 	/**
 	 * @deprecated
-	 * @param theWindowName
-	 * @return
+	 * @exclude
 	 */
+	@Deprecated
 	public ControlWindow window(String theWindowName) {
 		return getWindow(theWindowName);
 	}
 
 	/**
 	 * @deprecated
-	 * @return
+	 * @exclude
 	 */
+	@Deprecated
 	public ControlWindow window() {
 		return getWindow();
 	}
 
 	/**
-	 * get a tab by name from a specific controlwindow.
-	 * 
 	 * @deprecated
-	 * @param theWindow ControlWindow
-	 * @param theName String
-	 * @return Tab
+	 * @exclude
 	 */
+	@Deprecated
 	public Tab tab(ControlWindow theWindow, String theName) {
 		return getTab(theWindow, theName);
 	}
 
 	/**
 	 * @deprecated
-	 * @param theApplet
-	 * @return
+	 * @exclude
 	 */
+	@Deprecated
 	public ControlWindow window(PApplet theApplet) {
 		return getWindow(theApplet);
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public ControlBroadcaster controlbroadcaster() {
+		return _myControlBroadcaster;
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public Tab tab(String theName) {
+		return getTab(theName);
 	}
 
 }

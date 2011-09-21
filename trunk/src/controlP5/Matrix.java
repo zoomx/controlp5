@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -28,12 +28,9 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * a matrix is a 2d array with one pointer that traverses through the matrix
- * with a timed interval. if an item of a matrix-column is active, the x and y
- * position of the corresponding cell will trigger an event. see the example for
- * more information.
- * 
- * TODO add multi-cells access to the vertical axis
+ * A matrix is a 2d array with a pointer that traverses through the matrix in a timed interval. if
+ * an item of a matrix-column is active, the x and y position of the corresponding cell will trigger
+ * an event and notify the program. see the ControlP5matrix example for more information.
  * 
  * @example ControlP5matrix
  */
@@ -59,8 +56,6 @@ public class Matrix extends Controller {
 
 	protected int sum;
 
-	protected long _myTime;
-
 	protected int _myInterval = 100;
 
 	protected int currentX = -1;
@@ -69,19 +64,13 @@ public class Matrix extends Controller {
 
 	protected int _myMode = SINGLE_ROW;
 
-	public Matrix(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			int theCellX,
-			int theCellY,
-			int theX,
-			int theY,
-			int theWidth,
-			int theHeight) {
+	private Thread t;
+
+	public Matrix(ControlP5 theControlP5, ControllerGroup theParent, String theName, int theCellX, int theCellY, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myInterval = 100;
 		initCells(theCellX, theCellY);
+		runThread();
 	}
 
 	private void initCells(int theCellX, int theCellY) {
@@ -96,47 +85,38 @@ public class Matrix extends Controller {
 				_myCells[x][y] = 0;
 			}
 		}
-		_myTime = System.currentTimeMillis();
+
 	}
 
 	/**
 	 * set the speed of intervals in millis iterating through the matrix.
 	 * 
 	 * @param theInterval int
+	 * @return Matrix
 	 */
-	public void setInterval(int theInterval) {
+
+	public Matrix setInterval(int theInterval) {
 		_myInterval = theInterval;
+		return this;
 	}
 
 	public int getInterval() {
 		return _myInterval;
 	}
 
-	/**
-	 * @see ControllerInterfalce.updateInternalEvents
-	 * 
-	 */
-	public void updateInternalEvents(PApplet theApplet) {
-		if (System.currentTimeMillis() > _myTime + _myInterval) {
-			cnt += 1;
-			cnt %= _myCellX;
-			_myTime = System.currentTimeMillis();
-			for (int i = 0; i < _myCellY; i++) {
-				if (_myCells[cnt][i] == 1) {
-					_myValue = 0;
-					_myValue = (cnt << 0) + (i << 8);
-					setValue(_myValue);
-				}
-			}
-		}
-
+	@ControlP5.Invisible
+	public Matrix updateInternalEvents(PApplet theApplet) {
 		setIsInside(inside());
 
 		if (getIsInside()) {
 			if (isPressed) {
 				int tX = (int) ((theApplet.mouseX - position.x) / stepX);
 				int tY = (int) ((theApplet.mouseY - position.y) / stepY);
+
 				if (tX != currentX || tY != currentY) {
+					tX = PApplet.min(PApplet.max(0, tX), _myCellX);
+					tY = PApplet.min(PApplet.max(0, tY), _myCellY);
+					System.out.println("clicked " + tX + "," + tY);
 					boolean isMarkerActive = (_myCells[tX][tY] == 1) ? true : false;
 					switch (_myMode) {
 					default:
@@ -147,7 +127,7 @@ public class Matrix extends Controller {
 						_myCells[tX][tY] = (!isMarkerActive) ? 1 : _myCells[tX][tY];
 						break;
 					case (SINGLE_ROW):
-						for (int i = 0; i < _myCellX; i++) {
+						for (int i = 0; i < _myCellY; i++) {
 							_myCells[tX][i] = 0;
 						}
 						_myCells[tX][tY] = (!isMarkerActive) ? 1 : _myCells[tX][tY];
@@ -161,31 +141,18 @@ public class Matrix extends Controller {
 				}
 			}
 		}
+		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onEnter()
-	 */
 	protected void onEnter() {
 		isActive = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onLeave()
-	 */
 	protected void onLeave() {
 		isActive = false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mousePressed()
-	 */
+	@ControlP5.Invisible
 	public void mousePressed() {
 		isActive = getIsInside();
 		if (getIsInside()) {
@@ -193,20 +160,11 @@ public class Matrix extends Controller {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleasedOutside()
-	 */
 	protected void mouseReleasedOutside() {
 		mouseReleased();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleased()
-	 */
+	@ControlP5.Invisible
 	public void mouseReleased() {
 		if (isActive) {
 			isActive = false;
@@ -216,37 +174,29 @@ public class Matrix extends Controller {
 		currentY = 0;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#setValue(float)
-	 */
 	@Override
-	public Controller setValue(float theValue) {
+	public Matrix setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#update()
-	 */
-	public void update() {
-		setValue(_myValue);
+	@Override
+	public Matrix update() {
+		return setValue(_myValue);
 	}
 
 	/**
-	 * set the state of a particular cell inside a matrix. use true or false for
-	 * parameter theValue
+	 * set the state of a particular cell inside a matrix. use true or false for parameter theValue
 	 * 
 	 * @param theX
 	 * @param theY
 	 * @param theValue
+	 * @return Matrix
 	 */
-	public void set(int theX, int theY, boolean theValue) {
+	public Matrix set(int theX, int theY, boolean theValue) {
 		_myCells[theX][theY] = (theValue == true) ? 1 : 0;
+		return this;
 	}
 
 	public static int getX(int thePosition) {
@@ -265,31 +215,72 @@ public class Matrix extends Controller {
 		return (((int) thePosition >> 8) & 0xff);
 	}
 
-	public void setCells(int[][] theCells) {
+	public Matrix setCells(int[][] theCells) {
 		initCells(theCells.length, theCells[0].length);
 		_myCells = theCells;
+		return this;
 	}
 
 	public int[][] getCells() {
 		return _myCells;
 	}
 
+	private void triggerEventFromThread() {
+		cnt += 1;
+		cnt %= _myCellX;
+		for (int i = 0; i < _myCellY; i++) {
+			if (_myCells[cnt][i] == 1) {
+				_myValue = 0;
+				_myValue = (cnt << 0) + (i << 8);
+				setValue(_myValue);
+			}
+		}
+	}
+
+	private void runThread() {
+		if (t == null) {
+			t = new Thread(getName()) {
+				public void run() {
+					while (true) {
+						triggerEventFromThread();
+						try {
+							sleep(_myInterval);
+						} catch (InterruptedException e) {
+							// throw new RuntimeException(e);
+						}
+					}
+				}
+			};
+			t.start();
+		}
+	}
+
+	@Override
+	public void remove() {
+		if (t != null) {
+			t.interrupt();
+		}
+		super.remove();
+	}
+
 	/**
-	 * use setMode to change the cell-activation which by default is
-	 * ControlP5.SINGLE_ROW, 1 active cell per row, but can be changed to
-	 * ControlP5.SINGLE_COLUMN or ControlP5.MULTIPLES
+	 * use setMode to change the cell-activation which by default is ControlP5.SINGLE_ROW, 1 active
+	 * cell per row, but can be changed to ControlP5.SINGLE_COLUMN or ControlP5.MULTIPLES
 	 * 
-	 * @param theMode
+	 * @param theMode return Matrix
 	 */
-	public void setMode(int theMode) {
+	public Matrix setMode(int theMode) {
 		_myMode = theMode;
+		return this;
 	}
 
 	public int getMode() {
 		return _myMode;
 	}
 
-	public void updateDisplayMode(int theMode) {
+	@Override
+	@ControlP5.Invisible
+	public Matrix updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -301,6 +292,7 @@ public class Matrix extends Controller {
 		default:
 			break;
 		}
+		return this;
 	}
 
 	class MatrixDisplay implements ControllerDisplay {
@@ -311,8 +303,7 @@ public class Matrix extends Controller {
 			theApplet.noStroke();
 			if (isInside()) {
 				theApplet.fill(color.getForeground());
-				theApplet.rect((int) ((theApplet.mouseX - position.x) / stepX) * stepX, (int) ((theApplet.mouseY - position.y) / stepY)
-						* stepY, stepX, stepY);
+				theApplet.rect((int) ((theApplet.mouseX - position.x) / stepX) * stepX, (int) ((theApplet.mouseY - position.y) / stepY) * stepY, stepX, stepY);
 			}
 			theApplet.stroke(color.getActive());
 			theApplet.line(cnt * stepX, 0, cnt * stepX, height);

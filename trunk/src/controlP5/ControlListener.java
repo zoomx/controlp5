@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -26,20 +26,24 @@ package controlP5;
  */
 
 /**
- * ControlListener is an interface that can be implemented by a custom class.
- * add the controlListener to a controller with addListner()
+ * ControlListener is an interface that can be implemented by a custom class to
+ * be notified when controller values change. To add a ControlListener to a
+ * controller use ÊController.addListner()
  * 
- * Controller
- * 
+ * @see controlP5.Controller#addListener(ControlListener)
+ * @see controlP5.CallbackListener
  * @example ControlP5listener
  */
 public interface ControlListener {
 
 	/**
-	 * ControlListener is an interface that can be implemented by a custom class.
-	 * add the controlListener to a controller with Controller.addListner()
+	 * controlEvent is called by controlP5's ControlBroadcaster to inform
+	 * available listeners about value changes. Use the CallbackListener to get
+	 * informed when actions such as pressed, release, drag, etc are performed.
 	 * 
-	 * @param theEvent ControlEvent Controller
+	 * @see controlP5.CallbackListener
+	 * @see controlP5.CallbackEvent
+	 * @param theEvent ControlEvent
 	 * @example ControlP5listener
 	 */
 	public void controlEvent(ControlEvent theEvent);

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,21 +25,28 @@ package controlP5;
  *
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Used by MultiList.
+ * 
  * @example ControlP5multiList
  * @nosuperclasses Controller Controller
  */
 public class MultiListButton extends Button implements MultiListInterface {
+	
+	private List<MultiListButton> _myChildren = new ArrayList<MultiListButton>();
+	
+	private MultiListInterface parent;
 
-	MultiListInterface parent;
+	private MultiList root;
 
-	MultiList root;
-
-	CRect _myRect;
+	private CRect _myRect;
 
 	protected int _myDirection = ControlP5Constants.RIGHT;
+	
+	private boolean isUpperCase =true;
 
 	/**
 	 * 
@@ -47,50 +54,46 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theParent MultiListInterface
 	 * @param theRoot MultiList
 	 */
-	protected MultiListButton(
-			ControlP5 theControlP5,
-			String theName,
-			float theValue,
-			int theX,
-			int theY,
-			int theWidth,
-			int theHeight,
-			MultiListInterface theParent,
-			MultiList theRoot) {
+	protected MultiListButton(ControlP5 theControlP5, String theName, float theValue, int theX, int theY, int theWidth, int theHeight, MultiListInterface theParent, MultiList theRoot) {
 		super(theControlP5, (ControllerGroup) theRoot.parent(), theName, theValue, theX, theY, theWidth, theHeight);
 		parent = theParent;
 		root = theRoot;
 		updateRect(position.x, position.y, width, height);
 	}
+	
+	public MultiListButton toUpperCase(boolean theValue) {
+		isUpperCase = theValue;
+		for(Controller c:_myChildren) {
+			((MultiListButton)c).toUpperCase(isUpperCase);
+		}
+		_myCaptionLabel.toUpperCase(isUpperCase);
+		return this;
+	}
 
 	public void remove() {
 		int myYoffset = 0;
-		for (int i = 0; i < parent.subelements().size(); i++) {
-			if (((MultiListButton) parent.subelements().get(i)) == this) {
+		for (int i = 0; i < parent.getChildren().size(); i++) {
+			if (parent.getChildren().get(i) == this) {
 				myYoffset = height + 1;
 			}
-			((MultiListButton) parent.subelements().get(i)).updateLocation(0, -myYoffset);
+			((MultiListButton) parent.getChildren().get(i)).updateLocation(0, -myYoffset);
 		}
 
 		if (_myParent != null) {
 			removeListener(root);
 			_myParent.remove(this);
 		}
-		if (controlP5 != null) {
+		if (cp5 != null) {
 			removeListener(root);
-			controlP5.remove(this);
+			cp5.remove(this);
 		}
-		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListButton) subelements.get(i)).remove();
+		for (int i = 0; i < _myChildren.size(); i++) {
+			((MultiListButton) _myChildren.get(i)).remove();
 		}
 	}
 
-	/**
-	 * 
-	 * @return Vector
-	 */
-	public List<Controller> subelements() {
-		return subelements;
+	public List<MultiListButton> getChildren() {
+		return _myChildren;
 	}
 
 	public int getDirection() {
@@ -121,8 +124,8 @@ public class MultiListButton extends Button implements MultiListInterface {
 		position.x += theX;
 		position.y += theY;
 		updateRect(position.x, position.y, width, height);
-		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListInterface) subelements.get(i)).updateLocation(theX, theY);
+		for (int i = 0; i < _myChildren.size(); i++) {
+			((MultiListInterface) _myChildren.get(i)).updateLocation(theX, theY);
 		}
 	}
 
@@ -131,7 +134,7 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * 
 	 * @param theWidth int
 	 */
-	public Controller setWidth(int theWidth) {
+	public MultiListButton setWidth(int theWidth) {
 		// negative direction
 		int dif = (_myDirection == LEFT) ? theWidth - width : 0;
 		width = theWidth;
@@ -144,14 +147,14 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * 
 	 * @param theHeight int
 	 */
-	public Controller setHeight(int theHeight) {
+	public MultiListButton setHeight(int theHeight) {
 		int difHeight = height;
 		height = theHeight;
 		difHeight = height - difHeight;
 		int myYoffset = 0;
-		for (int i = 0; i < parent.subelements().size(); i++) {
-			((MultiListButton) parent.subelements().get(i)).updateLocation(0, myYoffset);
-			if (((MultiListButton) parent.subelements().get(i)) == this) {
+		for (int i = 0; i < parent.getChildren().size(); i++) {
+			(parent.getChildren().get(i)).updateLocation(0, myYoffset);
+			if ((parent.getChildren().get(i)) == this) {
 				myYoffset = difHeight;
 			}
 		}
@@ -168,19 +171,20 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 */
 	public MultiListButton add(String theName, float theValue) {
 		int myHeight = -(height + 1);
-		for (int i = 0; i < subelements().size(); i++) {
-			myHeight += ((MultiListButton) subelements().get(i)).height + 1;
+		for (int i = 0; i < getChildren().size(); i++) {
+			myHeight += (getChildren().get(i)).height + 1;
 		}
-		// negative direction, this is static now, make it dynamic depending on the
+		// negative direction, this is static now, make it dynamic depending on
+		// the
 		// location of the list.
 		int xx = ((int) position.x + (width + 1));
-		MultiListButton b = new MultiListButton(controlP5, theName, theValue, xx, (int) position.y + (height + 1)
-				+ myHeight, (int) width, (int) height, this, root);
+		MultiListButton b = new MultiListButton(cp5, theName, theValue, xx, (int) position.y + (height + 1) + myHeight, (int) width, (int) height, this, root);
 		b.isMoveable = false;
+		b.toUpperCase(isUpperCase);
 		b.hide();
-		controlP5.register(b);
+		cp5.register(null, "", b);
 		b.addListener(root);
-		subelements.add(b);
+		_myChildren.add(b);
 		updateRect(xx, position.y, width, (height + 1) + myHeight);
 		return b;
 	}
@@ -209,10 +213,8 @@ public class MultiListButton extends Button implements MultiListInterface {
 	}
 
 	public void mouseReleasedOutside() {
-		// !!! other than in the Button class,
-		// calling mouseReleased here conflicts with
-		// 
-		// mouseReleased();
+		// !!! other than in the Button class, calling mouseReleased here
+		// conflicts with mouseReleased();
 	}
 
 	/**
@@ -229,9 +231,9 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theInterface MultiListInterface
 	 */
 	public void close(MultiListInterface theInterface) {
-		for (int i = 0; i < subelements.size(); i++) {
-			if (theInterface != (MultiListInterface) subelements.get(i)) {
-				((MultiListInterface) subelements.get(i)).close();
+		for (int i = 0; i < _myChildren.size(); i++) {
+			if (theInterface != (MultiListInterface) _myChildren.get(i)) {
+				((MultiListInterface) _myChildren.get(i)).close();
 			}
 		}
 
@@ -241,9 +243,9 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * 
 	 */
 	public void close() {
-		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListButton) subelements.get(i)).close();
-			((MultiListButton) subelements.get(i)).hide();
+		for (int i = 0; i < _myChildren.size(); i++) {
+			((MultiListButton) _myChildren.get(i)).close();
+			((MultiListButton) _myChildren.get(i)).hide();
 		}
 	}
 
@@ -251,9 +253,15 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * 
 	 */
 	public void open() {
-		for (int i = 0; i < subelements.size(); i++) {
-			((MultiListButton) subelements.get(i)).show();
+		for (int i = 0; i < _myChildren.size(); i++) {
+			((MultiListButton) _myChildren.get(i)).show();
 		}
+	}
+
+	@Override
+	public List<Controller> getSubElements() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

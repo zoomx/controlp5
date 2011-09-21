@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -56,7 +56,7 @@ public class ControllerSprite implements Cloneable {
 		wh = width * height;
 		_myState = 0;
 
-		display = ControlP5.papplet.createImage(theWidth, theHeight, PApplet.RGB);
+		display = theControlP5.papplet.createImage(theWidth, theHeight, PApplet.RGB);
 		update();
 
 	}
@@ -85,13 +85,11 @@ public class ControllerSprite implements Cloneable {
 	}
 
 	public void draw(PApplet theApplet) {
-		theApplet.pushStyle();
 		theApplet.imageMode(PApplet.CORNER);
 		if (isMask) {
 			display.mask(mask);
 		}
 		theApplet.image(display, 0, 0);
-		theApplet.popStyle();
 	}
 
 	public void update() {

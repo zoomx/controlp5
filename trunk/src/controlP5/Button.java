@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -28,10 +28,13 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
+ * <p>
  * A button triggers an event after it has been release. Events can be linked to
  * functions and fields inside your program/sketch. for a full documentation of
  * this controller see the {@link Controller} class.
+ * </p>
  * 
+ * @see controlP5.ControllerGroup
  * @example ControlP5button
  */
 
@@ -61,10 +64,16 @@ public class Button extends Controller {
 		_myValue = theDefaultValue;
 	}
 
+	/**
+	 * @exclude
+	 */
 	public Button() {
 		super(null, null, null, 0, 0, 1, 1);
 	}
-
+	
+	/**
+	 * @exclude
+	 */
 	public Button(ControlP5 theControlP5, String theName) {
 		super(theControlP5, theControlP5.tab("default"), theName, 0, 0, 1, 1);
 	}
@@ -80,9 +89,10 @@ public class Button extends Controller {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @exclude
 	 */
 	@Override
+	@ControlP5.Invisible
 	public void mousePressed() {
 		isActive = getIsInside();
 		isPressed = true;
@@ -92,9 +102,10 @@ public class Button extends Controller {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @exclude
 	 */
 	@Override
+	@ControlP5.Invisible
 	public void mouseReleased() {
 		isPressed = false;
 		if (activateBy == RELEASE) {
@@ -104,7 +115,7 @@ public class Button extends Controller {
 	}
 
 	/**
-	 * A button can be activated by a mouse PRESSED or mouse RELEASE. Default
+	 *  A button can be activated by a mouse PRESSED or mouse RELEASE. Default
 	 * value is RELEASE.
 	 * 
 	 * @param theValue use ControlP5.PRESSED or ControlP5.RELEASE as parameter
@@ -122,7 +133,7 @@ public class Button extends Controller {
 	protected void activate() {
 		if (isActive) {
 			isActive = false;
-			if (parent() instanceof Tab) {
+			if (getParent() instanceof Tab) {
 				setIsInside(false);
 			}
 			isOn = !isOn;
@@ -132,20 +143,19 @@ public class Button extends Controller {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @exclude
 	 */
 	@Override
+	@ControlP5.Invisible
 	public void mouseReleasedOutside() {
 		mouseReleased();
 	}
 
 	/**
-	 * set the value of the button controller.
-	 * 
-	 * @param theValue float
+	 * {@inheritDoc}
 	 */
 	@Override
-	public Controller setValue(float theValue) {
+	public Button setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 		return this;
@@ -155,12 +165,12 @@ public class Button extends Controller {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void update() {
-		setValue(_myValue);
+	public Button update() {
+		return setValue(_myValue);
 	}
 
 	/**
-	 * turn a button into a switch, or use toggle instead.
+	 * Turns a button into a switch, or use a Toggle instead.
 	 * 
 	 * @see controlP5.Toggle
 	 * @param theFlag turns the button into a switch when true
@@ -173,7 +183,7 @@ public class Button extends Controller {
 
 	/**
 	 * If the button acts as a switch, setOn will turn on the switch. Use
-	 * {@link #setSwitch(boolean) setSwitch} to turn a button into a switch.
+	 * {@link controlP5.Button#setSwitch(boolean) setSwitch} to turn a Button into a Switch.
 	 * 
 	 * @return Button
 	 */
@@ -188,7 +198,7 @@ public class Button extends Controller {
 
 	/**
 	 * If the button acts as a switch, setOff will turn off the switch. Use
-	 * {@link #setSwitch(boolean) setSwitch} to turn a button into a switch.
+	 * {@link controlP5.Button#setSwitch(boolean) setSwitch} to turn a Button into a Switch.
 	 * 
 	 * @return Button
 	 */
@@ -200,7 +210,20 @@ public class Button extends Controller {
 		}
 		return this;
 	}
-
+	
+	/**
+	 * @return boolean
+	 */
+	public boolean isOn() {
+		return isOn;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public boolean isPressed() {
+		return isPressed;
+	}
 	/**
 	 * Returns true or false and indicates the switch state of the button.
 	 * {@link setSwitch(boolean) setSwitch} should have been set before.
@@ -208,17 +231,19 @@ public class Button extends Controller {
 	 * @see controlP5.Button#setSwitch(boolean)
 	 * @return boolean
 	 */
-	public boolean booleanValue() {
+	public boolean getBooleanValue() {
 		return isOn;
 	}
+	
 
 	/**
 	 * {@inheritDoc}
-	 * 
+	 * @exclude
 	 * @see controlP5.Controller#updateDisplayMode(int)
 	 */
 	@Override
-	public void updateDisplayMode(int theMode) {
+	@ControlP5.Invisible
+	public Button updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -235,31 +260,7 @@ public class Button extends Controller {
 			break;
 
 		}
-	}
-
-	/**
-	 * @deprecated
-	 * @author andreas
-	 * 
-	 */
-	private class ButtonSpriteDisplay implements ControllerDisplay {
-		public void display(PApplet theApplet, Controller theController) {
-			if (isOn && isSwitch) {
-				sprite.setState(2);
-			} else {
-				if (isActive) {
-					if (isPressed) {
-						sprite.setState(2);
-					} else {
-						sprite.setState(1);
-					}
-				} else {
-					sprite.setState(0);
-				}
-			}
-			theApplet.fill(0);
-			sprite.draw(theApplet);
-		}
+		return this;
 	}
 
 	private class ButtonDisplay implements ControllerDisplay {
@@ -304,14 +305,49 @@ public class Button extends Controller {
 		}
 	}
 
+	/**
+	 * @exclude
+	 */
 	@Override
 	public String getInfo() {
 		return "type:\tButton\n" + super.getInfo();
 	}
 
+	/**
+	 * @exclude
+	 */
 	@Override
 	public String toString() {
 		return super.toString() + " [ " + getValue() + " ] " + "Button" + " (" + this.getClass().getSuperclass() + ")";
 	}
 
+	@Deprecated
+	private class ButtonSpriteDisplay implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+			if (isOn && isSwitch) {
+				sprite.setState(2);
+			} else {
+				if (isActive) {
+					if (isPressed) {
+						sprite.setState(2);
+					} else {
+						sprite.setState(1);
+					}
+				} else {
+					sprite.setState(0);
+				}
+			}
+			theApplet.fill(0);
+			sprite.draw(theApplet);
+		}
+	}
+	
+	/**
+	 * @deprecated
+	 * @exclude
+	 */
+	@Deprecated
+	public boolean booleanValue() {
+		return isOn;
+	}
 }

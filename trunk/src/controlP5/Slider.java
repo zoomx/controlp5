@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -30,16 +30,14 @@ import java.util.ArrayList;
 import processing.core.PApplet;
 
 /**
- * a slider is either used horizontally or vertically. when adding a slider to
- * controlP5, the width is compared versus the height. width is bigger, you get
- * a horizontal slider, height is bigger, you get a vertical slider. a slider
- * can have a fixed slide controller (one end of the slider is fixed to the left
- * or bottom side of the controller), or a flexible slide control (a knob that
- * you can drag).
+ * A slider is either used horizontally or vertically. when adding a slider to controlP5, the width
+ * is compared against the height. if the width is bigger, you get a horizontal slider, is the
+ * height bigger, you get a vertical slider. a slider can have a fixed slider handle (one end of the
+ * slider is fixed to the left or bottom side of the controller), or a flexible slider handle (a
+ * handle you can drag).
  * 
  * 
  * @example ControlP5slider
- * @nosuperclasses Controller Controller
  */
 public class Slider extends Controller {
 
@@ -53,9 +51,9 @@ public class Slider extends Controller {
 
 	protected float _myValuePosition;
 
-	protected int _mySliderbarSize = 0;
+	protected int _myHandleSize = 0;
 
-	protected int _myDefaultSliderbarSize = 10;
+	protected int _myDefaultHandleSize = 10;
 
 	protected int triggerId = PRESSED;
 
@@ -65,12 +63,9 @@ public class Slider extends Controller {
 
 	protected boolean isSnapToTickMarks;
 
-	protected static int autoWidth = 150;
+	protected static int autoWidth = 100;
 
 	protected static int autoHeight = 10;
-
-	// TODO replace and include Label alignments
-	// and positioning in Controller class
 
 	protected int alignValueLabel = CENTER;
 
@@ -78,9 +73,11 @@ public class Slider extends Controller {
 
 	private float scrollSensitivity = 0.1f;
 
+	private int _myColorTickMark = 0xffffffff;
+
 	/*
-	 * TODO currently the slider value goes up and down linear, provide an
-	 * option to make it logarithmic, potential, curved.
+	 * TODO currently the slider value goes up and down linear, provide an option to make it
+	 * logarithmic, potential, curved.
 	 */
 	/**
 	 * 
@@ -99,18 +96,20 @@ public class Slider extends Controller {
 	 */
 	public Slider(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(theName);
+		_myCaptionLabel = new Label(cp5, theName);
 		_myCaptionLabel.setColor(color.getCaptionLabel());
 		_myMin = theMin;
 		_myMax = theMax;
+
 		// initialize the valueLabel with the longest string available, which is
 		// either theMax or theMin.
-		_myValueLabel = new Label("" + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax) : adjustValue(_myMin)));
+		_myValueLabel = new Label(cp5, "" + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax) : adjustValue(_myMin)));
 		_myCaptionLabel.setColor(color.getValueLabel());
-		// after initializing valueLabel, set the value to
-		// the default value.
+
+		// after initializing valueLabel, set the value to the default value.
 		_myValueLabel.set("" + adjustValue(_myValue));
 		_myValue = theDefaultValue;
+
 		_myTickMarks = new ArrayList<TickMark>();
 		setSliderMode(FIX);
 		_myDirection = (width > height) ? HORIZONTAL : VERTICAL;
@@ -120,28 +119,33 @@ public class Slider extends Controller {
 		} else {
 			valueLabelPositioning = FLEXIBLE;
 		}
-		valueLabel();
 	}
 
 	/**
-	 * use the slider mode to set the mode of the slider bar, which can be
-	 * Slider.FLEXIBLE or Slider.FIX
+	 * use the slider mode to set the mode of the slider bar, which can be Slider.FLEXIBLE or
+	 * Slider.FIX
 	 * 
 	 * @param theMode int
 	 */
 	public void setSliderMode(int theMode) {
 		_mySliderMode = theMode;
 		if (_mySliderMode == FLEXIBLE) {
-			_mySliderbarSize = (_myDefaultSliderbarSize >= getHeight() / 2) ? _myDefaultSliderbarSize / 2 : _myDefaultSliderbarSize;
+			_myHandleSize = (_myDefaultHandleSize >= getHeight() / 2) ? _myDefaultHandleSize / 2 : _myDefaultHandleSize;
 		} else {
-			_mySliderbarSize = 0;
+			_myHandleSize = 0;
 		}
-		_myUnit = (_myMax - _myMin) / ((width > height) ? width - _mySliderbarSize : height - _mySliderbarSize);
+		_myUnit = (_myMax - _myMin) / ((width > height) ? width - _myHandleSize : height - _myHandleSize);
 		setValue(_myValue);
 	}
 
-	public void setSliderBarSize(int theSize) {
-		_myDefaultSliderbarSize = theSize;
+	/**
+	 * sets the size of the Slider handle, by default it is set to either the width or height of the
+	 * slider.
+	 * 
+	 * @param theSize
+	 */
+	public void setHandleSize(int theSize) {
+		_myDefaultHandleSize = theSize;
 		setSliderMode(_mySliderMode);
 	}
 
@@ -149,9 +153,10 @@ public class Slider extends Controller {
 	 * @see ControllerInterface.updateInternalEvents
 	 * 
 	 */
-	public void updateInternalEvents(PApplet theApplet) {
+	@ControlP5.Invisible
+	public Slider updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
-			if (isMousePressed && !ControlP5.keyHandler.isAltDown) {
+			if (isMousePressed && !cp5.keyHandler.isAltDown) {
 				if (_myDirection == HORIZONTAL) {
 					setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
 				} else {
@@ -159,12 +164,24 @@ public class Slider extends Controller {
 				}
 			}
 		}
+		return this;
 	}
 
+	/**
+	 * the trigger event is set to Slider.PRESSED by default but can be changed to Slider.RELEASE so
+	 * that events are triggered when the slider is released.
+	 * 
+	 * @param theEventID
+	 */
 	public void setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
 	}
 
+	/**
+	 * returns the current trigger event which is either Slider.PRESSED or Slider.RELEASE
+	 * 
+	 * @return int
+	 */
 	public int getTriggerEvent() {
 		return triggerId;
 	}
@@ -174,6 +191,7 @@ public class Slider extends Controller {
 	 * 
 	 * @see controlP5.Controller#mouseReleased()
 	 */
+	@Override
 	protected void mouseReleased() {
 		if (triggerId == RELEASE) {
 
@@ -214,7 +232,7 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * assigns a random value to the controller.
+	 * assigns a random value to the slider.
 	 */
 	public Slider shuffle() {
 		float r = (float) Math.random();
@@ -223,10 +241,9 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * sets the sensitivity for the scroll behavior when using the mouse wheel
-	 * or the scroll function of a multi-touch track pad. The smaller the value
-	 * (closer to 0) the higher the sensitivity. by default this value is set to
-	 * 0.1
+	 * sets the sensitivity for the scroll behavior when using the mouse wheel or the scroll
+	 * function of a multi-touch track pad. The smaller the value (closer to 0) the higher the
+	 * sensitivity. by default this value is set to 0.1
 	 * 
 	 * @param theValue
 	 * @return Slider
@@ -237,12 +254,13 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * changes the value of the slider when hovering and using the mouse wheel
-	 * or the scroll function of a multi-touch track pad.
+	 * changes the value of the slider when hovering and using the mouse wheel or the scroll
+	 * function of a multi-touch track pad.
 	 * 
 	 * @param theRotationValue
 	 * @return Slider
 	 */
+	@ControlP5.Invisible
 	public Slider scrolled(int theRotationValue) {
 		float f = getValue();
 		float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity * 0.1f;
@@ -252,19 +270,20 @@ public class Slider extends Controller {
 	}
 
 	@Override
-	public void update() {
-		setValue(_myValue);
+	public Slider update() {
+		return setValue(_myValue);
 	}
 
 	/**
-	 * set the minimum value of the slider.
+	 * sets the minimum value of the slider.
 	 * 
 	 * @param theValue float
 	 */
 	@Override
-	public void setMin(float theValue) {
+	public Slider setMin(float theValue) {
 		_myMin = theValue;
 		setSliderMode(_mySliderMode);
+		return this;
 	}
 
 	/**
@@ -273,9 +292,10 @@ public class Slider extends Controller {
 	 * @param theValue float
 	 */
 	@Override
-	public void setMax(float theValue) {
+	public Slider setMax(float theValue) {
 		_myMax = theValue;
 		setSliderMode(_mySliderMode);
+		return this;
 	}
 
 	/**
@@ -283,7 +303,8 @@ public class Slider extends Controller {
 	 * 
 	 * @param theValue int
 	 */
-	public Controller setWidth(int theValue) {
+	@Override
+	public Slider setWidth(int theValue) {
 		width = theValue;
 		setSliderMode(_mySliderMode);
 		return this;
@@ -294,29 +315,27 @@ public class Slider extends Controller {
 	 * 
 	 * @param theValue int
 	 */
-	public Controller setHeight(int theValue) {
+	@Override
+	public Slider setHeight(int theValue) {
 		height = theValue;
 		setSliderMode(_mySliderMode);
 		return this;
 	}
 
-	public void onEnter() {
-	}
-
-	public void onLeave() {
-	}
-
 	/*
-	 * TODO new implementations follow:
-	 * http://www.ibm.com/developerworks/java/library/j-dynui/ take interface
-	 * builder as reference
+	 * TODO new implementations follow: http://www.ibm.com/developerworks/java/library/j-dynui/ take
+	 * interface builder as reference
 	 */
-
 	protected void setTickMarks() {
 
 	}
 
-	public void setNumberOfTickMarks(int theNumber) {
+	/**
+	 * sets the number of tickmarks for a slider, by default tick marks are turned off.
+	 * 
+	 * @param theNumber
+	 */
+	public Slider setNumberOfTickMarks(int theNumber) {
 		_myTickMarks.clear();
 		if (theNumber > 0) {
 			for (int i = 0; i < theNumber; i++) {
@@ -324,28 +343,54 @@ public class Slider extends Controller {
 			}
 			showTickMarks(true);
 			snapToTickMarks(true);
-			setSliderBarSize(20);
+			setHandleSize(20);
 		} else {
 			showTickMarks(false);
 			snapToTickMarks(false);
-			setSliderBarSize(_myDefaultSliderbarSize);
+			setHandleSize(_myDefaultHandleSize);
 		}
 		setValue(_myValue);
+		return this;
 	}
 
+	/**
+	 * returns the amount of tickmarks available for a slider
+	 * 
+	 * @return int
+	 */
 	public int getNumberOfTickMarks() {
 		return _myTickMarks.size();
 	}
 
-	public void showTickMarks(boolean theFlag) {
+	/**
+	 * shows or hides tickmarks for a slider
+	 * 
+	 * @param theFlag
+	 * @return Slider
+	 */
+	public Slider showTickMarks(boolean theFlag) {
 		isShowTickMarks = theFlag;
+		return this;
 	}
 
-	public void snapToTickMarks(boolean theFlag) {
+	/**
+	 * enables or disables snap to tick marks.
+	 * 
+	 * @param theFlag
+	 * @return Slider
+	 */
+	public Slider snapToTickMarks(boolean theFlag) {
 		isSnapToTickMarks = theFlag;
+		return this;
 	}
 
-	// set the label of a tick.
+	/**
+	 * returns an instance of a tickmark by index.
+	 * 
+	 * @see TickMark
+	 * @param theIndex
+	 * @return
+	 */
 	public TickMark getTickMark(int theIndex) {
 		if (theIndex >= 0 && theIndex < _myTickMarks.size()) {
 			return _myTickMarks.get(theIndex);
@@ -354,31 +399,53 @@ public class Slider extends Controller {
 		}
 	}
 
+	/**
+	 * returns an ArrayList of available tick marks for a slider.
+	 * 
+	 * @return ArrayList<TickMark>
+	 */
 	public ArrayList<TickMark> getTickMarks() {
 		return _myTickMarks;
 	}
 
 	/**
-	 * use static variables ControlP5.TOP, ControlP5.CENTER, ControlP5.BOTTOM to
-	 * align the ValueLabel of a slider.
+	 * use static variables ControlP5.TOP, ControlP5.CENTER, ControlP5.BOTTOM to align the
+	 * ValueLabel of a slider.
 	 * 
 	 * @param theValue
 	 */
-	public void alignValueLabel(int theValue) {
+	public Slider alignValueLabel(int theValue) {
 		alignValueLabel = theValue;
-	}
-
-	public Controller linebreak() {
-		controlP5.linebreak(this, true, autoWidth, autoHeight, autoSpacing);
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#updateDisplayMode(int)
+	/**
+	 * {@inheritDoc}
 	 */
-	public void updateDisplayMode(int theMode) {
+	@Override
+	@ControlP5.Invisible
+	public Slider linebreak() {
+		cp5.linebreak(this, true, autoWidth, autoHeight, autoSpacing);
+		return this;
+	}
+
+	/**
+	 * sets the color of tick marks if enabled. by default the color is set to white.
+	 * 
+	 * @param theColor
+	 * @return Slider
+	 */
+	public Slider setColorTickMark(int theColor) {
+		_myColorTickMark = theColor;
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@ControlP5.Invisible
+	public Slider updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -395,8 +462,8 @@ public class Slider extends Controller {
 		case (CUSTOM):
 		default:
 			break;
-
 		}
+		return this;
 	}
 
 	class SliderDisplay implements ControllerDisplay {
@@ -414,10 +481,10 @@ public class Slider extends Controller {
 
 				} else {
 					if (isShowTickMarks) {
-						theApplet.triangle(_myValuePosition, 0, _myValuePosition + _mySliderbarSize, 0, _myValuePosition + _mySliderbarSize / 2, getHeight());
+						theApplet.triangle(_myValuePosition, 0, _myValuePosition + _myHandleSize, 0, _myValuePosition + _myHandleSize / 2, getHeight());
 					} else {
 
-						theApplet.rect(_myValuePosition, 0, _mySliderbarSize, height);
+						theApplet.rect(_myValuePosition, 0, _myHandleSize, height);
 					}
 
 				}
@@ -427,10 +494,9 @@ public class Slider extends Controller {
 					theApplet.rect(0, height, width, -_myValuePosition);
 				} else {
 					if (isShowTickMarks) {
-						theApplet.triangle(width, height - _myValuePosition, width, height - _myValuePosition - _mySliderbarSize, 0, height - _myValuePosition - _mySliderbarSize
-								/ 2);
+						theApplet.triangle(width, height - _myValuePosition, width, height - _myValuePosition - _myHandleSize, 0, height - _myValuePosition - _myHandleSize / 2);
 					} else {
-						theApplet.rect(0, height - _myValuePosition - _mySliderbarSize, width, _mySliderbarSize);
+						theApplet.rect(0, height - _myValuePosition - _myHandleSize, width, _myHandleSize);
 					}
 				}
 			}
@@ -475,17 +541,16 @@ public class Slider extends Controller {
 			}
 
 			if (isShowTickMarks) {
-				theApplet.pushStyle();
 				theApplet.pushMatrix();
 				float n = (_myDirection == HORIZONTAL) ? getWidth() : getHeight();
 
 				if (_myDirection == HORIZONTAL) {
-					theApplet.translate((_mySliderMode == FIX) ? 0 : _mySliderbarSize / 2, getHeight());
+					theApplet.translate((_mySliderMode == FIX) ? 0 : _myHandleSize / 2, getHeight());
 				} else {
-					theApplet.translate(-4, (_mySliderMode == FIX) ? 0 : _mySliderbarSize / 2);
+					theApplet.translate(-4, (_mySliderMode == FIX) ? 0 : _myHandleSize / 2);
 				}
-
-				float x = (n - ((_mySliderMode == FIX) ? 0 : _mySliderbarSize)) / (_myTickMarks.size() - 1);
+				theApplet.stroke(_myColorTickMark);
+				float x = (n - ((_mySliderMode == FIX) ? 0 : _myHandleSize)) / (_myTickMarks.size() - 1);
 				for (TickMark tm : _myTickMarks) {
 					tm.draw(theApplet, _myDirection);
 					if (_myDirection == HORIZONTAL) {
@@ -494,9 +559,27 @@ public class Slider extends Controller {
 						theApplet.translate(0, x);
 					}
 				}
+				theApplet.noStroke();
 				theApplet.popMatrix();
-				theApplet.popStyle();
 			}
 		}
 	}
+
+	@Deprecated
+	public void setSliderBarSize(int theSize) {
+		_myDefaultHandleSize = theSize;
+		setSliderMode(_mySliderMode);
+	}
+
+	/**
+	 * @see controlP5.Slider#setScrollSensitivity(float)
+	 * 
+	 * @param theValue
+	 * @return Slider
+	 */
+	@Deprecated
+	public Slider setSensitivity(float theValue) {
+		return setScrollSensitivity(theValue);
+	}
+
 }

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -37,8 +37,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -54,10 +57,19 @@ import org.xml.sax.SAXException;
 
 import processing.core.PApplet;
 
+/**
+ * Values of controllers can be stored inside properties files which can be
+ * saved to file or memory.
+ * 
+ * @example ControlP5properties
+ */
 public class ControllerProperties {
-
+	
+	/**
+	 * @exclude
+	 */
 	public enum Format {
-		SERIALIZED("properties"), XML("xml"), JSON("json");
+		SERIALIZED("ser"), XML("xml"), JSON("json");
 
 		final String extension;
 
@@ -75,7 +87,7 @@ public class ControllerProperties {
 			return format;
 		}
 
-		protected void compile(Set<ControllerProperty> theProperties, String thePropertiesPath) {
+		protected void compile(String thePropertiesPath, Set<ControllerProperty> theProperties) {
 			if (!thePropertiesPath.endsWith("." + extension)) {
 				thePropertiesPath = thePropertiesPath + "." + extension;
 			}
@@ -99,11 +111,12 @@ public class ControllerProperties {
 	public static Format format;
 
 	/**
-	 * all ControllerProperties will be stored inside Map allProperties. ControllerProperties need to be unique or will
-	 * otherwise be overwritten.
+	 * all ControllerProperties will be stored inside Map allProperties.
+	 * ControllerProperties need to be unique or will otherwise be overwritten.
 	 * 
-	 * A hashSet containing names of PropertiesSets is assigned to each ControllerProperty. HashSets are used instead of
-	 * ArrayList to only allow unique elements.
+	 * A hashSet containing names of PropertiesSets is assigned to each
+	 * ControllerProperty. HashSets are used instead of ArrayList to only allow
+	 * unique elements.
 	 */
 
 	private Map<ControllerProperty, HashSet<String>> allProperties;
@@ -119,13 +132,15 @@ public class ControllerProperties {
 
 	public static final Logger logger = Logger.getLogger(ControllerProperties.class.getName());
 
+	private Map<String, Set<ControllerProperty>> _mySnapshots;
+
 	public ControllerProperties(ControlP5 theControlP5) {
 		controlP5 = theControlP5;
 		setFormat(Format.SERIALIZED);
 		allProperties = new HashMap<ControllerProperty, HashSet<String>>();
 		allSets = new HashSet<String>();
 		addSet(_myDefaultSetName);
-
+		_mySnapshots = new LinkedHashMap<String, Set<ControllerProperty>>();
 	}
 
 	public Map<ControllerProperty, HashSet<String>> get() {
@@ -133,7 +148,8 @@ public class ControllerProperties {
 	}
 
 	/**
-	 * adds a property based on names of setter and getter methods of a controller.
+	 * adds a property based on names of setter and getter methods of a
+	 * controller.
 	 * 
 	 * @param thePropertySetter
 	 * @param thePropertyGetter
@@ -150,16 +166,18 @@ public class ControllerProperties {
 	}
 
 	/**
-	 * registering a property with only one parameter assumes that there is a setter and getter function present for the
-	 * Controller. register("value") for example would create a property reference to setValue and getValue. Notice that
-	 * the first letter of value is being capitalized.
+	 * registering a property with only one parameter assumes that there is a
+	 * setter and getter function present for the Controller. register("value")
+	 * for example would create a property reference to setValue and getValue.
+	 * Notice that the first letter of value is being capitalized.
 	 * 
 	 * @param theProperty
 	 * @return
 	 */
-	public ControllerProperty register(ControllerInterface theController, String theProperty) {
+	public ControllerProperties register(ControllerInterface theController, String theProperty) {
 		theProperty = Character.toUpperCase(theProperty.charAt(0)) + theProperty.substring(1);
-		return register(theController, "set" + theProperty, "get" + theProperty);
+		register(theController, "set" + theProperty, "get" + theProperty);
+		return this;
 	}
 
 	public ControllerProperties remove(ControllerInterface theController, String theSetter, String theGetter) {
@@ -171,7 +189,7 @@ public class ControllerProperties {
 	public ControllerProperties remove(ControllerInterface theController) {
 		ArrayList<ControllerProperty> list = new ArrayList<ControllerProperty>(allProperties.keySet());
 		for (ControllerProperty cp : list) {
-			if (cp.controller.equals(theController)) {
+			if (cp.getController().equals(theController)) {
 				allProperties.remove(cp);
 			}
 		}
@@ -182,11 +200,11 @@ public class ControllerProperties {
 		return remove(theController, "set" + theProperty, "get" + theProperty);
 	}
 
-	public ArrayList<ControllerProperty> get(ControllerInterface theController) {
-		ArrayList<ControllerProperty> props = new ArrayList<ControllerProperty>();
-		ArrayList<ControllerProperty> list = new ArrayList<ControllerProperty>(allProperties.keySet());
+	public List<ControllerProperty> get(ControllerInterface theController) {
+		List<ControllerProperty> props = new ArrayList<ControllerProperty>();
+		List<ControllerProperty> list = new ArrayList<ControllerProperty>(allProperties.keySet());
 		for (ControllerProperty cp : list) {
-			if (cp.controller.equals(theController)) {
+			if (cp.getController().equals(theController)) {
 				props.add(cp);
 			}
 		}
@@ -219,27 +237,24 @@ public class ControllerProperties {
 		Iterator<ControllerProperty> iter = allProperties.keySet().iterator();
 		while (iter.hasNext()) {
 			ControllerProperty p = iter.next();
-			if (p.controller.equals(theController)) {
+			if (p.getController().equals(theController)) {
 				set.add(p);
 			}
 		}
 		return set;
 	}
 
-	public HashSet<String> addSet(String theSet) {
+	public ControllerProperties addSet(String theSet) {
 		allSets.add(theSet);
-		return new HashSet<String>(allSets);
+		return this;
 	}
 
 	/**
 	 * Moves a ControllerProperty from one set to another.
-	 * 
-	 * @param theProperty
-	 * @param theSet
 	 */
-	public void move(ControllerProperty theProperty, String fromSet, String toSet) {
+	public ControllerProperties move(ControllerProperty theProperty, String fromSet, String toSet) {
 		if (!exists(theProperty)) {
-			return;
+			return this;
 		}
 		if (allProperties.containsKey(theProperty)) {
 			if (allProperties.get(theProperty).contains(fromSet)) {
@@ -248,103 +263,107 @@ public class ControllerProperties {
 			addSet(toSet);
 			allProperties.get(theProperty).add(toSet);
 		}
+		return this;
 	}
 
-	public void move(ControllerInterface theController, String fromSet, String toSet) {
+	public ControllerProperties move(ControllerInterface theController, String fromSet, String toSet) {
 		HashSet<ControllerProperty> set = getPropertySet(theController);
 		for (ControllerProperty cp : set) {
 			move(cp, fromSet, toSet);
 		}
+		return this;
 	}
 
 	/**
 	 * copies a ControllerProperty from one set to other(s);
-	 * 
-	 * @param theProperty
-	 * @param theSet
 	 */
-	public void copy(ControllerProperty theProperty, String... theSet) {
+	public ControllerProperties copy(ControllerProperty theProperty, String... theSet) {
 		if (!exists(theProperty)) {
-			return;
+			return this;
 		}
-
 		for (String s : theSet) {
 			allProperties.get(theProperty).add(s);
 			if (!allSets.contains(s)) {
 				addSet(s);
 			}
 		}
+		return this;
 	}
 
-	public void copy(ControllerInterface theController, String... theSet) {
+	public ControllerProperties copy(ControllerInterface theController, String... theSet) {
 		HashSet<ControllerProperty> set = getPropertySet(theController);
 		for (ControllerProperty cp : set) {
 			copy(cp, theSet);
 		}
+		return this;
 	}
 
 	/**
 	 * removes a ControllerProperty from one or multiple sets.
-	 * 
-	 * @param theProperty
-	 * @param theSet
 	 */
-	public void remove(ControllerProperty theProperty, String... theSet) {
+	public ControllerProperties remove(ControllerProperty theProperty, String... theSet) {
 		if (!exists(theProperty)) {
-			return;
+			return this;
 		}
 		for (String s : theSet) {
 			allProperties.get(theProperty).remove(s);
 		}
+		return this;
 	}
 
-	public void remove(ControllerInterface theController, String... theSet) {
+	public ControllerProperties remove(ControllerInterface theController, String... theSet) {
 		HashSet<ControllerProperty> set = getPropertySet(theController);
 		for (ControllerProperty cp : set) {
 			remove(cp, theSet);
 		}
+		return this;
 	}
 
 	/**
 	 * stores a ControllerProperty in one particular set only.
-	 * 
-	 * @param theProperty
-	 * @param theSet
 	 */
-	public void only(ControllerProperty theProperty, String theSet) {
+	public ControllerProperties only(ControllerProperty theProperty, String theSet) {
 		// clear all the set-references for a particular property
 		allProperties.get(theProperty).clear();
-		// add theSet to the empty collection of sets for this particular property
+		// add theSet to the empty collection of sets for this particular
+		// property
 		allProperties.get(theProperty).add(theSet);
+		return this;
 	}
 
-	public void only(ControllerInterface theController, String... theSet) {
-
+	ControllerProperties only(ControllerInterface theController, String... theSet) {
+		return this;
 	}
 
 	private boolean exists(ControllerProperty theProperty) {
 		return allProperties.containsKey(theProperty);
 	}
 
-	/**
-	 * deletes a ControllerProperty from all Sets including the default set.
-	 * 
-	 * @param theProperty
-	 */
-	public void delete(ControllerProperty theProperty) {
-		if (!exists(theProperty)) {
-			return;
+	public ControllerProperties print() {
+		for (Entry<ControllerProperty, HashSet<String>> entry : allProperties.entrySet()) {
+			System.out.println(entry.getKey() + "\t" + entry.getValue());
 		}
-		allProperties.remove(theProperty);
+		return this;
 	}
 
-	boolean updatePropertyValue(ControllerProperty theProperty) {
+	/**
+	 * deletes a ControllerProperty from all Sets including the default set.
+	 */ 
+	public ControllerProperties delete(ControllerProperty theProperty) {
+		if (!exists(theProperty)) {
+			return this;
+		}
+		allProperties.remove(theProperty);
+		return this;
+	}
+
+	private boolean updatePropertyValue(ControllerProperty theProperty) {
 		Method method;
 		try {
-			method = theProperty.controller.getClass().getMethod(theProperty.getter);
-			Object value = method.invoke(theProperty.controller);
-			theProperty.type = method.getReturnType();
-			theProperty.value = value;
+			method = theProperty.getController().getClass().getMethod(theProperty.getGetter());
+			Object value = method.invoke(theProperty.getController());
+			theProperty.setType(method.getReturnType());
+			theProperty.setValue(value);
 			if (checkSerializable(value)) {
 				return true;
 			}
@@ -366,11 +385,110 @@ public class ControllerProperties {
 		}
 	}
 
+	/**
+	 * logs all registered properties in memory. Here, clones of properties are
+	 * stored inside a map and can be accessed by key using the getLog method.
+	 * 
+	 * @see controlP5.ControllerProperties#getSnapshot(String)
+	 * @param theKey
+	 * @return ControllerProperties
+	 */
+	public ControllerProperties setSnapshot(String theKey) {
+		Set<ControllerProperty> l = new HashSet<ControllerProperty>();
+		for (ControllerProperty cp : allProperties.keySet()) {
+			updatePropertyValue(cp);
+			try {
+				l.add((ControllerProperty) cp.clone());
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+			}
+		}
+		_mySnapshots.put(theKey, l);
+		return this;
+	}
+
+	/**
+	 * convenience method, setSnapshot(String) also works here since it will
+	 * override existing log with the same key.
+	 */
+	public ControllerProperties updateSnapshot(String theKey) {
+		return setSnapshot(theKey);
+	}
+
+	/**
+	 * removes a snapshot by key.
+	 */
+	public ControllerProperties removeSnapshot(String theKey) {
+		_mySnapshots.remove(theKey);
+		return this;
+	}
+
+	ControllerProperties setSnapshot(String theKey, String... theSets) {
+		return this;
+	}
+
+	/**
+	 * saves a snapshot into your sketch's sketch folder.
+	 */
+	public ControllerProperties saveSnapshot(String theKey) {
+		saveSnapshotAs(controlP5.papplet.sketchPath(theKey), theKey);
+		return this;
+	}
+
+	/**
+	 * saves a snapshot to the file with path given by the first parameter
+	 * (thePropertiesPath).
+	 */
+	public ControllerProperties saveSnapshotAs(String thePropertiesPath, String theKey) {
+		Set<ControllerProperty> log = _mySnapshots.get(theKey);
+		if (log == null) {
+			return this;
+		}
+		thePropertiesPath = controlP5.checkPropertiesPath(thePropertiesPath);
+		format.compile(thePropertiesPath, log);
+		return this;
+	}
+
+	/**
+	 * restores properties previously stored as snapshot in memory.
+	 * @see controlP5.ControllerProperties#setSnapshot(String)
+	 */
+	public ControllerProperties getSnapshot(String theKey) {
+		Set<ControllerProperty> l = _mySnapshots.get(theKey);
+		if (l != null) {
+			for (ControllerProperty cp : l) {
+				ControllerInterface ci = controlP5.getController(cp.getAddress());
+				ci = (ci == null) ? controlP5.getGroup(cp.getAddress()) : ci;
+				Method method;
+				try {
+					method = ci.getClass().getMethod(cp.getSetter(), new Class[] { cp.getType() });
+					method.setAccessible(true);
+					method.invoke(ci, new Object[] { cp.getValue() });
+				} catch (Exception e) {
+					logger.severe(e.toString());
+				}
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * properties stored in memory can be accessed by index,
+	 * getSnapshotIndices() returns the index of the snapshot list.
+	 */ 
+	public ArrayList<String> getSnapshotIndices() {
+		return new ArrayList<String>(_mySnapshots.keySet());
+	}
+
+	/**
+	 * load properties from the default properties file 'controlP5.properties'
+	 */
 	public boolean load() {
-		return load(ControlP5.papplet.sketchPath(defaultName + "." + format.extension));
+		return load(controlP5.papplet.sketchPath(defaultName + "." + format.extension));
 	}
 
 	public boolean load(String thePropertiesPath) {
+		thePropertiesPath = controlP5.checkPropertiesPath(thePropertiesPath);
 		for (Format myFormat : Format.values()) {
 			if (thePropertiesPath.toLowerCase().endsWith(myFormat.extension)) {
 				return myFormat.get().load(thePropertiesPath);
@@ -380,42 +498,62 @@ public class ControllerProperties {
 	}
 
 	/**
-	 * use ControllerProperties.SERIALIZED, ControllerProperties.XML or ControllerProperties.JSON as parameter.
-	 * 
-	 * @param theFormatId
+	 * use ControllerProperties.SERIALIZED, ControllerProperties.XML or
+	 * ControllerProperties.JSON as parameter.
 	 */
 	public void setFormat(Format theFormatId) {
 		format = theFormatId;
 	}
 
-	protected boolean save() {
-		System.out.println("saving with format " + format + " (" + format.extension + ") " + ControlP5.papplet.sketchPath(defaultName));
-		format.compile(allProperties.keySet(), ControlP5.papplet.sketchPath(defaultName));
+	/**
+	 * saves all registered properties into the default 'controlP5.properties'
+	 * file into your sketch folder.
+	 */
+	public boolean save() {
+		System.out.println("saving with format " + format + " (" + format.extension + ") " + controlP5.papplet.sketchPath(defaultName));
+		format.compile(controlP5.papplet.sketchPath(defaultName), allProperties.keySet());
 		return true;
 	}
 
-	protected boolean save(String thePropertiesPath) {
-		format.compile(allProperties.keySet(), thePropertiesPath);
+	/**
+	 * saves all registered properties into a file specified by parameter
+	 * thePropertiesPath.
+	 */
+	public boolean saveAs(String thePropertiesPath) {
+		thePropertiesPath = controlP5.checkPropertiesPath(thePropertiesPath);
+		format.compile(thePropertiesPath, allProperties.keySet());
 		return true;
 	}
 
-	public void save(String thePropertiesPath, String... theSets) {
+	/**
+	 * saves a list of properties sets into a file specified by parameter
+	 * thePropertiesPath.
+	 */
+	public boolean saveAs(String thePropertiesPath, String... theSets) {
+		thePropertiesPath = controlP5.checkPropertiesPath(thePropertiesPath);
 		HashSet<ControllerProperty> sets = new HashSet<ControllerProperty>();
 		Iterator<ControllerProperty> iter = allProperties.keySet().iterator();
 		while (iter.hasNext()) {
 			ControllerProperty p = iter.next();
-			HashSet<String> set = allProperties.get(p);
-			for (String str : set) {
-				for (String s : theSets) {
-					if (str.equals(s)) {
-						sets.add(p);
+			if (allProperties.containsKey(p)) {
+				HashSet<String> set = allProperties.get(p);
+				for (String str : set) {
+					for (String s : theSets) {
+						if (str.equals(s)) {
+							sets.add(p);
+						}
 					}
 				}
 			}
 		}
-		format.compile(sets, thePropertiesPath);
+		format.compile(thePropertiesPath, sets);
+		return true;
 	}
 
+	/**
+	 * @exclude
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		String s = "";
 		s += this.getClass().getName() + "\n";
@@ -430,7 +568,7 @@ public class ControllerProperties {
 		return s;
 	}
 
-	public interface PropertiesStorageFormat {
+	interface PropertiesStorageFormat {
 		public void compile(Set<ControllerProperty> theProperties, String thePropertiesPath);
 
 		public boolean load(String thePropertiesPath);
@@ -445,20 +583,20 @@ public class ControllerProperties {
 			xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 			xml.append("<properties name=\"" + thePropertiesPath + "\">\n");
 			for (ControllerProperty cp : theProperties) {
-				if (cp.active) {
+				if (cp.isActive()) {
 					updatePropertyValue(cp);
 					xml.append(getXML(cp));
 				}
 			}
 			xml.append("</properties>");
-			ControlP5.papplet.saveStrings(thePropertiesPath, PApplet.split(xml.toString(), "\n"));
+			controlP5.papplet.saveStrings(thePropertiesPath, PApplet.split(xml.toString(), "\n"));
 			System.out.println("saving xml, " + thePropertiesPath);
 		}
 
 		public boolean load(String thePropertiesPath) {
 			String s;
 			try {
-				s = PApplet.join(ControlP5.papplet.loadStrings(thePropertiesPath), "\n");
+				s = PApplet.join(controlP5.papplet.loadStrings(thePropertiesPath), "\n");
 			} catch (Exception e) {
 				logger.warning(thePropertiesPath + ", file not found.");
 				return false;
@@ -476,16 +614,16 @@ public class ControllerProperties {
 					Node node = nodeLst.item(i);
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
 						Element fstElmnt = (Element) node;
-						String myName = getElement(fstElmnt, "name");
+						String myAddress = getElement(fstElmnt, "address");
 						String mySetter = getElement(fstElmnt, "setter");
 						String myType = getElement(fstElmnt, "type");
 						String myValue = getElement(fstElmnt, "value");
 						// String myClass = getElement(fstElmnt, "class");
 						// String myGetter = getElement(fstElmnt, "getter");
 						try {
-							System.out.print("setting controller " + myName + "   ");
-							ControllerInterface ci = controlP5.getController(myName);
-							ci = (ci == null) ? controlP5.getGroup(myName) : ci;
+							System.out.print("setting controller " + myAddress + "   ");
+							ControllerInterface ci = controlP5.getController(myAddress);
+							ci = (ci == null) ? controlP5.getGroup(myAddress) : ci;
 							System.out.println(ci);
 							Method method;
 							try {
@@ -565,14 +703,14 @@ public class ControllerProperties {
 			// Mapping Between JSON and Java Entities
 			// http://code.google.com/p/json-simple/wiki/MappingBetweenJSONAndJavaEntities
 			String s = "\t<property>\n";
-			s += "\t\t<name>" + theProperty.name + "</name>\n";
-			s += "\t\t<class>" + ControlP5IOHandler.formatGetClass(theProperty.controller.getClass()) + "</class>\n";
-			s += "\t\t<setter>" + theProperty.setter + "</setter>\n";
-			s += "\t\t<getter>" + theProperty.getter + "</getter>\n";
-			s += "\t\t<type>" + ControlP5IOHandler.formatGetClass(theProperty.type) + "</type>\n";
-			s += "\t\t<value>" + cdata(OPEN, theProperty.value.getClass())
-					+ (theProperty.value.getClass().isArray() ? ControlP5IOHandler.arrayToString(theProperty.value) : theProperty.value)
-					+ cdata(CLOSE, theProperty.value.getClass()) + "</value>\n";
+			s += "\t\t<address>" + theProperty.getAddress() + "</address>\n";
+			s += "\t\t<class>" + ControlP5IOHandler.formatGetClass(theProperty.getController().getClass()) + "</class>\n";
+			s += "\t\t<setter>" + theProperty.getSetter() + "</setter>\n";
+			s += "\t\t<getter>" + theProperty.getGetter() + "</getter>\n";
+			s += "\t\t<type>" + ControlP5IOHandler.formatGetClass(theProperty.getType()) + "</type>\n";
+			s += "\t\t<value>" + cdata(OPEN, theProperty.getValue().getClass())
+					+ (theProperty.getValue().getClass().isArray() ? ControlP5IOHandler.arrayToString(theProperty.getValue()) : theProperty.getValue())
+					+ cdata(CLOSE, theProperty.getValue().getClass()) + "</value>\n";
 			s += "\t</property>\n";
 			return s;
 		}
@@ -604,18 +742,19 @@ public class ControllerProperties {
 				FileInputStream fis = new FileInputStream(thePropertiesPath);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				int size = ois.readInt();
-				logger.info("loading " + size + " property-items.");
+				logger.info("loading " + size + " property-items." + fis.getFD());
 
 				for (int i = 0; i < size; i++) {
 					try {
 						ControllerProperty cp = (ControllerProperty) ois.readObject();
-						ControllerInterface ci = controlP5.getController(cp.name);
-						ci = (ci == null) ? controlP5.getGroup(cp.name) : ci;
+						ControllerInterface ci = controlP5.getController(cp.getAddress());
+						ci = (ci == null) ? controlP5.getGroup(cp.getAddress()) : ci;
+						ci.setId(cp.getId());
 						Method method;
 						try {
-							method = ci.getClass().getMethod(cp.setter, new Class[] { cp.type });
+							method = ci.getClass().getMethod(cp.getSetter(), new Class[] { cp.getType() });
 							method.setAccessible(true);
-							method.invoke(ci, new Object[] { cp.value });
+							method.invoke(ci, new Object[] { cp.getValue() });
 						} catch (Exception e) {
 							logger.severe(e.toString());
 						}
@@ -637,9 +776,10 @@ public class ControllerProperties {
 			int total = 0;
 			HashSet<ControllerProperty> propertiesToBeSaved = new HashSet<ControllerProperty>();
 			for (ControllerProperty cp : theProperties) {
-				if (cp.active) {
+				if (cp.isActive()) {
 					if (updatePropertyValue(cp)) {
 						active++;
+						cp.setId(cp.getController().getId());
 						propertiesToBeSaved.add(cp);
 					}
 				}
@@ -656,7 +796,7 @@ public class ControllerProperties {
 				oos.writeInt(active);
 
 				for (ControllerProperty cp : propertiesToBeSaved) {
-					if (cp.active) {
+					if (cp.isActive()) {
 						oos.writeObject(cp);
 					}
 				}

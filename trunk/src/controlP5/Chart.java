@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import processing.core.PApplet;
 
+/**
+ * Use charts to display float array data as line chart, yet experimental, but see the ControlP5chart example for more details.
+ * @example  ControlP5chart
+ */
 public class Chart extends Controller {
 
 	// STATUS unfinished
@@ -224,12 +228,12 @@ public class Chart extends Controller {
 		return (int) resolution;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#updateDisplayMode(int)
+	/**
+	 * {@inheritDoc}
 	 */
-	public void updateDisplayMode(int theMode) {
+	@Override
+	@ControlP5.Invisible
+	public Chart updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -245,6 +249,7 @@ public class Chart extends Controller {
 		default:
 			break;
 		}
+		return this;
 	}
 
 	private class ChartDisplay implements ControllerDisplay {

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -33,8 +33,9 @@ import java.util.List;
 import processing.core.PApplet;
 
 /**
- * scrollList, a list of selectable and scrollable items.
+ * A ListBox is a list of vertically aligned items which can be scrolled if required.
  * 
+ * @see controlP5.DropdownList
  * @example ControlP5listBox
  */
 public class ListBox extends ControlGroup implements ControlListener {
@@ -67,18 +68,11 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	private int itemOffset = 0;
 
-	private int _myScrollbarWidth = 5;
-	
-	private boolean isToUpperCase =true;
-	
-	protected ListBox(
-			ControlP5 theControlP5,
-			ControllerGroup theGroup,
-			String theName,
-			int theX,
-			int theY,
-			int theW,
-			int theH) {
+	private int _myScrollbarWidth = 8;
+
+	private boolean isToUpperCase = true;
+
+	protected ListBox(ControlP5 theControlP5, ControllerGroup theGroup, String theName, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theGroup, theName, theX, theY, theW, 9);
 
 		items = new ArrayList<ListBoxItem>();
@@ -90,7 +84,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 		// workaround fix see code.goode.com/p/controlp5 issue 7
 		_myBackgroundHeight = theH < 10 ? 10 : theH;
 
-		_myScrollbar = new Slider(controlP5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth - _myScrollbarWidth, 0, _myScrollbarWidth, _myBackgroundHeight);
+		_myScrollbar = new Slider(cp5, _myParent, theName + "Scroller", 0, 1, 1, _myWidth - _myScrollbarWidth, 0, _myScrollbarWidth, _myBackgroundHeight);
 		_myScrollbar.setBroadcast(false);
 		_myScrollbar.setSliderMode(Slider.FLEXIBLE);
 		_myScrollbar.setMoveable(false);
@@ -104,55 +98,52 @@ public class ListBox extends ControlGroup implements ControlListener {
 		setHeight(_myBackgroundHeight);
 	}
 
-	/**
-	 * hide the scrollbar.
-	 */
-	public void hideScrollbar() {
+	public ListBox hideScrollbar() {
 		isScrollbarVisible = false;
 		_myScrollbar.hide();
+		return this;
 	}
 
-	/**
-	 * show the scrollbar.
-	 */
-	public void showScrollbar() {
+	public ListBox showScrollbar() {
 		isScrollbarVisible = true;
 		if ((items.size()) * _myItemHeight > _myBackgroundHeight && isScrollbarVisible) {
 			_myScrollbar.show();
 		}
+		return this;
 	}
 
-	/**
-	 * check if the scrollbar is visible.
-	 * 
-	 * @return
-	 */
 	public boolean isScrollbarVisible() {
 		return isScrollbarVisible;
 	}
 
+	public ListBox setScrollbarVisible(boolean theValue) {
+		if (theValue) {
+			return showScrollbar();
+		}
+		return hideScrollbar();
+	}
+
 	/**
-	 * scroll the scrollList remotely. values must range from 0 to 1.
-	 * 
-	 * @param theValue
+	 * scroll the scrollList remotely. values must range between 0 and 1.
 	 */
-	public void scroll(float theValue) {
+	public ListBox scroll(float theValue) {
 		if ((items.size()) * _myItemHeight > _myBackgroundHeight) {
 			_myScrollbar.setValue(PApplet.abs(1 - PApplet.min(PApplet.max(0, theValue), 1)));
 		}
+		return this;
 	}
-	
+
+	@ControlP5.Invisible
 	public float getScrollPosition() {
 		return _myScrollbar.getValue();
 	}
-	
+
+	@ControlP5.Invisible
 	public void scrolled(int theStep) {
-		float step = 1.0f/items.size();
-		scroll((1-getScrollPosition()) + (theStep*step));
+		float step = 1.0f / items.size();
+		scroll((1 - getScrollPosition()) + (theStep * step));
 	}
-	/**
-	 * internal scroll updates.
-	 */
+
 	private void scroll() {
 		itemOffset = 0;
 		if (buttons.size() < items.size() && isScrollbarVisible) {
@@ -171,11 +162,12 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 	}
 
-	public void updateListBoxItems() {
+	@ControlP5.Invisible
+	public ListBox updateListBoxItems() {
 		scroll();
+		return this;
 	}
-	
-	
+
 	public ListBox toUpperCase(boolean theFlag) {
 		_myLabel.toUpperCase(theFlag);
 		_myLabel.update();
@@ -183,25 +175,18 @@ public class ListBox extends ControlGroup implements ControlListener {
 		updateListBoxItems();
 		return this;
 	}
-	/**
-	 * set the height of list box items.
-	 * 
-	 * @param theHeight
-	 */
-	public void setItemHeight(int theHeight) {
+
+	public ListBox setItemHeight(int theHeight) {
 		_myItemHeight = theHeight;
 		for (int i = 0; i < buttons.size(); i++) {
 			buttons.get(i).height = theHeight;
 			buttons.get(i).position.y = (theHeight + spacing) * i;
 		}
 		setHeight(_myOriginalBackgroundHeight);
+		return this;
 	}
 
-	/**
-	 * set the height of the list box.
-	 * 
-	 * @param theHeight
-	 */
+	@Override
 	public ListBox setHeight(int theHeight) {
 		_myOriginalBackgroundHeight = theHeight;
 
@@ -214,7 +199,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 		if (n < pn) {
 			for (int i = buttons.size() - 1; i >= n; i--) {
-				controlP5.remove(controlP5.getController(buttons.get(i).getName()));
+				cp5.remove(cp5.getController(buttons.get(i).getName()));
 				controllers.remove(buttons.get(i));
 				buttons.remove(i);
 			}
@@ -225,6 +210,22 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 		updateBackground();
 		scroll();
+		return this;
+	}
+
+	/**
+	 * @exclude {@inheritDoc}
+	 */
+	@Override
+	@ControlP5.Invisible
+	public ListBox updateInternalEvents(PApplet theApplet) {
+		boolean xx = _myControlWindow.mouseX > getAbsolutePosition().x && _myControlWindow.mouseX < getAbsolutePosition().x + _myWidth;
+		// there is a 1px gap between bar and controllers, so -1 the top-y-position
+		boolean yy = _myControlWindow.mouseY > getAbsolutePosition().y - 1 && _myControlWindow.mouseY < getAbsolutePosition().y + _myBackgroundHeight;
+		isInsideGroup = isOpen() ? xx && yy : false;
+		if ((isBarVisible ? isInside : false) || isInsideGroup) {
+			_myControlWindow.setMouseOverController(this);
+		}
 		return this;
 	}
 
@@ -264,6 +265,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 	}
 
+	@Override
 	public ListBox setWidth(int theWidth) {
 		_myWidth = theWidth;
 		updateButtonWidth();
@@ -271,25 +273,25 @@ public class ListBox extends ControlGroup implements ControlListener {
 		return this;
 	}
 
-	protected void addListButton(int theNum) {
+	protected ListBox addListButton(int theNum) {
 		for (int i = 0; (i < theNum) && (buttons.size() < maxButtons); i++) {
 			int index = buttons.size();
-			Button b = new Button(controlP5, (ControllerGroup) this, _myName + "Button" + index, index, 0, index
-					* (_myItemHeight + spacing), _myWidth, _myItemHeight, false);
+			Button b = new Button(cp5, (ControllerGroup) this, _myName + "Button" + index, index, 0, index * (_myItemHeight + spacing), _myWidth, _myItemHeight, false);
 			b.setMoveable(false);
 			add(b);
-			controlP5.register(b);
+			cp5.register(null, "", b);
 			b.setBroadcast(false);
 			b.addListener(this);
 			buttons.add(b);
 		}
 		updateScroll();
+		return this;
 	}
 
 	/**
 	 * Adds an item to the ListBox.
 	 * 
-	 * @see #removeItem(String,int)
+	 * @see controlP5.ListBox#removeItem(String,int)
 	 * @param theName String
 	 * @param theValue int
 	 */
@@ -301,33 +303,36 @@ public class ListBox extends ControlGroup implements ControlListener {
 	}
 
 	/**
-	 * add a list of items from a string array. when iterating through the array,
-	 * the index of each item will be used as value.
+	 * adds a list of items from a string array. when iterating through the array, the index of each
+	 * item will be used as value.
 	 * 
 	 * @param theItems
 	 */
-	public void addItems(String[] theItems) {
+	public ListBox addItems(String[] theItems) {
 		addItems(Arrays.asList(theItems), 0);
-	}
-	
-	public void addItems(List<?> theItems) {
-		addItems(theItems, 0);
+		return this;
 	}
 
-	public void addItems(List<?> theItems, int theOffset) {
+	public ListBox addItems(List<?> theItems) {
+		addItems(theItems, 0);
+		return this;
+	}
+
+	public ListBox addItems(List<?> theItems, int theOffset) {
 		for (int i = 0; i < theItems.size(); i++) {
 			addItem(theItems.get(i).toString(), i + theOffset);
 		}
+		return this;
 	}
 
 	/**
-	 * Removes an item from the ListBox using the unique name of the item given
-	 * when added to the list.
+	 * Removes an item from the ListBox using the unique name of the item given when added to the
+	 * list.
 	 * 
-	 * @see #addItem(String,int)
+	 * @see controlP5.ListBox#addItem(String,int)
 	 * @param theItemName String
 	 */
-	public void removeItem(String theItemName) {
+	public ListBox removeItem(String theItemName) {
 		try {
 			for (int i = items.size() - 1; i >= 0; i--) {
 				if ((items.get(i)).name.equals(theItemName)) {
@@ -336,15 +341,16 @@ public class ListBox extends ControlGroup implements ControlListener {
 			}
 			if ((buttons.size()) > items.size()) {
 				String buttonName = ((Button) controllers.get(buttons.size())).getName();
-				buttons.remove(controlP5.getController(buttonName));
-				controllers.remove(controlP5.getController(buttonName));
-				controlP5.remove(buttonName);
+				buttons.remove(cp5.getController(buttonName));
+				controllers.remove(cp5.getController(buttonName));
+				cp5.remove(buttonName);
 
 			}
 			updateScroll();
 		} catch (Exception e) {
 			ControlP5.logger().finer("ScrollList.removeItem exception:" + e);
 		}
+		return this;
 	}
 
 	/**
@@ -353,7 +359,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @param theIndex
 	 * @return
 	 */
-	public ListBoxItem item(int theIndex) {
+	public ListBoxItem getItem(int theIndex) {
 		return items.get(theIndex);
 	}
 
@@ -363,7 +369,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @param theItemName
 	 * @return
 	 */
-	public ListBoxItem item(String theItemName) {
+	public ListBoxItem getItem(String theItemName) {
 		for (int i = items.size() - 1; i >= 0; i--) {
 			if ((items.get(i)).name.equals(theItemName)) {
 				return items.get(i);
@@ -378,7 +384,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @param theButton
 	 * @return
 	 */
-	public ListBoxItem item(Controller theButton) {
+	public ListBoxItem getItem(Controller theButton) {
 		if (theButton instanceof Button) {
 			int n = buttons.indexOf(theButton);
 			if (n >= 0) {
@@ -388,11 +394,10 @@ public class ListBox extends ControlGroup implements ControlListener {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.ControlGroup#controlEvent(controlP5.ControlEvent)
+	/**
+	 * @exclude {@inheritDoc}
 	 */
+	@ControlP5.Invisible
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.getController() instanceof Button) {
 			try {
@@ -405,37 +410,38 @@ public class ListBox extends ControlGroup implements ControlListener {
 				for (ControlListener cl : _myControlListener) {
 					cl.controlEvent(myEvent);
 				}
-				controlP5.controlbroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
-				((Button) theEvent.getController()).onLeave();
-				((Button) theEvent.getController()).setIsInside(false);
+				cp5.getControlBroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
+				theEvent.getController().onLeave();
+				theEvent.getController().setIsInside(false);
+				theEvent.getController().setMouseOver(false);
 			} catch (Exception e) {
 				ControlP5.logger().warning("ListBox.controlEvent exception:" + e);
 			}
 		} else {
-			_myScrollValue = -(1 - theEvent.value());
+			_myScrollValue = -(1 - theEvent.getValue());
 			scroll();
 		}
 
 	}
 
 	/**
-	 * adding key support. up and down arrows can be used to scroll listbox or
-	 * dropdownList,up and down, use shift+up/down for faster scrolling, use
-	 * alt+up/down to jump to the top or bottom.
+	 * Adding key support. up and down arrows can be used to scroll listbox or dropdownList,up and
+	 * down, use shift+up/down for faster scrolling, use alt+up/down to jump to the top or bottom.
 	 * 
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
+	@ControlP5.Invisible
 	public void keyEvent(final KeyEvent theEvent) {
 		super.keyEvent(theEvent);
 		float x = getAbsolutePosition().x;
 		float y = getAbsolutePosition().y;
-		boolean b = (getWindow().mouseX > x && getWindow().mouseX < (x + _myWidth)
-				&& getWindow().mouseY > (y - getBarHeight()) && getWindow().mouseY < y + _myOriginalBackgroundHeight);
+		boolean b = (getWindow().mouseX > x && getWindow().mouseX < (x + _myWidth) && getWindow().mouseY > (y - getBarHeight()) && getWindow().mouseY < y
+				+ _myOriginalBackgroundHeight);
 		if (b && isOpen()) {
 			float step = (1.0f / (float) items.size());
-			if (ControlP5.keyHandler.isShiftDown) {
+			if (cp5.keyHandler.isShiftDown) {
 				step *= 10;
-			} else if (ControlP5.keyHandler.isAltDown) {
+			} else if (cp5.keyHandler.isAltDown) {
 				step = 1;
 			}
 			if (theEvent.getID() == KeyEvent.KEY_PRESSED) {
@@ -452,37 +458,53 @@ public class ListBox extends ControlGroup implements ControlListener {
 	}
 
 	/**
-	 * Enable a ListBox to act as a pulldown menu. Alternatively use class
-	 * PulldownMenu instead.
-	 * 
-	 * @see controlP5.PulldownMenu
-	 * @param theValue
+	 * Enables a ListBox to act as a pulldown menu. Alternatively use class PulldownMenu instead.
 	 */
-	public void actAsPulldownMenu(boolean theValue) {
+	public ListBox actAsPulldownMenu(boolean theValue) {
 		pulldown = theValue;
 		if (pulldown) {
 			close();
 		}
+		return this;
 	}
 
 	/**
-	 * remove all items from a list box
+	 * Removes all items from a list box
 	 */
-	public void clear() {
+	public ListBox clear() {
 		for (int i = items.size() - 1; i >= 0; i--) {
-			removeItem(items.get(i).name);
+			items.remove(i);
 		}
 		items.clear();
 		for (int i = buttons.size() - 1; i >= 0; i--) {
-			controlP5.remove(buttons.get(i));
+			String buttonName = ((Button) controllers.get(buttons.size())).getName();
+			buttons.remove(cp5.getController(buttonName));
+			controllers.remove(cp5.getController(buttonName));
+			cp5.remove(buttonName);
 		}
+		updateScroll();
 		_myBackgroundHeight = 0;
+		return this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public ControllerInterface setColorActive(int theColor) {
+	@Override
+	public ListBox setColor(CColor theColor) {
+		setColorActive(theColor.getActive());
+		setColorForeground(theColor.getForeground());
+		setColorBackground(theColor.getBackground());
+		setColorLabel(theColor.getCaptionLabel());
+		setColorValue(theColor.getValueLabel());
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ListBox setColorActive(int theColor) {
 		super.setColorActive(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setActive(theColor);
@@ -494,7 +516,8 @@ public class ListBox extends ControlGroup implements ControlListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ControllerInterface setColorForeground(int theColor) {
+	@Override
+	public ListBox setColorForeground(int theColor) {
 		super.setColorForeground(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setForeground(theColor);
@@ -506,7 +529,8 @@ public class ListBox extends ControlGroup implements ControlListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ControllerInterface setColorBackground(int theColor) {
+	@Override
+	public ListBox setColorBackground(int theColor) {
 		super.setColorBackground(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setBackground(theColor);
@@ -518,7 +542,8 @@ public class ListBox extends ControlGroup implements ControlListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ControllerInterface setColorLabel(int theColor) {
+	@Override
+	public ListBox setColorLabel(int theColor) {
 		super.setColorLabel(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setCaptionLabel(theColor);
@@ -530,7 +555,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public ControllerInterface setColorValue(int theColor) {
+	@Override
+	@ControlP5.Invisible
+	public ListBox setColorValue(int theColor) {
 		super.setColorValue(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setValueLabel(theColor);
@@ -547,11 +574,39 @@ public class ListBox extends ControlGroup implements ControlListener {
 		return l;
 	}
 
-	public void setListBoxItems(String[][] l) {
+	public ListBox setListBoxItems(String[][] l) {
 		clear();
 		for (String[] s : l) {
 			addItem(s[0], new Integer(s[2]).intValue()).setText(s[1]);
 		}
+		return this;
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public ListBoxItem item(int theIndex) {
+		return getItem(theIndex);
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public ListBoxItem item(String theItemName) {
+		return getItem(theItemName);
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public ListBoxItem item(Controller theButton) {
+		return getItem(theButton);
 	}
 
 }

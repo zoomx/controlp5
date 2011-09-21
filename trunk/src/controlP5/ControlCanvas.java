@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -28,11 +28,11 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * use a controlWindowCanvas to draw your own content into a control window.
- * 
- * @example ControlP5groupCanvas
+ * use the ControlWindowCanvas instead to draw your custom graphics into the
+ * default sketch or a ControlWindow.
  * 
  */
+@Deprecated
 public abstract class ControlCanvas {
 
 	public final static int PRE = 0;
@@ -42,6 +42,12 @@ public abstract class ControlCanvas {
 	public ControlCanvas() {
 	}
 
+	/**
+	 * the setup method can be, but doesnt have to be overwritten by your custom
+	 * canvas class.
+	 * 
+	 * @param theApplet
+	 */
 	public void setup(PApplet theApplet) {
 	}
 

@@ -3,6 +3,9 @@ package controlP5;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+/**
+ * Used by Chart, a chart data set is a container to store chart data.
+ */
 @SuppressWarnings("serial")
 public class ChartDataSet extends ArrayList<ChartData> {
 

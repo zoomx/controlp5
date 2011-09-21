@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2007-2011 by Andreas Schlegel
+ *  2006-2011 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -29,7 +29,9 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * a knob. description tbd.
+ * A knob is a circular slider which can be used with a limited and unlimited
+ * range. Knobs come in 3 designs LINE, ARC and ELIPSE and can be controller
+ * with both the mouse and the mouse wheel. 
  * 
  * @example ControlP5knob
  */
@@ -76,19 +78,13 @@ public class Knob extends Controller {
 	public static int autoHeight = 40;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
-	
-	private float scrollSensitivity = 1.0f/resolution;
 
-	public Knob(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			float theMin,
-			float theMax,
-			float theDefaultValue,
-			int theX,
-			int theY,
-			int theWidth) {
+	private float scrollSensitivity = 1.0f / resolution;
+
+	/**
+	 * @exclude
+	 */
+	public Knob(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theWidth);
 		_myValue = theDefaultValue;
 		setMin(theMin);
@@ -104,10 +100,11 @@ public class Knob extends Controller {
 
 	}
 
-	public void setRadius(float theValue) {
+	public Knob setRadius(float theValue) {
 		_myRadius = theValue;
 		_myDiameter = _myRadius * 2;
 		width = (int) _myDiameter;
+		return this;
 	}
 
 	public float getRadius() {
@@ -115,20 +112,17 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * The start angle is a value between 0 and TWO_PI. By default the start angle
-	 * is set to HALF_PI + PI * 0.25f
-	 * 
-	 * @param theAngle
+	 * The start angle is a value between 0 and TWO_PI. By default the start
+	 * angle is set to HALF_PI + PI * 0.25f
 	 */
-	public void setStartAngle(float theAngle) {
+	public Knob setStartAngle(float theAngle) {
 		startAngle = theAngle;
 		setInternalValue(modifiedValue);
+		return this;
 	}
 
 	/**
 	 * get the start angle, 0 is at 3 o'clock.
-	 * 
-	 * @return
 	 */
 	public float getStartAngle() {
 		return startAngle;
@@ -137,19 +131,13 @@ public class Knob extends Controller {
 	/**
 	 * set the range in between which the know operates. By default the range is
 	 * PI + HALF_PI
-	 * 
-	 * @param theRange
 	 */
-	public void setRange(float theRange) {
+	public Knob setRange(float theRange) {
 		range = theRange;
 		setInternalValue(modifiedValue);
+		return this;
 	}
 
-	/**
-	 * get the range value.
-	 * 
-	 * @return
-	 */
 	public float getRange() {
 		return range;
 	}
@@ -162,29 +150,32 @@ public class Knob extends Controller {
 		return isShowRange;
 	}
 
-	public void setShowRange(boolean theValue) {
+	public Knob setShowRange(boolean theValue) {
 		isShowRange = theValue;
+		return this;
 	}
 
 	/**
-	 * set the drag direction, when controlling a knob, parameter is either
+	 * Sets the drag direction, when controlling a knob, parameter is either
 	 * Controller.HORIZONTAL or Controller.VERTICAL.
 	 * 
-	 * @param theValue
+	 * @param theValue must be Controller.HORIZONTAL or Controller.VERTICAL
+	 * @return Knob
 	 */
-	public void setDragDirection(int theValue) {
+	public Knob setDragDirection(int theValue) {
 		if (theValue == HORIZONTAL) {
 			_myDragDirection = HORIZONTAL;
 		} else {
 			_myDragDirection = VERTICAL;
 		}
+		return this;
 	}
 
 	/**
-	 * get the drag direction which is either Controller.HORIZONTAL or
+	 * Gets the drag direction which is either Controller.HORIZONTAL or
 	 * Controller.VERTICAL.
 	 * 
-	 * @return
+	 * @return int returns  Controller.HORIZONTAL or Controller.VERTICAL
 	 */
 	public int getDragDirection() {
 		return _myDragDirection;
@@ -193,89 +184,76 @@ public class Knob extends Controller {
 	/**
 	 * resolution is a sensitivity value when dragging a knob. the higher the
 	 * value, the more sensitive the dragging.
-	 * 
-	 * @param theValue
 	 */
-	public void setResolution(float theValue) {
+	public Knob setResolution(float theValue) {
 		resolution = theValue;
+		return this;
 	}
 
 	public float getResolution() {
 		return resolution;
 	}
 
-	public void setNumberOfTickMarks(int theNumber) {
+	public Knob setNumberOfTickMarks(int theNumber) {
 		_myTickMarksNum = theNumber;
+		return this;
 	}
 
 	public int getNumberOfTickMarks() {
 		return _myTickMarksNum;
 	}
 
-	public void showTickMarks(boolean theFlag) {
+	public Knob showTickMarks(boolean theFlag) {
 		isShowTickMarks = theFlag;
+		return this;
 	}
 
 	public boolean isShowTickMarks() {
 		return isShowTickMarks;
 	}
 
-	public void snapToTickMarks(boolean theFlag) {
+	public Knob snapToTickMarks(boolean theFlag) {
 		isSnapToTickMarks = theFlag;
+		return this;
 	}
 
-	public void setTickMarkLength(int theLength) {
+	public Knob setTickMarkLength(int theLength) {
 		myTickMarkLength = theLength;
+		return this;
 	}
 
 	public int getTickMarkLength() {
 		return myTickMarkLength;
 	}
 
-	public void setTickMarkWeight(float theWeight) {
+	public Knob setTickMarkWeight(float theWeight) {
 		myTickMarkWeight = theWeight;
+		return this;
 	}
 
 	public float getTickMarkWeight() {
 		return myTickMarkWeight;
 	}
 
-	public void setConstrained(boolean theValue) {
+	public Knob setConstrained(boolean theValue) {
 		isConstrained = theValue;
+		return this;
 	}
 
 	public boolean isConstrained() {
 		return isConstrained;
 	}
 
-	/*
-	 * 
-	 * settings for:
-	 * 
-	 * TODO tickmarks: distance from edge
-	 * 
-	 * TODO only start-end marks if isLimited and tickmarks are off.
-	 * 
-	 * TODO arc: add setter for distance to center + distance to edge currently
-	 * percental.
-	 * 
-	 * TODO enable/disable drag and click control (for endless, click should be
-	 * disabled).
-	 * 
-	 * TODO dragging: add another option to control the knob. currently only
-	 * linear dragging is implemented, add circular dragging (as before) as well
+	
+	/**
+	 * @exclude
 	 */
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#updateInternalEvents(processing.core.PApplet)
-	 */
-	public void updateInternalEvents(PApplet theApplet) {
-		if (isMousePressed && !ControlP5.keyHandler.isAltDown) {
+	@Override
+	@ControlP5.Invisible
+	public Knob updateInternalEvents(PApplet theApplet) {
+		if (isMousePressed && !cp5.keyHandler.isAltDown) {
 			if (isActive) {
-				float c = (_myDragDirection == HORIZONTAL) ? _myControlWindow.mouseX - _myControlWindow.pmouseX
-						: _myControlWindow.mouseY - _myControlWindow.pmouseY;
+				float c = (_myDragDirection == HORIZONTAL) ? _myControlWindow.mouseX - _myControlWindow.pmouseX : _myControlWindow.mouseY - _myControlWindow.pmouseY;
 				currentValue += (c) / resolution;
 				if (isConstrained) {
 					currentValue = PApplet.constrain(currentValue, 0, 1);
@@ -283,35 +261,26 @@ public class Knob extends Controller {
 				setInternalValue(currentValue);
 			}
 		}
-
+		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onEnter()
-	 */
 	protected void onEnter() {
 		isActive = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#onLeave()
-	 */
 	protected void onLeave() {
 		isActive = false;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mousePressed()
+	
+	/**
+	 * @exclude
+	 * {@inheritDoc}
 	 */
+	@Override
+	@ControlP5.Invisible
 	public void mousePressed() {
-		float x = _myParent.absolutePosition().x + position.x + _myRadius;
-		float y = _myParent.absolutePosition().y + position.y + _myRadius;
+		float x = _myParent.getAbsolutePosition().x + position.x + _myRadius;
+		float y = _myParent.getAbsolutePosition().y + position.y + _myRadius;
 		if (PApplet.dist(x, y, _myControlWindow.mouseX, _myControlWindow.mouseY) < _myRadius) {
 			isActive = true;
 			if (PApplet.dist(x, y, _myControlWindow.mouseX, _myControlWindow.mouseY) > (_myRadius * 0.6)) {
@@ -328,53 +297,48 @@ public class Knob extends Controller {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleased()
+	/**
+	 * @exclude
+	 * {@inheritDoc}
 	 */
+	@Override
+	@ControlP5.Invisible
 	public void mouseReleased() {
 		isActive = false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleasedOutside()
+	/**
+	 * @exclude
+	 * {@inheritDoc}
 	 */
+	@Override
+	@ControlP5.Invisible
 	public void mouseReleasedOutside() {
 		mouseReleased();
 	}
-
+	
 	/**
-	 * set the minimum value of the knob.
-	 * 
-	 * @param theValue float
+	 * {@inheritDoc}
 	 */
-	public void setMin(float theValue) {
+	@Override
+	public Knob setMin(float theValue) {
 		_myMin = theValue;
-		// TODO should update internalValue here?
+		return this;
 	}
-
+	
 	/**
-	 * set the maximum value of the knob.
-	 * 
-	 * @param theValue float
+	 * {@inheritDoc}
 	 */
-	public void setMax(float theValue) {
+	@Override
+	public Knob setMax(float theValue) {
 		_myMax = theValue;
-		// TODO should update internalValue here?
+		return this;
 	}
 
 	protected void setInternalValue(float theValue) {
-		// TODO simplify below code.
-		// TODO rename modifiedValue and currentValue to make it more obvious to
-		// what these variables refer to
-		modifiedValue = (isSnapToTickMarks) ? PApplet.round((theValue * _myTickMarksNum)) / ((float) _myTickMarksNum)
-				: theValue;
+		modifiedValue = (isSnapToTickMarks) ? PApplet.round((theValue * _myTickMarksNum)) / ((float) _myTickMarksNum) : theValue;
 		currentValue = theValue;
-		myAngle = PApplet.map(isSnapToTickMarks == true ? modifiedValue : currentValue, 0, 1, startAngle, startAngle
-				+ range);
+		myAngle = PApplet.map(isSnapToTickMarks == true ? modifiedValue : currentValue, 0, 1, startAngle, startAngle + range);
 
 		if (isSnapToTickMarks) {
 			if (previousValue != modifiedValue && isSnapToTickMarks) {
@@ -389,13 +353,11 @@ public class Knob extends Controller {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#setValue(float)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-	public Controller setValue(float theValue) {
+	public Knob setValue(float theValue) {
 		theValue = PApplet.map(theValue, _myMin, _myMax, 0, 1);
 		if (isConstrained) {
 			theValue = PApplet.constrain(theValue, 0, 1);
@@ -404,30 +366,28 @@ public class Knob extends Controller {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#value()
+	/**
+	 * {@inheritDoc}
 	 */
-	public float value() {
+	@Override
+	public float getValue() {
 		_myValue = PApplet.map(_myTickMarksNum > 0 ? modifiedValue : currentValue, 0, 1, _myMin, _myMax);
 		return _myValue;
 	}
 
 	/**
-	 * assigns a random value to the controller.
+	 * Assigns a random value to the controller.
 	 */
 	public Knob shuffle() {
 		float r = (float) Math.random();
 		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
 		return this;
 	}
-	
 
 	/**
-	 * sets the sensitivity for the scroll behavior when using the mouse wheel
-	 * or the scroll function of a multi-touch track pad. The smaller the value (closer
-	 * to 0) the higher the sensitivity.
+	 * Sets the sensitivity for the scroll behavior when using the mouse wheel
+	 * or the scroll function of a multi-touch track pad. The smaller the value
+	 * (closer to 0) the higher the sensitivity.
 	 * 
 	 * @param theValue
 	 * @return Knob
@@ -436,13 +396,18 @@ public class Knob extends Controller {
 		scrollSensitivity = theValue;
 		return this;
 	}
-	
+
 	/**
-	 * changes the value of the knob when hovering and using the mouse wheel
-	 * or the scroll function of a multi-touch track pad.
-	 * 
-	 * @param theRotationValue
-	 * @return Knob
+	 * @see controlP5.Knob#setScrollSensitivity(float)
+	 */
+	public Knob setSensitivity(float theValue) {
+		scrollSensitivity = theValue;
+		return this;
+	}
+
+	/**
+	 * Changes the value of the knob when hovering and using the mouse wheel or
+	 * the scroll function of a multi-touch track pad.
 	 */
 	public Knob scrolled(int theRotationValue) {
 		float f = getValue();
@@ -452,29 +417,22 @@ public class Knob extends Controller {
 		return this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#update()
-	 */
-	public void update() {
-		setValue(_myValue);
-	}
-
 	/**
-	 * @deprecated
-	 * @see controlP5.Knob#setStartAngle(float)
-	 * 
+	 * @exclude
+	 * {@inheritDoc}
 	 */
-	public void setOffsetAngle(float theValue) {
-		setStartAngle(theValue);
+	@Override
+	public Knob update() {
+		setValue(_myValue);
+		return this;
 	}
 
 	/**
 	 * set the display style of a know. takes parameters Knob.LINE, Knob.ELLIPSE
 	 * or Knob.ARC. default style is Knob.LINE
 	 * 
-	 * @param theStyle
+	 * @param theStyle use Knob.LINE, Knob.ELLIPSE or Knob.ARC
+	 * @return Knob
 	 */
 	public Knob setDisplayStyle(int theStyle) {
 		displayStyle = theStyle;
@@ -485,12 +443,13 @@ public class Knob extends Controller {
 		return displayStyle;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#updateDisplayMode(int)
+	/**
+	 * @exclude
+	 * {@inheritDoc}
 	 */
-	public void updateDisplayMode(int theMode) {
+	@Override
+	@ControlP5.Invisible
+	public Knob updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -504,6 +463,7 @@ public class Knob extends Controller {
 		default:
 			break;
 		}
+		return this;
 	}
 
 	class KnobDisplay implements ControllerDisplay {
@@ -511,7 +471,6 @@ public class Knob extends Controller {
 			theApplet.translate(getRadius(), getRadius());
 
 			theApplet.pushMatrix();
-			theApplet.pushStyle();
 			theApplet.ellipseMode(PApplet.CENTER);
 			theApplet.noStroke();
 			theApplet.fill(getColor().getBackground());
@@ -522,17 +481,15 @@ public class Knob extends Controller {
 			if (getDisplayStyle() == Controller.LINE) {
 				theApplet.rotate(getAngle());
 				theApplet.stroke(c);
+				theApplet.strokeWeight(getTickMarkWeight());
 				theApplet.line(0, 0, getRadius(), 0);
 			} else if (getDisplayStyle() == Controller.ELLIPSE) {
 				theApplet.rotate(getAngle());
-				theApplet.noStroke();
 				theApplet.fill(c);
 				theApplet.ellipse(getRadius() * 0.75f, 0, getRadius() * 0.2f, getRadius() * 0.2f);
 			} else if (getDisplayStyle() == Controller.ARC) {
-				theApplet.noStroke();
 				theApplet.fill(c);
-				theApplet.arc(0, 0, getRadius() * 1.8f, getRadius() * 1.8f, getStartAngle(), getAngle()
-						+ ((getStartAngle() == getAngle()) ? 0.06f : 0f));
+				theApplet.arc(0, 0, getRadius() * 1.8f, getRadius() * 1.8f, getStartAngle(), getAngle() + ((getStartAngle() == getAngle()) ? 0.06f : 0f));
 				theApplet.fill(getColor().getBackground());
 				theApplet.ellipse(0, 0, getRadius() * 1.2f, getRadius() * 1.2f);
 			}
@@ -559,10 +516,50 @@ public class Knob extends Controller {
 				}
 			}
 			theApplet.noStroke();
-			theApplet.popStyle();
 			theApplet.popMatrix();
 			getCaptionLabel().draw(theApplet, -getCaptionLabel().getWidth() / 2, getHeight() / 2 + 5);
 		}
 	}
 
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public void setOffsetAngle(float theValue) {
+		setStartAngle(theValue);
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public float value() {
+		return getValue();
+	}
+
 }
+/*
+ * 
+ * settings for:
+ * 
+ * TODO tickmarks: distance from edge
+ * 
+ * TODO only start-end marks if isLimited and tickmarks are off.
+ * 
+ * TODO arc: add setter for distance to center + distance to edge currently
+ * percental.
+ * 
+ * TODO enable/disable drag and click control (for endless, click should be
+ * disabled).
+ * 
+ * TODO dragging: add another option to control the knob. currently only
+ * linear dragging is implemented, add circular dragging (as before) as well
+ */
+
+/*
+ * (non-Javadoc)
+ * 
+ * @see controlP5.Controller#updateInternalEvents(processing.core.PApplet)
+ */
