@@ -170,6 +170,8 @@ public interface ControllerInterface {
 
 	public boolean isMouseOver();
 	
+	public ControllerInterface setMouseOver(boolean theFlag);
+	
 	/**
 	 * @exclude
 	 * @deprecated

@@ -130,18 +130,16 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		controllers = new ControllerList();
 		_myControlCanvas = new ArrayList<ControlWindowCanvas>();
 	}
-	
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@ControlP5.Invisible
 	public void init() {
 	}
-	
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@ControlP5.Invisible
 	@Override
@@ -295,16 +293,14 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 			}
 		}
 	}
-	
-	
+
 	@ControlP5.Invisible
 	public PVector getAbsolutePosition() {
 		return new PVector(absolutePosition.x, absolutePosition.y);
 	}
-	
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@ControlP5.Invisible
 	public ControllerGroup setAbsolutePosition(PVector thePVector) {
@@ -351,10 +347,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		}
 		return this;
 	}
-	
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@ControlP5.Invisible
 	public void continuousUpdateEvents() {
@@ -405,10 +400,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public boolean isUpdate() {
 		return isUpdate;
 	}
-	
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@ControlP5.Invisible
 	public ControllerGroup updateEvents() {
@@ -450,10 +444,9 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		}
 		return this;
 	}
-	
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@ControlP5.Invisible
 	public ControllerGroup updateInternalEvents(PApplet theApplet) {
@@ -462,10 +455,22 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 * @return boolean
 	 */
 	public boolean isMouseOver() {
 		return isInside || isInsideGroup;
+	}
+
+	public ControllerGroup setMouseOver(boolean theFlag) {
+		if (!theFlag) {
+			isInside = false;
+			isInsideGroup = false;
+		} else {
+			// TODO since inside can be either isInside or isInsideGroup, there are 2 options here,
+			// which i am not sure how to handle them yet.
+		}
+		return this;
 	}
 
 	/**
@@ -522,8 +527,8 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	}
 
 	/**
-	 * Adds a canvas to a controllerGroup such as a tab or group. Use processing's draw methods
-	 * to add visual content.
+	 * Adds a canvas to a controllerGroup such as a tab or group. Use processing's draw methods to
+	 * add visual content.
 	 * 
 	 * @param theCanvas
 	 * @return ControlWindowCanvas
@@ -591,6 +596,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * removes the group from controlP5.
 	 */
 	public void remove() {
+		_myControlWindow.removeMouseOverFor(this);
 		if (_myParent != null) {
 			_myParent.remove(this);
 		}
@@ -615,14 +621,14 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public String getName() {
 		return _myName;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public String getAddress() {
 		return _myAddress;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -854,8 +860,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	}
 
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@ControlP5.Invisible
 	public int getPickingColor() {
@@ -926,7 +931,6 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public Label getValueLabel() {
 		return _myValueLabel;
 	}
-	
 
 	/**
 	 * @return ControllerGroup
@@ -1105,7 +1109,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public int id() {
 		return _myId;
 	}
-	
+
 	/**
 	 * @exclude
 	 */
@@ -1122,7 +1126,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	public ControllerInterface parent() {
 		return _myParent;
 	}
-	
+
 	/**
 	 * @exclude
 	 * @deprecated
