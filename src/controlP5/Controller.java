@@ -589,7 +589,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		return mouseover;
 	}
 
-	protected Controller setMouseOver(boolean theFlag) {
+	public Controller setMouseOver(boolean theFlag) {
 		mouseover = theFlag;
 		return this;
 	}
@@ -648,6 +648,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 * removes a controller from controlP5.
 	 */
 	public void remove() {
+		_myControlWindow.removeMouseOverFor(this);
 		if (_myParent != null) {
 			_myParent.remove(this);
 		}

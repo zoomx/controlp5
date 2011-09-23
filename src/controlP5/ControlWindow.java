@@ -338,28 +338,43 @@ public class ControlWindow implements MouseWheelListener {
 		return mouseoverlist.contains(theController);
 	}
 
+	
+	public void resetMouseOver() {
+		isMouseOver = false;
+		for(ControllerInterface ci:mouseoverlist) {
+			ci.setMouseOver(false);
+		}
+	}
+	
 	/**
 	 * A list of controllers that are registered with a mouseover.
 	 */
 	public List<ControllerInterface> getMouseOverList() {
-		// TODO mouseoverlist should be immutable so it cant be changed when returned.
 		return mouseoverlist;
 	}
-
-	private void handleMouseOver() {
+	
+	
+	private ControlWindow handleMouseOver() {
 		for (int i = mouseoverlist.size() - 1; i >= 0; i--) {
 			if (!mouseoverlist.get(i).isMouseOver() || !isVisible) {
 				mouseoverlist.remove(i);
 			}
 		}
 		isMouseOver = mouseoverlist.size() > 0;
+		return this;
+	}
+	
+	public ControlWindow removeMouseOverFor(ControllerInterface theController) {
+		mouseoverlist.remove(theController);
+		return this;
 	}
 
-	protected void setMouseOverController(ControllerInterface theController) {
+	protected ControlWindow setMouseOverController(ControllerInterface theController) {
 		if (!mouseoverlist.contains(theController) && isVisible) {
 			mouseoverlist.add(theController);
 		}
 		isMouseOver = true;
+		return this;
 	}
 
 	/**
@@ -766,6 +781,7 @@ public class ControlWindow implements MouseWheelListener {
 	 */
 	public void hide() {
 		isVisible = false;
+		isMouseOver = false;
 		if (isPAppletWindow) {
 			((PAppletWindow) _myApplet).visible(false);
 		}

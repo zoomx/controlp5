@@ -224,7 +224,7 @@ public class Textfield extends Controller {
 		theApplet.fill(isTexfieldActive ? color.getActive() : color.getForeground());
 		theApplet.rect(0, 0, width, 1);
 		theApplet.rect(0, height - 1, width, 1);
-		theApplet.rect(0, 0, 1, height);
+		theApplet.rect(-1, 0, 1, height);
 		theApplet.rect(width, 0, 1, height);
 		theApplet.fill(255, 60);
 		int yy = _myValueLabel.getHeight();
@@ -332,7 +332,7 @@ public class Textfield extends Controller {
 			return;
 		}
 		Label.BitFontLabel bfl = (Label.BitFontLabel) _myValueLabel.getFont();
-
+		
 		actualCursorPosition = BitFontRenderer.getWidth(myTextline.toString(), bfl, myPosition);
 		if (isPasswordMode) {
 			String myPasswordTextline = "";

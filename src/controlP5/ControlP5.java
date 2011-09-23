@@ -86,7 +86,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.6.4";// "##version##";
+	public static final String VERSION = "0.6.5";// "##version##";
 
 	/**
 	 * @exclude
@@ -501,10 +501,12 @@ public class ControlP5 extends ControlP5Base {
 	 * 
 	 * @param theWindow ControlWindow
 	 */
-	protected void remove(ControlWindow theWindow) {
+	protected ControlP5 remove(ControlWindow theWindow) {
 		theWindow.remove();
 		controlWindowList.remove(theWindow);
+		return this;
 	}
+	
 
 	/**
 	 * removes a controller by instance.
