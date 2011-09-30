@@ -469,7 +469,7 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	public Textlabel getTextlabel(String theText, int theX, int theY) {
-		return new Textlabel(cp5.papplet, theText, theX, theY);
+		return new Textlabel(cp5, theText, theX, theY);
 	}
 
 	public Textlabel getTextlabel() {

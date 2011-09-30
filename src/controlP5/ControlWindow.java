@@ -119,11 +119,14 @@ public class ControlWindow implements MouseWheelListener {
 	private Pointer _myPointer;
 
 	private boolean mousewheel = true;
+	
+	private int _myFrameCount = 0;
 
 	/**
 	 * @exclude
 	 */
 	public ControlWindow(final ControlP5 theControlP5, final PApplet theApplet) {
+		mouseoverlist = new ArrayList<ControllerInterface>();
 		controlP5 = theControlP5;
 		_myApplet = theApplet;
 		_myApplet.registerMouseEvent(this);
@@ -134,13 +137,14 @@ public class ControlWindow implements MouseWheelListener {
 
 	protected void init() {
 		_myPointer = new Pointer();
+		
 		String myRenderer = _myApplet.g.getClass().toString().toLowerCase();
 		is3D = (myRenderer.contains("gl") || myRenderer.contains("3d"));
 
 		_myTabs = new ControllerList();
 		_myControlWindowCanvas = new ArrayList<ControlWindowCanvas>();
 		_myControlCanvas = new ArrayList<ControlWindowCanvas>();
-		mouseoverlist = new ArrayList<ControllerInterface>();
+		
 
 		// TODO next section conflicts with Android
 		if (_myApplet instanceof PAppletWindow) {
@@ -331,6 +335,9 @@ public class ControlWindow implements MouseWheelListener {
 	 */
 	public boolean isMouseOver() {
 		// TODO doesnt work for all groups yet, only ListBox and DropdownList.
+		if (_myFrameCount + 1 < _myApplet.frameCount) {
+			resetMouseOver();
+		}
 		return isVisible ? isMouseOver : false;
 	}
 
@@ -338,22 +345,21 @@ public class ControlWindow implements MouseWheelListener {
 		return mouseoverlist.contains(theController);
 	}
 
-	
 	public void resetMouseOver() {
 		isMouseOver = false;
-		for(ControllerInterface ci:mouseoverlist) {
-			ci.setMouseOver(false);
+		for(int i=mouseoverlist.size()-1;i>=0;i--) {
+			mouseoverlist.get(i).setMouseOver(false);
 		}
+		mouseoverlist.clear();
 	}
-	
+
 	/**
 	 * A list of controllers that are registered with a mouseover.
 	 */
 	public List<ControllerInterface> getMouseOverList() {
 		return mouseoverlist;
 	}
-	
-	
+
 	private ControlWindow handleMouseOver() {
 		for (int i = mouseoverlist.size() - 1; i >= 0; i--) {
 			if (!mouseoverlist.get(i).isMouseOver() || !isVisible) {
@@ -363,7 +369,7 @@ public class ControlWindow implements MouseWheelListener {
 		isMouseOver = mouseoverlist.size() > 0;
 		return this;
 	}
-	
+
 	public ControlWindow removeMouseOverFor(ControllerInterface theController) {
 		mouseoverlist.remove(theController);
 		return this;
@@ -448,9 +454,8 @@ public class ControlWindow implements MouseWheelListener {
 	 * @exclude draw content.
 	 */
 	public void draw() {
+		_myFrameCount = _myApplet.frameCount;
 		if (controlP5.blockDraw == false) {
-
-			// _myPicking.reset();
 
 			updateEvents();
 			if (isVisible) {

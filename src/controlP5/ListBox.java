@@ -53,6 +53,8 @@ public class ListBox extends ControlGroup implements ControlListener {
 	protected float _myScrollValue = 0;
 
 	protected boolean isScrollbarVisible = true;
+	
+	private int _myScrollbarWidth = 5;
 
 	protected int _myHeight;
 
@@ -67,8 +69,6 @@ public class ListBox extends ControlGroup implements ControlListener {
 	protected boolean pulldown;
 
 	private int itemOffset = 0;
-
-	private int _myScrollbarWidth = 8;
 
 	private boolean isToUpperCase = true;
 
@@ -112,7 +112,9 @@ public class ListBox extends ControlGroup implements ControlListener {
 		return this;
 	}
 
-	public boolean isScrollbarVisible() {
+	
+	
+	public boolean isScrollbarEnabled() {
 		return isScrollbarVisible;
 	}
 
@@ -121,6 +123,10 @@ public class ListBox extends ControlGroup implements ControlListener {
 			return showScrollbar();
 		}
 		return hideScrollbar();
+	}
+
+	public boolean isScrollable() {
+		return _myScrollbar.isVisible();
 	}
 
 	/**
@@ -608,5 +614,14 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public ListBoxItem item(Controller theButton) {
 		return getItem(theButton);
 	}
-
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 * @return
+	 */
+	@Deprecated
+	public boolean isScrollbarVisible() {
+		return isScrollbarVisible;
+	}
 }

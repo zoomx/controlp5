@@ -27,7 +27,7 @@ package controlP5;
 
 /**
  * <p>
- * A CallbackEvent is send when a controller action such as enter, leave, press, etc has happened.
+ * A CallbackEvent is send when a controller action such as enter, leave, press, etc has occurs.
  * </p>
  * 
  * @example ControlP5callback

@@ -226,7 +226,11 @@ public class Tooltip {
 			_myMode = ControlP5.WAIT;
 		}
 	}
-
+	
+	protected void deactivate() {
+		deactivate(1);
+	}
+	
 	protected void deactivate(int theNum) {
 		if (theNum == 0) {
 			if (_myMode >= ControlP5.IDLE) {
