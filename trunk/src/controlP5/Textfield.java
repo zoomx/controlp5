@@ -244,7 +244,7 @@ public class Textfield extends Controller {
 	 * 
 	 */
 	public void keyEvent(KeyEvent theKeyEvent) {
-		if (!cp5.keyHandler.isAltDown && isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
+		if (isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
 			if (cp5.keyHandler.keyCode == UP) {
 				if (myTextList.size() > 0 && myIndex > 0) {
 					myIndex--;
@@ -304,6 +304,7 @@ public class Textfield extends Controller {
 		if ((_myValueLabel.getFont() instanceof Label.BitFontLabel) == false) {
 			ControlFont cf = ((Label.ControlFontLabel) _myValueLabel.getFont()).getFont();
 			_myControlWindow.papplet().textFont(cf.getPFont(), _myValueLabel.getFontSize());
+			
 			int start = 0;
 
 			char[] chrs = myTextline.toString().toCharArray();
@@ -320,7 +321,7 @@ public class Textfield extends Controller {
 			if (start > 0) {
 				_myValueLabel.setText(myTextline.toString().substring(start, myPosition));
 			} else {
-				int end = myPosition;
+				int end = myTextline.length();
 				for (int i = 0; i < myTextline.length(); i++) {
 					if (_myControlWindow.papplet().textWidth(chrs, 0, i) >= getWidth()) {
 						end = i - 1;

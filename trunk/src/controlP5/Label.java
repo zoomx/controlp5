@@ -623,7 +623,7 @@ public class Label implements CDrawable {
 			theApplet.textLeading(getLineHeight());
 			theApplet.textAlign(PApplet.LEFT, PApplet.TOP);
 			String s = isToUpperCase ? _myText.toUpperCase() : _myText;
-
+			
 			if (isMultiline) {
 				textHeight = calculateTextHeight(theApplet, s, _myWidth - 15);
 				int maxLineNum = PApplet.round((float) _myHeight / (float) _myLineHeight);

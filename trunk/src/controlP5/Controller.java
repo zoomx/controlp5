@@ -508,7 +508,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	@ControlP5.Invisible
 	public final Controller updateEvents() {
-		mouseover = false;
+		
 		if (isVisible && (isMousePressed == _myControlWindow.mouselock)) {
 			if (isMousePressed && cp5.keyHandler.isAltDown && isMoveable) {
 
@@ -524,23 +524,19 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 				}
 			} else {
 				if (!isLock) {
-					if (isInside) {
-						mouseover = true;
-						_myControlWindow.setMouseOverController(this);
+					if(isInside) {
+						setMouseOver(true);
 					}
 					if (inside()) {
 						if (!isInside) {
-							setIsInside(true);
 							onEnter();
-							cp5.getTooltip().activate(this);
-							cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_ENTER));
+							setIsInside(true);
 						}
 					} else {
 						if (isInside && !isMousePressed) {
 							onLeave();
-							cp5.getTooltip().deactivate(1);
+							setMouseOver(false);
 							setIsInside(false);
-							cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_LEAVE));
 						}
 					}
 				}
@@ -590,7 +586,19 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	}
 
 	public Controller setMouseOver(boolean theFlag) {
+		if(mouseover==theFlag) {
+			return this;
+		}
 		mouseover = theFlag;
+		if(mouseover) {
+			_myControlWindow.setMouseOverController(this);
+			cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_ENTER));
+			cp5.getTooltip().activate(this);
+		} else {
+			cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_LEAVE));
+			_myControlWindow.removeMouseOverFor(this);
+			cp5.getTooltip().deactivate();
+		}
 		return this;
 	}
 
@@ -683,7 +691,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	}
 
 	/**
-	 * moves the controller to another tab indicated by parameter theTab.
+	 * moves the controller to another tab.
 	 * 
 	 * @param theTab
 	 * @return Controller
@@ -711,7 +719,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	}
 
 	/**
-	 * moves the controller to a defined tab inside the main window.
+	 * moves the controller to a tab inside the main window.
 	 * 
 	 * @param theApplet
 	 * @param theTabName
@@ -809,6 +817,17 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	}
 
 	/**
+	 * 
+	 */
+	public final Controller setTab(final ControlWindow theWindow, final String theName) {
+		setParent(cp5.getTab(theWindow, theName));
+		for (Controller c : subelements) {
+			c.setTab(theWindow, theName);
+		}
+		return this;
+	}
+	
+	/**
 	 * sets the group of the controller.
 	 * 
 	 * @param theName String
@@ -861,6 +880,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 			absolutePosition.add(_myParent.getPosition());
 			_myControlWindow = _myParent.getWindow();
 		}
+		setMouseOver(false);
 		return this;
 	}
 
@@ -1405,6 +1425,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	@Override
 	public Controller hide() {
+		setMouseOver(false);
 		isVisible = false;
 		isActive = false;
 		return this;
@@ -2254,16 +2275,5 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		return _myParent;
 	}
 
-	/**
-	 * @exclude
-	 * @deprecated
-	 */
-	@Deprecated
-	public final Controller setTab(final ControlWindow theWindow, final String theName) {
-		setParent(cp5.getTab(theWindow, theName));
-		for (Controller c : subelements) {
-			c.setTab(theWindow, theName);
-		}
-		return this;
-	}
+	
 }
