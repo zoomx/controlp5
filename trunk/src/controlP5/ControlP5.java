@@ -86,7 +86,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.6.5";// "##version##";
+	public static final String VERSION = "0.6.6";// "##version##";
 
 	/**
 	 * @exclude
@@ -146,7 +146,8 @@ public class ControlP5 extends ControlP5Base {
 	protected boolean blockDraw;
 
 	protected Tooltip _myTooltip;
-
+	
+	
 	/**
 	 * Create a new instance of controlP5.
 	 * 

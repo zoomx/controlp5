@@ -185,8 +185,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	private String _myAddress = "";
 
 	/**
-	 * @todo add distribution options for MOVE, RELEASE, and PRESSED. setDecimalPoints:
-	 *       setDcimalPoints(6) does only show 2 digits after the point
+	 * TODO add distribution options for MOVE, RELEASE, and PRESSED. setDecimalPoints:
+	 * setDcimalPoints(6) does only show 2 digits after the point
 	 */
 
 	protected Controller(final ControlP5 theControlP5, final ControllerGroup theParent, final String theName, final float theX, final float theY, final int theWidth, final int theHeight) {
@@ -508,7 +508,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	@ControlP5.Invisible
 	public final Controller updateEvents() {
-		
+
 		if (isVisible && (isMousePressed == _myControlWindow.mouselock)) {
 			if (isMousePressed && cp5.keyHandler.isAltDown && isMoveable) {
 
@@ -524,7 +524,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 				}
 			} else {
 				if (!isLock) {
-					if(isInside) {
+					if (isInside) {
 						setMouseOver(true);
 					}
 					if (inside()) {
@@ -537,6 +537,20 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 							onLeave();
 							setMouseOver(false);
 							setIsInside(false);
+						}
+						if (!isInside && mouseover) {
+
+							setMouseOver(false);
+
+							// here the mouseOver is set to false when the mouse is released
+							// outside a controller. the mouseoverlist is not updated when
+							// the mouse is still pressed but has left the controller - updating the
+							// list here currently conflicts with callbacks called from inside
+							// setMouseOver()
+							//
+							// Note: the mouseoverlist is only updated for ControllerGroups when
+							// the mouse is pressed but is hovering other controllers while mouse is
+							// dragged.
 						}
 					}
 				}
@@ -586,11 +600,11 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	}
 
 	public Controller setMouseOver(boolean theFlag) {
-		if(mouseover==theFlag) {
+		if (mouseover == theFlag) {
 			return this;
 		}
 		mouseover = theFlag;
-		if(mouseover) {
+		if (mouseover) {
 			_myControlWindow.setMouseOverController(this);
 			cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_ENTER));
 			cp5.getTooltip().activate(this);
@@ -826,7 +840,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		}
 		return this;
 	}
-	
+
 	/**
 	 * sets the group of the controller.
 	 * 
@@ -2275,5 +2289,4 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		return _myParent;
 	}
 
-	
 }
