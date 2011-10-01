@@ -33,6 +33,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -119,7 +120,7 @@ public class ControlWindow implements MouseWheelListener {
 	private Pointer _myPointer;
 
 	private boolean mousewheel = true;
-	
+
 	private int _myFrameCount = 0;
 
 	/**
@@ -137,14 +138,13 @@ public class ControlWindow implements MouseWheelListener {
 
 	protected void init() {
 		_myPointer = new Pointer();
-		
+
 		String myRenderer = _myApplet.g.getClass().toString().toLowerCase();
 		is3D = (myRenderer.contains("gl") || myRenderer.contains("3d"));
 
 		_myTabs = new ControllerList();
 		_myControlWindowCanvas = new ArrayList<ControlWindowCanvas>();
 		_myControlCanvas = new ArrayList<ControlWindowCanvas>();
-		
 
 		// TODO next section conflicts with Android
 		if (_myApplet instanceof PAppletWindow) {
@@ -187,7 +187,6 @@ public class ControlWindow implements MouseWheelListener {
 		} else {
 			if (isInit == false) {
 				_myApplet.registerPre(this);
-				// _myApplet.registerPost(this);
 				_myApplet.registerDraw(this);
 			}
 		}
@@ -347,7 +346,7 @@ public class ControlWindow implements MouseWheelListener {
 
 	public void resetMouseOver() {
 		isMouseOver = false;
-		for(int i=mouseoverlist.size()-1;i>=0;i--) {
+		for (int i = mouseoverlist.size() - 1; i >= 0; i--) {
 			mouseoverlist.get(i).setMouseOver(false);
 		}
 		mouseoverlist.clear();
@@ -422,7 +421,17 @@ public class ControlWindow implements MouseWheelListener {
 		_myControlWindowCanvas.remove(theCanvas);
 	}
 
+	private boolean isReset = false;
+	
 	public void pre() {
+		if (_myFrameCount + 1 < _myApplet.frameCount) {
+			if(isReset) {
+				resetMouseOver();
+				isReset= false;
+			}
+		} else {
+			isReset = true;
+		}
 		if (isVisible) {
 			if (isPAppletWindow) {
 				if (isDrawBackground) {
@@ -454,6 +463,7 @@ public class ControlWindow implements MouseWheelListener {
 	 * @exclude draw content.
 	 */
 	public void draw() {
+		
 		_myFrameCount = _myApplet.frameCount;
 		if (controlP5.blockDraw == false) {
 
@@ -613,8 +623,10 @@ public class ControlWindow implements MouseWheelListener {
 	 */
 	@ControlP5.Invisible
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (mousewheel) {
-			for (ControllerInterface c : mouseoverlist) {
+		
+		if (mousewheel && isMouseOver()) {
+			CopyOnWriteArrayList<ControllerInterface> mouselist = new CopyOnWriteArrayList<ControllerInterface>(mouseoverlist);
+			for (ControllerInterface c : mouselist) {
 				if (c instanceof Slider) {
 					((Slider) c).scrolled(e.getWheelRotation());
 				} else if (c instanceof Knob) {

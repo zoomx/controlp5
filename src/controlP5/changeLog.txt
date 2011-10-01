@@ -1,8 +1,13 @@
+2011-09-30  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.6      
+
+
 2011-09-22  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.6.5      
       
-      * src controlP5/controlWindow.java:
+      * src controlP5/ControlWindow.java:
       adding removeMouseOverFor() to remove controllers from the mouseoverlist. 
       Called when a controller or group is removed. Necessary when a controller/group is removed 
       when clicked or hovered by the mouse.		
