@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import processing.core.PApplet;
 
 /**
- * Use charts to display float array data as line chart, yet experimental, but see the ControlP5chart example for more details.
- * @example  ControlP5chart
+ * Use charts to display float array data as line chart, yet experimental, but see the
+ * ControlP5chart example for more details.
+ * 
+ * @example ControlP5chart
  */
 public class Chart extends Controller {
 
@@ -31,14 +33,7 @@ public class Chart extends Controller {
 
 	protected float strokeWeight = 1;
 
-	protected Chart(
-			ControlP5 theControlP5,
-			ControllerGroup theParent,
-			String theName,
-			float theX,
-			float theY,
-			int theWidth,
-			int theHeight) {
+	protected Chart(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myDataSet = new ArrayList<ChartDataSet>();
 		addDataSet();
@@ -158,12 +153,12 @@ public class Chart extends Controller {
 		_myDataSet.remove(theIndex);
 	}
 
-	public ChartDataSet updateData(float[] theValues) {
-		updateData(0, theValues);
+	public ChartDataSet setData(float[] theValues) {
+		setData(0, theValues);
 		return getDataSet();
 	}
 
-	public ChartDataSet updateData(int theSetIndex, float[] theValues) {
+	public ChartDataSet setData(int theSetIndex, float[] theValues) {
 		if (_myDataSet.get(theSetIndex).size() != theValues.length) {
 			_myDataSet.get(theSetIndex).clear();
 			for (int i = 0; i < theValues.length; i++) {
@@ -176,6 +171,14 @@ public class Chart extends Controller {
 			_myDataSet.get(theSetIndex).get(n++).setValue(f);
 		}
 		return getDataSet(theSetIndex);
+	}
+
+	public ChartDataSet updateData(float[] theValues) {
+		return setData(theValues);
+	}
+
+	public ChartDataSet updateData(int theSetIndex, float[] theValues) {
+		return setData(theSetIndex, theValues);
 	}
 
 	public ChartDataSet getDataSet(int theTableIndex) {
@@ -237,7 +240,7 @@ public class Chart extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new ChartDisplay();
+			_myDisplay = new ChartDisplayBarCentered();
 			break;
 		case (IMAGE):
 			// _myDisplay = new ChartImageDisplay();
@@ -251,9 +254,48 @@ public class Chart extends Controller {
 		}
 		return this;
 	}
-
-	private class ChartDisplay implements ControllerDisplay {
+	
+private class ChartDisplayBar implements ControllerDisplay {
+		
 		public void display(PApplet theApplet, Controller theController) {
+			theApplet.pushStyle();
+			theApplet.fill(getColor().getBackground());
+			theApplet.rect(0, 0, getWidth(), getHeight());
+			theApplet.noStroke();
+			for (int n = 0; n < size(); n++) {
+				theApplet.fill(getDataSet(n).getColor().getForeground());
+				int s = getDataSet(n).size();
+				for (int i = 0; i < s; i++) {
+					int ww = (int) ((width / s));
+					theApplet.rect(i * ww, getHeight(), ww-1, -PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
+				}
+			}
+			theApplet.popStyle();
+		}
+	}
+
+	private class ChartDisplayBarCentered implements ControllerDisplay {
+		
+		public void display(PApplet theApplet, Controller theController) {
+			theApplet.pushStyle();
+			theApplet.fill(getColor().getBackground());
+			theApplet.rect(0, 0, getWidth(), getHeight());
+			theApplet.noStroke();
+			for (int n = 0; n < size(); n++) {
+				theApplet.fill(getDataSet(n).getColor().getForeground());
+				int s = getDataSet(n).size();
+				for (int i = 0; i < s; i++) {
+					int ww = (int) ((width / s) * 0.5f);
+					theApplet.rect(i * ((width / s)) + ww / 2, getHeight(), ww, -PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
+				}
+			}
+			theApplet.popStyle();
+		}
+	}
+
+	private class ChartDisplayLine implements ControllerDisplay {
+		public void display(PApplet theApplet, Controller theController) {
+
 			theApplet.pushStyle();
 			theApplet.fill(getColor().getBackground());
 			theApplet.rect(0, 0, getWidth(), getHeight());
@@ -263,7 +305,7 @@ public class Chart extends Controller {
 				theApplet.strokeWeight(getDataSet(n).getStrokeWeight());
 				theApplet.beginShape();
 				for (int i = 0; i < getDataSet(n).size(); i++) {
-					theApplet.vertex(i * resolution, getHeight() - getDataSet(n).get(i).getValue());
+					theApplet.vertex(i * resolution, PApplet.max(0, PApplet.min(getHeight(), getHeight() - getDataSet(n).get(i).getValue())));
 				}
 				theApplet.endShape();
 			}
@@ -271,7 +313,6 @@ public class Chart extends Controller {
 			theApplet.popStyle();
 		}
 	}
-	
 
 	@Override
 	public String getInfo() {
@@ -280,7 +321,7 @@ public class Chart extends Controller {
 
 	@Override
 	public String toString() {
-		return super.toString() + " [ " + getValue() + " ]"+" Chart "+"("+this.getClass().getSuperclass()+")";
+		return super.toString() + " [ " + getValue() + " ]" + " Chart " + "(" + this.getClass().getSuperclass() + ")";
 	}
 
 }

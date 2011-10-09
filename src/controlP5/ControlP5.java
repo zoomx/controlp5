@@ -108,7 +108,7 @@ public class ControlP5 extends ControlP5Base {
 	public static boolean DEBUG;
 
 	/**
-	 *  @exclude
+	 * @exclude
 	 */
 	@ControlP5.Invisible
 	public static final Logger logger = Logger.getLogger(ControlP5.class.getName());
@@ -146,8 +146,7 @@ public class ControlP5 extends ControlP5Base {
 	protected boolean blockDraw;
 
 	protected Tooltip _myTooltip;
-	
-	
+
 	/**
 	 * Create a new instance of controlP5.
 	 * 
@@ -236,7 +235,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean isAutoDraw() {
 		return controlWindow.isAutoDraw;
 	}
-	
+
 	/**
 	 * 
 	 * @see controlP5.ControlBroadcaster
@@ -384,7 +383,7 @@ public class ControlP5 extends ControlP5Base {
 		theController.setAddress(address);
 		if (checkName(theController.getAddress())) {
 			/*
-			 * in case a controller with name already existing is detected it will be deleted
+			 * in case a controller with the same name already exists, will be deleted
 			 */
 			remove(theController.getAddress());
 		}
@@ -416,6 +415,10 @@ public class ControlP5 extends ControlP5Base {
 				_myObjectToControllerMap.put(theObject, new ArrayList<ControllerInterface>());
 			}
 			_myObjectToControllerMap.get(theObject).add(theController);
+		} else {
+			/*
+			 * if theController is of type ControllerGroup, map accordingly here.
+			 */
 		}
 		return this;
 	}
@@ -507,7 +510,6 @@ public class ControlP5 extends ControlP5Base {
 		controlWindowList.remove(theWindow);
 		return this;
 	}
-	
 
 	/**
 	 * removes a controller by instance.
@@ -555,6 +557,15 @@ public class ControlP5 extends ControlP5Base {
 		return null;
 	}
 
+	public <C> C get(Class<C> theClass, String theName) {
+		for (ControllerInterface ci : _myControllerMap.values()) {
+			if (ci.getClass() == theClass || ci.getClass().getSuperclass() == theClass) {
+				return (C)get(theName);
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * @exclude
 	 * @see controlP5.ControlP5#getAll(Class)
@@ -638,6 +649,7 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * call draw() from your program when autoDraw is disabled.
+	 * 
 	 * @exclude
 	 */
 	@ControlP5.Invisible
@@ -719,6 +731,7 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * adds a ControlWindowCanvas to the default sketch window.
+	 * 
 	 * @see controlP5.ControlWindowCanvas
 	 */
 	public ControlP5 addCanvas(ControlWindowCanvas theCanvas) {
@@ -1086,6 +1099,7 @@ public class ControlP5 extends ControlP5Base {
 	 * disposes and clears all controlP5 elements. When running in applet mode, opening new tabs or
 	 * switching to another tab causes the applet to call dispose(). therefore dispose() is disabled
 	 * when running ing applet mode. TODO implement better dispose handling for applets.
+	 * 
 	 * @exclude
 	 */
 	public void dispose() {

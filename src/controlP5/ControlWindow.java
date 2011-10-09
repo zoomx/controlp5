@@ -635,7 +635,10 @@ public class ControlWindow implements MouseWheelListener {
 					((Numberbox) c).scrolled(e.getWheelRotation());
 				} else if (c instanceof ListBox) {
 					((ListBox) c).scrolled(e.getWheelRotation());
+				}  else if (c instanceof Textarea) {
+					((Textarea) c).scrolled(e.getWheelRotation());
 				}
+				
 			}
 		}
 	}
@@ -802,16 +805,6 @@ public class ControlWindow implements MouseWheelListener {
 		if (isPAppletWindow) {
 			((PAppletWindow) _myApplet).visible(false);
 		}
-	}
-
-	/**
-	 * @exclude
-	 * @deprecated
-	 * @param theMode
-	 */
-	@Deprecated
-	public void setMode(int theMode) {
-		setUpdateMode(theMode);
 	}
 
 	/**
@@ -1012,5 +1005,17 @@ public class ControlWindow implements MouseWheelListener {
 		}
 		return null;
 	}
+	
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 * @param theMode
+	 */
+	@Deprecated
+	public void setMode(int theMode) {
+		setUpdateMode(theMode);
+	}
+
 
 }

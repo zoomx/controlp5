@@ -28,10 +28,9 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * a textarea can be used to leave notes, it uses the controlP5 BitFont to
- * render text. Scrollbars will automaticaly be added when text extends the
- * visible area. Textarea extends ControllerGroup, for more methods available
- * see the ControllerGroup documentation.
+ * a textarea can be used to leave notes, it uses the controlP5 BitFont to render text. Scrollbars
+ * will automaticaly be added when text extends the visible area. Textarea extends ControllerGroup,
+ * for more methods available see the ControllerGroup documentation.
  * 
  * @example ControlP5textarea
  * @nosuperclasses ControllerGroup ControllerGroup
@@ -55,6 +54,8 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	protected boolean isScrollbarVisible = true;
 
 	protected int _myBottomOffset = 4;
+
+	private int _myScrollbarWidth = 5;
 
 	/**
 	 * 
@@ -88,7 +89,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	}
 
 	private void setup() {
-		_myValueLabel = new Label(cp5,_myText);
+		_myValueLabel = new Label(cp5, _myText);
 		if (_myValueLabel.getFont() instanceof Label.BitFontLabel) {
 			_myValueLabel.setFont(BitFontRenderer.standard56);
 		}
@@ -184,8 +185,20 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		isScrollbar = (isScrollbarVisible) ? isScrollbar : false;
 		_myScrollbar.setVisible(isScrollbar);
 		_myValueLabel.setOffsetY((int) myOffset);
-		_myValueLabel.setOffsetYratio(_myScrollValue);
+		_myValueLabel.setOffsetYratio((int) _myScrollValue);
 		_myValueLabel.update();
+	}
+
+	@ControlP5.Invisible
+	public void scrolled(int theStep) {
+		int lines = (_myValueLabel.getTextHeight() / _myValueLabel.getLineHeight());
+		float step = 1.0f / lines;
+		scroll((1 - getScrollPosition()) + (theStep * step));
+	}
+
+	@ControlP5.Invisible
+	public float getScrollPosition() {
+		return _myScrollbar.getValue();
 	}
 
 	/**
@@ -196,9 +209,9 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	public Textarea setWidth(int theValue) {
 		theValue = (theValue < 10) ? 10 : theValue;
 		_myWidth = theValue;
-		_myValueLabel.setWidth(_myWidth - 10);
+		_myValueLabel.setWidth(_myWidth - 15);
 		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
-		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom - 1);
+		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom);
 		return this;
 	}
 
@@ -212,7 +225,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		_myHeight = theValue;
 		_myValueLabel.setHeight(_myHeight - 2);
 		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
-		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom - 1);
+		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom);
 		return this;
 	}
 
@@ -268,29 +281,18 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		return getText();
 	}
 
-	/**
-	 * set the position of the textarea.
-	 * 
-	 * @param theX float
-	 * @param theY float
-	 */
-	public Textarea setPosition(float theX, float theY) {
-		position.x = theX;
-		position.y = theY;
-		return this;
-	}
-
 	protected void preDraw(PApplet theApplet) {
 		if (_myScrollbar.isVisible() || isColorBackground) {
-			_myScrollbar.getPosition().x = _myWidth - 4 + _myValueLabel.getStyle().paddingLeft + _myValueLabel.getStyle().paddingRight;
+			_myScrollbar.getPosition().x = _myWidth - _myScrollbarWidth + _myValueLabel.getStyle().paddingLeft + _myValueLabel.getStyle().paddingRight;
 			if (!isColorBackground) {
 				theApplet.noFill();
 			} else {
 				int a = _myColorBackground >> 24 & 0xff;
 				theApplet.fill(_myColorBackground, a > 0 ? a : 255);
 			}
-			theApplet.rect(0, 0, _myWidth + 1 + _myValueLabel.getStyle().paddingLeft + _myValueLabel.getStyle().paddingRight, _myHeight + _myValueLabel.getStyle().paddingTop
-					+ _myValueLabel.getStyle().paddingBottom);
+			int ww = _myWidth + _myValueLabel.getStyle().paddingLeft + _myValueLabel.getStyle().paddingRight;
+			int hh = _myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom;
+			theApplet.rect(0, 0, ww, hh);
 
 		}
 	}
@@ -382,7 +384,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	public Label valueLabel() {
 		return getValueLabel();
 	}
-	
+
 }
 
 // @todo linebreaking algorithm.
