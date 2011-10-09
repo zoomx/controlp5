@@ -75,7 +75,7 @@ class PAppletWindow extends PApplet implements WindowListener, ComponentListener
 
 	protected String _myRenderer = "";
 
-	protected int _myFrameRate = 15;
+	protected int _myFrameRate = 30;
 	
 	private final ControlP5 cp5;
 
@@ -91,7 +91,7 @@ class PAppletWindow extends PApplet implements WindowListener, ComponentListener
 	 * (non-Javadoc)
 	 */
 	public PAppletWindow(ControlP5 theControlP5, final String theName, final int theWidth, final int theHeight) {
-		this(theControlP5, theName, theWidth, theHeight, "", 15);
+		this(theControlP5, theName, theWidth, theHeight, "", 30);
 	}
 
 	/*
@@ -113,7 +113,7 @@ class PAppletWindow extends PApplet implements WindowListener, ComponentListener
 	 * (non-Javadoc)
 	 */
 	public PAppletWindow(ControlP5 theControlP5, final String theName, final int theX, final int theY, final int theWidth, final int theHeight) {
-		this(theControlP5, theName, theX, theY, theWidth, theHeight, "", 15);
+		this(theControlP5, theName, theX, theY, theWidth, theHeight, "", 30);
 	}
 
 	/*
@@ -212,8 +212,11 @@ class PAppletWindow extends PApplet implements WindowListener, ComponentListener
 		controlWindow = theWindow;
 	}
 
+	private long fr;
 	@Override
 	public void draw() {
+		System.out.println(millis()-fr);
+		fr = millis();
 	}
 
 	public void setTitle(String theTitle) {

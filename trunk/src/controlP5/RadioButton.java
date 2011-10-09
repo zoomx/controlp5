@@ -78,7 +78,7 @@ public class RadioButton extends ControlGroup {
 		isCollapse = false;
 		_myRadioToggles = new ArrayList<Toggle>();
 		setItemsPerRow(1);
-	}
+    	}
 
 	/**
 	 * @param theName

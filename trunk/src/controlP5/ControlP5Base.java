@@ -457,11 +457,11 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	public ControlWindow addControlWindow(final String theWindowName, final int theWidth, final int theHeight) {
-		return addControlWindow(theWindowName, 400, 200, theWidth, theHeight, "", 15);
+		return addControlWindow(theWindowName, 400, 200, theWidth, theHeight, "", 30);
 	}
 
 	public ControlWindow addControlWindow(final String theWindowName, final int theX, final int theY, final int theWidth, final int theHeight) {
-		return addControlWindow(theWindowName, theX, theY, theWidth, theHeight, "", 15);
+		return addControlWindow(theWindowName, theX, theY, theWidth, theHeight, "", 30);
 	}
 
 	public ControlWindow addControlWindow(final String theWindowName, final int theX, final int theY, final int theWidth, final int theHeight, final int theFrameRate) {
