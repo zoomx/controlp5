@@ -32,7 +32,7 @@ package controlP5;
  * ControlBehavior please see the ControlP5behavior example in the examples
  * folder.
  * 
- * @example ControlP5behavior
+ * @example use/ControlP5behavior
  */
 public abstract class ControlBehavior {
 

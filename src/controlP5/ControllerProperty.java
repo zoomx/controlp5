@@ -6,7 +6,7 @@ import java.io.Serializable;
  * A controller property saves the value, address, getter and setter of a
  * registered controller.
  * 
- * @example ControlP5properties
+ * @example controllers/ControlP5properties
  */
 
 public class ControllerProperty implements Serializable, Cloneable {

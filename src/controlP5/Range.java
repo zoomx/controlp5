@@ -35,7 +35,7 @@ import processing.core.PVector;
  * A range slider works like a normal slider but can be adjusted on both ends.
  * 
  * @see Slider
- * @example ControlP5range
+ * @example controllers/ControlP5range
  * @nosuperclasses Controller Controller
  */
 public class Range extends Controller {

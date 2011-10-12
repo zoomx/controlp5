@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Used by MultiList.
  * 
- * @example ControlP5multiList
+ * @example controllers/ControlP5multiList
  * @nosuperclasses Controller Controller
  */
 public class MultiListButton extends Button implements MultiListInterface {

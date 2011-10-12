@@ -36,7 +36,7 @@ import processing.core.PApplet;
  * A ListBox is a list of vertically aligned items which can be scrolled if required.
  * 
  * @see controlP5.DropdownList
- * @example ControlP5listBox
+ * @example controllers/ControlP5listBox
  */
 public class ListBox extends ControlGroup implements ControlListener {
 

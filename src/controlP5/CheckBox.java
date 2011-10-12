@@ -29,7 +29,7 @@ package controlP5;
  * A multiple-choice radioButton. items are added to a checkBox and can be organized in rows and
  * columns. items of a checkBox are of type Toggle.
  * 
- * @example ControlP5CheckBox
+ * @example controllers/ControlP5checkBox
  * 
  * @see controlP5.Toggle
  * 

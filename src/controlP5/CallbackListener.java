@@ -32,6 +32,7 @@ package controlP5;
  * methods.
  * </p>
  * 
+ * @example use/ControlP5callback
  * @see controlP5.ControlP5#addCallback(CallbackListener)
  */
 public interface CallbackListener {

@@ -44,7 +44,7 @@ import processing.core.PVector;
  * increasing/decreasing, by default the multiplier is 1.
  * 
  * 
- * @example ControlP5numberbox
+ * @example controllers/ControlP5numberbox
  * @nosuperclasses Controller Controller
  */
 public class Numberbox extends Controller {

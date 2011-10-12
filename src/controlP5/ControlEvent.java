@@ -31,7 +31,7 @@ package controlP5;
  * to be enabled with {@link Tab} Tab.activateEvent(). for detailed information see the tab
  * documentation.
  * 
- * @example ControlP5controlEvent
+ * @example use/ControlP5controlEvent
  */
 public class ControlEvent {
 

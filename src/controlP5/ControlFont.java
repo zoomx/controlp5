@@ -33,7 +33,7 @@ import processing.core.PFont;
  * for now only be used for TextLabels and Controller Labels. Textarea and
  * Textfield are not supported.
  * 
- * @example ControlP5controlFont
+ * @example extra/ControlP5controlFont
  */
 public class ControlFont {
 

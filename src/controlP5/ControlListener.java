@@ -32,7 +32,8 @@ package controlP5;
  * 
  * @see controlP5.Controller#addListener(ControlListener)
  * @see controlP5.CallbackListener
- * @example ControlP5listener
+ * 
+ * @example use/ControlP5listenerForSingleController
  */
 public interface ControlListener {
 

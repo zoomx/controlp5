@@ -39,7 +39,7 @@ import processing.core.PApplet;
  * ControlGroup extends ControllerGroup, for a list and documentation of available methods see the
  * {@link ControllerGroup} documentation.
  * </p>
- * @example ControlP5group
+ * @example controllers/ControlP5group
  */
 public class ControlGroup extends ControllerGroup implements ControlListener {
 

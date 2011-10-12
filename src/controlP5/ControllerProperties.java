@@ -61,7 +61,7 @@ import processing.core.PApplet;
  * Values of controllers can be stored inside properties files which can be
  * saved to file or memory.
  * 
- * @example ControlP5properties
+ * @example controllers/ControlP5properties
  */
 public class ControllerProperties {
 	

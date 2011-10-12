@@ -8,7 +8,7 @@ import processing.core.PApplet;
  * Use charts to display float array data as line chart, yet experimental, but see the
  * ControlP5chart example for more details.
  * 
- * @example ControlP5chart
+ * @example controllers/ControlP5chart
  */
 public class Chart extends Controller {
 

@@ -33,7 +33,7 @@ import processing.core.PVector;
  * range. Knobs come in 3 designs LINE, ARC and ELIPSE and can be controller
  * with both the mouse and the mouse wheel. 
  * 
- * @example ControlP5knob
+ * @example controllers/ControlP5knob
  */
 public class Knob extends Controller {
 

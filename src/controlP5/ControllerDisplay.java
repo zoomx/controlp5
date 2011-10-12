@@ -34,7 +34,7 @@ import processing.core.PApplet;
  * @see controlP5.draw(processing.core.PApplet)
  * @see controlP5.setDisplay(ControllerDisplay)
  * 
- * @example ControlP5customDisplay
+ * @example use/ControlP5customDisplay
  */
 public interface ControllerDisplay {
 

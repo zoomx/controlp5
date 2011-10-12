@@ -35,7 +35,7 @@ import processing.core.PApplet;
  * available characters for each pixelfont range from ascii code 32-126 <a href="asciitable"
  * atrget="_blank">http://www.asciitable.com/</a>
  * 
- * @example ControlP5textlabel
+ * @example controllers/ControlP5textlabel
  * @nosuperclasses Controller Controller Textarea
  */
 public class Textlabel extends Controller {

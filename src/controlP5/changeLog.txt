@@ -1,3 +1,11 @@
+2011-10-12  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.7
+      
+      * examples reorganized and grouped into 3 categories, 
+      controllers, use, extra
+      
+      
 2011-10-07  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.6.6
