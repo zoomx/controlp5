@@ -4,15 +4,16 @@
  *
  * status: experimental
  * saves/loads controller values into/from a properties-file 
+ * by default properties will be saved in a serialized format and use the .ser extension.
  *
  * taken from the changelog;
  * adding saveProperties(String) and loadProperties(String) to 
- * save and load  serialized controller properties inside a file. 
- * The range of controllers implementing save/load properties is yet 
- * limited to Slider, Knob, Numberbox, Toggle, Checkbox, 
- * RadioButton, Textlabel, Matrix,Range, textarea, ListBox, Dropdown, 
- * colorPicker. Properties are currently saved in the java serialization 
- * format but xml and possibily json alternatives are being worked on.
+ * save and load serialized controller properties. 
+ * The range of controllers implementing save/load properties currently includes
+ * Slider, Knob, Numberbox, Toggle, Checkbox, RadioButton, Textlabel, Matrix,Range, 
+ * textarea, ListBox, Dropdown, colorPicker. 
+ * Properties are currently saved in the java serialization 
+ * format but xml and possibly json alternatives are being worked on.
  *
  *
  * default properties load/save key combinations are 
@@ -79,9 +80,9 @@ void keyPressed() {
   // alt+shift+l to load properties
   // alt+shift+s to save properties
   if(key=='1') {
-    controlP5.saveProperties(("hello.properties"));
+    controlP5.saveProperties(("hello.ser"));
   } else if(key=='2') {
-    controlP5.loadProperties(("hello.properties"));
+    controlP5.loadProperties(("hello.ser"));
   }
 }
 

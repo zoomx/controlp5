@@ -1,11 +1,19 @@
+/**
+ * ControlP5 DrawIntoCanvas
+ *
+ * this example demonstrates how to draw into a ControlWindowCanvas 
+ * from another window. Click and drag the mouse inside each of one of the 
+ * windows to see its effect.
+ *
+ * by Andreas Schlegel, 2011
+ * www.sojamo.de/libraries/controlp5
+ *
+ */
+ 
 import controlP5.*;
 ControlP5 controlP5;
 ControlWindow controlWindow;
 ControlWindowCanvas cc;
-
-// this example demonstrates how to use a ControlWindowCanvas 
-// which can from different windows.
-// click the mouse in both windows to see the effect.
 
 // your controlWindowCanvas class
 class MyCanvas extends ControlWindowCanvas {
@@ -52,6 +60,8 @@ void setup() {
 
 }
 
-void draw(){}
+void draw(){
+  background(0);
+}
 
 
