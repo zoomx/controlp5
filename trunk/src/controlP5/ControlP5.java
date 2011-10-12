@@ -54,7 +54,7 @@ import controlP5.ControlWindow.Pointer;
  * </p>
  * 
  * @see controlP5.ControlP5Base
- * @example ControlP5basics
+ * @example use/ControlP5basics
  */
 public class ControlP5 extends ControlP5Base {
 
@@ -86,7 +86,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.6.6";// "##version##";
+	public static final String VERSION = "0.6.7";// "##version##";
 
 	/**
 	 * @exclude

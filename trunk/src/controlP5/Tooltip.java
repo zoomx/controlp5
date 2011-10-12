@@ -10,7 +10,7 @@ import processing.core.PVector;
  * A tooltip can be registered for individual controllers and is activated on
  * rollover.
  * 
- * @example ControlP5tooltip
+ * @example controllers/ControlP5tooltip
  * 
  */
 public class Tooltip {

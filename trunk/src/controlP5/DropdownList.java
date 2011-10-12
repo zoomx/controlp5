@@ -28,7 +28,7 @@ package controlP5;
 
 
 /**
- *@exmaple ControlP5dropdownList
+ *@exmaple controllers/ControlP5dropdownList
  */
 public class DropdownList extends ListBox {
 

@@ -31,6 +31,8 @@ import java.lang.reflect.Field;
 /**
  * The ControllerPlug is used to do all the reflection procedures to link a
  * controller to a variable or function inside your main application.
+ * 
+ * @example use/ControlP5plugTo
  */
 public class ControllerPlug {
 

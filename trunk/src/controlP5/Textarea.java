@@ -32,7 +32,7 @@ import processing.core.PApplet;
  * will automaticaly be added when text extends the visible area. Textarea extends ControllerGroup,
  * for more methods available see the ControllerGroup documentation.
  * 
- * @example ControlP5textarea
+ * @example controllers/ControlP5textarea
  * @nosuperclasses ControllerGroup ControllerGroup
  */
 public class Textarea extends ControllerGroup implements ControlListener {
@@ -209,7 +209,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	public Textarea setWidth(int theValue) {
 		theValue = (theValue < 10) ? 10 : theValue;
 		_myWidth = theValue;
-		_myValueLabel.setWidth(_myWidth - 15);
+		_myValueLabel.setWidth(_myWidth - _myScrollbarWidth - 10);
 		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
 		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom);
 		return this;

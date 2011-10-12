@@ -34,7 +34,8 @@ import processing.core.PApplet;
  * A Multilist is a multi-menu-tree controller. see the example for more
  * information and how to 	use.
  * 
- * @example ControlP5multiList
+ * @example controllers/ControlP5multiList
+ * 
  * @nosuperclasses Controller Controller
  */
 public class MultiList extends Controller implements MultiListInterface, ControlListener {

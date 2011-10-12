@@ -35,7 +35,7 @@ import processing.core.PApplet;
  * </p>
  * 
  * @see controlP5.ControllerGroup
- * @example ControlP5button
+ * @example controllers/ControlP5button
  */
 
 public class Button extends Controller {

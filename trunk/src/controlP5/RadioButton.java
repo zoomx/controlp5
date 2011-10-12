@@ -39,7 +39,8 @@ import processing.core.PImage;
  * 
  * ControlP5 CheckBox Toggle
  * 
- * @example ControlP5RadioButton
+ * @example controllers/ControlP5radioButton
+ * 
  * @nosuperclasses Controller Controller
  */
 public class RadioButton extends ControlGroup {

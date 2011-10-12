@@ -28,7 +28,7 @@ package controlP5;
 /**
  * control timer is a timer that can be used for example as a stop watch or a duration timer.
  * 
- * @example ControlP5timer
+ * @example controllers/ControlP5timer
  */
 public class ControlTimer {
 

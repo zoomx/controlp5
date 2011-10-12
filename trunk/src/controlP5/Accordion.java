@@ -36,7 +36,7 @@ import java.util.List;
  * 
  * @see controlP5.ControllerGroup
  * @see controlP5.ControlGroup
- * @example ControlP5accordion
+ * @example controllers/ControlP5accordion
  */
 public class Accordion extends ControlGroup {
 

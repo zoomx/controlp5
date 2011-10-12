@@ -35,7 +35,7 @@ import processing.core.PApplet;
  * custom ControlWindowCanvas class, see the ControlP5canvas example for
  * details.
  * 
- * @example ControlP5canvas
+ * @example controllers/ControlP5canvas
  * 
  */
 public abstract class ControlWindowCanvas {

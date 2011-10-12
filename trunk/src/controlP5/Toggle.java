@@ -32,7 +32,7 @@ import processing.core.PVector;
  * a toggle can have two states, true and false, where true has the value 1 and
  * false is 0.
  * 
- * @example ControlP5toggle
+ * @example controllers/ControlP5toggle
  * @nosuperclasses Controller Controller
  */
 public class Toggle extends Controller {

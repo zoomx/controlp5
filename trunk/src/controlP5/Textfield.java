@@ -33,7 +33,7 @@ import java.awt.event.KeyEvent;
  * A singleline input textfield, use arrow keys to go back and forth, use backspace to delete
  * characters. Using the up and down arrows lets you cycle through the history of the textfield.
  * 
- * @example ControlP5textfield
+ * @example controllers/ControlP5textfield
  * @nosuperclasses Controller Controller
  */
 public class Textfield extends Controller {

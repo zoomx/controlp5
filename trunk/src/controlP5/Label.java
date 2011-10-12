@@ -36,7 +36,7 @@ import processing.core.PVector;
  * 
  * 
  * @see controlP5.ControlFont
- * @example ControlP5Textlabel
+ * @example controllers/ControlP5Textlabel
  * 
  */
 public class Label implements CDrawable {

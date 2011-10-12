@@ -45,7 +45,7 @@ import processing.core.PVector;
  * reason the framerate is set to 15. To constantly update the control window, use
  * {@link ControlWindow#setUpdateMode(int)}
  * 
- * @example ControlP5window
+ * @example controllers/ControlP5window
  */
 public class ControlWindow implements MouseWheelListener {
 

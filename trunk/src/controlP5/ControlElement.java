@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
  * Used for automated controller creation using annotations. Very much inspired
  * by Karsten Schmidt's (toxi) cp5magic 
  * 
- * @example ControlP5annotation
+ * @example use/ControlP5annotation
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ControlElement {

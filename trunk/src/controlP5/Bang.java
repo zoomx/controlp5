@@ -34,7 +34,7 @@ import processing.core.PApplet;
  * full documentation see the {@link Controller} reference.
  * </p>
  * 
- * @example ControlP5bang
+ * @example controllers/ControlP5bang
  */
 @ControlP5.Layout
 public class Bang extends Controller {

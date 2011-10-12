@@ -34,7 +34,7 @@ import processing.core.PVector;
  * available methods see the ControllerGroup documentation. Reposition tabs with
  * {@link controlP5.ControlWindow#setPositionOfTabs(int, int)}
  * 
- * @example ControlP5tab
+ * @example controllers/ControlP5tab
  * @nosuperclasses ControllerGroup ControllerGroup
  */
 public class Tab extends ControllerGroup {

@@ -8,6 +8,8 @@ import processing.core.PApplet;
  * 
  * @author andreas schlegel
  * 
+ * @example controllers/ControlP5slider2D
+ * 
  */
 public class Slider2D extends Controller {
 

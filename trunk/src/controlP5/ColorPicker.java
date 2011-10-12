@@ -28,7 +28,7 @@ import processing.core.PApplet;
 /**
  * A simple color picker using sliders to adjust RGBA values.
  * 
- * @example ControlP5colorPicker
+ * @example controllers/ControlP5colorPicker
  */
 public class ColorPicker extends ControlGroup {
 

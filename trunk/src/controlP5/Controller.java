@@ -69,7 +69,8 @@ import processing.core.PVector;
  * @see controlP5.ControlGroup
  * @see controlP5.ControlBehavior
  * @see controlP5.ControlEvent
- * @example ControlP5basics
+ * 
+ * @example use/ControlP5basics
  */
 public abstract class Controller implements ControllerInterface, CDrawable, ControlP5Constants {
 

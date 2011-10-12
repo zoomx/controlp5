@@ -32,7 +32,7 @@ import processing.core.PApplet;
  * an item of a matrix-column is active, the x and y position of the corresponding cell will trigger
  * an event and notify the program. see the ControlP5matrix example for more information.
  * 
- * @example ControlP5matrix
+ * @example controllers/ControlP5matrix
  */
 public class Matrix extends Controller {
 
