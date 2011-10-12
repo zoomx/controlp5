@@ -6,7 +6,7 @@
 
 	
 <!-- #### (1) where are your processing libraries located? edit location. #### -->
-	<property name="processing" location="/Users/andreasschlegel/Documents/Processing/libraries"/>
+	<property name="processing" location="/Users/andreas/Documents/Processing/libraries"/>
 
 
 <!-- #### (2) where are the jar files located that are required for compiling 
@@ -35,7 +35,7 @@
 	<property name="author" value="Andreas Schlegel"/>
 	
 <!-- #### (6) which copyright?  edit value.  #### -->
-	<property name="copyright" value="(c) 2009"/>
+	<property name="copyright" value="(c) 2010"/>
 
 <!-- #### (7) give your library a name. edit value.  #### -->
 	<property name="libraryName"  value="controlP5"/>
@@ -116,7 +116,7 @@
   
 	<!-- compile the library -->
   <target name="compile" depends="init" description="compile the source" >  	
-		<javac srcdir="${src}" destdir="${bin}" source="${javaVersion}">
+		<javac srcdir="${src}" destdir="${bin}" target="${javaVersion}" source="${javaVersion}">
 			<classpath>
 				<path refid="library-classpath"/>
 			</classpath>
@@ -154,6 +154,9 @@
   			<fileset dir="${dist}"/>
   		</copy> 
 	
+  	<copy todir="${libraryClasspath}">
+  		<fileset dir="${dist}/library/"/>
+  	</copy>
 	
 	
  </target>
