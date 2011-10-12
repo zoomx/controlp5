@@ -2,23 +2,27 @@
  * ControlP5 DIY controller
  * this example shows how to create your own controller by extending and
  * using the abstract class Controller, the base class for every controller.
- * by andreas schlegel, 2009
+ *
+ * by Andreas Schlegel, 2011
+ * www.sojamo.de/libraries/controlP5
+ *
  */
+ 
 import controlP5.*;
 
+ControlPad pad;
 
-ControlPad cp;
-ControlP5 controlP5;
+ControlP5 cp5;
 
 void setup() {
   size(400,400);
-  frameRate(30);
-  controlP5 = new ControlP5(this);
+
+  cp5 = new ControlP5(this);
 
   // create a new instance of the ControlPad controller.
-  cp = new ControlPad(controlP5,"DIY",100,50,100,100);
+  pad = new ControlPad(cp5,"DIY",100,50,100,100);
   // register the newly created ControlPad with controlP5
-  controlP5.register(cp);
+  cp5.register(pad);
 }
 
 void draw() {
@@ -40,12 +44,13 @@ class ControlPad extends Controller {
   int cWidth=10, cHeight=10; 
   float cX, cY;
 
+  // constructor, required.
   ControlPad(ControlP5 theControlP5, String theName, int theX, int theY, int theWidth, int theHeight) {
     // the super class Controller needs to be initialized with the below parameters
-    super(theControlP5,  (Tab)(theControlP5.getTab("default")), theName, theX, theY, theWidth, theWidth);
+    super(theControlP5, theName, theX, theY, theWidth, theWidth);
     // the Controller class provides a field to store values in an 
     // float array format. for this controller, 2 floats are required.
-    _myArrayValue = new float[2];
+    setArrayValue(new float[2]);
   }
 
   // overwrite the updateInternalEvents method to handle mouse and key inputs.
@@ -59,7 +64,7 @@ class ControlPad extends Controller {
     }
   }
 
-  // overwrite the draw method for the controller's visual representation.
+  // override the draw(PApplet) method to display the controller.
   public void draw(PApplet theApplet) {
     // use pushMatrix and popMatrix when drawing
     // the controller.
@@ -79,26 +84,29 @@ class ControlPad extends Controller {
     rect(cX,cY,cWidth,cHeight);
     // draw the caption- and value-label of the controller
     // they are generated automatically by the super class
-    captionLabel().draw(theApplet, 0, height + 4);
-    valueLabel().draw(theApplet, 40, height + 4);
+    getCaptionLabel().draw(theApplet, 0, height + 4);
+    getValueLabel().draw(theApplet, 40, height + 4);
 
     theApplet.popMatrix();
   } 
 
-  public void setValue(float theValue) {
+  // override setValue(float)
+  public Controller setValue(float theValue) {
     // setValue is usually called from within updateInternalEvents
     // in case of changes, updates. the update of values or 
     // visual elements is done here.
-    _myArrayValue[0] = cX / ((float)(width-cWidth)/(float)width);
-    _myArrayValue[1] = cY / ((float)(height-cHeight)/(float)height);
+    setArrayValue(0, cX / ((float)(width-cWidth)/(float)width));
+    setArrayValue(1, cY / ((float)(height-cHeight)/(float)height));
+
     // update the value label.
-    valueLabel().set(adjustValue(_myArrayValue[0],0)+" / "+adjustValue(_myArrayValue[1],0));
+    valueLabel().set(adjustValue(getArrayValue(0),0)+" / "+adjustValue(getArrayValue(1),0));
 
     // broadcast triggers a ControlEvent, updates are made to the sketch, 
     // controlEvent(ControlEvent) is called.
     // the parameter (FLOAT or STRING) indicates the type of 
     // value and the type of methods to call in the main sketch.
     broadcast(FLOAT);
+    return this;
   }
 
 }

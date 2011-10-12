@@ -1,9 +1,17 @@
-// ControlP5plugTo
-// an example that shows the plugTo method to link any 
-// type of object to a controller event
-//
-// by andreas schlegel 2010
-//
+/**
+* ControlP5 ControlP5
+*
+* This example demonstrate how to use the plugTo method to
+* connect a controller to a field or method of a particular object.
+* 
+*
+* find a list of public methods available for the ControlP5 Controller
+* at the bottom of this sketch.
+*
+* by Andreas Schlegel, 2011
+* www.sojamo.de/libraries/controlp5
+*
+*/
 
 import controlP5.*;
 import processing.opengl.*;
@@ -11,9 +19,12 @@ import processing.opengl.*;
 ControlP5 controlP5;
 
 Test[] testarray;
+
 Test test;
 
 Button b;
+
+int cnt;
 
 void setup() {
   size(600,400,OPENGL);
@@ -27,23 +38,33 @@ void setup() {
   
   controlP5 = new ControlP5(this);
   
+  controlP5.begin(100,20);
+  
   b = controlP5.addButton("trigger",1);
   b.setColorBackground(color(255,0,0));
+  
   controlP5.addButton("plug",2);
-  controlP5.addButton("remove",3);
+  controlP5.addButton("unplug",3);
+  
+  // b is a button previously added to controlP5 with name 'trigger'
+  // controlP5 no tries to find a field or method inside object test
+  // in order to connect controller 'trigger' with test.trigger()
+  b.plugTo(test);
+  controlP5.end();
 }
 
-
+// connects controller 'trigger' with objects of type Test contained 
+// inside arrat testarray
 void plug(int theValue) {
    b.plugTo(testarray);
-   b.plugTo(test);
    b.setColorBackground(color(0,128,0));
    println("plugging controller b1 to array 'testarray' and variable 'test'.");
 }
 
-void remove(int theValue) {
+// disconnects controller 'trigger' from objects of type Test stored 
+// inside array testarray
+void unplug(int theValue) {
   b.unplugFrom(testarray);
-  b.unplugFrom(test);
   b.setColorBackground(color(255,0,0));
   println("removing array 'testarray' and variable 'test' from controller b1.");
 }
@@ -56,11 +77,10 @@ void draw() {
     testarray[i].display();
   }
   test.display();
-}
-
-
-public void controlEvent(ControlEvent theEvent) {
-  //println("papplet controlEvent triggered by "+theEvent.controller().name());
+  cnt++;
+  if(cnt%30 == 0) {
+    controlP5.getController("trigger").update();
+  }
 }
 
 

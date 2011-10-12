@@ -6,11 +6,9 @@ int myColor = color(255);
 
 
 void setup() {
-  size(640,480);
-  smooth();
-  frameRate(30);
+  size(400,400);
   controlP5 = new ControlP5(this);
-  Button b = controlP5.addButton("buttonA",128,width/2 -24,height/2 -24,100,10);
+  Button b = controlP5.addButton("buttonA",128,100,100,10,10);
   
   // replace the default controlP5 button with an image.
   //button.setImages(defaultImage, rolloverImage, pressedImage);
@@ -24,7 +22,7 @@ void draw() {
 }
 
 public void controlEvent(ControlEvent theEvent) {
-  println(theEvent.controller().name());
+  println(theEvent.getController().getName());
   
 }
 
