@@ -193,7 +193,7 @@ public class ExampleTaglet implements Taglet {
 
 		return dd+"\n<div id=\"test\" class=\"toggleList\">" +
 		"<dl><dt onclick=\"toggle(this);\"><span>+</span>Example</dt>" +
-		"<dd><pre>"+theString+"</pre>" +
+		"<dd><code><pre>"+theString+"</pre></code>" +
 		"</dd></dl></div>";
 		} 
     	return "";
@@ -208,20 +208,34 @@ public class ExampleTaglet implements Taglet {
 		String record = "";
 		String myResult = "";
 		int recCount = 0;
-		String myDir = "../examples";
+		String myDir = "../examples/";
 		File file=new File(myDir);
 		if(file.exists()==false) {
-			myDir = "./examples";
+			myDir = "./examples/";
 		}
+        String[] s = theExample.split("\\/");
+        String myFile = "";
+        if(s.length>=1) {
+            myFile = s[s.length-1];
+            System.out.println("myFile\t"+myFile);
+                for(int i=0;i<s.length;i++) {
+                    myDir += s[i]+"/";
+                }
+            System.out.println("myDir\t"+myDir);
+        }
+        String pde = myDir+myFile+".pde";
         try { 
-			FileReader fr = new FileReader(myDir+"/"+theExample+"/"+theExample+".pde");
+            
+			FileReader fr = new FileReader(pde);
 			BufferedReader br = new BufferedReader(fr);
 			record = new String();
 			while ((record = br.readLine()) != null) {
 				myResult += record+"\n";
 			} 
+            System.out.println("\nExampleTaglet ("+theExample+"), creating example code for "+pde+"\n");
 		} catch (IOException e) { 
 			System.out.println(e);
+            System.out.println("\nExampleTaglet ("+theExample+"), pde not found "+pde+"\n");
 			return null;
 		}
 		return myResult;
