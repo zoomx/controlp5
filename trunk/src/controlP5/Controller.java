@@ -1418,7 +1418,13 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 * @return boolean
 	 */
 	@ControlP5.Layout
+	@Override
 	public boolean isVisible() {
+		if(getParent()!=null) {
+			if(getParent().isVisible()==false) {
+				return false;
+			}
+		}
 		return isVisible;
 	}
 
