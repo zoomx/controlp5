@@ -122,7 +122,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		_myControlCanvas = new ArrayList<ControlWindowCanvas>();
 		_myLabel = new Label(cp5, _myName);
 		_myLabel.setColor(color.getCaptionLabel());
-		setParent((theParent == null) ? this : theParent);		
+		setParent((theParent == null) ? this : theParent);
 	}
 
 	protected ControllerGroup(int theX, int theY) {
@@ -158,13 +158,13 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 			_myParent.add(this);
 		}
 		absolutePosition = new PVector(position.x, position.y);
-		
+
 		absolutePosition.add(_myParent.absolutePosition);
-		
+
 		positionBuffer = new PVector(position.x, position.y);
-		
+
 		_myControlWindow = _myParent.getWindow();
-		
+
 		for (int i = 0; i < controllers.size(); i++) {
 			if (controllers.get(i) instanceof Controller) {
 				((Controller) controllers.get(i))._myControlWindow = _myControlWindow;
@@ -172,7 +172,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 				((ControllerGroup) controllers.get(i))._myControlWindow = _myControlWindow;
 			}
 		}
-		if(_myControlWindow!=null) {
+		if (_myControlWindow != null) {
 			setMouseOver(false);
 		}
 	}
@@ -229,7 +229,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 		moveTo(cp5.controlWindow);
 		return this;
 	}
-	
+
 	public ControllerGroup moveTo(ControlWindow theControlWindow) {
 		moveTo(null, theControlWindow.getTab("default"), theControlWindow);
 		return this;
@@ -439,7 +439,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 						updateAbsolutePosition();
 					}
 				} else {
-					if(isInside) {
+					if (isInside) {
 						setMouseOver(true);
 					}
 					if (inside()) {
@@ -475,18 +475,18 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @return boolean
 	 */
 	public boolean isMouseOver() {
-		mouseover = isInside || isInsideGroup; 
+		mouseover = isInside || isInsideGroup;
 		return mouseover;
 	}
 
 	public ControllerGroup setMouseOver(boolean theFlag) {
-		
+
 		mouseover = theFlag;
 		if (!mouseover) {
 			isInside = false;
 			isInsideGroup = false;
 			_myControlWindow.removeMouseOverFor(this);
-			for(int i=controllers.size()-1;i>=0;i--) {
+			for (int i = controllers.size() - 1; i >= 0; i--) {
 				controllers.get(i).setMouseOver(false);
 			}
 		} else {
@@ -593,7 +593,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 
 	public ControllerGroup remove(ControllerInterface theElement) {
-		if(theElement!=null) {
+		if (theElement != null) {
 			theElement.setMouseOver(false);
 		}
 		controllers.remove(theElement);
@@ -827,6 +827,11 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @return boolean
 	 */
 	public boolean isVisible() {
+		if (_myParent != null && _myParent != this) {
+			if (getParent().isVisible() == false) {
+				return false;
+			}
+		}
 		return isVisible;
 	}
 

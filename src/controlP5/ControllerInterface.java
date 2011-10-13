@@ -185,5 +185,12 @@ public interface ControllerInterface {
 	 */
 	@Deprecated
 	public String stringValue();
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public int id();
 
 }

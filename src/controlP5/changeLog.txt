@@ -1,3 +1,21 @@
+2011-10-13  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.8
+      
+      * src controlP5.ControllerGroup.java, controlP5.Controller.java:  
+      making addition to isVisible() to check if the parent element is invisible 
+      in which case the child element will return false as well although the visible 
+      state might be true. this fixes an issue with mousewheel scroll being active 
+      for an invisible child controller. The mouseoverlist handling was updated as well.
+      
+      * src controlP5.Slider.java:
+      Slider will only broadcast when there is a change in value when pressed
+      
+      * src controlP5.ControlWindow.java:
+      mouseWheelMoved() now only updates the first item in the mouseoverlist 
+      and then exits the loop
+      
+      
 2011-10-12  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.6.7
