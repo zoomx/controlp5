@@ -116,7 +116,6 @@ public class Matrix extends Controller {
 				if (tX != currentX || tY != currentY) {
 					tX = PApplet.min(PApplet.max(0, tX), _myCellX);
 					tY = PApplet.min(PApplet.max(0, tY), _myCellY);
-					System.out.println("clicked " + tX + "," + tY);
 					boolean isMarkerActive = (_myCells[tX][tY] == 1) ? true : false;
 					switch (_myMode) {
 					default:

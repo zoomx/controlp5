@@ -1,3 +1,11 @@
+2011-10-14  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.6.9
+      
+      * src controlP5.Textarea.java:
+      included isScrollable() to adapt to ListBox  
+
+
 2011-10-13  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.6.8

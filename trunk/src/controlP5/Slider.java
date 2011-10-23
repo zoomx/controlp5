@@ -278,7 +278,6 @@ public class Slider extends Controller {
 	@ControlP5.Invisible
 	public Slider scrolled(int theRotationValue) {
 		if (isVisible) {
-			System.out.println("scrolling .. "+isVisible);
 			float f = getValue();
 			float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity * 0.1f;
 			f += (getMax() - getMin()) * (-theRotationValue * steps);

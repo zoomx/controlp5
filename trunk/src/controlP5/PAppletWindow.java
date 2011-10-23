@@ -212,11 +212,9 @@ class PAppletWindow extends PApplet implements WindowListener, ComponentListener
 		controlWindow = theWindow;
 	}
 
-	private long fr;
+	
 	@Override
 	public void draw() {
-		System.out.println(millis()-fr);
-		fr = millis();
 	}
 
 	public void setTitle(String theTitle) {

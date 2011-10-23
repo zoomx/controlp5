@@ -162,8 +162,6 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	 * @return MultiListButton
 	 */
 	public MultiListButton add(String theName, int theValue) {
-		System.out.println("(0) "+cp5);
-		System.out.println("(1) "+_myChildren);
 		int x = (int) position.x;
 		int yy = 0;
 		for(Controller c:_myChildren) {
@@ -171,7 +169,6 @@ public class MultiList extends Controller implements MultiListInterface, Control
 		}
 		int y = (int) position.y + yy;//(_myDefaultButtonHeight + 1) * _myChildren.size();
 		MultiListButton b = new MultiListButton(cp5, theName, theValue, x, y, width, _myDefaultButtonHeight, this, this);
-		System.out.println("(2) "+b);
 		b.toUpperCase(isUpperCase);
 		b.isMoveable = false;
 		cp5.register(null, "", b);

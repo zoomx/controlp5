@@ -720,7 +720,6 @@ public class ControlP5Base implements ControlP5Constants {
 		c.setPosition(theX, theY);
 		c.setWidth(theW);
 		c.setHeight(theH);
-		System.out.println("\t\t" + theW + "," + theH);
 		return (C) c;
 	}
 
