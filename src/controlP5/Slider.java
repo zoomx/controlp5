@@ -194,11 +194,11 @@ public class Slider extends Controller {
 		return triggerId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see controlP5.Controller#mouseReleased()
-	 */
+	@Override
+	protected void mouseReleasedOutside() {
+		mouseReleased();
+	}
+
 	@Override
 	protected void mouseReleased() {
 		if (triggerId == RELEASE) {
@@ -282,6 +282,9 @@ public class Slider extends Controller {
 			float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity * 0.1f;
 			f += (getMax() - getMin()) * (-theRotationValue * steps);
 			setValue(f);
+			if (triggerId == RELEASE) {
+				broadcast(FLOAT);
+			}
 		}
 		return this;
 	}
