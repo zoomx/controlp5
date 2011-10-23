@@ -106,7 +106,7 @@ public class BitFontRenderer {
 		return -1;
 	}
 
-	protected BitFont getFont(int theIndex) {
+	protected static BitFont getFont(int theIndex) {
 		return fonts.get(theIndex);
 	}
 
@@ -321,6 +321,10 @@ public class BitFontRenderer {
 
 		BitFont(int theId) {
 			id = theId;
+		}
+		
+		int getHeight() {
+			return texture.height; 
 		}
 
 		BitFont setSource(String theSource) {

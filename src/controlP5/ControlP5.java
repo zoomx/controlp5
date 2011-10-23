@@ -86,7 +86,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.6.8";// "##version##";
+	public static final String VERSION = "0.6.9";// "##version##";
 
 	/**
 	 * @exclude
@@ -985,7 +985,7 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public boolean setFont(int theBitFontIndex) {
-		System.out.println("changing the BitFont is currently only supported when being assigned directly after an instance of controlP5 has been created.");
+		System.out.println("changing the BitFont is currently only supported when assigned directly after an instance of controlP5 has been created.");
 		if (!BitFontRenderer.fonts.containsKey(theBitFontIndex)) {
 			return false;
 		}

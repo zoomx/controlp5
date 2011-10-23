@@ -143,8 +143,9 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		}
 	}
 
-	public boolean isScrollbarVisible() {
-		return isScrollbarVisible;
+
+	public boolean isScrollable() {
+		return _myScrollbar.isVisible();
 	}
 
 	@Override
@@ -384,7 +385,16 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	public Label valueLabel() {
 		return getValueLabel();
 	}
-
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 * @return
+	 */
+	@Deprecated
+	public boolean isScrollbarVisible() {
+		return isScrollbarVisible;
+	}
 }
 
 // @todo linebreaking algorithm.

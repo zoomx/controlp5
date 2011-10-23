@@ -123,6 +123,8 @@ public class ControlWindow implements MouseWheelListener {
 
 	private int _myFrameCount = 0;
 
+	private int mouseWheelMoved = 0;
+
 	/**
 	 * @exclude
 	 */
@@ -317,6 +319,7 @@ public class ControlWindow implements MouseWheelListener {
 	@ControlP5.Invisible
 	public void updateEvents() {
 		handleMouseOver();
+		handleMouseWheelMoved();
 		if (_myTabs.size() <= 0) {
 			return;
 		}
@@ -383,7 +386,7 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	/**
-	 * update all controllers contained in the control window if update is enabled.
+	 * updates all controllers inside the control window if update is enabled.
 	 * 
 	 * @exclude
 	 */
@@ -623,26 +626,32 @@ public class ControlWindow implements MouseWheelListener {
 	 */
 	@ControlP5.Invisible
 	public void mouseWheelMoved(MouseWheelEvent e) {
-
 		if (mousewheel && isMouseOver()) {
+			mouseWheelMoved = e.getWheelRotation();
+		}
+	}
+
+	private void handleMouseWheelMoved() {
+		if (mouseWheelMoved != 0) {
 			CopyOnWriteArrayList<ControllerInterface> mouselist = new CopyOnWriteArrayList<ControllerInterface>(mouseoverlist);
 			for (ControllerInterface c : mouselist) {
 				if (c.isVisible()) {
 					if (c instanceof Slider) {
-						((Slider) c).scrolled(e.getWheelRotation());
+						((Slider) c).scrolled(mouseWheelMoved);
 					} else if (c instanceof Knob) {
-						((Knob) c).scrolled(e.getWheelRotation());
+						((Knob) c).scrolled(mouseWheelMoved);
 					} else if (c instanceof Numberbox) {
-						((Numberbox) c).scrolled(e.getWheelRotation());
+						((Numberbox) c).scrolled(mouseWheelMoved);
 					} else if (c instanceof ListBox) {
-						((ListBox) c).scrolled(e.getWheelRotation());
+						((ListBox) c).scrolled(mouseWheelMoved);
 					} else if (c instanceof Textarea) {
-						((Textarea) c).scrolled(e.getWheelRotation());
+						((Textarea) c).scrolled(mouseWheelMoved);
 					}
-					return;
+					break;
 				}
 			}
 		}
+		mouseWheelMoved = 0;
 	}
 
 	/**
