@@ -425,13 +425,13 @@ public class Range extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new RangeDisplay();
+			_myDisplay = new RangeView();
 			break;
 		case (SPRITE):
-			_myDisplay = new RangeSpriteDisplay();
+			_myDisplay = new RangeSpriteView();
 			break;
 		case (IMAGE):
-			_myDisplay = new RangeImageDisplay();
+			_myDisplay = new RangeImageView();
 			break;
 		case (CUSTOM):
 		default:
@@ -440,13 +440,13 @@ public class Range extends Controller {
 		return this;
 	}
 
-	class RangeSpriteDisplay implements ControllerDisplay {
+	class RangeSpriteView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			ControlP5.logger().log(Level.INFO, "RangeSpriteDisplay not available.");
 		}
 	}
 
-	class RangeDisplay implements ControllerDisplay {
+	class RangeView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(color.getBackground());
 			theApplet.noStroke();
@@ -494,7 +494,7 @@ public class Range extends Controller {
 		}
 	}
 
-	class RangeImageDisplay implements ControllerDisplay {
+	class RangeImageView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			ControlP5.logger().log(Level.INFO, "RangeImageDisplay not implemented.");
 		}

@@ -121,23 +121,32 @@ public class Bang extends Controller {
 	public Bang update() {
 		return setValue(_myValue);
 	}
-
+	
 	/**
 	 * @exclude
 	 */
 	@Override
 	@ControlP5.Invisible
 	public Bang updateDisplayMode(int theMode) {
+		updateViewMode(theMode);
+		return this;
+	}
+	
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public Bang updateViewMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new BangDisplay();
+			_myDisplay = new BangView();
 			break;
 		case (SPRITE):
-			_myDisplay = new BangSpriteDisplay();
+			_myDisplay = new BangSpriteView();
 			break;
 		case (IMAGE):
-			_myDisplay = new BangImageDisplay();
+			_myDisplay = new BangImageView();
 			break;
 		case (CUSTOM):
 		default:
@@ -146,7 +155,7 @@ public class Bang extends Controller {
 		return this;
 	}
 
-	private class BangDisplay implements ControllerDisplay {
+	private class BangView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				theApplet.fill(color.getActive());
@@ -165,7 +174,7 @@ public class Bang extends Controller {
 		}
 	}
 
-	private class BangImageDisplay implements ControllerDisplay {
+	private class BangImageView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
@@ -201,7 +210,7 @@ public class Bang extends Controller {
 	}
 
 	@Deprecated
-	private class BangSpriteDisplay implements ControllerDisplay {
+	private class BangSpriteView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				sprite.setState(1);

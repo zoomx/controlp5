@@ -453,11 +453,11 @@ public class Knob extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new KnobDisplay();
+			_myDisplay = new KnobView();
 			break;
 		case (SPRITE):
 		case (IMAGE):
-			_myDisplay = new KnobDisplay();
+			_myDisplay = new KnobView();
 			break;
 		case (CUSTOM):
 		default:
@@ -466,7 +466,7 @@ public class Knob extends Controller {
 		return this;
 	}
 
-	class KnobDisplay implements ControllerDisplay {
+	class KnobView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.translate(getRadius(), getRadius());
 

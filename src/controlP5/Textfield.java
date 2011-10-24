@@ -80,8 +80,7 @@ public class Textfield extends Controller {
 		_myValueLabel.setColor(color.getValueLabel());
 		_myValueLabel.toUpperCase(false);
 		_myValueLabel.setFixedSize(true);
-		_myValueLabel.setFont(ControlP5.standard56);
-
+		_myValueLabel.setFont(ControlP5.bitFont == ControlP5.standard58 ? ControlP5.standard56:ControlP5.bitFont);
 	}
 
 	/**
@@ -189,8 +188,7 @@ public class Textfield extends Controller {
 	 * click the texfield to activate.
 	 */
 	protected void mousePressed() {
-
-		boolean notyet = true;
+		boolean notyet = false;
 		if (isActive && notyet == false) {
 			Label.BitFontLabel bfl = (Label.BitFontLabel) _myValueLabel.getFont();
 			int offset = 0;
@@ -231,6 +229,7 @@ public class Textfield extends Controller {
 		if (isTexfieldActive) {
 			theApplet.rect(cursorPosition + 2, 2, 5, height - 4);
 		}
+		
 		_myValueLabel.draw(theApplet, 2, yy);
 		_myCaptionLabel.draw(theApplet, 0, height + 4);
 		theApplet.noFill();
@@ -293,7 +292,6 @@ public class Textfield extends Controller {
 			}
 			updateField();
 		}
-
 	}
 
 	private float cursorPosition = 0;
@@ -332,6 +330,7 @@ public class Textfield extends Controller {
 			}
 			return;
 		}
+		
 		Label.BitFontLabel bfl = (Label.BitFontLabel) _myValueLabel.getFont();
 		
 		actualCursorPosition = BitFontRenderer.getWidth(myTextline.toString(), bfl, myPosition);
@@ -342,15 +341,10 @@ public class Textfield extends Controller {
 			}
 			_myValueLabel.setWithCursorPosition(myPasswordTextline, myPosition);
 		} else {
-
+			
 			int m = BitFontRenderer.getWidth(myTextline.toString(), bfl, myPosition);
 			int offset = (m > _myValueLabel.getWidth()) ? _myValueLabel.getWidth() - m : 0;
-			// cursorPosition = PApplet.min(m, _myValueLabel.getWidth() - 2);
 			cursorPosition = PApplet.min(actualCursorPosition, _myValueLabel.getWidth() - 2);
-			// System.out.println(m+". "+offset+" = "+myPosition);
-			// _myValueLabel.setWithCursorPosition(myTextline.toString(), 0,
-			// offset);
-			// System.out.println(myTextline.toString()+", "+actualCursorPosition+", "+cursorPosition+", "+myPosition);
 			_myValueLabel.setWithCursorPosition(myTextline.toString(), myPosition, offset);
 		}
 	}

@@ -76,8 +76,7 @@ public class Textlabel extends Controller {
 		_myStringValue = theValue;
 		_myValueLabel = new Label(cp5, _myStringValue, theW, theH, theColor);
 		if (!cp5.isControlFont) {
-			// _myValueLabel.setFont(ControlP5.synt24);
-			_myValueLabel.setFont(ControlP5.standard58);
+			_myValueLabel.setFont(ControlP5.bitFont);
 		}
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);

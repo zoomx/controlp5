@@ -28,15 +28,15 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * The interface ControllerDisplay can be used to define custom displays for
+ * The interface ControllerView can be used to define custom displays for
  * controllers.
  * 
  * @see controlP5.draw(processing.core.PApplet)
- * @see controlP5.setDisplay(ControllerDisplay)
+ * @see controlP5.setView(ControlleView)
  * 
  * @example use/ControlP5customDisplay
  */
-public interface ControllerDisplay extends ControllerView {
+public interface ControllerView {
 
 	/**
 	 * draws your custom controllers. display() will be called by a controller's
