@@ -15,7 +15,7 @@ import processing.core.PVector;
  */
 public class Tooltip {
 
-	private ControllerDisplay _myDisplay;
+	private ControllerView _myDisplay;
 
 	private PVector position;
 
@@ -68,7 +68,7 @@ public class Tooltip {
 		_myLabel.setColor(0xff000000);
 		_myLabel.setMultiline(true);
 		_myLabel.update();
-		setDisplay(new TooltipDisplay());
+		setView(new TooltipView());
 		setBorder(4);
 	}
 
@@ -244,17 +244,18 @@ public class Tooltip {
 	}
 
 	/**
-	 * A custom display can be set for a Tooltip. The default display class can
+	 * A custom view can be set for a Tooltip. The default view class can
 	 * be found at the bottom of the Tooltip source.
 	 * 
-	 * @see controlP5.ControllerDisplay
+	 * @see controlP5.ControllerView
 	 * @param theDisplay
 	 * @return Tooltip
 	 */
-	public Tooltip setDisplay(ControllerDisplay theDisplay) {
+	public Tooltip setView(ControllerView theDisplay) {
 		_myDisplay = theDisplay;
 		return this;
 	}
+	
 
 	/**
 	 * registers a controller with the Tooltip, when activating the tooltip for
@@ -304,10 +305,10 @@ public class Tooltip {
 	/**
 	 * with the default display, the width of the tooltip is set automatically,
 	 * therefore setWidth() does not have any effect without changing the
-	 * default display to a custom ControllerDisplay.
+	 * default display to a custom ControllerView.
 	 * 
-	 * @see controlP5.ControllerDisplay
-	 * @see controlP5.Tooltip#setDisplay(ControllerDisplay)
+	 * @see controlP5.ControllerView
+	 * @see controlP5.Tooltip#setDisplay(ControllerView)
 	 * @return Tooltip
 	 */
 	public Tooltip setWidth(int theWidth) {
@@ -415,7 +416,7 @@ public class Tooltip {
 		return this;
 	}
 
-	class TooltipDisplay implements ControllerDisplay {
+	class TooltipView implements ControllerView {
 
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(_myBackgroundColor, _myAlpha);

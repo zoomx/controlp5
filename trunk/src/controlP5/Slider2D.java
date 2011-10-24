@@ -193,7 +193,7 @@ public class Slider2D extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new Slider2DDisplay();
+			_myDisplay = new Slider2DView();
 			break;
 		case (IMAGE):
 		case (SPRITE):
@@ -204,7 +204,7 @@ public class Slider2D extends Controller {
 		return this;
 	}
 
-	class Slider2DDisplay implements ControllerDisplay {
+	class Slider2DView implements ControllerView {
 
 		public void display(PApplet theApplet, Controller theController) {
 

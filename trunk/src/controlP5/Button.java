@@ -237,23 +237,29 @@ public class Button extends Controller {
 	
 
 	/**
-	 * {@inheritDoc}
 	 * @exclude
-	 * @see controlP5.Controller#updateDisplayMode(int)
 	 */
 	@Override
 	@ControlP5.Invisible
 	public Button updateDisplayMode(int theMode) {
+		return updateViewMode(theMode);
+	}
+
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public Button updateViewMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new ButtonDisplay();
+			_myDisplay = new ButtonView();
 			break;
 		case (IMAGE):
-			_myDisplay = new ButtonImageDisplay();
+			_myDisplay = new ButtonImageView();
 			break;
 		case (SPRITE):
-			_myDisplay = new ButtonSpriteDisplay();
+			_myDisplay = new ButtonSpriteView();
 			break;
 		case (CUSTOM):
 		default:
@@ -263,7 +269,7 @@ public class Button extends Controller {
 		return this;
 	}
 
-	private class ButtonDisplay implements ControllerDisplay {
+	private class ButtonView implements ControllerView {
 
 		public void display(PApplet theApplet, Controller theController) {
 			if (isOn && isSwitch) {
@@ -286,7 +292,7 @@ public class Button extends Controller {
 		}
 	}
 
-	private class ButtonImageDisplay implements ControllerDisplay {
+	private class ButtonImageView implements ControllerView {
 
 		public void display(PApplet theApplet, Controller theController) {
 			if (isOn && isSwitch) {
@@ -322,7 +328,7 @@ public class Button extends Controller {
 	}
 
 	@Deprecated
-	private class ButtonSpriteDisplay implements ControllerDisplay {
+	private class ButtonSpriteView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isOn && isSwitch) {
 				sprite.setState(2);

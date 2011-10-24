@@ -173,9 +173,9 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	protected PImage[] images = new PImage[4];
 
-	protected ControllerDisplay _myDisplay;
+	protected ControllerView _myDisplay;
 
-	protected ControllerDisplay _myDebugDisplay;
+	protected ControllerView _myDebugDisplay;
 
 	protected int _myDisplayMode = DEFAULT;
 
@@ -216,7 +216,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		subelements = new Vector<Controller>();
 		_myArrayValue = new float[0];
 		// _myDebugDisplay = new DebugDisplay();
-		setDisplay(_myDebugDisplay);
+		setView(_myDebugDisplay);
 	}
 
 	/**
@@ -628,10 +628,10 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	/**
 	 * the default draw function for each controller extending superclass Controller. This draw
 	 * function will take care of default matrix operations and will call the display function of
-	 * the current ControllerDisplay object active for this particular controller.
+	 * the current ControllerView object active for this particular controller.
 	 * 
 	 * @exclude
-	 * @see controlP5.ControllerDisplay
+	 * @see controlP5.ControllerView
 	 * @param theApplet PApplet
 	 */
 	@ControlP5.Invisible
@@ -1003,10 +1003,10 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 			if (!inside()) {
 				setIsInside(false);
 				if (isMousePressed) {
+					mouseReleasedOutside();	
 					cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_RELEASEDOUTSIDE));
 				}
 				isMousePressed = false;
-				mouseReleasedOutside();
 			}
 		}
 		return false;
@@ -1626,26 +1626,43 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		return this;
 	}
 
+	
 	/**
 	 * use setDisplay to customize your controller look. A new controller-display class required to
-	 * implement interface ControllerDisplay. By default the display mode will be set to CUSTOM when
+	 * implement interface ControllerView. By default the display mode will be set to CUSTOM when
 	 * setting a new display.
 	 * 
-	 * @see controlP5.ControllerDisplay
+	 * @see controlP5.ControllerView
 	 * @param theDisplay
 	 * @return Controller
 	 */
-	public Controller setDisplay(ControllerDisplay theDisplay) {
-		setDisplay(theDisplay, CUSTOM);
+	public Controller setView(ControllerView theDisplay) {
+		setView(theDisplay, CUSTOM);
 		return this;
 	}
-
-	/**
-	 * @see controlP5.Controller#setDisplay(controlP5.ControllerDisplay)
-	 */
-	public void setDisplay(ControllerDisplay theDisplay, int theMode) {
+	
+	public void setView(ControllerView theDisplay, int theMode) {
 		_myDisplayMode = theMode;
 		_myDisplay = theDisplay;
+	}
+
+	
+	/**
+	 * @deprecated
+	 * @exclude
+	 */
+	@Deprecated
+	public Controller setDisplay(ControllerDisplay theDisplay) {
+		return setView(theDisplay);
+	}
+	
+	/**
+	 * @deprecated
+	 * @exclude
+	 */
+	@Deprecated
+	public void setDisplay(ControllerDisplay theDisplay, int theMode) {
+		setView(theDisplay, theMode);
 	}
 
 	/**
@@ -1924,7 +1941,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		return this;
 	}
 
-	class DebugDisplay implements ControllerDisplay {
+	class DebugView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (inside()) {
 				theApplet.fill(255, 0, 0, 50);

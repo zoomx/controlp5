@@ -283,7 +283,7 @@ public class Matrix extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new MatrixDisplay();
+			_myDisplay = new MatrixView();
 			break;
 		case (IMAGE):
 		case (SPRITE):
@@ -294,7 +294,7 @@ public class Matrix extends Controller {
 		return this;
 	}
 
-	class MatrixDisplay implements ControllerDisplay {
+	class MatrixView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.noStroke();
 			theApplet.fill(color.getBackground());

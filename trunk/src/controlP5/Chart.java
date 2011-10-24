@@ -232,15 +232,22 @@ public class Chart extends Controller {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @exclude
 	 */
 	@Override
 	@ControlP5.Invisible
 	public Chart updateDisplayMode(int theMode) {
+		return updateViewMode(theMode);
+	}
+	/**
+	 * @exclude
+	 */
+	@ControlP5.Invisible
+	public Chart updateViewMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new ChartDisplayBarCentered();
+			_myDisplay = new ChartViewBarCentered();
 			break;
 		case (IMAGE):
 			// _myDisplay = new ChartImageDisplay();
@@ -255,7 +262,7 @@ public class Chart extends Controller {
 		return this;
 	}
 	
-private class ChartDisplayBar implements ControllerDisplay {
+private class ChartViewBar implements ControllerView {
 		
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.pushStyle();
@@ -274,7 +281,7 @@ private class ChartDisplayBar implements ControllerDisplay {
 		}
 	}
 
-	private class ChartDisplayBarCentered implements ControllerDisplay {
+	private class ChartViewBarCentered implements ControllerView {
 		
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.pushStyle();
@@ -293,7 +300,7 @@ private class ChartDisplayBar implements ControllerDisplay {
 		}
 	}
 
-	private class ChartDisplayLine implements ControllerDisplay {
+	private class ChartViewLine implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 
 			theApplet.pushStyle();

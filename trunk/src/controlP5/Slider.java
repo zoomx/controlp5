@@ -202,7 +202,6 @@ public class Slider extends Controller {
 	@Override
 	protected void mouseReleased() {
 		if (triggerId == RELEASE) {
-
 			if (_myDirection == HORIZONTAL) {
 				setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
 			} else {
@@ -473,15 +472,13 @@ public class Slider extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new SliderDisplay();
+			_myDisplay = new SliderView();
 			break;
 		case (IMAGE):
 			// TODO
-			// _myDisplay = new ButtonImageDisplay();
 			break;
 		case (SPRITE):
 			// TODO
-			// _myDisplay = new ButtonSpriteDisplay();
 			break;
 		case (CUSTOM):
 		default:
@@ -490,7 +487,7 @@ public class Slider extends Controller {
 		return this;
 	}
 
-	class SliderDisplay implements ControllerDisplay {
+	class SliderView implements ControllerView {
 
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(getColor().getBackground());

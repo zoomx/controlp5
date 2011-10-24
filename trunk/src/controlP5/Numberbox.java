@@ -263,7 +263,7 @@ public class Numberbox extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new NumberboxDisplay();
+			_myDisplay = new NumberboxView();
 		case (SPRITE):
 		case (IMAGE):
 		case (CUSTOM):
@@ -273,7 +273,7 @@ public class Numberbox extends Controller {
 		return this;
 	}
 
-	class NumberboxDisplay implements ControllerDisplay {
+	class NumberboxView implements ControllerView {
 
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(color.getBackground());

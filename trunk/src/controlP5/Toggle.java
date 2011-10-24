@@ -218,16 +218,16 @@ public class Toggle extends Controller {
 		_myDisplayMode = theState;
 		switch (theState) {
 		case (DEFAULT):
-			_myDisplay = new ToggleDisplay();
+			_myDisplay = new ToggleView();
 			break;
 		case (SPRITE):
-			_myDisplay = new ToggleSpriteDisplay();
+			_myDisplay = new ToggleSpriteView();
 			break;
 		case (IMAGE):
-			_myDisplay = new ToggleImageDisplay();
+			_myDisplay = new ToggleImageView();
 			break;
 		case (SWITCH):
-			_myDisplay = new ToggleSwitchDisplay();
+			_myDisplay = new ToggleSwitchView();
 			break;
 		case (CUSTOM):
 		default:
@@ -236,7 +236,7 @@ public class Toggle extends Controller {
 		return this;
 	}
 
-	class ToggleDisplay implements ControllerDisplay {
+	class ToggleView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				theApplet.fill(isOn ? color.getActive() : color.getForeground());
@@ -251,7 +251,7 @@ public class Toggle extends Controller {
 	}
 	
 	@Deprecated
-	class ToggleSpriteDisplay implements ControllerDisplay {
+	class ToggleSpriteView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				sprite.setState(1);
@@ -265,7 +265,7 @@ public class Toggle extends Controller {
 		}
 	}
 
-	class ToggleImageDisplay implements ControllerDisplay {
+	class ToggleImageView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			if (isActive) {
 				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
@@ -280,7 +280,7 @@ public class Toggle extends Controller {
 		}
 	}
 
-	class ToggleSwitchDisplay implements ControllerDisplay {
+	class ToggleSwitchView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(color.getBackground());
 			theApplet.rect(0, 0, width, height);

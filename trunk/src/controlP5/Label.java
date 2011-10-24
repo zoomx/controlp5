@@ -441,8 +441,7 @@ public class Label implements CDrawable {
 		}
 
 		void init() {
-			_myHeight = BitFontRenderer.getFont(_myFontIndex).getHeight();
-			_myWidth = BitFontRenderer.getWidth(this);
+
 			_myImage = cp5.papplet.createImage(_myWidth, _myHeight, PApplet.ARGB);
 			_myImageMask = cp5.papplet.createImage(_myWidth, _myHeight, PApplet.RGB);
 		}
