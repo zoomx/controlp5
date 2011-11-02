@@ -205,8 +205,12 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	public ControlWindow activateTab(String theTab) {
+		
 		for (int i = 1; i < _myTabs.size(); i++) {
 			if (((Tab) _myTabs.get(i)).getName().equals(theTab)) {
+				if(!((Tab) _myTabs.get(i)).isActive) {
+					resetMouseOver();
+				}
 				activateTab((Tab) _myTabs.get(i));
 			}
 		}
@@ -230,6 +234,9 @@ public class ControlWindow implements MouseWheelListener {
 	protected ControlWindow activateTab(Tab theTab) {
 		for (int i = 1; i < _myTabs.size(); i++) {
 			if (_myTabs.get(i) == theTab) {
+				if(!((Tab) _myTabs.get(i)).isActive) {
+					resetMouseOver();
+				}
 				((Tab) _myTabs.get(i)).setActive(true);
 			} else {
 				((Tab) _myTabs.get(i)).setActive(false);
