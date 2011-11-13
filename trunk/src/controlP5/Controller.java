@@ -1006,6 +1006,9 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 					mouseReleasedOutside();	
 					cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_RELEASEDOUTSIDE));
 				}
+				if (this instanceof Textfield) {
+					mouseReleasedOutside();	
+				}
 				isMousePressed = false;
 			}
 		}
