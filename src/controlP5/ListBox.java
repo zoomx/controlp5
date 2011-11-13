@@ -53,7 +53,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	protected float _myScrollValue = 0;
 
 	protected boolean isScrollbarVisible = true;
-	
+
 	private int _myScrollbarWidth = 5;
 
 	protected int _myHeight;
@@ -72,13 +72,17 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	private boolean isToUpperCase = true;
 
+	private boolean bulkadding;
+
 	protected ListBox(ControlP5 theControlP5, ControllerGroup theGroup, String theName, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theGroup, theName, theX, theY, theW, 9);
 
 		items = new ArrayList<ListBoxItem>();
+
 		buttons = new ArrayList<Button>();
 
 		_myWidth = theW;
+
 		_myName = theName;
 
 		// workaround fix see code.goode.com/p/controlp5 issue 7
@@ -112,8 +116,6 @@ public class ListBox extends ControlGroup implements ControlListener {
 		return this;
 	}
 
-	
-	
 	public boolean isScrollbarEnabled() {
 		return isScrollbarVisible;
 	}
@@ -158,13 +160,15 @@ public class ListBox extends ControlGroup implements ControlListener {
 		} else {
 			_myScrollbar.hide();
 		}
-		for (int i = 0; i < buttons.size(); i++) {
-			ListBoxItem item = items.get(itemOffset + i);
-			Button b = buttons.get(i);
-			b.getCaptionLabel().toUpperCase(isToUpperCase);
-			b.setColor(item.getColor());
-			b.getCaptionLabel().set(item.getText());
-			b._myValue = item.getValue();
+		if (!bulkadding) {
+			for (int i = 0; i < buttons.size(); i++) {
+				ListBoxItem item = items.get(itemOffset + i);
+				Button b = buttons.get(i);
+				b.getCaptionLabel().toUpperCase(isToUpperCase);
+				b.setColor(item.getColor());
+				b.getCaptionLabel().set(item.getText());
+				b._myValue = item.getValue();
+			}
 		}
 	}
 
@@ -176,7 +180,6 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	public ListBox toUpperCase(boolean theFlag) {
 		_myLabel.toUpperCase(theFlag);
-		_myLabel.update();
 		isToUpperCase = theFlag;
 		updateListBoxItems();
 		return this;
@@ -282,7 +285,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	protected ListBox addListButton(int theNum) {
 		for (int i = 0; (i < theNum) && (buttons.size() < maxButtons); i++) {
 			int index = buttons.size();
-			Button b = new Button(cp5, (ControllerGroup) this, _myName + "Button" + index, index, 0, index * (_myItemHeight + spacing), _myWidth, _myItemHeight, false);
+			Button b = new Button(cp5, (ControllerGroup) this, _myName + "Button" + index, index, 0, index * (_myItemHeight + spacing), _myWidth, _myItemHeight);
 			b.setMoveable(false);
 			add(b);
 			cp5.register(null, "", b);
@@ -292,6 +295,15 @@ public class ListBox extends ControlGroup implements ControlListener {
 		}
 		updateScroll();
 		return this;
+	}
+
+	public void beginItems() {
+		bulkadding = true;
+	}
+
+	public void endItems() {
+		bulkadding = false;
+		scroll();
 	}
 
 	/**
@@ -614,7 +626,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	public ListBoxItem item(Controller theButton) {
 		return getItem(theButton);
 	}
-	
+
 	/**
 	 * @exclude
 	 * @deprecated
