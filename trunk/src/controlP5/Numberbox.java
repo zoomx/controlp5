@@ -263,7 +263,7 @@ public class Numberbox extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new NumberboxView();
+			_myControllerView = new NumberboxView();
 		case (SPRITE):
 		case (IMAGE):
 		case (CUSTOM):
@@ -281,8 +281,8 @@ public class Numberbox extends Controller {
 			theApplet.fill((isActive) ? color.getActive() : color.getForeground());
 			int h = height / 2;
 			theApplet.triangle(0, h - 6, 6, h, 0, h + 6);
-			_myValueLabel.draw(theApplet, 10, (height - _myValueLabel.getHeight() + 4) / 2);
-			_myCaptionLabel.draw(theApplet, 0, height + 4);
+			_myValueLabel.draw(theApplet, 10, (height - _myValueLabel.getHeight() + 4) / 2, theController);
+			_myCaptionLabel.draw(theApplet, 0, height + 4,theController);
 		}
 	}
 

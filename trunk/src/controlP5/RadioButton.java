@@ -88,9 +88,8 @@ public class RadioButton extends ControlGroup {
 	 */
 	public Toggle addItem(final String theName, final float theValue) {
 		Toggle t = cp5.addToggle(theName, 0, 0, itemWidth, itemHeight);
+		t.getCaptionLabel().align(RIGHT_OUTSIDE,CENTER).setPadding(Label.paddingX,0);
 		t.setMode(ControlP5.DEFAULT);
-		t.getCaptionLabel().getStyle().marginLeft = t.width + 4;
-		t.getCaptionLabel().getStyle().marginTop = -t.height - 2;
 		t.setImages(images[0], images[1], images[2]);
 		t.setSize(images[0]);
 		return addItem(t, theValue);

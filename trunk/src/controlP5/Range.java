@@ -25,7 +25,7 @@ package controlP5;
  *
  */
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.logging.Level;
 
 import processing.core.PApplet;
@@ -41,20 +41,14 @@ import processing.core.PVector;
 public class Range extends Controller {
 
 	/*
-	 * TODO if range value is int, value labels do initialize as floats. first
-	 * click makes them display as ints without decimal point
+	 * TODO if range value is int, value labels do initialize as floats. first click makes them
+	 * display as ints without decimal point
 	 */
 	protected static final int HORIZONTAL = 0;
 
 	protected static final int VERTICAL = 1;
 
 	protected int _myDirection;
-
-	public final static int FIX = 1;
-
-	public final static int FLEXIBLE = 0;
-
-	protected int _mySliderMode = FLEXIBLE;
 
 	protected float _myValuePosition;
 
@@ -82,7 +76,9 @@ public class Range extends Controller {
 
 	protected float maxHandle = 0;
 
-	protected Vector<TickMark> _myTickMarks;
+	protected float mr = 0;
+
+	protected final ArrayList<TickMark> _myTickMarks = new ArrayList<TickMark>();
 
 	protected boolean isShowTickMarks;
 
@@ -96,7 +92,9 @@ public class Range extends Controller {
 
 	public int alignValueLabel = CENTER;
 
-	public int valueLabelPositioning = FIX;
+	private int _myColorTickMark = 0xffffffff;
+
+	private int mode = -1;
 
 	/**
 	 * 
@@ -114,35 +112,45 @@ public class Range extends Controller {
 	@ControlP5.Invisible
 	public Range(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultMinValue, float theDefaultMaxValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(cp5,theName);
-		_myCaptionLabel.setColor(color.getCaptionLabel());
+
 		_myArrayValue = new float[] { theDefaultMinValue, theDefaultMaxValue };
 
 		_myMin = theMin;
 		_myMax = theMax;
-
 		_myValueRange = _myMax - _myMin;
 
-		minHandle = (theDefaultMinValue / _myValueRange) * width;
-		maxHandle = (theDefaultMaxValue / _myValueRange) * width;
+		minHandle = PApplet.map(theDefaultMinValue, _myMin, _myMax, handleSize, getWidth() - handleSize);
+		maxHandle = PApplet.map(theDefaultMaxValue, _myMin, _myMax, handleSize, getWidth() - handleSize);
+		mr = maxHandle - minHandle;
 
-		_myValueLabel = new Label(cp5,"" + adjustValue(_myMin));
-		_myCaptionLabel.setColor(color.getValueLabel());
-		_myValueLabel.set("" + adjustValue(theDefaultMinValue));
-
-		_myHighValueLabel = new Label(cp5,adjustValue(_myMax));
-		_myCaptionLabel.setColor(color.getValueLabel());
-		_myHighValueLabel.set("" + adjustValue(theDefaultMaxValue));
+		_myCaptionLabel = new Label(cp5, theName).setColor(color.getCaptionLabel()).align(RIGHT_OUTSIDE, CENTER);
+		_myValueLabel = new Label(cp5, "" + adjustValue(_myMin)).setColor(color.getValueLabel()).set("" + adjustValue(theDefaultMinValue)).align(LEFT, CENTER);
+		_myHighValueLabel = new Label(cp5, adjustValue(_myMax)).setColor(color.getValueLabel()).set("" + adjustValue(theDefaultMaxValue)).align(RIGHT, CENTER);
 
 		_myValue = theDefaultMinValue;
 
-		_myTickMarks = new Vector<TickMark>();
-
-		setSliderMode(FIX);
-		// _myDirection = (width > height) ? HORIZONTAL : VERTICAL;
 		_myDirection = HORIZONTAL;
+
 		update();
 
+	}
+
+	@Override
+	public Range setColorValueLabel(int theColor) {
+		_myValueLabel.setColor(theColor);
+		_myHighValueLabel.setColor(theColor);
+		setValueLabel("");
+		return this;
+	}
+
+	public Controller setHightValueLabel(final String theLabel) {
+		_myHighValueLabel.set(theLabel);
+		return this;
+	}
+
+	public Controller setLowValueLabel(final String theLabel) {
+		_myValueLabel.set(theLabel);
+		return this;
 	}
 
 	/**
@@ -161,7 +169,8 @@ public class Range extends Controller {
 	 */
 	public Range setHandleSize(int theSize) {
 		handleSize = theSize;
-		update();
+		setLowValue(_myArrayValue[0]);
+		setHighValue(_myArrayValue[1]);
 		return this;
 	}
 
@@ -172,49 +181,53 @@ public class Range extends Controller {
 	@ControlP5.Invisible
 	public Range updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
-			float p = _myControlWindow.mouseX - (absolutePosition.x);
-			if (!isMousePressed && getIsInside()) {
-				float hh1 = minHandle + handleSize;
-				float hh2 = maxHandle + handleSize;
-				isMinHandle = (p > minHandle && p < hh1) ? true : false;
-				isMaxHandle = (p > maxHandle && p < hh2) ? true : false;
+			int c = _myControlWindow.mouseX - _myControlWindow.pmouseX;
+			if (c == 0) {
+				return this;
 			}
-
 			if (isMousePressed && !cp5.keyHandler.isAltDown) {
-				if (_myControlWindow.mouseX != _myControlWindow.pmouseX || _myControlWindow.mouseY != _myControlWindow.pmouseY) {
-					float h1 = minHandle + handleSize;
-					float h2 = maxHandle + handleSize;
-					if (!isDragging) {
-						isMinHandle = (p > minHandle && p < h1) ? true : false;
-						isMaxHandle = (p > maxHandle && p < h2) ? true : false;
-						isMoveHandle = (isDraggable) ? ((p > h1 && p < maxHandle) ? true : false) : false;
-						isDragging = (isMinHandle || isMaxHandle || isMoveHandle) ? true : false;
-					}
-					if (isDragging) {
-						float pdif = _myControlWindow.mouseX - _myControlWindow.pmouseX;
-						if (isMinHandle) {
-							minHandle += pdif;
-							minHandle = PApplet.constrain(minHandle, 0, maxHandle - handleSize);
-							setLowValue(_myMin + (minHandle / ((width - handleSize * 2)) * _myValueRange));
-						} else if (isMaxHandle) {
-							maxHandle += pdif;
-							maxHandle = PApplet.constrain(maxHandle, h1, width - handleSize);
-							setHighValue(_myMin + ((maxHandle - handleSize) / ((width - handleSize * 2)) * _myValueRange));
-						} else if (isMoveHandle) {
-							float mpdif = (pdif * (_myValueRange / width));
-							if (_myArrayValue[0] + mpdif >= _myMin && _myArrayValue[1] + mpdif <= _myMax) {
-								_myArrayValue[0] += mpdif;
-								_myArrayValue[1] += mpdif;
-							}
-							update();
-
-						}
-					}
+				switch (mode) {
+				case (LEFT):
+					minHandle = PApplet.max(handleSize, PApplet.min(maxHandle, minHandle + c));
+					break;
+				case (RIGHT):
+					maxHandle = PApplet.max(minHandle, PApplet.min(getWidth() - handleSize, maxHandle + c));
+					break;
+				case (CENTER):
+					minHandle = PApplet.max(handleSize, PApplet.min(getWidth() - mr - handleSize, minHandle + c));
+					maxHandle = PApplet.max(minHandle, PApplet.min(getWidth() - handleSize, minHandle + mr));
+					break;
 				}
+				update();
 			}
-
 		}
 		return this;
+	}
+
+	@Override
+	public void mousePressed() {
+
+		final float posX = _myParent.getAbsolutePosition().x + position.x;
+		final float posY = _myParent.getAbsolutePosition().y + position.y;
+
+		if (_myControlWindow.mouseY < posY || _myControlWindow.mouseY > posY + getHeight()) {
+			mode = -1;
+			isMinHandle = isMaxHandle = false;
+			return;
+		}
+
+		int x0 = (int) (posX + minHandle);
+		int x1 = (int) (posX + maxHandle);
+
+		if (_myControlWindow.mouseX >= x0 - handleSize && _myControlWindow.mouseX < x0) {
+			mode = LEFT;
+			isMinHandle = true;
+		} else if (_myControlWindow.mouseX >= x1 && _myControlWindow.mouseX < x1 + handleSize) {
+			mode = RIGHT;
+			isMaxHandle = true;
+		} else if (_myControlWindow.mouseX > x0 && _myControlWindow.mouseX < x1 && isDraggable) {
+			mode = CENTER;
+		}
 	}
 
 	/**
@@ -237,8 +250,9 @@ public class Range extends Controller {
 	 */
 	@Override
 	public Range update() {
-		minHandle = ((_myArrayValue[0] - _myMin) / _myValueRange) * (width - handleSize * 2);
-		maxHandle = ((width - handleSize * 2) * ((_myArrayValue[1] - _myMin) / _myValueRange)) + handleSize;
+		_myArrayValue[0] = PApplet.map(minHandle, handleSize, getWidth() - handleSize, _myMin, _myMax);
+		_myArrayValue[1] = PApplet.map(maxHandle, handleSize, getWidth() - handleSize, _myMin, _myMax);
+		mr = maxHandle - minHandle;
 		_myHighValueLabel.set(adjustValue(_myArrayValue[1]));
 		_myValueLabel.set(adjustValue(_myArrayValue[0]));
 		return setValue(_myValue);
@@ -260,6 +274,13 @@ public class Range extends Controller {
 	 */
 	public float[] getArrayValue() {
 		return _myArrayValue;
+	}
+
+	@Override
+	public Range setArrayValue(float[] theArray) {
+		setLowValue(theArray[0]);
+		setHighValue(theArray[1]);
+		return this;
 	}
 
 	/**
@@ -305,25 +326,6 @@ public class Range extends Controller {
 	}
 
 	/**
-	 * @param theValue
-	 * @return Range
-	 */
-	public Range setLowValue(float theValue) {
-		_myArrayValue[0] = PApplet.max(_myMin, theValue);
-		return update();
-
-	}
-
-	/**
-	 * @param theValue
-	 * @return Range
-	 */
-	public Range setHighValue(float theValue) {
-		_myArrayValue[1] = PApplet.min(_myMax, theValue);
-		return update();
-	}
-
-	/**
 	 * sets the width of the slider.
 	 * 
 	 * @param theValue int
@@ -331,7 +333,6 @@ public class Range extends Controller {
 	 */
 	public Range setWidth(int theValue) {
 		width = theValue;
-		setSliderMode(_mySliderMode);
 		return this;
 	}
 
@@ -343,7 +344,6 @@ public class Range extends Controller {
 	 */
 	public Range setHeight(int theValue) {
 		height = theValue;
-		setSliderMode(_mySliderMode);
 		return this;
 	}
 
@@ -353,6 +353,7 @@ public class Range extends Controller {
 	@ControlP5.Invisible
 	public void mouseReleased() {
 		isDragging = isMinHandle = isMaxHandle = isMoveHandle = false;
+		mode = -1;
 	}
 
 	/**
@@ -377,18 +378,13 @@ public class Range extends Controller {
 	}
 
 	/**
-	 * @param theNumber
-	 * @return Range
+	 * sets the color of tick marks if enabled. by default the color is set to white.
+	 * 
+	 * @param theColor
+	 * @return Slider
 	 */
-	public Range setNumberOfTickMarks(int theNumber) {
-		int n = theNumber - _myTickMarks.size();
-		if (n <= theNumber) {
-			for (int i = 0; i < n; i++) {
-				_myTickMarks.add(new TickMark(this));
-			}
-		}
-		showTickMarks(true);
-		snapToTickMarks(true);
+	public Range setColorTickMark(int theColor) {
+		_myColorTickMark = theColor;
 		return this;
 	}
 
@@ -407,13 +403,81 @@ public class Range extends Controller {
 	 */
 	public Range snapToTickMarks(boolean theFlag) {
 		isSnapToTickMarks = theFlag;
+		System.out.println("Range Tickmarks not yet supported");
 		return this;
 	}
 
-	// set the label of a tick.
 	@ControlP5.Invisible
 	public TickMark getTickMark() {
+		System.out.println("Range Tickmarks not yet supported");
 		return null;
+	}
+	
+	/**
+	 * returns an ArrayList of available tick marks for a slider.
+	 * 
+	 * @return ArrayList<TickMark>
+	 */
+	public ArrayList<TickMark> getTickMarks() {
+		return _myTickMarks;
+	}
+	
+
+	/**
+	 * @param theNumber
+	 * @return Timeline
+	 */
+	public Range setNumberOfTickMarks(int theNumber) {
+		System.out.println("Range Tickmarks not yet supported");
+		_myTickMarks.clear();
+		if (theNumber > 0) {
+			for (int i = 0; i < theNumber; i++) {
+				_myTickMarks.add(new TickMark(this));
+			}
+			showTickMarks(true);
+			snapToTickMarks(true);
+		} else {
+			showTickMarks(false);
+			snapToTickMarks(false);
+		}
+		_myUnit = (_myMax - _myMin) / ((width > height) ? width - 1 : height - 1);
+		setLowValue(_myArrayValue[0]);
+		setHighValue(_myArrayValue[1]);
+		setValue(_myValue);
+		return this;
+	}
+
+	/**
+	 * @param theValue
+	 * @return Timeline
+	 */
+	public Range setLowValue(float theValue) {
+		_myArrayValue[0] = PApplet.max(_myMin, snapValue(theValue));
+		minHandle = PApplet.map(_myArrayValue[0], _myMin, _myMax, handleSize, getWidth() - handleSize);
+		return update();
+
+	}
+
+	/**
+	 * @param theValue
+	 * @return Timeline
+	 */
+	public Range setHighValue(float theValue) {
+		_myArrayValue[1] = PApplet.min(_myMax, snapValue(theValue));
+		maxHandle = PApplet.map(_myArrayValue[1], _myMin, _myMax, handleSize, getWidth() - handleSize);
+		return update();
+	}
+
+	protected float snapValue(float theValue) {
+		if (isMousePressed) {
+			return theValue;
+		}
+		if (isSnapToTickMarks) {
+			_myValuePosition = ((theValue - _myMin) / _myUnit);
+			float n = PApplet.round(PApplet.map(_myValuePosition, 0, (_myDirection == HORIZONTAL) ? getWidth() : getHeight(), 0, _myTickMarks.size() - 1));
+			theValue = PApplet.map(n, 0, _myTickMarks.size() - 1, _myMin, _myMax);
+		}
+		return theValue;
 	}
 
 	/**
@@ -425,13 +489,13 @@ public class Range extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new RangeView();
+			_myControllerView = new RangeView();
 			break;
 		case (SPRITE):
-			_myDisplay = new RangeSpriteView();
+			_myControllerView = new RangeSpriteView();
 			break;
 		case (IMAGE):
-			_myDisplay = new RangeImageView();
+			_myControllerView = new RangeImageView();
 			break;
 		case (CUSTOM):
 		default:
@@ -448,46 +512,65 @@ public class Range extends Controller {
 
 	class RangeView implements ControllerView {
 		public void display(PApplet theApplet, Controller theController) {
+
+			int high = mode;
+
+			final float posX = _myParent.getAbsolutePosition().x + position.x;
+			int x0 = (int) (posX + minHandle);
+			int x1 = (int) (posX + maxHandle);
+
+			if (isInside() && high<0) {
+				if (_myControlWindow.mouseX >= x0 - handleSize && _myControlWindow.mouseX < x0) {
+					high = LEFT;
+				} else if (_myControlWindow.mouseX >= x1 && _myControlWindow.mouseX < x1 + handleSize) {
+					high = RIGHT;
+				} else if (_myControlWindow.mouseX > x0 && _myControlWindow.mouseX < x1 && isDraggable) {
+					high = CENTER;
+				}
+			}
+			
+			theApplet.pushMatrix();
+			
 			theApplet.fill(color.getBackground());
+
 			theApplet.noStroke();
+
 			theApplet.rect(0, 0, width, height);
-			// if(isInside) {
-			theApplet.fill(color.getForeground());
+
+			theApplet.fill(high == CENTER ? color.getActive() : color.getForeground());
 
 			if (isShowTickMarks) {
-				theApplet.rect(minHandle + handleSize / 2, 0, maxHandle - minHandle, height);
-				theApplet.fill((isMinHandle) ? color.getActive() : color.getForeground());
-				theApplet.triangle(minHandle, 0, minHandle + handleSize, 0, minHandle + handleSize / 2, height);
-				theApplet.fill((isMaxHandle) ? color.getActive() : color.getForeground());
-				theApplet.triangle(maxHandle, 0, maxHandle + handleSize, 0, maxHandle + handleSize / 2, height);
+				int n = handleSize / 2;
+				theApplet.rect(minHandle - n, 0, mr + handleSize, height);
+				theApplet.fill((isMinHandle || high == LEFT) ? color.getActive() : color.getForeground());
+				theApplet.triangle(minHandle - handleSize, 0, minHandle, 0, minHandle - n, height);
+				theApplet.fill((isMaxHandle || high == RIGHT) ? color.getActive() : color.getForeground());
+				theApplet.triangle(maxHandle, 0, maxHandle + handleSize, 0, maxHandle + n, height);
 			} else {
-				theApplet.rect(minHandle, 0, maxHandle - minHandle, height);
-				theApplet.fill((isMinHandle) ? color.getActive() : color.getForeground());
-				theApplet.rect(minHandle, 0, handleSize, height);
-				theApplet.fill((isMaxHandle) ? color.getActive() : color.getForeground());
+				theApplet.rect(minHandle, 0, mr, height);
+				theApplet.fill((isMinHandle || high == LEFT) ? color.getActive() : color.getForeground());
+				theApplet.rect(minHandle - handleSize, 0, handleSize, height);
+				theApplet.fill((isMaxHandle || high == RIGHT) ? color.getActive() : color.getForeground());
 				theApplet.rect(maxHandle, 0, handleSize, height);
 
 			}
 
 			if (isLabelVisible) {
-				// if (_myDirection == HORIZONTAL) {
-				_myCaptionLabel.draw(theApplet, width + 3, height / 2 - 3);
-				_myValueLabel.draw(theApplet, 3, height / 2 - 3);
-				_myHighValueLabel.draw(theApplet, width - _myHighValueLabel.getWidth(), height / 2 - 3);
-			} else {
-				_myCaptionLabel.draw(theApplet, 0, height + 3);
-				_myValueLabel.draw(theApplet, width + 4, -(int) _myValuePosition + height - 8);
+				_myCaptionLabel.draw(theApplet, 0, 0, theController);
+				_myValueLabel.draw(theApplet, 0, 0, theController);
+				_myHighValueLabel.draw(theApplet, 0, 0, theController);
 			}
-			// }
-
+			
+			theApplet.popMatrix();
+			
 			if (isShowTickMarks) {
 				theApplet.pushMatrix();
-
-				theApplet.translate((_mySliderMode == FIX) ? 0 : 5, getHeight());
-				float x = (getWidth() - ((_mySliderMode == FIX) ? 0 : 10)) / (_myTickMarks.size() - 1);
-				for (TickMark tm : _myTickMarks) {
+				float x = (getWidth()-handleSize) / (getTickMarks().size() - 1);
+				theApplet.translate(handleSize/2, getHeight());
+				theApplet.fill(_myColorTickMark);
+				for (TickMark tm : getTickMarks()) {
 					tm.draw(theApplet);
-					theApplet.translate(x, 0);
+					theApplet.translate(x,0);
 				}
 				theApplet.popMatrix();
 			}
@@ -502,7 +585,7 @@ public class Range extends Controller {
 
 	@Override
 	public String toString() {
-		return "type:\tBang\n" + super.toString();
+		return "type:\tRange\n" + super.toString();
 	}
 
 	@Deprecated
@@ -519,4 +602,5 @@ public class Range extends Controller {
 	public float[] arrayValue() {
 		return _myArrayValue;
 	}
+	
 }

@@ -32,6 +32,7 @@ package controlP5;
 import java.util.HashMap;
 import java.util.Map;
 
+import processing.core.PApplet;
 import processing.core.PImage;
 
 /**
@@ -46,7 +47,7 @@ import processing.core.PImage;
  * abcdefghijklmnopqrstuvwxyz{|}~
  * </p>
  * <ul>
- * <li><a href="http://www.dafont.com/advocut.font" target="_blank">advocut.font</a></li> 
+ * <li><a href="http://www.dafont.com/advocut.font" target="_blank">advocut.font</a></li>
  * <li><a href="http://www.dafont.com/grixel-kyrou-9.font" target="_blank">grixel-kyrou-9.font</a></li>
  * <li><a href="http://www.dafont.com/david-sans.font" target="_blank">david-sans.font</a></li>
  * <li><a href="http://www.dafont.com/sven-stuber.d516" target="_blank">sven-stuber.d516</a></li>
@@ -56,7 +57,7 @@ import processing.core.PImage;
  * <li><a href="http://www.dafont.com/optiate.font" target="_blank">optiate.font</a></li>
  * <li><a href="http://www.dafont.com/superhelio.font" target="_blank">superhelio.font</a></li>
  * <li><a href="http://www.dafont.com/superbly.font" target="_blank">superbly.font</a></li>
- * <li><a href="http://www.fontsquirrel.com/fonts/Audimat-Mono" target="_blank">Audimat-Mono</a></li> 
+ * <li><a href="http://www.fontsquirrel.com/fonts/Audimat-Mono" target="_blank">Audimat-Mono</a></li>
  * <li><a href="http://www.fontsquirrel.com/fonts/Envy-Code-R" target="_blank">Envy-Code-R</a></li>
  * </ul>
  * 
@@ -97,6 +98,7 @@ public class BitFontRenderer {
 
 	/**
 	 * TODO implement addBitFont
+	 * 
 	 * @exclude
 	 * @param theImage
 	 * @return
@@ -110,15 +112,13 @@ public class BitFontRenderer {
 		return fonts.get(theIndex);
 	}
 
-	protected static int getPosition(String theText, Label.BitFontLabel theLabel, int theX) {
-		theText = (theText == null) ? " " : theText;
-
-		BitFont f = fonts.get(theLabel.getFontIndex());
-		theText = (theLabel.isToUpperCase()) ? theText.toUpperCase() : theText;
-		int l = theText.length();
+	protected static int getPosition(Label theLabel, ControlFont.BitFontLabel theBitFont, int theX) {
+		BitFont f = fonts.get(theBitFont.getFontIndex());
+		String s = theLabel.getTextFormatted();
+		int l = s.length();
 		int x = 0;
 		for (int i = 0; i < l; i++) {
-			final int myIndex = ((int) theText.charAt(i) - 32);
+			final int myIndex = ((int) s.charAt(i) - 32);
 			if (myIndex >= 0 && myIndex <= 95) {
 				x += f.charWidth[myIndex] + theLabel.getLetterSpacing();
 				if (x >= theX) {
@@ -129,38 +129,29 @@ public class BitFontRenderer {
 		return l;
 	}
 
-	/**
-	 * get the width of a text based on the bit font used.
-	 * 
-	 * @param theText
-	 * @param theFontIndex
-	 * @return
-	 */
-	public static int getWidth(Label.BitFontLabel theLabel) {
-		return getWidth(theLabel.getText(), theLabel, theLabel.getText().length());
+	public static int getWidth(Label theLabel, final ControlFont.BitFontLabel theBitFont, String theText) {
+		return getDimension(theLabel, theBitFont, -1, -1, theText, 0, theText.length())[0];
 	}
 
-	public static int getWidth(String theText, final Label.BitFontLabel theLabel) {
-		return getWidth(theText, theLabel, theText.length());
+	public static int getWidth(Label theLabel, final ControlFont.BitFontLabel theBitFont) {
+		return getWidth(theLabel, theBitFont, theLabel.getText().length());
 	}
 
-	protected static int getWidth(String theText, final Label.BitFontLabel theLabel, int theLength) {
-		return getDimension(theText, theLabel, theLength)[0];
+	protected static int getWidth(Label theLabel, final ControlFont.BitFontLabel theBitFont, int theLength) {
+		return getDimension(theLabel, theBitFont, -1, -1, theLabel.getTextFormatted(), 0, theLength)[0];
 	}
 
-	protected static int[] getDimension(String theText, final Label.BitFontLabel theLabel) {
-		return getDimension(theText, theLabel, theText.length());
+	protected static int[] getDimension(Label theLabel, ControlFont.BitFontLabel theBitFont, String theText) {
+		return getDimension(theLabel, theBitFont, -1, -1, theText, 0, theText.length());
 	}
 
-	protected static int[] getDimension(String theText, final Label.BitFontLabel theLabel, int theLength) {
+	protected static int[] getDimension(Label theLabel, final ControlFont.BitFontLabel theBitFont, final int theWidth, final int theHeight, final String theText, final int theStart, int theEnd) {
 		int[] dim = { 0, theLabel.getLineHeight() };
 		int tx = 0;
-		theText = (theText == null) ? " " : theText;
-
-		BitFont f = fonts.get(theLabel.getFontIndex());
-
-		theText = (theLabel.isToUpperCase()) ? theText.toUpperCase() : theText;
-		for (int i = 0; i < theLength; i++) {
+		BitFont f = fonts.get(theBitFont.getFontIndex());
+		// String s = theLabel.getTextFormatted();
+		theEnd = (int)PApplet.min(theText.length(),theEnd);
+		for (int i = theStart; i < theEnd; i++) {
 			final int myIndex = ((int) theText.charAt(i) - 32);
 			if (myIndex >= 0 && myIndex <= 95) {
 				dim[0] += f.charWidth[myIndex] + theLabel.getLetterSpacing();
@@ -190,11 +181,11 @@ public class BitFontRenderer {
 		return fonts.get(theFontIndex).texture.height;
 	}
 
-	public static int getHeight(Label.BitFontLabel theLabel) {
+	public static int getHeight(ControlFont.BitFontLabel theLabel) {
 		return fonts.get(theLabel.getFontIndex()).texture.height;
 	}
 
-	private static void putchar(final int theC, final int theX, final int theY, final int theColor, boolean theHighlight, final PImage theImage, final PImage theMask, final BitFont theBitFont) {
+	private static void putchar(final int theC, final int theX, final int theY, final int theColor, final PImage theImage, final PImage theMask, final BitFont theBitFont) {
 		final int myWH = theImage.width * theImage.height;
 		final int len = theBitFont.charWidth[theC] * theBitFont.charHeight;
 		final int w = theY * theImage.width;
@@ -208,40 +199,46 @@ public class BitFontRenderer {
 		}
 	}
 
-	private static int writeCharacters(final Label.BitFontLabel theLabel) {
+	private static int writeCharacters(final ControlFont.BitFontLabel theBitFont, Label theLabel) {
+
+		BitFont f = fonts.get(theBitFont.getFontIndex());
 
 		int indent = 0;
 
-		final int myOriginalY = theLabel.getOffsetY();
+		if (theLabel.isFixedSize()) {
+			int n = getWidth(theLabel, theBitFont);
+			indent = n > theLabel.getWidth() ? theLabel.getWidth() - n : 0;
+		}
 
-		int myY = theLabel.getOffsetY();
+		int myOriginalY = theLabel.getFont().get().getOffset(1);
 
-		final String myText = theLabel.isToUpperCase() ? theLabel.getText().toUpperCase() : theLabel.getText();
+		int myY = theLabel.getFont().get().getOffset(1);
 
-		int myWrap = (theLabel.isMultiline()) ? theLabel.getImage().width : -1;
+		final String s = theLabel.getTextFormatted();
 
-		int l = myText.length();
+		int myWrap = (theLabel.isMultiline()) ? theBitFont.getImage().width : -1;
+
+		int l = s.length();
 
 		final int[] letters_indent = new int[l];
+
 		final int[] letters_letter = new int[l];
-		final boolean[] letters_isHighlight = new boolean[l];
+
 		final int[] letters_lineheight = new int[l];
 
 		int err = 0;
 
-		BitFont f = fonts.get(theLabel.getFontIndex());
-
 		for (int i = 0; i < l; i++) {
 
-			int c = (int) myText.charAt(i);
+			int c = (int) s.charAt(i);
 
 			if (c != 10) {
 				if ((myWrap > 0 && indent > myWrap)) {
-					indent = theLabel.getOffsetX(); // 0;
+					indent = 0;
 					myY += theLabel.getLineHeight();
 					final int j = i;
 					err++;
-					while (i > 0 && err < myText.length()) {
+					while (i > 0 && err < s.length()) {
 						i--;
 						// in case a word longer than the actual width.
 						if (i == 1) {
@@ -249,9 +246,9 @@ public class BitFontRenderer {
 							break;
 						}
 						// go back until you find a space or a dash.
-						if (myText.charAt(i) == ' ' || myText.charAt(i) == '-') {
+						if (s.charAt(i) == ' ' || s.charAt(i) == '-') {
 							i++;
-							c = (int) myText.charAt(i);
+							c = (int) s.charAt(i);
 							break;
 						}
 					}
@@ -263,7 +260,6 @@ public class BitFontRenderer {
 
 				letters_indent[i] = indent;
 				letters_letter[i] = c - 32;
-				letters_isHighlight[i] = (i == theLabel.getCursorPosition() - 1);
 				letters_lineheight[i] = myY;
 
 				indent += f.charWidth[c - 32] + theLabel.getLetterSpacing();
@@ -272,30 +268,25 @@ public class BitFontRenderer {
 				indent = 0;
 				letters_indent[i] = 0;
 				letters_letter[i] = -1;
-				letters_isHighlight[i] = false;
 				letters_lineheight[i] = 0;
 			}
 		}
 		for (int i = 0; i < l; i++) {
 			if (letters_letter[i] != -1) {
-				putchar(letters_letter[i], theLabel.getOffsetX() + letters_indent[i], letters_lineheight[i], theLabel.getColor(), letters_isHighlight[i], theLabel.getImage(),
-						theLabel.getImageMask(), f);
+				putchar(letters_letter[i], letters_indent[i], letters_lineheight[i], theLabel.getColor(), theBitFont.getImage(), theBitFont.getImageMask(), f);
 			}
 		}
 		return myY - myOriginalY;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 */
-	public static int write(final Label.BitFontLabel theLabel) {
-		final int myWH = theLabel.getImage().width * theLabel.getImage().height;
+	public static int write(final ControlFont.BitFontLabel theBitFont, Label theLabel) {
+		final int myWH = theBitFont.getImage().width * theBitFont.getImage().height;
 		for (int i = 0; i < myWH; i++) {
-			theLabel.getImage().pixels[i] = 0x00ffffff;
-			theLabel.getImageMask().pixels[i] = 0xff000000;
+			theBitFont.getImage().pixels[i] = 0x00ffffff;
+			theBitFont.getImageMask().pixels[i] = 0xff000000;
 		}
-		final int myHeight = writeCharacters(theLabel);
-		theLabel.getImage().mask(theLabel.getImageMask());
+		final int myHeight = writeCharacters(theBitFont, theLabel);
+		theBitFont.getImage().mask(theBitFont.getImageMask());
 		return myHeight;
 	}
 
@@ -322,9 +313,9 @@ public class BitFontRenderer {
 		BitFont(int theId) {
 			id = theId;
 		}
-		
+
 		int getHeight() {
-			return texture.height; 
+			return texture.height;
 		}
 
 		BitFont setSource(String theSource) {
@@ -359,5 +350,14 @@ public class BitFontRenderer {
 			return this;
 		}
 
+	}
+
+	/**
+	 * @deprecated
+	 * @exclude
+	 */
+	@Deprecated
+	public static int getWidth(ControlFont.BitFontLabel theLabel) {
+		return -1;
 	}
 }

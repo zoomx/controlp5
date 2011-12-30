@@ -40,7 +40,7 @@ public class TickMark implements CDrawable {
 
 	protected boolean isLabel;
 
-	protected TickMark(Controller theController) {
+	public TickMark(Controller theController) {
 		_myParent = theController;
 	}
 
@@ -53,16 +53,16 @@ public class TickMark implements CDrawable {
 		switch (theDirection) {
 		case (ControlP5Constants.HORIZONTAL):
 			theApplet.translate(0, _myLen);
-			theApplet.line(0, 0, 0, _myLen);
+			theApplet.rect(0, 0, 1, _myLen);
 			if (isLabel) {
-				_myLabel.draw(theApplet, 0, _myLen + 4);
+				_myLabel.draw(theApplet, 0, _myLen + 4, _myParent);
 			}
 			break;
 		case (ControlP5Constants.VERTICAL):
 			theApplet.translate(-_myLen, 0);
-			theApplet.line(0, 0, _myLen, 0);
+			theApplet.rect(0, 0, _myLen, 1);
 			if (isLabel) {
-				_myLabel.draw(theApplet, -_myLabel.getWidth(), 0);
+				_myLabel.draw(theApplet, -_myLabel.getWidth(), 0, _myParent);
 			}
 			break;
 		}

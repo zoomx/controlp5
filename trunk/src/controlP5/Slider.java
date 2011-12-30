@@ -41,8 +41,6 @@ import processing.core.PApplet;
  */
 public class Slider extends Controller {
 
-	private int _myDirection;
-
 	public final static int FIX = 1;
 
 	public final static int FLEXIBLE = 0;
@@ -57,7 +55,7 @@ public class Slider extends Controller {
 
 	protected int triggerId = PRESSED;
 
-	protected ArrayList<TickMark> _myTickMarks;
+	protected ArrayList<TickMark> _myTickMarks = new ArrayList<TickMark>();
 
 	protected boolean isShowTickMarks;
 
@@ -69,11 +67,11 @@ public class Slider extends Controller {
 
 	protected int alignValueLabel = CENTER;
 
-	public int valueLabelPositioning = FIX;
-
 	private float scrollSensitivity = 0.1f;
 
 	private int _myColorTickMark = 0xffffffff;
+
+	private SliderView _myView;
 
 	/*
 	 * TODO currently the slider value goes up and down linear, provide an option to make it
@@ -96,29 +94,19 @@ public class Slider extends Controller {
 	 */
 	public Slider(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel = new Label(cp5, theName);
-		_myCaptionLabel.setColor(color.getCaptionLabel());
 		_myMin = theMin;
 		_myMax = theMax;
-
-		// initialize the valueLabel with the longest string available, which is
-		// either theMax or theMin.
-		_myValueLabel = new Label(cp5, "" + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax) : adjustValue(_myMin)));
-		_myCaptionLabel.setColor(color.getValueLabel());
-
-		// after initializing valueLabel, set the value to the default value.
-		_myValueLabel.set("" + adjustValue(_myValue));
 		_myValue = theDefaultValue;
+		
+		_myCaptionLabel = new Label(cp5, theName).setColor(color.getCaptionLabel());
+		
+		_myValueLabel = new Label(cp5, "" + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax) : adjustValue(_myMin)));
+		_myValueLabel.setColor(color.getValueLabel()).set("" + adjustValue(_myValue));
 
-		_myTickMarks = new ArrayList<TickMark>();
+		_myView = (width > height) ? new SliderViewH() : new SliderViewV();
+
 		setSliderMode(FIX);
-		_myDirection = (width > height) ? HORIZONTAL : VERTICAL;
-		if (_myDirection == HORIZONTAL) {
-			alignValueLabel = CENTER;
-			valueLabelPositioning = FIX;
-		} else {
-			valueLabelPositioning = FLEXIBLE;
-		}
+
 	}
 
 	/**
@@ -134,7 +122,7 @@ public class Slider extends Controller {
 		} else {
 			_myHandleSize = 0;
 		}
-		_myUnit = (_myMax - _myMin) / ((width > height) ? width - _myHandleSize : height - _myHandleSize);
+		_myView.updateUnit();
 		setValue(_myValue);
 	}
 
@@ -165,11 +153,7 @@ public class Slider extends Controller {
 	public Slider updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
 			if (isMousePressed && !cp5.keyHandler.isAltDown) {
-				if (_myDirection == HORIZONTAL) {
-					setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
-				} else {
-					setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
-				}
+				_myView.updateInternalEvents(theApplet);
 			}
 		}
 		return this;
@@ -202,11 +186,7 @@ public class Slider extends Controller {
 	@Override
 	protected void mouseReleased() {
 		if (triggerId == RELEASE) {
-			if (_myDirection == HORIZONTAL) {
-				setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
-			} else {
-				setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
-			}
+			_myView.update();
 			broadcast(FLOAT);
 		}
 	}
@@ -214,8 +194,7 @@ public class Slider extends Controller {
 	protected void snapValue(float theValue) {
 		if (isSnapToTickMarks) {
 			_myValuePosition = ((_myValue - _myMin) / _myUnit);
-			float n = PApplet.round(PApplet.map(_myValuePosition, 0, (_myDirection == HORIZONTAL) ? getWidth() : getHeight(), 0, _myTickMarks.size() - 1));
-			_myValue = PApplet.map(n, 0, _myTickMarks.size() - 1, _myMin, _myMax);
+			_myView.setSnapValue();
 		}
 	}
 
@@ -460,7 +439,7 @@ public class Slider extends Controller {
 	}
 
 	public int getDirection() {
-		return _myDirection;
+		return (_myView instanceof SliderViewH) ? HORIZONTAL : VERTICAL;
 	}
 
 	/**
@@ -472,7 +451,7 @@ public class Slider extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new SliderView();
+			_myControllerView = (width > height) ? new SliderViewH() : new SliderViewV();
 			break;
 		case (IMAGE):
 			// TODO
@@ -487,7 +466,41 @@ public class Slider extends Controller {
 		return this;
 	}
 
-	class SliderView implements ControllerView {
+	private abstract class SliderView implements ControllerView {
+
+		abstract void updateInternalEvents(PApplet theApplet);
+
+		abstract void update();
+
+		abstract void updateUnit();
+
+		abstract void setSnapValue();
+
+	}
+
+	private class SliderViewV extends SliderView {
+
+		SliderViewV() {
+			_myCaptionLabel.setColor(color.getValueLabel()).align(LEFT, BOTTOM_OUTSIDE).setPadding(0,Label.paddingY);
+			_myValueLabel.set("" + adjustValue(_myValue)).align(RIGHT_OUTSIDE, TOP);
+		}
+		
+		void setSnapValue() {
+			float n = PApplet.round(PApplet.map(_myValuePosition, 0, getHeight(), 0, _myTickMarks.size() - 1));
+			_myValue = PApplet.map(n, 0, _myTickMarks.size() - 1, _myMin, _myMax);
+		}
+
+		void updateUnit() {
+			_myUnit = (_myMax - _myMin) / (height - _myHandleSize);
+		}
+
+		void update() {
+			setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
+		}
+
+		void updateInternalEvents(PApplet theApplet) {
+			setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
+		}
 
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(getColor().getBackground());
@@ -496,93 +509,102 @@ public class Slider extends Controller {
 				theApplet.rect(0, 0, getWidth(), getHeight());
 			}
 			theApplet.fill(getIsInside() ? getColor().getActive() : getColor().getForeground());
-			if (getDirection() == HORIZONTAL) {
-				if (getSliderMode() == FIX) {
-					theApplet.rect(0, 0, getValuePosition(), getHeight());
-
-				} else {
-					if (isShowTickMarks) {
-						theApplet.triangle(getValuePosition(), 0, getValuePosition() + getHandleSize(), 0, getValuePosition() + _myHandleSize / 2, getHeight());
-					} else {
-
-						theApplet.rect(getValuePosition(), 0, getHandleSize(), getHeight());
-					}
-
-				}
-				theApplet.fill(255);
+			if (getSliderMode() == FIX) {
+				theApplet.rect(0, getHeight(), getWidth(), -getValuePosition());
 			} else {
-				if (getSliderMode() == FIX) {
-					theApplet.rect(0, getHeight(), getWidth(), -getValuePosition());
+				if (isShowTickMarks) {
+					theApplet.triangle(getWidth(), getHeight() - getValuePosition(), getWidth(), getHeight() - getValuePosition() - getHandleSize(), 0, getHeight()
+							- getValuePosition() - getHandleSize() / 2);
 				} else {
-					if (isShowTickMarks) {
-						theApplet.triangle(getWidth(), getHeight() - getValuePosition(), getWidth(), getHeight() - getValuePosition() - getHandleSize(), 0, getHeight()
-								- getValuePosition() - getHandleSize() / 2);
-					} else {
-						theApplet.rect(0, getHeight() - getValuePosition() - getHandleSize(), getWidth(), getHandleSize());
-					}
+					theApplet.rect(0, getHeight() - getValuePosition() - getHandleSize(), getWidth(), getHandleSize());
 				}
 			}
 
 			if (isLabelVisible) {
-				int py = 0;
-				int px = 0;
-				if (getDirection() == HORIZONTAL) {
-					getCaptionLabel().draw(theApplet, getWidth() + 3, getHeight() / 2 - 3);
-					switch (alignValueLabel) {
-					case (TOP):
-						py = -10;
-						break;
-					case (CENTER):
-					default:
-						py = getHeight() / 2 - 3;
-						px = 3;
-						break;
-					case (BOTTOM):
-						py = getHeight() + 3;
-						break;
-					}
-					getValueLabel().draw(theApplet, (valueLabelPositioning == FIX) ? px : (int) (getValuePosition()), py);
-
-				} else {
-					getCaptionLabel().draw(theApplet, 0, getHeight() + 3);
-					switch (alignValueLabel) {
-					case (TOP):
-					default:
-						py = -10;
-						break;
-					case (CENTER):
-						py = height / 2 - 3;
-						px = 3;
-						break;
-					case (BOTTOM):
-						py = height + 3;
-						break;
-					}
-					getValueLabel().draw(theApplet, (valueLabelPositioning == FIX) ? 0 : getWidth() + 4,
-							(valueLabelPositioning == FIX) ? py : -(int) getValuePosition() + getHeight() - 8);
-				}
+				getCaptionLabel().draw(theApplet, 0, 0, theController);
+				theApplet.pushMatrix();
+				theApplet.translate(0,(int)PApplet.map(_myValue, _myMax, _myMin, 0, getHeight()-_myValueLabel.getHeight()));
+				getValueLabel().draw(theApplet, 0, 0, theController);
+				theApplet.popMatrix();
 			}
 
 			if (isShowTickMarks) {
 				theApplet.pushMatrix();
-				float n = (getDirection() == HORIZONTAL) ? getWidth() : getHeight();
-
-				if (getDirection() == HORIZONTAL) {
-					theApplet.translate((getSliderMode() == FIX) ? 0 : getHandleSize() / 2, getHeight());
-				} else {
-					theApplet.translate(-4, (getSliderMode() == FIX) ? 0 : getHandleSize() / 2);
-				}
-				theApplet.stroke(_myColorTickMark);
-				float x = (n - ((getSliderMode() == FIX) ? 0 : getHandleSize())) / (getTickMarks().size() - 1);
+				theApplet.pushStyle();
+				theApplet.translate(-4, (getSliderMode() == FIX) ? 0 : getHandleSize() / 2);
+				theApplet.fill(_myColorTickMark);
+				float x = (getHeight() - ((getSliderMode() == FIX) ? 0 : getHandleSize())) / (getTickMarks().size() - 1);
 				for (TickMark tm : getTickMarks()) {
 					tm.draw(theApplet, getDirection());
-					if (getDirection() == HORIZONTAL) {
-						theApplet.translate(x, 0);
-					} else {
-						theApplet.translate(0, x);
-					}
+					theApplet.translate(0, x);
 				}
+				theApplet.popStyle();
+				theApplet.popMatrix();
+			}
+		}
+	}
+
+	private class SliderViewH extends SliderView {
+
+		SliderViewH() {
+			_myCaptionLabel.setColor(color.getValueLabel()).align(RIGHT_OUTSIDE, CENTER);
+			_myValueLabel.set("" + adjustValue(_myValue)).align(LEFT, CENTER);
+		}
+
+		
+		void setSnapValue() {
+			float n = PApplet.round(PApplet.map(_myValuePosition, 0, getWidth(), 0, _myTickMarks.size() - 1));
+			_myValue = PApplet.map(n, 0, _myTickMarks.size() - 1, _myMin, _myMax);
+		}
+
+		void updateUnit() {
+			_myUnit = (_myMax - _myMin) / (width - _myHandleSize);
+		}
+
+		void update() {
+			setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
+		}
+
+		void updateInternalEvents(PApplet theApplet) {
+			setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
+		}
+
+		public void display(PApplet theApplet, Controller theController) {
+			theApplet.fill(getColor().getBackground());
+			theApplet.noStroke();
+			if ((getColor().getBackground() >> 24 & 0xff) > 0) {
+				theApplet.rect(0, 0, getWidth(), getHeight());
+			}
+			theApplet.fill(getIsInside() ? getColor().getActive() : getColor().getForeground());
+			if (getSliderMode() == FIX) {
+				theApplet.rect(0, 0, getValuePosition(), getHeight());
+			} else {
+				if (isShowTickMarks) {
+					theApplet.triangle(getValuePosition(), 0, getValuePosition() + getHandleSize(), 0, getValuePosition() + _myHandleSize / 2, getHeight());
+				} else {
+					theApplet.rect(getValuePosition(), 0, getHandleSize(), getHeight());
+				}
+
+			}
+			theApplet.fill(255);
+
+			if (isLabelVisible) {
+				getValueLabel().draw(theApplet, 0, 0, theController);
+				getCaptionLabel().draw(theApplet, 0, 0, theController);
+			}
+
+			if (isShowTickMarks) {
+				theApplet.pushMatrix();
+				theApplet.pushStyle();
+				theApplet.translate((getSliderMode() == FIX) ? 0 : getHandleSize() / 2, getHeight());
+				theApplet.fill(_myColorTickMark);
 				theApplet.noStroke();
+				float x = (getWidth() - ((getSliderMode() == FIX) ? 0 : getHandleSize())) / (getTickMarks().size() - 1);
+				for (TickMark tm : getTickMarks()) {
+					tm.draw(theApplet, getDirection());
+					theApplet.translate(x, 0);
+				}
+				theApplet.popStyle();
 				theApplet.popMatrix();
 			}
 		}

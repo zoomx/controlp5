@@ -247,7 +247,7 @@ public class Chart extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new ChartViewBarCentered();
+			_myControllerView = new ChartViewBarCentered();
 			break;
 		case (IMAGE):
 			// _myDisplay = new ChartImageDisplay();
@@ -291,8 +291,15 @@ private class ChartViewBar implements ControllerView {
 			for (int n = 0; n < size(); n++) {
 				theApplet.fill(getDataSet(n).getColor().getForeground());
 				int s = getDataSet(n).size();
+				float step = (float)width /(float)(s);
+				float steps = 0;
+				float ww = step - (width % step);
+				ww -= 1;
+				ww = PApplet.max(1,ww);
 				for (int i = 0; i < s; i++) {
-					int ww = (int) ((width / s) * 0.5f);
+//					theApplet.rect(steps,getHeight(),ww,-PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
+//					steps += step;
+					ww = ((width / s) * 0.5f);
 					theApplet.rect(i * ((width / s)) + ww / 2, getHeight(), ww, -PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
 				}
 			}

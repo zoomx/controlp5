@@ -205,10 +205,10 @@ public class ControlWindow implements MouseWheelListener {
 	}
 
 	public ControlWindow activateTab(String theTab) {
-		
+
 		for (int i = 1; i < _myTabs.size(); i++) {
 			if (((Tab) _myTabs.get(i)).getName().equals(theTab)) {
-				if(!((Tab) _myTabs.get(i)).isActive) {
+				if (!((Tab) _myTabs.get(i)).isActive) {
 					resetMouseOver();
 				}
 				activateTab((Tab) _myTabs.get(i));
@@ -234,7 +234,7 @@ public class ControlWindow implements MouseWheelListener {
 	protected ControlWindow activateTab(Tab theTab) {
 		for (int i = 1; i < _myTabs.size(); i++) {
 			if (_myTabs.get(i) == theTab) {
-				if(!((Tab) _myTabs.get(i)).isActive) {
+				if (!((Tab) _myTabs.get(i)).isActive) {
 					resetMouseOver();
 				}
 				((Tab) _myTabs.get(i)).setActive(true);
@@ -945,6 +945,7 @@ public class ControlWindow implements MouseWheelListener {
 	 */
 	public class Pointer {
 
+
 		public Pointer setX(int theX) {
 			mouseX = theX;
 			return this;
@@ -962,7 +963,16 @@ public class ControlWindow implements MouseWheelListener {
 		public int getX() {
 			return mouseX;
 		}
+		
+		public int getPreviousX() {
+			return pmouseX;
+		}
 
+		public int getPreviousY() {
+			return pmouseY;
+		}
+
+		
 		public Pointer set(int theX, int theY) {
 			setX(theX);
 			setY(theY);

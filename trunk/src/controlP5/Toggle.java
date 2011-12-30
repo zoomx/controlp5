@@ -71,6 +71,7 @@ public class Toggle extends Controller {
 			int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theValue;
+		_myCaptionLabel.align(LEFT,BOTTOM_OUTSIDE).setPadding(0, Label.paddingY);
 	}
 
 	/**
@@ -81,7 +82,7 @@ public class Toggle extends Controller {
 	public void draw(PApplet theApplet) {
 		theApplet.pushMatrix();
 		theApplet.translate(position.x, position.y);
-		_myDisplay.display(theApplet, this);
+		_myControllerView.display(theApplet, this);
 		theApplet.popMatrix();
 	}
 
@@ -218,16 +219,16 @@ public class Toggle extends Controller {
 		_myDisplayMode = theState;
 		switch (theState) {
 		case (DEFAULT):
-			_myDisplay = new ToggleView();
+			_myControllerView = new ToggleView();
 			break;
 		case (SPRITE):
-			_myDisplay = new ToggleSpriteView();
+			_myControllerView = new ToggleSpriteView();
 			break;
 		case (IMAGE):
-			_myDisplay = new ToggleImageView();
+			_myControllerView = new ToggleImageView();
 			break;
 		case (SWITCH):
-			_myDisplay = new ToggleSwitchView();
+			_myControllerView = new ToggleSwitchView();
 			break;
 		case (CUSTOM):
 		default:
@@ -245,7 +246,7 @@ public class Toggle extends Controller {
 			}
 			theApplet.rect(0, 0, width, height);
 			if (isLabelVisible) {
-				_myCaptionLabel.draw(theApplet, 0, height + 4);
+				_myCaptionLabel.draw(theApplet, 0, 0, theController);
 			}
 		}
 	}
@@ -291,7 +292,7 @@ public class Toggle extends Controller {
 				theApplet.rect((width % 2 == 0 ? 0 : 1) + width / 2, 0, width / 2, height);
 			}
 			if (isLabelVisible) {
-				_myCaptionLabel.draw(theApplet, 0, height + 4);
+				_myCaptionLabel.draw(theApplet, 0, 0, theController);
 			}
 		}
 	}

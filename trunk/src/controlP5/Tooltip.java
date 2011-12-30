@@ -7,8 +7,7 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * A tooltip can be registered for individual controllers and is activated on
- * rollover.
+ * A tooltip can be registered for individual controllers and is activated on rollover.
  * 
  * @example controllers/ControlP5tooltip
  * 
@@ -17,13 +16,13 @@ public class Tooltip {
 
 	private ControllerView _myDisplay;
 
-	private PVector position;
+	private PVector position = new PVector();
 
-	private PVector currentPosition;
+	private PVector currentPosition = new PVector();
 
-	private PVector previousPosition;
+	private PVector previousPosition = new PVector();
 
-	private PVector offset;
+	private PVector offset = new PVector();
 
 	private Controller _myController;
 
@@ -33,15 +32,13 @@ public class Tooltip {
 
 	private int _myMode = ControlP5.INACTIVE;
 
-	private int _myWidth = 100;
-
 	private int _myHeight = 20;
 
 	private int _myBackgroundColor = 0xffffffb4;
 
 	private int _myMaxAlpha = 255;
 
-	private int _myAlpha = _myMaxAlpha;
+	private int _myAlpha = 0;
 
 	private Map<Controller, String> map;
 
@@ -62,12 +59,9 @@ public class Tooltip {
 		previousPosition = new PVector();
 		offset = new PVector(0, 24, 0);
 		map = new HashMap<Controller, String>();
-		_myLabel = new Label(cp5,"");
-		_myLabel.setWidth(100);
-		_myLabel.setHeight(10);
+		_myLabel = new Label(cp5, "tooltip");
 		_myLabel.setColor(0xff000000);
-		_myLabel.setMultiline(true);
-		_myLabel.update();
+		_myLabel.setPadding(0, 0);
 		setView(new TooltipView());
 		setBorder(4);
 	}
@@ -115,20 +109,18 @@ public class Tooltip {
 			_myLabel.setHeight(_myLabel.getLineHeight() * n);
 		}
 		_myLabel.set(theText);
-		_myLabel.update();
-		_myWidth = _myLabel.getWidth();
-		_myHeight = _myLabel.getHeight() + 2;
-
+		_myHeight = _myLabel.getHeight()+2;
 	}
 
 	/**
 	 * @param theWindow
 	 */
 	void draw(ControlWindow theWindow) {
-
+//		System.out.println(previousPosition+"\t"+currentPosition+"\t"+position);
 		if (enabled) {
+			
 			if (_myMode >= ControlP5.WAIT) {
-
+				
 				previousPosition.set(currentPosition);
 				currentPosition.set(theWindow.mouseX, theWindow.mouseY, 0);
 
@@ -141,10 +133,11 @@ public class Tooltip {
 							}
 
 							if (System.nanoTime() > startTime + (_myDelayInMillis * 1000000)) {
+								
 								position.set(currentPosition);
 								_myAlignH = ControlP5.RIGHT;
-								if (position.x > (_myController.getControlWindow().papplet().width - (_myWidth + 20))) {
-									position.sub(new PVector(_myWidth, 0, 0));
+								if (position.x > (_myController.getControlWindow().papplet().width - (getWidth() + 20))) {
+									position.sub(new PVector(getWidth(), 0, 0));
 									_myAlignH = ControlP5.LEFT;
 								}
 								_myMode = ControlP5.FADEIN;
@@ -152,7 +145,6 @@ public class Tooltip {
 								_myAlpha = 0;
 							}
 							break;
-
 						case (ControlP5.FADEIN):
 							float t1 = System.nanoTime() - startTime;
 							_myAlpha = (int) PApplet.map(t1, 0, 200 * 1000000, 0, _myMaxAlpha);
@@ -177,7 +169,8 @@ public class Tooltip {
 
 						_myAlpha = PApplet.max(0, PApplet.min(_myAlpha, _myMaxAlpha));
 
-						if (_myMode > ControlP5.WAIT) {
+						if (_myMode >= ControlP5.WAIT) {
+							_myAlpha = (_myMode == ControlP5.WAIT) ? 0:_myAlpha;
 							theWindow.papplet().pushMatrix();
 							theWindow.papplet().translate(position.x, position.y);
 							theWindow.papplet().translate(offset.x, offset.y);
@@ -200,9 +193,8 @@ public class Tooltip {
 	}
 
 	/**
-	 * A tooltip is activated when entered by the mouse, after a given delay
-	 * time the Tooltip starts to fade in. Use setDelay(long) to adjust the
-	 * default delay time of 1000 millis.
+	 * A tooltip is activated when entered by the mouse, after a given delay time the Tooltip starts
+	 * to fade in. Use setDelay(long) to adjust the default delay time of 1000 millis.
 	 * 
 	 * @param theMillis
 	 * @return Tooltip
@@ -226,11 +218,11 @@ public class Tooltip {
 			_myMode = ControlP5.WAIT;
 		}
 	}
-	
+
 	protected void deactivate() {
 		deactivate(1);
 	}
-	
+
 	protected void deactivate(int theNum) {
 		if (theNum == 0) {
 			if (_myMode >= ControlP5.IDLE) {
@@ -244,8 +236,8 @@ public class Tooltip {
 	}
 
 	/**
-	 * A custom view can be set for a Tooltip. The default view class can
-	 * be found at the bottom of the Tooltip source.
+	 * A custom view can be set for a Tooltip. The default view class can be found at the bottom of
+	 * the Tooltip source.
 	 * 
 	 * @see controlP5.ControllerView
 	 * @param theDisplay
@@ -255,12 +247,10 @@ public class Tooltip {
 		_myDisplay = theDisplay;
 		return this;
 	}
-	
 
 	/**
-	 * registers a controller with the Tooltip, when activating the tooltip for
-	 * a particular controller, the registered text (second parameter) will be
-	 * displayed.
+	 * registers a controller with the Tooltip, when activating the tooltip for a particular
+	 * controller, the registered text (second parameter) will be displayed.
 	 * 
 	 * @param theController
 	 * @param theText
@@ -303,17 +293,21 @@ public class Tooltip {
 	}
 
 	/**
-	 * with the default display, the width of the tooltip is set automatically,
-	 * therefore setWidth() does not have any effect without changing the
-	 * default display to a custom ControllerView.
+	 * with the default display, the width of the tooltip is set automatically, therefore setWidth()
+	 * does not have any effect without changing the default display to a custom ControllerView.
 	 * 
 	 * @see controlP5.ControllerView
 	 * @see controlP5.Tooltip#setDisplay(ControllerView)
 	 * @return Tooltip
 	 */
 	public Tooltip setWidth(int theWidth) {
-		_myWidth = theWidth;
+		// TODO
+		// _myWidth = theWidth;
 		return this;
+	}
+
+	public int getWidth() {
+		return _myLabel.getWidth();
 	}
 
 	/**
@@ -327,8 +321,8 @@ public class Tooltip {
 	}
 
 	/**
-	 * adds an offset to the position of the controller relative to the mouse
-	 * cursor's position. default offset is (10,20)
+	 * adds an offset to the position of the controller relative to the mouse cursor's position.
+	 * default offset is (10,20)
 	 * 
 	 * @param theX
 	 * @param theY
@@ -341,9 +335,9 @@ public class Tooltip {
 	}
 
 	/**
-	 * disables the Tooltip on a global level, when disabled, tooltip will not
-	 * respond to any registered controller. to disable a tooltip for
-	 * aparticular controller, used unregister(Controller)
+	 * disables the Tooltip on a global level, when disabled, tooltip will not respond to any
+	 * registered controller. to disable a tooltip for aparticular controller, used
+	 * unregister(Controller)
 	 * 
 	 * @see controlP5.Tooltip#unregister(Controller)
 	 * @return Tooltip
@@ -354,8 +348,7 @@ public class Tooltip {
 	}
 
 	/**
-	 * in case the tooltip is disabled, use enable() to turn the tooltip back
-	 * on.
+	 * in case the tooltip is disabled, use enable() to turn the tooltip back on.
 	 * 
 	 * @return Tooltip
 	 */
@@ -394,8 +387,7 @@ public class Tooltip {
 	}
 
 	/**
-	 * sets the background color of the tooltip, the default color is a dark
-	 * grey
+	 * sets the background color of the tooltip, the default color is a dark grey
 	 * 
 	 * @param theColor
 	 * @return Tooltip
@@ -420,17 +412,17 @@ public class Tooltip {
 
 		public void display(PApplet theApplet, Controller theController) {
 			theApplet.fill(_myBackgroundColor, _myAlpha);
-			theApplet.rect(0, 0, _myWidth + _myBorder * 2, _myHeight + _myBorder);
+			theApplet.rect(0, 0, getWidth() + _myBorder * 2, _myHeight + _myBorder);
 			theApplet.pushMatrix();
 			if (_myAlignH == ControlP5.RIGHT) {
 				theApplet.translate(6, 0);
 			} else {
-				theApplet.translate(_myWidth - 6, 0);
+				theApplet.translate(getWidth() - 6, 0);
 			}
 			theApplet.triangle(0, 0, 4, -4, 8, 0);
 			theApplet.popMatrix();
 			theApplet.tint(255, PApplet.map(_myAlpha, 0, _myMaxAlpha, 0, 255));
-			_myLabel.draw(theApplet);
+			_myLabel.draw(theApplet, 0, 0, theController);
 			theApplet.tint(255);
 		}
 	}

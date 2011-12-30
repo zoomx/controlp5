@@ -80,7 +80,6 @@ public class Textlabel extends Controller {
 		}
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
-		_myValueLabel.update();
 	}
 
 	public Textlabel(ControlP5 theControlP5, final String theValue, final int theX, final int theY, final int theW, final int theH, final int theColor, final int theFont) {
@@ -91,7 +90,6 @@ public class Textlabel extends Controller {
 		_myValueLabel.setFont(theFont);
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
-		_myValueLabel.update();
 	}
 
 	/**
@@ -116,7 +114,6 @@ public class Textlabel extends Controller {
 
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
-		_myValueLabel.update();
 	}
 
 	/**
@@ -138,7 +135,6 @@ public class Textlabel extends Controller {
 		}
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
-		_myValueLabel.update();
 	}
 
 	protected void setup() {
@@ -148,12 +144,10 @@ public class Textlabel extends Controller {
 		}
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
-		_myValueLabel.update();
 	}
 
 	public Controller setWidth(int theValue) {
 		_myValueLabel.setWidth(theValue);
-		_myValueLabel.update();
 		return this;
 	}
 
@@ -171,7 +165,7 @@ public class Textlabel extends Controller {
 		if (!disabled) {
 			theApplet.pushMatrix();
 			theApplet.translate(position.x, position.y);
-			_myValueLabel.draw(theApplet, 0, 0);
+			_myValueLabel.draw(theApplet, 0, 0, this);
 			theApplet.popMatrix();
 		}
 	}
@@ -179,7 +173,7 @@ public class Textlabel extends Controller {
 	public void draw() {
 		draw(cp5.papplet);
 	}
-	
+
 	public void draw(int theX, int theY) {
 		cp5.papplet.pushMatrix();
 		cp5.papplet.translate(theX, theY);
@@ -254,7 +248,7 @@ public class Textlabel extends Controller {
 		return this;
 	}
 
-	public Textlabel setControlFont(ControlFont theControlFont) {
+	public Textlabel setFont(ControlFont theControlFont) {
 		_myValueLabel.setFont(theControlFont);
 		return this;
 	}
@@ -302,5 +296,14 @@ public class Textlabel extends Controller {
 		super("", theX, theY);
 		disabled = true;
 		printConstructorError(theValue);
+	}
+
+	/**
+	 * @deprecated
+	 * @exclude
+	 */
+	@Deprecated
+	public Textlabel setControlFont(ControlFont theControlFont) {
+		return setFont(theControlFont);
 	}
 }

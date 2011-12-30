@@ -86,7 +86,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.6.12";// "##version##";
+	public static final String VERSION = "0.6.13";// "##version##";
 
 	/**
 	 * @exclude
@@ -178,9 +178,13 @@ public class ControlP5 extends ControlP5Base {
 		isApplet = papplet.online;
 		_myTooltip = new Tooltip(this);
 		super.init(this);
-		welcome();
+		if (welcome++ < 1) {
+			welcome();
+		}
 		addControllersFor("", papplet);
 	}
+
+	static int welcome = 0;
 
 	private void welcome() {
 		System.out.println("ControlP5 " + VERSION + " " + "infos, comments, questions at http://www.sojamo.de/libraries/controlP5");
@@ -375,7 +379,7 @@ public class ControlP5 extends ControlP5Base {
 			address = (theController.getName().startsWith("/")) ? "" : "/";
 			address += theController.getName();
 		} else {
-			address = ((theIndex.isEmpty() || theIndex.startsWith("/")) ? "" : "/");
+			address = (((theIndex.length() == 0) || theIndex.startsWith("/")) ? "" : "/");
 			address += theIndex;
 			address += (theController.getName().startsWith("/") ? "" : "/");
 			address += theController.getName();
@@ -560,12 +564,12 @@ public class ControlP5 extends ControlP5Base {
 	public <C> C get(Class<C> theClass, String theName) {
 		for (ControllerInterface ci : _myControllerMap.values()) {
 			if (ci.getClass() == theClass || ci.getClass().getSuperclass() == theClass) {
-				return (C)get(theName);
+				return (C) get(theName);
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @exclude
 	 * @see controlP5.ControlP5#getAll(Class)
@@ -985,11 +989,12 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public boolean setFont(int theBitFontIndex) {
-		System.out.println("changing the BitFont is currently only supported when assigned directly after an instance of controlP5 has been created.");
 		if (!BitFontRenderer.fonts.containsKey(theBitFontIndex)) {
 			return false;
 		}
 		bitFont = theBitFontIndex;
+		controlFont = new ControlFont(bitFont);
+		updateFont(controlFont);
 		return true;
 	}
 

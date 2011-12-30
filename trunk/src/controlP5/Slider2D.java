@@ -32,6 +32,8 @@ public class Slider2D extends Controller {
 		_myMinY = 0;
 		_myMaxX = theWidth;
 		_myMaxY = theHeight;
+		getCaptionLabel().setPadding(0,Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
+		getValueLabel().setPadding(0,Label.paddingY).align(RIGHT, BOTTOM_OUTSIDE);
 	}
 
 	/*
@@ -193,7 +195,7 @@ public class Slider2D extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new Slider2DView();
+			_myControllerView = new Slider2DView();
 			break;
 		case (IMAGE):
 		case (SPRITE):
@@ -230,8 +232,8 @@ public class Slider2D extends Controller {
 			theApplet.fill(theController.getColor().getActive());
 			theApplet.rect(getCursorX(), getCursorY(), getCursorWidth(), getCursorHeight());
 
-			getCaptionLabel().draw(theApplet, 0, getHeight() + 4);
-			getValueLabel().draw(theApplet, getCaptionLabel().getWidth() + 4, getHeight() + 4);
+			getCaptionLabel().draw(theApplet, 0, 0, theController);
+			getValueLabel().draw(theApplet, 0,0, theController);
 		}
 
 	}

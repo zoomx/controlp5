@@ -55,10 +55,11 @@ public class MultiListButton extends Button implements MultiListInterface {
 	 * @param theRoot MultiList
 	 */
 	protected MultiListButton(ControlP5 theControlP5, String theName, float theValue, int theX, int theY, int theWidth, int theHeight, MultiListInterface theParent, MultiList theRoot) {
-		super(theControlP5, (ControllerGroup) theRoot.parent(), theName, theValue, theX, theY, theWidth, theHeight);
+		super(theControlP5, (ControllerGroup) theRoot.getParent(), theName, theValue, theX, theY, theWidth, theHeight);
 		parent = theParent;
 		root = theRoot;
 		updateRect(position.x, position.y, width, height);
+		_myCaptionLabel.align(LEFT,CENTER);
 	}
 	
 	public MultiListButton toUpperCase(boolean theValue) {

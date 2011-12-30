@@ -49,15 +49,15 @@ public interface ControlP5Constants {
 
 	public final static int EVENT = 2;
 
-	public final static int INTEGER = 0;
+	public final static int INTEGER = 1;
 
-	public final static int FLOAT = 1;
+	public final static int FLOAT = 2;
 
-	public final static int BOOLEAN = 2;
+	public final static int BOOLEAN = 3;
 
-	public final static int STRING = 3;
+	public final static int STRING = 4;
 
-	public final static int ARRAY = 4;
+	public final static int ARRAY = 5;
 
 	public final static Class<?>[] acceptClassList = { int.class, float.class, boolean.class, String.class };
 
@@ -68,7 +68,7 @@ public interface ControlP5Constants {
 	public final static int DOWN = KeyEvent.VK_DOWN;
 
 	public final static int LEFT = KeyEvent.VK_LEFT;
-
+	
 	public final static int RIGHT = KeyEvent.VK_RIGHT;
 
 	public final static int SHIFT = KeyEvent.VK_SHIFT;
@@ -84,6 +84,8 @@ public interface ControlP5Constants {
 	public final static int ALT = KeyEvent.VK_ALT;
 
 	public final static int CONTROL = KeyEvent.VK_CONTROL;
+	
+	public final static int COMMANDKEY = KeyEvent.VK_META;
 
 	public final static int TAB = KeyEvent.VK_TAB;
 
@@ -114,6 +116,8 @@ public interface ControlP5Constants {
 	public final static int BOTTOM = 2;
 
 	public final static int CENTER = 3;
+	
+	public final static int BASELINE = 4;
 
 	public static final int HORIZONTAL = 0;
 
@@ -150,14 +154,16 @@ public interface ControlP5Constants {
 	public static final int INACTIVE = 0;
 
 	public static final int WAIT = 1;
+	
+	public static final int TRANSITION_WAIT_FADEIN = 2;
 
-	public static final int FADEIN = 2;
+	public static final int FADEIN = 3;
 
-	public static final int IDLE = 3;
+	public static final int IDLE = 4;
 
-	public static final int FADEOUT = 4;
+	public static final int FADEOUT = 5;
 
-	public static final int DONE = 5;
+	public static final int DONE = 6;
 
 	public static final int SINGLE_COLUMN = 0;
 
@@ -176,5 +182,19 @@ public interface ControlP5Constants {
 	public static final int ACTION_RELEASEDOUTSIDE = 16;
 
 	public static final int ACTION_BROADCAST = 32;
+	
+	
+	
+	public static final int LEFT_OUTSIDE = 10;
+	
+	public static final int RIGHT_OUTSIDE = 11;
+	
+	public static final int TOP_OUTSIDE = 12;
+	
+	public static final int BOTTOM_OUTSIDE = 13;
 
+	public static final int CAPTIONLABEL = 0;
+	
+	public static final int VALUELABEL = 1;
+	
 }

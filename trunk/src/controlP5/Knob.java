@@ -29,9 +29,8 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * A knob is a circular slider which can be used with a limited and unlimited
- * range. Knobs come in 3 designs LINE, ARC and ELIPSE and can be controller
- * with both the mouse and the mouse wheel. 
+ * A knob is a circular slider which can be used with a limited and unlimited range. Knobs come in 3
+ * designs LINE, ARC and ELIPSE and can be controller with both the mouse and the mouse wheel.
  * 
  * @example controllers/ControlP5knob
  */
@@ -92,12 +91,11 @@ public class Knob extends Controller {
 		_myDiameter = theWidth;
 		_myRadius = _myDiameter / 2;
 		_myUnit = (_myMax - _myMin) / ControlP5Constants.TWO_PI;
-
 		startAngle = HALF_PI + PI * 0.25f;
 		range = PI + HALF_PI;
 		myAngle = startAngle;
 		isConstrained = true;
-
+		getCaptionLabel().align(CENTER, BOTTOM_OUTSIDE);
 	}
 
 	public Knob setRadius(float theValue) {
@@ -112,8 +110,8 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * The start angle is a value between 0 and TWO_PI. By default the start
-	 * angle is set to HALF_PI + PI * 0.25f
+	 * The start angle is a value between 0 and TWO_PI. By default the start angle is set to HALF_PI
+	 * + PI * 0.25f
 	 */
 	public Knob setStartAngle(float theAngle) {
 		startAngle = theAngle;
@@ -129,8 +127,7 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * set the range in between which the know operates. By default the range is
-	 * PI + HALF_PI
+	 * set the range in between which the know operates. By default the range is PI + HALF_PI
 	 */
 	public Knob setRange(float theRange) {
 		range = theRange;
@@ -156,8 +153,8 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * Sets the drag direction, when controlling a knob, parameter is either
-	 * Controller.HORIZONTAL or Controller.VERTICAL.
+	 * Sets the drag direction, when controlling a knob, parameter is either Controller.HORIZONTAL
+	 * or Controller.VERTICAL.
 	 * 
 	 * @param theValue must be Controller.HORIZONTAL or Controller.VERTICAL
 	 * @return Knob
@@ -172,18 +169,17 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * Gets the drag direction which is either Controller.HORIZONTAL or
-	 * Controller.VERTICAL.
+	 * Gets the drag direction which is either Controller.HORIZONTAL or Controller.VERTICAL.
 	 * 
-	 * @return int returns  Controller.HORIZONTAL or Controller.VERTICAL
+	 * @return int returns Controller.HORIZONTAL or Controller.VERTICAL
 	 */
 	public int getDragDirection() {
 		return _myDragDirection;
 	}
 
 	/**
-	 * resolution is a sensitivity value when dragging a knob. the higher the
-	 * value, the more sensitive the dragging.
+	 * resolution is a sensitivity value when dragging a knob. the higher the value, the more
+	 * sensitive the dragging.
 	 */
 	public Knob setResolution(float theValue) {
 		resolution = theValue;
@@ -244,7 +240,6 @@ public class Knob extends Controller {
 		return isConstrained;
 	}
 
-	
 	/**
 	 * @exclude
 	 */
@@ -271,10 +266,9 @@ public class Knob extends Controller {
 	protected void onLeave() {
 		isActive = false;
 	}
-	
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@Override
 	@ControlP5.Invisible
@@ -298,8 +292,7 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@Override
 	@ControlP5.Invisible
@@ -308,15 +301,14 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@Override
 	@ControlP5.Invisible
 	public void mouseReleasedOutside() {
 		mouseReleased();
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -325,7 +317,7 @@ public class Knob extends Controller {
 		_myMin = theValue;
 		return this;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -385,9 +377,9 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * Sets the sensitivity for the scroll behavior when using the mouse wheel
-	 * or the scroll function of a multi-touch track pad. The smaller the value
-	 * (closer to 0) the higher the sensitivity.
+	 * Sets the sensitivity for the scroll behavior when using the mouse wheel or the scroll
+	 * function of a multi-touch track pad. The smaller the value (closer to 0) the higher the
+	 * sensitivity.
 	 * 
 	 * @param theValue
 	 * @return Knob
@@ -406,8 +398,8 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * Changes the value of the knob when hovering and using the mouse wheel or
-	 * the scroll function of a multi-touch track pad.
+	 * Changes the value of the knob when hovering and using the mouse wheel or the scroll function
+	 * of a multi-touch track pad.
 	 */
 	public Knob scrolled(int theRotationValue) {
 		float f = getValue();
@@ -418,8 +410,7 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@Override
 	public Knob update() {
@@ -428,24 +419,23 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * set the display style of a know. takes parameters Knob.LINE, Knob.ELLIPSE
-	 * or Knob.ARC. default style is Knob.LINE
+	 * set the display style of a knob. takes parameters Knob.LINE, Knob.ELLIPSE or Knob.ARC.
+	 * default style is Knob.LINE
 	 * 
 	 * @param theStyle use Knob.LINE, Knob.ELLIPSE or Knob.ARC
 	 * @return Knob
 	 */
-	public Knob setDisplayStyle(int theStyle) {
+	public Knob setViewStyle(int theStyle) {
 		displayStyle = theStyle;
 		return this;
 	}
 
-	public int getDisplayStyle() {
+	public int getViewStyle() {
 		return displayStyle;
 	}
 
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@Override
 	@ControlP5.Invisible
@@ -453,11 +443,11 @@ public class Knob extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new KnobView();
+			_myControllerView = new KnobView();
 			break;
 		case (SPRITE):
 		case (IMAGE):
-			_myDisplay = new KnobView();
+			_myControllerView = new KnobView();
 			break;
 		case (CUSTOM):
 		default:
@@ -517,7 +507,7 @@ public class Knob extends Controller {
 			}
 			theApplet.noStroke();
 			theApplet.popMatrix();
-			getCaptionLabel().draw(theApplet, -getCaptionLabel().getWidth() / 2, getHeight() / 2 + 5);
+			getCaptionLabel().draw(theApplet, -getWidth()/2, -getHeight()/2, theController);
 		}
 	}
 
@@ -539,6 +529,25 @@ public class Knob extends Controller {
 		return getValue();
 	}
 
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public Knob setDisplayStyle(int theStyle) {
+		displayStyle = theStyle;
+		return this;
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public int getDisplayStyle() {
+		return displayStyle;
+	}
+
 }
 /*
  * 
@@ -548,14 +557,12 @@ public class Knob extends Controller {
  * 
  * TODO only start-end marks if isLimited and tickmarks are off.
  * 
- * TODO arc: add setter for distance to center + distance to edge currently
- * percental.
+ * TODO arc: add setter for distance to center + distance to edge currently percental.
  * 
- * TODO enable/disable drag and click control (for endless, click should be
- * disabled).
+ * TODO enable/disable drag and click control (for endless, click should be disabled).
  * 
- * TODO dragging: add another option to control the knob. currently only
- * linear dragging is implemented, add circular dragging (as before) as well
+ * TODO dragging: add another option to control the knob. currently only linear dragging is
+ * implemented, add circular dragging (as before) as well
  */
 
 /*

@@ -45,6 +45,7 @@ public class Bang extends Controller {
 
 	protected Bang(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
+		_myCaptionLabel.setPadding(0,Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
 		_myValue = 1;
 	}
 
@@ -140,13 +141,13 @@ public class Bang extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new BangView();
+			_myControllerView = new BangView();
 			break;
 		case (SPRITE):
-			_myDisplay = new BangSpriteView();
+			_myControllerView = new BangSpriteView();
 			break;
 		case (IMAGE):
-			_myDisplay = new BangImageView();
+			_myControllerView = new BangImageView();
 			break;
 		case (CUSTOM):
 		default:
@@ -169,7 +170,7 @@ public class Bang extends Controller {
 			}
 			theApplet.rect(0, 0, width, height);
 			if (isLabelVisible) {
-				_myCaptionLabel.draw(theApplet, 0, height + 4);
+				_myCaptionLabel.draw(theApplet, 0, 0, theController);
 			}
 		}
 	}
