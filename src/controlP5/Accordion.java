@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class Accordion extends ControlGroup {
 
-	private List<ControlGroup> items;
+	private final List<ControlGroup> items = new ArrayList<ControlGroup>();
 
 	private int spacing = 1;
 
@@ -51,7 +51,6 @@ public class Accordion extends ControlGroup {
 	Accordion(ControlP5 theControlP5, Tab theTab, String theName, int theX, int theY, int theW) {
 		super(theControlP5, theTab, theName, theX, theY, theW, 9);
 		hideBar();
-		items = new ArrayList<ControlGroup>();
 	}
 
 	/**
@@ -147,7 +146,6 @@ public class Accordion extends ControlGroup {
 		return this;
 	}
 
-	
 	public int getMinItemHeight() {
 		return minHeight;
 	}
@@ -175,8 +173,7 @@ public class Accordion extends ControlGroup {
 	}
 
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@Override
 	@ControlP5.Invisible

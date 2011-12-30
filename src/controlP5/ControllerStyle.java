@@ -146,5 +146,5 @@ public class ControllerStyle implements Serializable {
 		paddingLeft += theLeft;
 		return this;
 	}
-
+	
 }

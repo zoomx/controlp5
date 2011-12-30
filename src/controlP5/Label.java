@@ -25,14 +25,11 @@ package controlP5;
  *
  */
 
-import java.util.ArrayList;
-
+import controlP5.ControlFont.BitFontLabel;
 import processing.core.PApplet;
-import processing.core.PImage;
-import processing.core.PVector;
 
 /**
- * A text custom label using controlP5's BitFonts or PFont based ControlFonts.
+ * A custom label using controlP5's BitFonts or PFont based ControlFonts.
  * 
  * 
  * @see controlP5.ControlFont
@@ -41,138 +38,141 @@ import processing.core.PVector;
  */
 public class Label implements CDrawable {
 
-	private String _myText;
-
-	private String _myPrevText;
-
-	private int _myWidth;
-
-	private int _myHeight;
-
-	private boolean isFixedSize;
-
-	private int _myColor = 0xffffffff;
-
-	private int _myCursorPosition = -1;
-
-	private int _myOffsetX;
-
-	private int _myOffsetY;
-
-	private float _myOffsetYratio;
-
-	private FontLabel _myFont;
-
-	private boolean isToUpperCase = true;
-
-	private int _myLineHeight;
-
-	private int _myFontSize;
-
 	private int _myLetterSpacing = 0;
 
 	private boolean isMultiline;
 
-	private ControllerStyle _myControllerStyle;
+	private boolean isFixedSize;
+
+	private ControllerStyle _myControllerStyle = new ControllerStyle();
 
 	private boolean isVisible = true;
 
-	public PVector position = new PVector(0, 0, 0);
-
-	private int textHeight; // actual height of text, necessary for textarea
-
-	private boolean forceupdate;
+	private int _myColor = 0xffffffff;
 
 	private boolean isColorBackground;
 
+	private boolean isToUpperCase = true;
+
+	private boolean changed;
+
 	private int _myColorBackground = 0xffffffff;
 
-	private ControlP5 cp5;
+	private int _myHeight = -1;
 
-	public Label(ControlP5 theControlP5, String theText) {
-		init(theControlP5, theText, 0, 0, _myColor);
+	private int _myWidth = -1;
+
+	private String _myText = "";
+
+	private ControlFont _myFontLabel;
+
+	private int _myLineHeight = 0;
+
+	private int alignX = ControlP5.LEFT;
+
+	private int alignY = ControlP5.LEFT;
+
+	public static int paddingX = 4;
+
+	public static int paddingY = 4;
+	
+	public int _myPaddingX = paddingX;
+	
+	public int _myPaddingY = paddingY;
+
+	private Labeltype _myLabeltype;
+
+	private int _myTextHeight = 1;
+
+	private float offsetYratio = 0;
+
+	private Label(Label theLabel) {
+		_myText = theLabel.getText();
+		isToUpperCase = theLabel.isToUpperCase();
+		_myLetterSpacing = theLabel.getLetterSpacing();
+		_myLineHeight = theLabel.getLineHeight();
+		_myFontLabel = theLabel.getFont();
+		_myLabeltype = theLabel.getLabeltype();
 	}
 
-	public Label(ControlP5 theControlP5, final String theText, final int theWidth, final int theHeight, final int theColor) {
-		init(theControlP5, theText, theWidth, theHeight, theColor);
+	public Label(ControlP5 theControlP5, String theValue) {
+		init(theControlP5, theValue, 0, 0, _myColor);
 	}
 
-	private void init(ControlP5 theControlP5, String theText, int theWidth, int theHeight, int theColor) {
-		cp5 = theControlP5;
+	public Label(ControlP5 theControlP5, String theValue, int theWidth, int theHeight, int theColor) {
+		init(theControlP5, theValue, theWidth, theHeight, theColor);
+	}
+
+	private void init(ControlP5 theControlP5, String theValue, int theWidth, int theHeight, int theColor) {
 		_myWidth = theWidth;
 		_myHeight = theHeight;
-		_myText = theText;
+		_myText = theValue;
 		_myColor = theColor;
-		if (cp5.isControlFont && cp5.getFont() != null) {
-			setFont(cp5.getFont());
+		setLabeltype(new SinglelineLabel());
+		if (theControlP5.isControlFont && theControlP5.getFont() != null) {
+			setFont(theControlP5.getFont());
 		} else {
-			int font = ControlP5.bitFont;
-			setFont(font);
-			setLineHeight(BitFontRenderer.getHeight(font));
-			int[] dim = BitFontRenderer.getDimension(theText, (BitFontLabel) _myFont);
+			setFont(ControlP5.bitFont);
+			setLineHeight(BitFontRenderer.getHeight(ControlP5.bitFont));
+			int[] dim = BitFontRenderer.getDimension(this, (BitFontLabel) _myFontLabel.get(), getTextFormatted());
 			setWidth((theWidth != 0) ? theWidth : dim[0]);
 			setHeight((theHeight != 0) ? theHeight : dim[1]);
-			((BitFontLabel) _myFont).init();
-			setFixedSize(true);
-
 		}
-		set(theText);
+		setLabeltype(new SinglelineLabel());
+		set(_myText);
 		_myControllerStyle = new ControllerStyle();
 	}
 
-	public void update() {
-		set(_myText);
-	}
-
-	public Label setFont(ControlFont theFont) {
-		_myFont = new ControlFontLabel(theFont);
-		_myLineHeight = theFont.getLineHeight();
-		_myFontSize = theFont.getFontSize();
-		_myFont.update();
+	Label setLabeltype(Labeltype theType) {
+		_myLabeltype = theType;
 		return this;
 	}
 
-	public Label setFont(int theBitFontIndex) {
-		if (!BitFontRenderer.fonts.containsKey(theBitFontIndex)) {
-			return this;
+	Labeltype getLabeltype() {
+		return _myLabeltype;
+	}
+
+	public Label align(int[] a) {
+		alignX = a[0];
+		alignY = a[1];
+		return this;
+	}
+
+	public Label align(int theX, int theY) {
+		alignX = theX;
+		alignY = theY;
+		return this;
+	}
+	
+	public int[] getAlign() {
+		return new int[] {alignX,alignY};
+	}
+
+	public Label setPadding(int thePaddingX, int thePaddingY) {
+		_myPaddingX = thePaddingX;
+		_myPaddingY = thePaddingY;
+		return this;
+	}
+	
+	public void draw(PApplet theApplet, int theX, int theY, ControllerInterface theController) {
+		if (isVisible) {
+			getLabeltype().draw(this, theApplet, theX, theY, theController);
 		}
-		_myFont = new BitFontLabel(theBitFontIndex);
-		forceupdate = true;
-		_myFont.update();
-		update();
-		return this;
 	}
 
-	public Label setFontSize(int theSize) {
-		_myFontSize = theSize;
-		return this;
+	@Override
+	public void draw(PApplet theApplet) {
+		if (isVisible) {
+			_myFontLabel.adjust(theApplet, this);
+			draw(theApplet, 0, 0);
+		}
 	}
 
-	public int getFontSize() {
-		return _myFontSize;
-	}
-
-	public FontLabel getFont() {
-		return _myFont;
-	}
-
-	protected void updateFont(ControlFont theControlFont) {
-		setFont(theControlFont);
-	}
-
-	/**
-	 * draw a textlabel at a given location xy.
-	 * 
-	 * @param theApplet PApplet
-	 * @param theX int
-	 * @param theY int
-	 */
-	public void draw(final PApplet theApplet, final int theX, final int theY) {
+	private void draw(PApplet theApplet, int theX, int theY) {
 		if (isVisible) {
 			theApplet.pushMatrix();
 			theApplet.translate(_myControllerStyle.marginLeft, _myControllerStyle.marginTop);
 			theApplet.translate(theX, theY);
-
 			if (isColorBackground) {
 				int a = _myColorBackground >> 24 & 0xff;
 				int r = _myColorBackground >> 16 & 0xff;
@@ -183,90 +183,177 @@ public class Label implements CDrawable {
 				if (getStyle().backgroundWidth > -1) {
 					ww += _myControllerStyle.backgroundWidth;
 				} else {
-					ww += _myFont.getWidth();
+					ww += _myFontLabel.getWidth();
 				}
 				float hh = getStyle().paddingBottom + getStyle().paddingTop;
 				if (getStyle().backgroundHeight > -1) {
 					hh += getStyle().backgroundHeight;
 				} else {
-					hh += _myFont.getHeight();
+					hh += _myFontLabel.getHeight();
 				}
 				theApplet.fill(r, g, b, a);
 				theApplet.rect(0, 0, ww, hh);
 			}
-			_myFont.draw(theApplet);
+			theApplet.translate(_myControllerStyle.paddingLeft, _myControllerStyle.paddingTop);
+			_myFontLabel.draw(theApplet, this);
 			theApplet.popMatrix();
 		}
 	}
 
-	/**
-	 * draw a textlabel.
-	 */
-	@Override
-	public void draw(PApplet theApplet) {
-		draw(theApplet, (int) position.x, (int) position.y);
+	public Label setVisible(boolean theValue) {
+		isVisible = theValue;
+		return this;
 	}
 
-	protected void draw(final PApplet theApplet, final int theX, final int theY, final int theColor) {
-		_myColor = theColor;
-		draw(theApplet, theX, theY);
+	public Label updateFont(ControlFont theFont) {
+		return setFont(theFont);
+	}
+
+	public Label set(String theValue) {
+		return setText(theValue);
+	}
+
+	public Label setText(String theValue) {
+		_myText = theValue;
+		setChanged(true);
+		return this;
+	}
+
+	public Label setFixedSize(boolean theValue) {
+		isFixedSize = theValue;
+		return this;
+	}
+
+	public boolean isFixedSize() {
+		return isMultiline ? false : isFixedSize;
 	}
 
 	public String getText() {
 		return _myText;
 	}
 
-	public int getLineHeight() {
-		return _myLineHeight;
+	public String getTextFormatted() {
+		return getLabeltype().getTextFormatted();
 	}
 
-	public Label setLineHeight(int theLineHeight) {
-		_myLineHeight = theLineHeight;
-		forceupdate = true;
-		_myFont.update();
+	public ControllerStyle getStyle() {
+		return _myControllerStyle;
+	}
+
+	public Label setWidth(int theWidth) {
+		_myWidth = theWidth;
+		setChanged(true);
+		return this;
+	}
+
+	public Label setHeight(int theHeight) {
+		_myHeight = theHeight;
+		setChanged(true);
 		return this;
 	}
 
 	public int getWidth() {
-		return _myWidth;
+		return _myLabeltype.getWidth();
 	}
 
 	public int getHeight() {
-		return _myHeight;
+		return _myLabeltype.getHeight();
 	}
 
-	public Label setWidth(final int theWidth) {
-		_myWidth = theWidth;
-		forceupdate = true;
-		_myFont.update();
+	public int getOverflow() {
+		return getLabeltype().getOverflow();
+	}
+
+	public Label setMultiline(boolean theValue) {
+		isMultiline = theValue;
+		_myLabeltype = (isMultiline) ? new MultilineLabel() : new SinglelineLabel();
 		return this;
 	}
 
-	public Label setHeight(final int theHeight) {
-		_myHeight = theHeight;
-		forceupdate = true;
-		_myFont.update();
+	public Label toUpperCase(boolean theValue) {
+		isToUpperCase = theValue;
+		setChanged(true);
+		return this;
+	}
+
+	public ControlFont getFont() {
+		return _myFontLabel;
+	}
+
+	public Label setFont(int theBitFontIndex) {
+		setFont(new ControlFont(theBitFontIndex));
+		return this;
+	}
+
+	public Label setFont(ControlFont theFont) {
+		if (theFont.get() instanceof ControlFont.BitFontLabel) {
+			setLineHeight(BitFontRenderer.getHeight((ControlFont.BitFontLabel) theFont.get()));
+			_myFontLabel = new ControlFont(((ControlFont.BitFontLabel) theFont.get()).getFontIndex());
+		} else {
+			setLineHeight(((ControlFont.PFontLabel) theFont.get()).getFont().getSize());
+			_myFontLabel = new ControlFont(((ControlFont.PFontLabel) theFont.get()).getFont());
+		}
+		_myFontLabel.init(this);
+		setChanged(true);
+		return this;
+	}
+
+	protected boolean isChanged() {
+		return changed;
+	}
+
+	protected Label setChanged(boolean theValue) {
+		changed = theValue;
+		return this;
+	}
+
+	Label setTextHeight(int theHeight) {
+		_myTextHeight = theHeight;
 		return this;
 	}
 
 	public int getTextHeight() {
-		return textHeight;
+		return _myFontLabel.get().getTextHeight();
 	}
 
-	public int getColor() {
-		return _myColor;
+	public int getLineHeight() {
+		return _myLineHeight;
+	}
+
+	public Label setOffsetY(int theValue) {
+		return this;
+	}
+
+	public Label setOffsetYratio(float theValue) {
+		offsetYratio = theValue;
+		setChanged(true);
+		return this;
+	}
+
+	public float getOffsetYratio() {
+		return offsetYratio;
+	}
+
+	public Label setLineHeight(int theValue) {
+		_myLineHeight = theValue;
+		setChanged(true);
+		return this;
+	}
+
+	public Label setColor(int theValue, boolean theFlag) {
+		setColor(theValue);
+		setFixedSize(theFlag);
+		return this;
 	}
 
 	public Label setColor(int theColor) {
 		_myColor = theColor;
-		update();
+		setChanged(true);
 		return this;
 	}
 
-	public Label setColor(int theColor, boolean theFixedSizeFlag) {
-		setFixedSize(theFixedSizeFlag);
-		setColor(theColor);
-		return this;
+	public int getColor() {
+		return _myColor;
 	}
 
 	public Label setColorBackground(int theColor) {
@@ -285,422 +372,161 @@ public class Label implements CDrawable {
 		return this;
 	}
 
-	public Label setMultiline(boolean theFlag) {
-		isMultiline = theFlag;
-		return this;
+	public int getLetterSpacing() {
+		return _myLetterSpacing;
 	}
 
 	public Label setLetterSpacing(int theValue) {
 		_myLetterSpacing = theValue;
-		set(_myText);
+		setChanged(true);
 		return this;
 	}
 
-	/**
-	 * set the text of the label. when setting the text, the fixedSize flag will be temporarily
-	 * overwritten and set to false. after the text has been set, the fixedSize flag is set back to
-	 * its previous value. use set(String, true) to set text for a fixed size area.
-	 * 
-	 * @param theText
-	 */
-	public Label set(final String theText) {
-		boolean myFixedSize = isFixedSize();
-		setFixedSize(false);
-		set(theText, _myColor, _myCursorPosition, 0);
-		setFixedSize(myFixedSize);
-		return this;
-	}
-
-	public Label setText(final String theText) {
-		return set(theText);
-	}
-
-	public Label set(final String theText, boolean theFlag) {
-		boolean myFixedSize = isFixedSize();
-		setFixedSize(theFlag);
-		set(theText, _myColor, _myCursorPosition, 0);
-		setFixedSize(myFixedSize);
-		return this;
-	}
-
-	protected Label set(String theText, final int theColor, final int theCursorPosition, final int theOffsetX) {
-		theText = (theText == null) ? "" : theText;
-		_myOffsetX = theOffsetX;
-		_myCursorPosition = theCursorPosition;
-		_myPrevText = _myText;
-		_myText = theText;
-		// this conflicts with setting the captionLabel with
-		// controller.captionLabel().set("blabla");
-		_myFont.adjust(theColor, this);
-		return this;
-	}
-
-	public void setWithCursorPosition(final String theText, final int theCursorPosition) {
-		setWithCursorPosition(theText, theCursorPosition, 0);
-	}
-
-	public void setWithCursorPosition(final String theText, final int theCursorPosition, final int theOffsetX) {
-		_myOffsetX = theOffsetX;
-		forceupdate = true;
-		set(theText, _myColor, theCursorPosition, _myOffsetX);
-	}
-
-	public boolean isFixedSize() {
-		return isFixedSize;
-	}
-
-	public Label setOffsetX(int theOffset) {
-		_myOffsetX = theOffset;
-		return this;
-	}
-
-	public Label setOffsetY(int theOffset) {
-		_myOffsetY = theOffset;
-		return this;
-	}
-
-	public Label setOffsetYratio(float theRatio) {
-		_myOffsetYratio = theRatio;
-		return this;
-	}
-
-	public int getOffsetX() {
-		return _myOffsetX;
-	}
-
-	public int getOffsetY() {
-		return _myOffsetY;
-	}
-
-	public Label toUpperCase(final boolean theFlag) {
-		isToUpperCase = theFlag;
-		update();
-		return this;
-	}
-
-	public Label setFixedSize(final boolean theFlag) {
-		isFixedSize = theFlag;
-		return this;
-	}
-
-	public Label setVisible(boolean theFlag) {
-		isVisible = theFlag;
-		return this;
+	public boolean isMultiline() {
+		return isMultiline;
 	}
 
 	public boolean isVisible() {
 		return isVisible;
 	}
 
-	public ControllerStyle getStyle() {
-		return _myControllerStyle;
+	public boolean isToUpperCase() {
+		return isToUpperCase;
 	}
 
-	interface FontLabel {
-
-		void draw(PApplet theApplet);
-
-		void adjust(int theColor, Label theLabel);
-
-		boolean update();
-
-		String getText();
-
-		int getLineHeight();
-
-		int getLetterSpacing();
-
-		boolean isToUpperCase();
-
-		int getOffsetX();
-
-		int getOffsetY();
-
-		boolean isMultiline();
-
-		int getColor();
-
-		int getCursorPosition();
-
-		int getWidth();
-
-		int getHeight();
+	protected Label copy() {
+		return new Label(this);
 	}
 
-	class BitFontLabel implements FontLabel {
+	interface Labeltype {
 
-		int _myFontIndex;
+		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface theController);
 
-		private PImage _myImage;
+		public int getWidth();
 
-		private PImage _myImageMask;
+		public int getHeight();
 
-		BitFontLabel(int theFontIndex) {
-			_myFontIndex = theFontIndex;
-			init();
-		}
+		public int getOverflow();
+		
+		public String getTextFormatted();
+	}
 
-		void init() {
 
-			_myImage = cp5.papplet.createImage(_myWidth, _myHeight, PApplet.ARGB);
-			_myImageMask = cp5.papplet.createImage(_myWidth, _myHeight, PApplet.RGB);
-		}
-
-		int getFontIndex() {
-			return _myFontIndex;
-		}
-
-		public int getWidth() {
-			return _myImage.width;
-		}
-
-		public int getHeight() {
-			return _myImage.height;
-		}
-
-		public int getLineHeight() {
-			return _myLineHeight;
-		}
-
-		public int getLetterSpacing() {
-			return _myLetterSpacing;
-		}
-
-		public boolean isToUpperCase() {
-			return isToUpperCase;
-		}
-
-		public String getText() {
+	class SinglelineTextfield extends SinglelineLabel {
+		public String getTextFormatted() {
 			return _myText;
 		}
-
-		public int getOffsetX() {
-			return _myOffsetX;
-		}
-
-		public int getOffsetY() {
-			return _myOffsetY;
-		}
-
-		public boolean isMultiline() {
-			return isMultiline;
-		}
-
-		public void adjust(int theColor, Label theLabel) {
-			if (!isFixedSize) {
-				update();
-			}
-			_myColor = theColor;
-			textHeight = BitFontRenderer.write(this);
-			_myImage.updatePixels();
-		}
-
-		PImage getImage() {
-			return _myImage;
-		}
-
-		public int getColor() {
-			return _myColor;
-		}
-
-		PImage getImageMask() {
-			return _myImageMask;
-		}
-
-		public int getCursorPosition() {
-			return _myCursorPosition;
-		}
-
-		public boolean update() {
-			if (!forceupdate) {
-				if (_myText.equals(_myPrevText)) {
-					return false;
-				}
-			}
-
-			boolean newImage = true;
-
-			if (!isFixedSize) {
-				float then = _myWidth;
-				int[] dim = BitFontRenderer.getDimension(_myText, this);
-				_myWidth = dim[0];
-				_myHeight = dim[1];
-				_myWidth += _myText.length() * _myLetterSpacing;
-				// check if the new text is longer or smaller than the old one
-				// (then) - add a small buffer to initiate a new new image
-				// creation when exceeded.
-				if (_myWidth > then || _myWidth < then - 8) {
-					then = _myWidth;
-					newImage = true;
-				} else {
-					newImage = false;
-				}
-			}
-			if (newImage) {
-				_myImage = cp5.papplet.createImage(_myWidth + 4, _myHeight, PApplet.ARGB);
-				_myImageMask = cp5.papplet.createImage(_myWidth + 4, _myHeight, PApplet.RGB);
-			}
-			forceupdate = false;
-			return true;
-		}
-
-		public void draw(PApplet theApplet) {
-			if ((_myImage.width > 0 && _myImage.height > 0)) {
-				theApplet.image(_myImage, _myControllerStyle.paddingLeft, _myControllerStyle.paddingTop);
-			}
-		}
 	}
+	
+	class SinglelineLabel implements Labeltype {
 
-	class ControlFontLabel implements FontLabel {
-
-		ControlFont _myControlFont;
-
-		ArrayList<String> txt;
-
-		ControlFontLabel(ControlFont theFont) {
-			_myControlFont = theFont;
-			txt = new ArrayList<String>();
+		private void align(PApplet theApplet, ControllerInterface theController, int theAlignX, int theAlignY) {
+			int x = 0;
+			int y = 0;
+			switch (theAlignX) {
+			case (ControlP5.CENTER):
+				x = (theController.getWidth() - _myFontLabel.getWidth()) / 2;
+				break;
+			case (ControlP5.LEFT):
+				x = _myPaddingX;
+				break;
+			case (ControlP5.RIGHT):
+				x = theController.getWidth() - _myFontLabel.getWidth()-_myPaddingX;
+				break;
+			case (ControlP5.LEFT_OUTSIDE):
+				x = -_myFontLabel.getWidth() - _myPaddingX;
+				break;
+			case (ControlP5.RIGHT_OUTSIDE):
+				x = theController.getWidth() + _myPaddingX;
+				break;
+			}
+			switch (theAlignY) {
+			case (ControlP5.CENTER):
+				y = theController.getHeight() / 2 + _myFontLabel.get().getTop() - _myFontLabel.get().getCenter();
+				break;
+			case (ControlP5.TOP):
+				y = 0;
+				break;
+			case (ControlP5.BOTTOM):
+				y = theController.getHeight() - _myFontLabel.get().getHeight() - 1;
+				break;
+			case (ControlP5.BASELINE):
+				y = theController.getHeight() + _myFontLabel.get().getTop() - 1;
+				break;
+			case (ControlP5.BOTTOM_OUTSIDE):
+				y = theController.getHeight() + _myPaddingY;
+				break;
+			case (ControlP5.TOP_OUTSIDE):
+				y = -_myFontLabel.getHeight() - _myPaddingY;
+				break;
+			}
+			theApplet.translate(x, y);
 		}
 
+		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface theController) {
+			_myFontLabel.adjust(theApplet, theLabel);
+			theApplet.pushMatrix();
+			align(theApplet, theController, alignX, alignY);
+			theLabel.draw(theApplet, theX, theY);
+			theApplet.popMatrix();
+		}
+
+		@Override
 		public int getWidth() {
-			return _myControlFont.getWidth();
+			return (isFixedSize ? _myWidth : _myFontLabel.getWidth());
 		}
 
+		@Override
 		public int getHeight() {
-			return _myControlFont.getHeight();
+			return _myFontLabel.getHeight();
 		}
 
-		public ControlFont getFont() {
-			return _myControlFont;
+		@Override
+		public int getOverflow() {
+			return -1;
+		}
+		
+		@Override
+		public String getTextFormatted() {
+			return (isToUpperCase ? _myText.toUpperCase() : _myText);
+		}
+	}
+
+	class MultilineLabel implements Labeltype {
+
+		@Override
+		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface theController) {
+			_myFontLabel.adjust(theApplet, theLabel);
+			theLabel.draw(theApplet, theX, theY);
 		}
 
-		public int getLineHeight() {
-			return _myLineHeight;
+		@Override
+		public int getWidth() {
+			return _myWidth;
 		}
 
-		public int getLetterSpacing() {
-			return _myLetterSpacing;
+		@Override
+		public int getHeight() {
+			return _myHeight;
 		}
 
-		public boolean isToUpperCase() {
-			return isToUpperCase;
+		@Override
+		public int getOverflow() {
+			return _myFontLabel.get().getOverflow();
 		}
-
-		public String getText() {
-			return _myText;
+		
+		@Override
+		public String getTextFormatted() {
+			return (isToUpperCase ? _myText.toUpperCase() : _myText);
 		}
-
-		public int getOffsetX() {
-			return _myOffsetX;
-		}
-
-		public int getOffsetY() {
-			return _myOffsetY;
-		}
-
-		public boolean isMultiline() {
-			return isMultiline;
-		}
-
-		public int getColor() {
-			return _myColor;
-		}
-
-		public int getCursorPosition() {
-			return _myCursorPosition;
-		}
-
-		public void adjust(int theColor, Label theLabel) {
-		}
-
-		public boolean update() {
-			return true;
-		}
-
-		public void draw(PApplet theApplet) {
-			theApplet.fill(_myColor);
-			theApplet.textFont(_myControlFont.getPFont(), getFontSize());
-			theApplet.textLeading(getLineHeight());
-			theApplet.textAlign(PApplet.LEFT, PApplet.TOP);
-			String s = isToUpperCase ? _myText.toUpperCase() : _myText;
-			
-			if (isMultiline) {
-				textHeight = calculateTextHeight(theApplet, s, _myWidth - 15);
-				int maxLineNum = PApplet.round((float) _myHeight / (float) _myLineHeight);
-				maxLineNum += (_myHeight - (maxLineNum * _myLineHeight) > 0) ? -1 : 0;
-				int offset = PApplet.max(0, PApplet.abs((int) (_myOffsetYratio * (txt.size() - maxLineNum))));
-				String st = "";
-				for (int i = offset; i < txt.size(); i++) {
-					st += txt.get(i) + "\n";
-				}
-				theApplet.text(st, _myControllerStyle.paddingLeft, _myControllerStyle.paddingTop, _myWidth - 10, _myHeight);
-			} else {
-				theApplet.text(s, 0, -1);
-			}
-		}
-
-		int calculateTextHeight(PApplet theApplet, String theString, int theWidth) {
-			String[] wordsArray = PApplet.split(theString, " ");
-			String tempString = "";
-			txt.clear();
-			int l = wordsArray.length;
-			if (l <= 1) {
-				return getLineHeight();
-			}
-			for (int i = 0; i < l; i++) {
-				if (theApplet.textWidth(tempString + wordsArray[i]) < theWidth) {
-					tempString += wordsArray[i] + " ";
-				} else {
-					txt.add(tempString.substring(0, tempString.length() - 1));
-					tempString = wordsArray[i] + " ";
-				}
-			}
-			txt.add(tempString.substring(0, tempString.length() - 1));
-			// adding a blank line here to guarantee visibility of last line of
-			// content
-			txt.add("");
-			return ((txt.size() * getLineHeight()));
-		}
-
 	}
 
 	/**
+	 * @exclude
 	 * @deprecated
-	 * @param theFont
-	 * @return
-	 */
-	@Deprecated
-	public Label setControlFont(ControlFont theFont) {
-		return setFont(theFont);
-	}
-
-	/**
-	 * @deprecated
-	 * @param theFont
-	 * @return
-	 */
-	@Deprecated
-	public Label setControlFont(int theFontIndex) {
-		return setFont(theFontIndex);
-	}
-
-	/**
-	 * @deprecated
-	 * @param theSize
-	 * @return
-	 */
-	@Deprecated
-	public Label setControlFontSize(int theSize) {
-		return setFontSize(theSize);
-	}
-
-	/**
-	 * @deprecated
-	 * @return
 	 */
 	@Deprecated
 	public ControllerStyle style() {
 		return getStyle();
 	}
-
 }

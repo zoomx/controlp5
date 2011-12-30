@@ -417,14 +417,12 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	@ControlP5.Invisible
 	public ControllerGroup updateEvents() {
-
 		if (isOpen) {
 			for (int i = controllers.size() - 1; i >= 0; i--) {
 				((ControllerInterface) controllers.get(i)).updateEvents();
 			}
 		}
 		if (isVisible) {
-
 			if ((isMousePressed == _myControlWindow.mouselock)) {
 				if (isMousePressed && cp5.keyHandler.isAltDown && isMoveable) {
 					if (!cp5.isMoveable) {
@@ -503,7 +501,6 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	@ControlP5.Invisible
 	public final void draw(PApplet theApplet) {
-
 		if (isVisible) {
 			theApplet.pushMatrix();
 			theApplet.translate(position.x, position.y);
@@ -511,7 +508,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 			drawControllers(theApplet);
 			postDraw(theApplet);
 			if (_myValueLabel != null) {
-				_myValueLabel.draw(theApplet);
+				_myValueLabel.draw(theApplet, 2, 2, this);
 			}
 			theApplet.popMatrix();
 		}
@@ -582,6 +579,27 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	public ControllerGroup add(ControllerInterface theElement) {
 		controllers.add(theElement);
+		return this;
+	}
+
+	@Override
+	public ControllerGroup bringToFront() {
+		return bringToFront(this);
+	}
+
+	@Override
+	public ControllerGroup bringToFront(ControllerInterface theController) {
+		if (_myParent instanceof Tab) {
+			moveTo((Tab) _myParent);
+		} else {
+			_myParent.bringToFront(theController);
+		}
+		if (theController != this) {
+			if (controllers.get().contains(theController)) {
+				controllers.remove(theController);
+				controllers.add(theController);
+			}
+		}
 		return this;
 	}
 
@@ -661,7 +679,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 */
 	@Override
 	public ControllerGroup setAddress(String theAddress) {
-		if (_myAddress.isEmpty()) {
+		if (_myAddress.length() == 0) {
 			_myAddress = theAddress;
 		}
 		return this;
@@ -817,9 +835,7 @@ public abstract class ControllerGroup implements ControllerInterface, ControlP5C
 	 * @return ControllerGroup
 	 */
 	public ControllerGroup setLabel(String theLabel) {
-		_myLabel.setFixedSize(false);
 		_myLabel.set(theLabel);
-		_myLabel.setFixedSize(true);
 		return this;
 	}
 

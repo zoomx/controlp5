@@ -74,11 +74,11 @@ import processing.core.PVector;
  */
 public abstract class Controller implements ControllerInterface, CDrawable, ControlP5Constants {
 
-	protected PVector position;
+	protected PVector position = new PVector();
 
-	protected PVector positionBuffer;
+	protected PVector positionBuffer = new PVector();
 
-	protected PVector absolutePosition;
+	protected PVector absolutePosition = new PVector();
 
 	protected ControllerInterface _myParent;
 
@@ -158,9 +158,6 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	protected int _myDecimalPoints = 2;
 
-	@SuppressWarnings("deprecation")
-	protected ControllerSprite sprite;
-
 	protected boolean isSprite;
 
 	public static int autoWidth = 50;
@@ -173,9 +170,9 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 	protected PImage[] images = new PImage[4];
 
-	protected ControllerView _myDisplay;
+	protected ControllerView _myControllerView;
 
-	protected ControllerView _myDebugDisplay;
+	protected ControllerView _myDebugView;
 
 	protected int _myDisplayMode = DEFAULT;
 
@@ -184,6 +181,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	private boolean mouseover;
 
 	private String _myAddress = "";
+
+	protected int[][] alignLabel = new int[][] { { CENTER, CENTER }, { CENTER, CENTER } };
 
 	/**
 	 * TODO add distribution options for MOVE, RELEASE, and PRESSED. setDecimalPoints:
@@ -210,13 +209,13 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		height = theHeight;
 		_myCaptionLabel = new Label(cp5, theName);
 		_myCaptionLabel.setColor(color.getCaptionLabel());
-		_myValueLabel = new Label(cp5, "");
+		_myValueLabel = new Label(cp5, "valueLabel");
 		_myControllerPlugList = new Vector<ControllerPlug>();
 		_myControlListener = new Vector<ControlListener>();
 		subelements = new Vector<Controller>();
 		_myArrayValue = new float[0];
-		// _myDebugDisplay = new DebugDisplay();
-		setView(_myDebugDisplay);
+		_myDebugView = new DebugView();
+		setView(_myDebugView);
 	}
 
 	/**
@@ -231,7 +230,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	@ControlP5.Invisible
 	@ControlP5.Layout
 	public Controller setAddress(String theAddress) {
-		if (_myAddress.isEmpty()) {
+		if (_myAddress.length() == 0) {
 			_myAddress = theAddress;
 		}
 		return this;
@@ -512,7 +511,6 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 
 		if (isVisible && (isMousePressed == _myControlWindow.mouselock)) {
 			if (isMousePressed && cp5.keyHandler.isAltDown && isMoveable) {
-
 				if (!cp5.isMoveable) {
 					positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
 					positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
@@ -638,7 +636,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public void draw(final PApplet theApplet) {
 		theApplet.pushMatrix();
 		theApplet.translate(position.x, position.y);
-		_myDisplay.display(theApplet, this);
+		_myControllerView.display(theApplet, this);
 
 		theApplet.popMatrix();
 
@@ -678,6 +676,29 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		if (cp5 != null) {
 			cp5.remove(this);
 		}
+	}
+
+	@Override
+	public Controller bringToFront() {
+		return bringToFront(this);
+	}
+
+	@Override
+	public Controller bringToFront(ControllerInterface theController) {
+		if (_myParent instanceof Tab) {
+			moveTo((Tab) _myParent);
+		} else {
+			_myParent.bringToFront(theController);
+		}
+		if (theController != this) {
+			if (subelements.contains(theController)) {
+				if (theController instanceof Controller) {
+					subelements.remove(theController);
+					subelements.add((Controller) theController);
+				}
+			}
+		}
+		return this;
 	}
 
 	/**
@@ -1003,13 +1024,13 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 			if (!inside()) {
 				setIsInside(false);
 				if (isMousePressed) {
-					mouseReleasedOutside();	
+					isMousePressed = false;
+					mouseReleasedOutside();
 					cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_RELEASEDOUTSIDE));
 				}
 				if (this instanceof Textfield) {
-					mouseReleasedOutside();	
+					mouseReleasedOutside();
 				}
-				isMousePressed = false;
 			}
 		}
 		return false;
@@ -1318,9 +1339,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	@ControlP5.Layout
 	public Controller setCaptionLabel(final String theLabel) {
-		_myCaptionLabel.setFixedSize(false);
 		_myCaptionLabel.set(theLabel);
-		_myCaptionLabel.setFixedSize(true);
 		return this;
 	}
 
@@ -1333,9 +1352,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	 */
 	@ControlP5.Layout
 	public Controller setValueLabel(final String theLabel) {
-		_myValueLabel.setFixedSize(false);
 		_myValueLabel.set(theLabel);
-		_myValueLabel.setFixedSize(true);
 		return this;
 	}
 
@@ -1423,8 +1440,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	@ControlP5.Layout
 	@Override
 	public boolean isVisible() {
-		if(getParent()!=null) {
-			if(getParent().isVisible()==false) {
+		if (getParent() != null) {
+			if (getParent().isVisible() == false) {
 				return false;
 			}
 		}
@@ -1629,7 +1646,6 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		return this;
 	}
 
-	
 	/**
 	 * use setDisplay to customize your controller look. A new controller-display class required to
 	 * implement interface ControllerView. By default the display mode will be set to CUSTOM when
@@ -1643,13 +1659,12 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 		setView(theDisplay, CUSTOM);
 		return this;
 	}
-	
+
 	public void setView(ControllerView theDisplay, int theMode) {
 		_myDisplayMode = theMode;
-		_myDisplay = theDisplay;
+		_myControllerView = theDisplay;
 	}
 
-	
 	/**
 	 * @deprecated
 	 * @exclude
@@ -1658,7 +1673,7 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public Controller setDisplay(ControllerDisplay theDisplay) {
 		return setView(theDisplay);
 	}
-	
+
 	/**
 	 * @deprecated
 	 * @exclude
@@ -1778,7 +1793,9 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public Controller setDecimalPrecision(int theValue) {
 		_myDecimalPoints = theValue;
 		// TODO transfer color values of existing label
+		int[] t = _myValueLabel.getAlign();
 		_myValueLabel = new Label(cp5, "" + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax) : adjustValue(_myMin)));
+		_myValueLabel.align(t);
 		_myValueLabel.setColor(color.getValueLabel());
 		_myValueLabel.set("" + adjustValue(_myValue));
 		return this;
@@ -2315,5 +2332,8 @@ public abstract class Controller implements ControllerInterface, CDrawable, Cont
 	public ControllerInterface parent() {
 		return _myParent;
 	}
+
+	@SuppressWarnings("deprecation")
+	protected ControllerSprite sprite;
 
 }

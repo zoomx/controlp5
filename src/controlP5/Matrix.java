@@ -283,7 +283,7 @@ public class Matrix extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new MatrixView();
+			_myControllerView = new MatrixView();
 			break;
 		case (IMAGE):
 		case (SPRITE):

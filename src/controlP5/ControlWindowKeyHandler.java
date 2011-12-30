@@ -29,9 +29,10 @@ import java.awt.event.KeyEvent;
 
 /**
  * Handles key events.
+ * 
  * @exclude
  */
-class ControlWindowKeyHandler implements ControlP5Constants {
+public class ControlWindowKeyHandler implements ControlP5Constants {
 
 	private ControlWindow _myMasterControlWindow;
 
@@ -42,6 +43,8 @@ class ControlWindowKeyHandler implements ControlP5Constants {
 	public boolean isAltDown = false;
 
 	public boolean isKeyMenu = false;
+
+	public boolean isCommandDown = false;
 
 	protected char key = ' ';
 
@@ -65,6 +68,9 @@ class ControlWindowKeyHandler implements ControlP5Constants {
 			case (KeyEvent.VK_ALT):
 				isAltDown = true;
 				break;
+			case (157):
+				isCommandDown = true;
+				break;
 			}
 			key = theKeyEvent.getKeyChar();
 			keyCode = theKeyEvent.getKeyCode();
@@ -78,7 +84,9 @@ class ControlWindowKeyHandler implements ControlP5Constants {
 			case (KeyEvent.VK_ALT):
 				isAltDown = false;
 				break;
-
+			case (157):
+				isCommandDown = false;
+				break;
 			}
 			isKeyDown = false;
 		}
@@ -98,7 +106,7 @@ class ControlWindowKeyHandler implements ControlP5Constants {
 			if (theKeyEvent.getKeyCode() == SAVE) {
 				if (isShiftDown) {
 					_myMasterControlWindow.controlP5.saveProperties(); // save
-																		// properties
+					// properties
 				}
 				// else {
 				// ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
@@ -147,6 +155,14 @@ class ControlWindowKeyHandler implements ControlP5Constants {
 		case (RESET):
 			ControlP5.logger().warning("Key controls are not supported in this version anymore.");
 		}
+	}
+
+	public void reset() {
+		isShiftDown = false;
+		isKeyDown = false;
+		isAltDown = false;
+		isKeyMenu = false;
+		isCommandDown = false;
 	}
 
 }

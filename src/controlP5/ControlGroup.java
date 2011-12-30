@@ -168,7 +168,7 @@ public class ControlGroup extends ControllerGroup implements ControlListener {
 		if (isBarVisible) {
 			theApplet.fill(isInside ? color.getForeground() : color.getBackground());
 			theApplet.rect(0, -1, _myWidth, -_myHeight);
-			_myLabel.draw(theApplet, 2, -_myHeight);
+			_myLabel.draw(theApplet, 2, -_myHeight, this);
 			if (isCollapse) {
 				theApplet.fill(_myLabel.getColor());
 				if (isOpen) {

@@ -224,6 +224,10 @@ public class ControlEvent {
 		return _myController.getName().equals(theControllerName);
 	}
 
+	public boolean isAssignableFrom(Class<?> c) {
+		return _myController.getClass().isAssignableFrom(c);
+	}
+	
 	/**
 	 * @exclude
 	 * @deprecated

@@ -33,17 +33,12 @@ import processing.core.PApplet;
  * for more methods available see the ControllerGroup documentation.
  * 
  * @example controllers/ControlP5textarea
- * @nosuperclasses ControllerGroup ControllerGroup
  */
 public class Textarea extends ControllerGroup implements ControlListener {
 
 	protected String _myText;
 
 	protected Slider _myScrollbar;
-
-	protected int _myWidth = 200;
-
-	protected int _myHeight = 20;
 
 	protected int _myColorBackground = 0x000000;
 
@@ -90,18 +85,14 @@ public class Textarea extends ControllerGroup implements ControlListener {
 
 	private void setup() {
 		_myValueLabel = new Label(cp5, _myText);
-		if (_myValueLabel.getFont() instanceof Label.BitFontLabel) {
+		if (_myValueLabel.getFont().get() instanceof ControlFont.BitFontLabel) {
 			_myValueLabel.setFont(BitFontRenderer.standard56);
 		}
 		_myValueLabel.setWidth((int) _myWidth);
 		_myValueLabel.setHeight((int) _myHeight);
 		_myValueLabel.setMultiline(true);
 		_myValueLabel.toUpperCase(false);
-		_myValueLabel.update();
-		_myValueLabel.position.x = 2;
-		_myValueLabel.position.y = 2;
 		_myValueLabel.setColor(color.getValueLabel());
-		addDrawable(_myValueLabel);
 
 		_myScrollbar = new Slider(cp5, _myParent, getName() + "Scroller", 0, 1, 1, _myWidth - 5, 0, 5, _myHeight);
 		_myScrollbar.init();
@@ -124,8 +115,6 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * @param theEvent ControlEvent
 	 */
 	public void controlEvent(ControlEvent theEvent) {
-		// reverse the value coming in from the scrollbar: 0 to 1 becomes -1 to
-		// 0
 		_myScrollValue = -(1 - theEvent.getValue());
 		scroll();
 	}
@@ -142,7 +131,6 @@ public class Textarea extends ControllerGroup implements ControlListener {
 			_myScrollbar.show();
 		}
 	}
-
 
 	public boolean isScrollable() {
 		return _myScrollbar.isVisible();
@@ -177,7 +165,8 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 */
 	private void scroll() {
 		_myScrollValue = PApplet.min(PApplet.max(-1, _myScrollValue), 0);
-		float myLen = _myValueLabel.getTextHeight() + _myValueLabel.getLineHeight();
+		
+		float myLen = _myValueLabel.getTextHeight()+ _myValueLabel.getLineHeight();
 		float myOffset = 0;
 		boolean isScrollbar = _myHeight < myLen;
 		if (isScrollbar) {
@@ -185,16 +174,17 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		}
 		isScrollbar = (isScrollbarVisible) ? isScrollbar : false;
 		_myScrollbar.setVisible(isScrollbar);
-		_myValueLabel.setOffsetY((int) myOffset);
-		_myValueLabel.setOffsetYratio((int) _myScrollValue);
-		_myValueLabel.update();
+		System.out.println("textarea "+myLen+", "+_myScrollValue);
+		_myValueLabel.setOffsetYratio(_myScrollValue);
 	}
 
 	@ControlP5.Invisible
 	public void scrolled(int theStep) {
-		int lines = (_myValueLabel.getTextHeight() / _myValueLabel.getLineHeight());
-		float step = 1.0f / lines;
-		scroll((1 - getScrollPosition()) + (theStep * step));
+		if (_myScrollbar.isVisible()) {
+			int lines = (_myValueLabel.getTextHeight() / _myValueLabel.getLineHeight());
+			float step = 1.0f / lines;
+			scroll((1 - getScrollPosition()) + (theStep * step));
+		}
 	}
 
 	@ControlP5.Invisible
@@ -207,12 +197,11 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * 
 	 * @param theValue int
 	 */
+	@Override
 	public Textarea setWidth(int theValue) {
 		theValue = (theValue < 10) ? 10 : theValue;
 		_myWidth = theValue;
 		_myValueLabel.setWidth(_myWidth - _myScrollbarWidth - 10);
-		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
-		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom);
 		return this;
 	}
 
@@ -221,12 +210,12 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * 
 	 * @param theValue int
 	 */
+	@Override
 	public Textarea setHeight(int theValue) {
 		theValue = (theValue < 10) ? 10 : theValue;
 		_myHeight = theValue;
 		_myValueLabel.setHeight(_myHeight - 2);
-		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
-		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom);
+		_myScrollbar.setHeight(theValue);
 		return this;
 	}
 
@@ -264,7 +253,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * @param theText String
 	 */
 	public void setText(String theText) {
-		_myValueLabel.set(theText, true);
+		_myValueLabel.set(theText);
 		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
 		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom);
 	}
@@ -278,11 +267,11 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		return getStringValue();
 	}
 
-	public String text() {
-		return getText();
-	}
-
+	@Override
 	protected void preDraw(PApplet theApplet) {
+		if (isScrollbarVisible) {
+			_myScrollbar.setVisible(_myValueLabel.getOverflow() > 1);
+		}
 		if (_myScrollbar.isVisible() || isColorBackground) {
 			_myScrollbar.getPosition().x = _myWidth - _myScrollbarWidth + _myValueLabel.getStyle().paddingLeft + _myValueLabel.getStyle().paddingRight;
 			if (!isColorBackground) {
@@ -294,7 +283,6 @@ public class Textarea extends ControllerGroup implements ControlListener {
 			int ww = _myWidth + _myValueLabel.getStyle().paddingLeft + _myValueLabel.getStyle().paddingRight;
 			int hh = _myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom;
 			theApplet.rect(0, 0, ww, hh);
-
 		}
 	}
 
@@ -306,7 +294,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	}
 
 	public String getStringValue() {
-		return _myValueLabel.toString();
+		return _myValueLabel.getText();
 	}
 
 	/**
@@ -385,7 +373,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	public Label valueLabel() {
 		return getValueLabel();
 	}
-	
+
 	/**
 	 * @exclude
 	 * @deprecated
@@ -394,6 +382,16 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	@Deprecated
 	public boolean isScrollbarVisible() {
 		return isScrollbarVisible;
+	}
+
+	/**
+	 * @deprecated
+	 * @exclude
+	 * @return
+	 */
+	@Deprecated
+	public String text() {
+		return getText();
 	}
 }
 

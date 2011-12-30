@@ -40,7 +40,6 @@ import processing.core.PApplet;
 
 public class Button extends Controller {
 
-	protected int cnt;
 
 	protected boolean isPressed;
 
@@ -53,16 +52,14 @@ public class Button extends Controller {
 	protected int activateBy = RELEASE;
 
 	protected boolean isSwitch = false;
+	
 
 	protected Button(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
+		_myCaptionLabel.align(LEFT,CENTER);
 	}
 
-	protected Button(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theDefaultValue, int theX, int theY, int theWidth, int theHeight, boolean theBroadcastFlag) {
-		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myValue = theDefaultValue;
-	}
 
 	/**
 	 * @exclude
@@ -75,7 +72,7 @@ public class Button extends Controller {
 	 * @exclude
 	 */
 	public Button(ControlP5 theControlP5, String theName) {
-		super(theControlP5, theControlP5.tab("default"), theName, 0, 0, 1, 1);
+		super(theControlP5, theControlP5.getTab("default"), theName, 0, 0, 1, 1);
 	}
 
 	@Override
@@ -253,13 +250,13 @@ public class Button extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myDisplay = new ButtonView();
+			_myControllerView = new ButtonView();
 			break;
 		case (IMAGE):
-			_myDisplay = new ButtonImageView();
+			_myControllerView = new ButtonImageView();
 			break;
 		case (SPRITE):
-			_myDisplay = new ButtonSpriteView();
+			_myControllerView = new ButtonSpriteView();
 			break;
 		case (CUSTOM):
 		default:
@@ -287,7 +284,7 @@ public class Button extends Controller {
 			}
 			theApplet.rect(0, 0, width, height);
 			if (isLabelVisible) {
-				_myCaptionLabel.draw(theApplet, 4, height / 2 - 3);
+				_myCaptionLabel.draw(theApplet,0,0,theController);
 			}
 		}
 	}

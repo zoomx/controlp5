@@ -29,10 +29,9 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * Tabs are used to organize controllers. Tabs are arranged horizontally from
- * the top-left corner by default, Tab extends ControllerGroup, for more
- * available methods see the ControllerGroup documentation. Reposition tabs with
- * {@link controlP5.ControlWindow#setPositionOfTabs(int, int)}
+ * Tabs are used to organize controllers. Tabs are arranged horizontally from the top-left corner by
+ * default, Tab extends ControllerGroup, for more available methods see the ControllerGroup
+ * documentation. Reposition tabs with {@link controlP5.ControlWindow#setPositionOfTabs(int, int)}
  * 
  * @example controllers/ControlP5tab
  * @nosuperclasses ControllerGroup ControllerGroup
@@ -51,7 +50,7 @@ public class Tab extends ControllerGroup {
 
 	protected String _myStringValue = "";
 
-	protected int _myRightBorder = 4;
+	public static int padding = 4;
 
 	/**
 	 * 
@@ -62,15 +61,13 @@ public class Tab extends ControllerGroup {
 	public Tab(ControlP5 theControlP5, ControlWindow theControlWindow, String theName) {
 		super(theControlP5, null, theName, 0, 0);
 		_myControlWindow = theControlWindow;
-
 		position = new PVector();
 		absolutePosition = new PVector();
 		isMoveable = false;
 		isEventActive = theControlP5.isTabEventsActive;
 		_myHeight = 16;
-		_myLabel.update();
-		_myWidth = _myLabel.getWidth() + _myRightBorder;
-		width();
+		_myWidth = _myLabel.getWidth() + padding * 2;
+		_myLabel.align(LEFT, CENTER).setPadding(0,0);
 	}
 
 	protected void setOffset(int theValueX, int theValueY) {
@@ -88,34 +85,33 @@ public class Tab extends ControllerGroup {
 	}
 
 	protected void drawLabel(PApplet theApplet) {
+		_myWidth = _myLabel.getWidth() + padding*2;
 		theApplet.pushMatrix();
 		theApplet.fill(isInside ? color.getForeground() : color.getBackground());
 		if (isActive) {
 			theApplet.fill(color.getActive());
 		}
-		theApplet.rect(_myOffsetX, _myOffsetY, _myWidth - 1 + _myRightBorder, _myHeight);
-		_myLabel.draw(theApplet, _myOffsetX + 4, _myOffsetY + 5);
+		theApplet.translate(_myOffsetX, _myOffsetY);
+		theApplet.rect(0, 0, _myWidth - 1, _myHeight);
+		_myLabel.draw(theApplet, padding, 0, this);
 		theApplet.popMatrix();
 	}
 
 	/**
-	 * set the label of the group. TODO overwriting COntrollerGroup.setLabel to
-	 * set the Width of a tab after renaming. this should be temporary and fixed
-	 * in the future.
+	 * set the label of the group. TODO overwriting COntrollerGroup.setLabel to set the Width of a
+	 * tab after renaming. this should be temporary and fixed in the future.
 	 * 
 	 * @param theLabel String
 	 * @return Tab
 	 */
 	public Tab setLabel(String theLabel) {
-		_myLabel.setFixedSize(false);
 		_myLabel.set(theLabel);
-		_myLabel.setFixedSize(true);
 		setWidth(_myLabel.getWidth());
 		return this;
 	}
 
 	protected int width() {
-		return _myWidth + _myRightBorder;
+		return _myWidth;
 	}
 
 	/**
@@ -123,7 +119,7 @@ public class Tab extends ControllerGroup {
 	 * @return
 	 */
 	public Tab setWidth(int theWidth) {
-		_myWidth = theWidth + _myRightBorder;
+		_myWidth = theWidth + padding;
 		return this;
 	}
 
@@ -133,7 +129,7 @@ public class Tab extends ControllerGroup {
 	}
 
 	protected boolean inside() {
-		return (_myControlWindow.mouseX > _myOffsetX && _myControlWindow.mouseX < _myOffsetX + _myWidth + _myRightBorder && _myControlWindow.mouseY > _myOffsetY && _myControlWindow.mouseY < _myOffsetY
+		return (_myControlWindow.mouseX > _myOffsetX && _myControlWindow.mouseX < _myOffsetX + _myWidth && _myControlWindow.mouseY > _myOffsetY && _myControlWindow.mouseY < _myOffsetY
 				+ _myHeight);
 	}
 
@@ -167,6 +163,11 @@ public class Tab extends ControllerGroup {
 		return isActive;
 	}
 
+	@Override 
+	public Tab bringToFront() {
+		_myControlWindow.activateTab(this);
+		return this;
+	}
 	/**
 	 * {@inheritDoc}
 	 */
@@ -178,9 +179,8 @@ public class Tab extends ControllerGroup {
 	}
 
 	/**
-	 * activates or deactivates the Event status of a tab, When activated a tab
-	 * will send a controlEvent to the main application. By default this is
-	 * disabled.
+	 * activates or deactivates the Event status of a tab, When activated a tab will send a
+	 * controlEvent to the main application. By default this is disabled.
 	 * 
 	 * @param theFlag boolean
 	 * @return Tab

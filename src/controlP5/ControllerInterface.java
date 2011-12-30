@@ -77,6 +77,10 @@ public interface ControllerInterface {
 	public ControllerInterface update();
 
 	public ControllerInterface setUpdate(boolean theFlag);
+	
+	public ControllerInterface bringToFront();
+	
+	public ControllerInterface bringToFront(ControllerInterface theController);
 
 	public boolean isUpdate();
 

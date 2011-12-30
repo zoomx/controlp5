@@ -198,7 +198,7 @@ class ControllerAutomator {
 
 				if (cntr != null) {
 
-					if (!ce.label().isEmpty()) {
+					if (ce.label().length()>0) {
 						cntr.setCaptionLabel(ce.label());
 					}
 					cntr.setPosition(ce.x(), ce.y());
