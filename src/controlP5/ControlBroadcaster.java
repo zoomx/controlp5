@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -56,7 +56,7 @@ public class ControlBroadcaster {
 
 	private ArrayList<ControlListener> _myControlListeners;
 
-	private Map<CallbackListener, Controller> _myControllerCallbackListeners;
+	private Map<CallbackListener, Controller<?>> _myControllerCallbackListeners;
 
 	private static boolean setPrintStackTrace = true;
 
@@ -65,7 +65,7 @@ public class ControlBroadcaster {
 	protected ControlBroadcaster(ControlP5 theControlP5) {
 		cp5 = theControlP5;
 		_myControlListeners = new ArrayList<ControlListener>();
-		_myControllerCallbackListeners = new ConcurrentHashMap<CallbackListener, Controller>();
+		_myControllerCallbackListeners = new ConcurrentHashMap<CallbackListener, Controller<?>>();
 		_myControlEventPlug = checkObject(cp5.papplet, getEventMethod(), new Class[] { ControlEvent.class });
 		_myControllerCallbackEventPlug = checkObject(cp5.papplet, _myControllerCallbackEventMethod, new Class[] { CallbackEvent.class });
 		if (_myControlEventPlug != null) {
@@ -127,8 +127,8 @@ public class ControlBroadcaster {
 	 * @param theListener
 	 * @param theController
 	 */
-	public void addCallback(CallbackListener theListener, Controller... theController) {
-		for (Controller c : theController) {
+	public void addCallback(CallbackListener theListener, Controller<?>... theController) {
+		for (Controller<?> c : theController) {
 			_myControllerCallbackListeners.put(theListener, c);
 		}
 	}
@@ -150,9 +150,9 @@ public class ControlBroadcaster {
 	 * 
 	 * @param theController
 	 */
-	public ControlBroadcaster removeCallback(Controller... theControllers) {
-		for (Controller c : theControllers) {
-			for (Map.Entry<CallbackListener, Controller> entry : _myControllerCallbackListeners.entrySet()) {
+	public ControlBroadcaster removeCallback(Controller<?>... theControllers) {
+		for (Controller<?> c : theControllers) {
+			for (Map.Entry<CallbackListener, Controller<?>> entry : _myControllerCallbackListeners.entrySet()) {
 				if (c != null && entry.getValue().equals(c)) {
 					_myControllerCallbackListeners.remove(entry.getKey());
 				}
@@ -166,7 +166,7 @@ public class ControlBroadcaster {
 		return this;
 	}
 
-	public ControlBroadcaster plug(Object theObject, final Controller theController, final String theTargetMethod) {
+	public ControlBroadcaster plug(Object theObject, final Controller<?> theController, final String theTargetMethod) {
 		if (theController != null) {
 			ControllerPlug myControllerPlug = checkObject(theObject, theTargetMethod, ControlP5Constants.acceptClassList);
 			if (myControllerPlug == null) {
@@ -309,7 +309,7 @@ public class ControlBroadcaster {
 
 	protected void invokeAction(CallbackEvent theEvent) {
 		boolean invoke;
-		for (Map.Entry<CallbackListener, Controller> entry : _myControllerCallbackListeners.entrySet()) {
+		for (Map.Entry<CallbackListener, Controller<?>> entry : _myControllerCallbackListeners.entrySet()) {
 			invoke = (entry.getValue().getClass().equals(EmptyController.class)) ? true : (entry.getValue().equals(theEvent.getController())) ? true : false;
 			if (invoke) {
 				entry.getKey().controlEvent(theEvent);
@@ -340,7 +340,7 @@ public class ControlBroadcaster {
 		setPrintStackTrace = theFlag;
 	}
 
-	private class EmptyController extends Controller {
+	private class EmptyController extends Controller<EmptyController> {
 
 		protected EmptyController() {
 			this(0, 0);
@@ -352,9 +352,9 @@ public class ControlBroadcaster {
 		}
 
 		@Override
-		public Controller setValue(float theValue) {
+		public EmptyController setValue(float theValue) {
 			// TODO Auto-generated method stub
-			return null;
+			return this;
 		}
 
 	}

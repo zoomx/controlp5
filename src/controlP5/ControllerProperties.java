@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -154,7 +154,7 @@ public class ControllerProperties {
 	 * @param thePropertySetter
 	 * @param thePropertyGetter
 	 */
-	public ControllerProperty register(ControllerInterface theController, String thePropertySetter, String thePropertyGetter) {
+	public ControllerProperty register(ControllerInterface<?> theController, String thePropertySetter, String thePropertyGetter) {
 		ControllerProperty p = new ControllerProperty(theController, thePropertySetter, thePropertyGetter);
 		if (!allProperties.containsKey(p)) {
 			// register a new property with the main properties container
@@ -174,19 +174,19 @@ public class ControllerProperties {
 	 * @param theProperty
 	 * @return
 	 */
-	public ControllerProperties register(ControllerInterface theController, String theProperty) {
+	public ControllerProperties register(ControllerInterface<?> theController, String theProperty) {
 		theProperty = Character.toUpperCase(theProperty.charAt(0)) + theProperty.substring(1);
 		register(theController, "set" + theProperty, "get" + theProperty);
 		return this;
 	}
 
-	public ControllerProperties remove(ControllerInterface theController, String theSetter, String theGetter) {
+	public ControllerProperties remove(ControllerInterface<?> theController, String theSetter, String theGetter) {
 		ControllerProperty cp = new ControllerProperty(theController, theSetter, theGetter);
 		allProperties.remove(cp);
 		return this;
 	}
 
-	public ControllerProperties remove(ControllerInterface theController) {
+	public ControllerProperties remove(ControllerInterface<?> theController) {
 		ArrayList<ControllerProperty> list = new ArrayList<ControllerProperty>(allProperties.keySet());
 		for (ControllerProperty cp : list) {
 			if (cp.getController().equals(theController)) {
@@ -196,11 +196,11 @@ public class ControllerProperties {
 		return this;
 	}
 
-	public ControllerProperties remove(ControllerInterface theController, String theProperty) {
+	public ControllerProperties remove(ControllerInterface<?> theController, String theProperty) {
 		return remove(theController, "set" + theProperty, "get" + theProperty);
 	}
 
-	public List<ControllerProperty> get(ControllerInterface theController) {
+	public List<ControllerProperty> get(ControllerInterface<?> theController) {
 		List<ControllerProperty> props = new ArrayList<ControllerProperty>();
 		List<ControllerProperty> list = new ArrayList<ControllerProperty>(allProperties.keySet());
 		for (ControllerProperty cp : list) {
@@ -211,7 +211,7 @@ public class ControllerProperties {
 		return props;
 	}
 
-	public ControllerProperty getProperty(ControllerInterface theController, String theSetter, String theGetter) {
+	public ControllerProperty getProperty(ControllerInterface<?> theController, String theSetter, String theGetter) {
 		ControllerProperty cp = new ControllerProperty(theController, theSetter, theGetter);
 		Iterator<ControllerProperty> iter = allProperties.keySet().iterator();
 		while (iter.hasNext()) {
@@ -227,12 +227,12 @@ public class ControllerProperties {
 		return register(theController, theSetter, theGetter);
 	}
 
-	public ControllerProperty getProperty(ControllerInterface theController, String theProperty) {
+	public ControllerProperty getProperty(ControllerInterface<?> theController, String theProperty) {
 		theProperty = Character.toUpperCase(theProperty.charAt(0)) + theProperty.substring(1);
 		return getProperty(theController, "set" + theProperty, "get" + theProperty);
 	}
 
-	public HashSet<ControllerProperty> getPropertySet(ControllerInterface theController) {
+	public HashSet<ControllerProperty> getPropertySet(ControllerInterface<?> theController) {
 		HashSet<ControllerProperty> set = new HashSet<ControllerProperty>();
 		Iterator<ControllerProperty> iter = allProperties.keySet().iterator();
 		while (iter.hasNext()) {
@@ -266,7 +266,7 @@ public class ControllerProperties {
 		return this;
 	}
 
-	public ControllerProperties move(ControllerInterface theController, String fromSet, String toSet) {
+	public ControllerProperties move(ControllerInterface<?> theController, String fromSet, String toSet) {
 		HashSet<ControllerProperty> set = getPropertySet(theController);
 		for (ControllerProperty cp : set) {
 			move(cp, fromSet, toSet);
@@ -290,7 +290,7 @@ public class ControllerProperties {
 		return this;
 	}
 
-	public ControllerProperties copy(ControllerInterface theController, String... theSet) {
+	public ControllerProperties copy(ControllerInterface<?> theController, String... theSet) {
 		HashSet<ControllerProperty> set = getPropertySet(theController);
 		for (ControllerProperty cp : set) {
 			copy(cp, theSet);
@@ -311,7 +311,7 @@ public class ControllerProperties {
 		return this;
 	}
 
-	public ControllerProperties remove(ControllerInterface theController, String... theSet) {
+	public ControllerProperties remove(ControllerInterface<?> theController, String... theSet) {
 		HashSet<ControllerProperty> set = getPropertySet(theController);
 		for (ControllerProperty cp : set) {
 			remove(cp, theSet);
@@ -331,7 +331,7 @@ public class ControllerProperties {
 		return this;
 	}
 
-	ControllerProperties only(ControllerInterface theController, String... theSet) {
+	ControllerProperties only(ControllerInterface<?> theController, String... theSet) {
 		return this;
 	}
 
@@ -457,7 +457,7 @@ public class ControllerProperties {
 		Set<ControllerProperty> l = _mySnapshots.get(theKey);
 		if (l != null) {
 			for (ControllerProperty cp : l) {
-				ControllerInterface ci = controlP5.getController(cp.getAddress());
+				ControllerInterface<?> ci = controlP5.getController(cp.getAddress());
 				ci = (ci == null) ? controlP5.getGroup(cp.getAddress()) : ci;
 				Method method;
 				try {
@@ -622,7 +622,7 @@ public class ControllerProperties {
 						// String myGetter = getElement(fstElmnt, "getter");
 						try {
 							System.out.print("setting controller " + myAddress + "   ");
-							ControllerInterface ci = controlP5.getController(myAddress);
+							ControllerInterface<?> ci = controlP5.getController(myAddress);
 							ci = (ci == null) ? controlP5.getGroup(myAddress) : ci;
 							System.out.println(ci);
 							Method method;
@@ -747,7 +747,7 @@ public class ControllerProperties {
 				for (int i = 0; i < size; i++) {
 					try {
 						ControllerProperty cp = (ControllerProperty) ois.readObject();
-						ControllerInterface ci = controlP5.getController(cp.getAddress());
+						ControllerInterface<?> ci = controlP5.getController(cp.getAddress());
 						ci = (ci == null) ? controlP5.getGroup(cp.getAddress()) : ci;
 						ci.setId(cp.getId());
 						Method method;

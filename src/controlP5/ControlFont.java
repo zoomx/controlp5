@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -34,9 +34,11 @@ import processing.core.PFont;
 import processing.core.PImage;
 
 /**
- * A ControlFont is a container for a PFont that can be used for customizing the font of a label.
- * Fonts other than the pixel fonts provided by ControlP5 can for now only be used for TextLabels
- * and Controller Labels. Textarea and Textfield are not supported.
+ * A ControlFont is a container for a PFont that can be used to customize the font of a label.
+ * (Designing the Font handling gave me a big headache, especially when it comes to calculating the
+ * dimensions of a font which are not available at all times but only at certain times. The current
+ * status I suppose is a good compromise and works for standard font handling cases. For any special
+ * cases it will be difficult to convince me to make any changes.)
  * 
  * @example extra/ControlP5controlFont
  */
@@ -45,6 +47,12 @@ public class ControlFont {
 	private FontLabel _myFontLabel;
 
 	public static boolean DEBUG = false;
+
+	/**
+	 * set the RENDER_2X variable to true to double render text, this makes the font look bolder
+	 * especially in OpenGL mode. use: ControlFont.RENDER_2X = true;
+	 */
+	public static boolean RENDER_2X;
 
 	public ControlFont(PFont theFont) {
 		this(theFont, theFont.getFont().getSize(), theFont.getFont().getSize());
@@ -122,6 +130,8 @@ public class ControlFont {
 		int getOverflow();
 
 		int getOffset(int theIndex);
+		
+		int getSize();
 
 	}
 
@@ -165,9 +175,13 @@ public class ControlFont {
 			top = -height + bottom;
 			center = -6 + bottom;
 			baseline = 0;
-
 		}
 
+		@Override
+		public int getSize() {
+			return 6;
+		}
+		
 		@Override
 		public void adjust(PApplet theApplet, Label theLabel) {
 			if (_myImage == null) {
@@ -178,18 +192,7 @@ public class ControlFont {
 					adjustTexture(theApplet, theLabel);
 					return;
 				}
-//				if (theLabel.isFixedSize()) {
-//					if (width != theLabel.getWidth() || height != theLabel.getHeight()) {
-//						adjustTexture(theApplet, theLabel);
-//					}
-//				} else {
-					// int n1 = BitFontRenderer.getWidth(theLabel, this);
-					// int n2 = BitFontRenderer.getWidth(plabel, this);
-					// width = n1;
-					// if ((n1 > n2) || (n1 < n2)) {
-					adjustTexture(theApplet, theLabel);
-					// }
-//				}
+				adjustTexture(theApplet, theLabel);
 				BitFontRenderer.write(this, theLabel);
 			}
 		}
@@ -365,6 +368,11 @@ public class ControlFont {
 			// might result in a 1-frame-flickr but doesnt necessarily need
 			// to happen.
 		}
+		
+		@Override
+		public int getSize() {
+			return pfont.getSize();
+		}
 
 		@Override
 		public int getOffset(int theIndex) {
@@ -477,16 +485,19 @@ public class ControlFont {
 			theApplet.textFont(pfont);
 			theApplet.fill(theLabel.getColor());
 			if (theLabel.isMultiline()) {
-//				theApplet.fill(255, 128, 0);
-//				theApplet.rect(0, 0, theLabel.getWidth(), theLabel.getHeight());
+				// theApplet.fill(255, 128, 0);
+				// theApplet.rect(0, 0, theLabel.getWidth(), theLabel.getHeight());
 				theApplet.fill(theLabel.getColor());
 				theApplet.textLeading(theLabel.getLineHeight());
 				theApplet.text(s, 0, 0, theLabel.getWidth(), theLabel.getHeight());
 			} else {
-				theApplet.translate(0, -top);
+				theApplet.translate(0, -top + 1);
 				debug(theApplet, theLabel);
 				theApplet.fill(theLabel.getColor());
 				theApplet.text(theLabel.getTextFormatted(), 0, 0);
+				if (RENDER_2X) {
+					theApplet.text(theLabel.getTextFormatted(), 0, 0);
+				}
 			}
 		}
 

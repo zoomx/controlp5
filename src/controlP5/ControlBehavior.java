@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -36,13 +36,13 @@ package controlP5;
  */
 public abstract class ControlBehavior {
 
-	protected Controller _myController;
+	protected Controller<?> _myController;
 
 	protected float value;
 
 	protected boolean isActive = true;
 
-	protected void init(Controller theController) {
+	protected void init(Controller<?> theController) {
 		_myController = theController;
 	}
 
@@ -51,7 +51,7 @@ public abstract class ControlBehavior {
 	 * 
 	 * @return Controller
 	 */
-	public Controller getController() {
+	public Controller<?> getController() {
 		return _myController;
 	}
 
@@ -102,6 +102,6 @@ public abstract class ControlBehavior {
 	 * @exclude
 	 */
 	@Deprecated
-	public Controller controller() {
+	public Controller<?> controller() {
 		return _myController;
 	}}

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -49,7 +49,7 @@ public class ControlP5Base implements ControlP5Constants {
 
 	ControllerAutomator _myAutomator;
 
-	protected Map<Object, ArrayList<ControllerInterface>> _myObjectToControllerMap = new HashMap<Object, ArrayList<ControllerInterface>>();
+	protected Map<Object, ArrayList<ControllerInterface<?>>> _myObjectToControllerMap = new HashMap<Object, ArrayList<ControllerInterface<?>>>();
 
 	protected Map<String, FieldChangedListener> _myFieldChangedListenerMap = new HashMap<String, FieldChangedListener>();
 
@@ -84,7 +84,7 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	public Button addButton(final Object theObject, String theIndex, final String theName, final float theValue, final int theX, final int theY, final int theW, final int theH) {
-		Button myController = new Button(cp5, (ControllerGroup) cp5.controlWindow.getTabs().get(1), theName, theValue, theX, theY, theW, theH);
+		Button myController = new Button(cp5, (ControllerGroup<?>) cp5.controlWindow.getTabs().get(1), theName, theValue, theX, theY, theW, theH);
 		cp5.register(theObject, theIndex, myController);
 		myController.registerProperty("value");
 		myController.getProperty("value").disable();
@@ -153,12 +153,16 @@ public class ControlP5Base implements ControlP5Constants {
 		return addMatrix(null, "", theName, theCellX, theCellY, theX, theY, theWidth, theHeight);
 	}
 
+	public Slider2D addSlider2D(final String theName) {
+		return addSlider2D(theName, 0, 0, 99, 99);
+	}
+
 	/**
 	 * Adds a 2D slider to controlP5. A 2D slider is a 2D area with 1 cursor returning its xy
 	 * coordinates.
 	 */
 	public Slider2D addSlider2D(Object theObject, final String theIndex, final String theName, float theMinX, float theMaxX, float theMinY, float theMaxY, float theDefaultValueX, float theDefaultValueY, int theX, int theY, int theW, int theH) {
-		Slider2D myController = new Slider2D(cp5, (ControllerGroup) cp5.controlWindow.getTabs().get(1), theName, theX, theY, theW, theH);
+		Slider2D myController = new Slider2D(cp5, (ControllerGroup<?>) cp5.controlWindow.getTabs().get(1), theName, theX, theY, theW, theH);
 		cp5.register(theObject, theIndex, myController);
 		myController.setMinX(theMinX);
 		myController.setMaxX(theMaxX);
@@ -190,7 +194,7 @@ public class ControlP5Base implements ControlP5Constants {
 	 * click, drag or mouse-wheel.
 	 */
 	public Slider addSlider(Object theObject, final String theIndex, final String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theW, int theH) {
-		Slider myController = new Slider(cp5, (ControllerGroup) cp5.controlWindow.getTabs().get(1), theName, theMin, theMax, theDefaultValue, theX, theY, theW, theH);
+		Slider myController = new Slider(cp5, (ControllerGroup<?>) cp5.controlWindow.getTabs().get(1), theName, theMin, theMax, theDefaultValue, theX, theY, theW, theH);
 		cp5.register(theObject, theIndex, myController);
 		myController.registerProperty("value").registerProperty("min").registerProperty("max");
 		return myController;
@@ -208,11 +212,15 @@ public class ControlP5Base implements ControlP5Constants {
 		return addSlider(theObject, theIndex, theName, theMin, theMax, theMin, theX, theY, theW, theH);
 	}
 
+	public Range addRange(final String theName) {
+		return addRange(theName, 0, 100, 0, 100, 0, 0, 99, 9);
+	}
+
 	/**
 	 * A range controller, a slider that allows control on both ends of the slider.
 	 */
 	public Range addRange(Object theObject, final String theIndex, String theName, float theMin, float theMax, float theDefaultMinValue, float theDefaultMaxValue, int theX, int theY, int theW, int theH) {
-		Range myController = new Range(cp5, (ControllerGroup) cp5.controlWindow.getTabs().get(1), theName, theMin, theMax, theDefaultMinValue, theDefaultMaxValue, theX, theY,
+		Range myController = new Range(cp5, (ControllerGroup<?>) cp5.controlWindow.getTabs().get(1), theName, theMin, theMax, theDefaultMinValue, theDefaultMaxValue, theX, theY,
 				theW, theH);
 		cp5.register(theObject, theIndex, myController);
 		myController.registerProperty("lowValue").registerProperty("highValue");
@@ -289,6 +297,11 @@ public class ControlP5Base implements ControlP5Constants {
 		return addMultiList(null, "", theName, theX, theY, theWidth, theHeight);
 	}
 
+	
+	public Textlabel addTextlabel(final String theName) {
+		return addTextlabel(theName,"",0,0);
+	}
+	
 	public Textlabel addTextlabel(final Object theObject, final String theIndex, final String theName, final String theText, final int theX, final int theY) {
 		Textlabel myController = new Textlabel(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theText, theX, theY);
 		cp5.register(theObject, theIndex, myController);
@@ -307,7 +320,11 @@ public class ControlP5Base implements ControlP5Constants {
 	public Textlabel addTextlabel(final String theName, final String theText) {
 		return addTextlabel(null, "", theName, theText, 0, 0);
 	}
-
+	
+	
+	public Textarea addTextarea(final String theName) {
+		return addTextarea(theName, "", 0,0,199,99);
+	}
 	/**
 	 * A Textarea is a label without any controller functionality and can be used to leave notes,
 	 * headlines, etc when extending the dedicated area of the Textrea, a scrollbar is added on the
@@ -318,6 +335,10 @@ public class ControlP5Base implements ControlP5Constants {
 		cp5.register(null, "", myController);
 		myController.registerProperty("text");
 		return myController;
+	}
+
+	public Textfield addTextfield(final String theIndex) {
+		return addTextfield(theIndex, 0, 0, 199, 19);
 	}
 
 	/**
@@ -335,11 +356,17 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	public Textfield addTextfield(final Object theObject, final String theIndex, final String theName) {
-		return addTextfield(theObject, theIndex, theName, 0, 0, 100, 20);
+		return addTextfield(theObject, theIndex, theName, 0, 0, 99, 19);
 	}
 
 	// TODO
 	// addTextarea theObject
+
+	public Accordion addAccordion(String theName) {
+		Accordion myController = new Accordion(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, 0, 0, 200);
+		cp5.register(null, "", myController);
+		return myController;
+	}
 
 	public Accordion addAccordion(String theName, int theX, int theY, int theWidth) {
 		Accordion myController = new Accordion(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theX, theY, theWidth);
@@ -350,6 +377,10 @@ public class ControlP5Base implements ControlP5Constants {
 	/**
 	 * Use radio buttons for multiple choice options.
 	 */
+	public RadioButton addRadioButton(final String theName) {
+		return addRadioButton(theName, 0, 0);
+	}
+
 	public RadioButton addRadioButton(final String theName, final int theX, final int theY) {
 		RadioButton myController = new RadioButton(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theX, theY);
 		cp5.register(null, "", myController);
@@ -363,6 +394,10 @@ public class ControlP5Base implements ControlP5Constants {
 	/**
 	 * Use a checkbox for single choice options
 	 */
+	public CheckBox addCheckBox(final String theName) {
+		return addCheckBox(theName, 0, 0);
+	}
+
 	public CheckBox addCheckBox(final String theName, final int theX, final int theY) {
 		CheckBox myController = new CheckBox(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theX, theY);
 		cp5.register(null, "", myController);
@@ -372,6 +407,10 @@ public class ControlP5Base implements ControlP5Constants {
 
 	// TODO
 	// addCheckBox theObject
+
+	public ListBox addListBox(final String theName) {
+		return addListBox(theName, 0, 0, 99, 199);
+	}
 
 	/**
 	 * A list box is a list of items a user can choose from. When items exceed the dedicated area of
@@ -388,6 +427,10 @@ public class ControlP5Base implements ControlP5Constants {
 	// TODO
 	// addListBox theObject
 
+	public DropdownList addDropdownList(final String theName) {
+		return addDropdownList(theName, 0, 0, 99, 99);
+	}
+
 	public DropdownList addDropdownList(final String theName, final int theX, final int theY, final int theW, final int theH) {
 		DropdownList myController = new DropdownList(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theX, theY, theW, theH);
 		cp5.register(null, "", myController);
@@ -398,6 +441,10 @@ public class ControlP5Base implements ControlP5Constants {
 	// TODO
 	// addDropdownList theObject
 
+	public ColorPicker addColorPicker(final String theName) {
+		return addColorPicker(theName, 0,0, 255, 20);
+	}
+			
 	/**
 	 * adds a simple RGBA colorpicker.
 	 */
@@ -410,6 +457,10 @@ public class ControlP5Base implements ControlP5Constants {
 
 	// TODO
 	// addColorPicker theObject
+
+	public Chart addChart(String theName) {
+		return addChart(theName, 0, 0, 200, 100);
+	}
 
 	/**
 	 * adds chart support to display float array based data.
@@ -424,18 +475,21 @@ public class ControlP5Base implements ControlP5Constants {
 	 * A controller group can be used to group controllers for a better organization of single
 	 * controllers.
 	 */
-	public ControlGroup addGroup(Object theObject, final String theIndex, String theName, int theX, int theY, int theW) {
-		ControlGroup myController = new ControlGroup(cp5, (ControllerGroup) cp5.controlWindow.getTabs().get(1), theName, theX, theY, theW, 9);
+	public Group addGroup(Object theObject, final String theIndex, String theName, int theX, int theY, int theW) {
+		Group myController = new Group(cp5, (ControllerGroup<?>) cp5.controlWindow.getTabs().get(1), theName, theX, theY, theW, 9);
 		cp5.register(theObject, theIndex, myController);
 		return myController;
-
 	}
 
-	public ControlGroup addGroup(String theName, int theX, int theY, int theW) {
+	public Group addGroup(String theName, int theX, int theY, int theW) {
 		return addGroup(null, "", theName, theX, theY, theW);
 	}
 
-	public ControlGroup addGroup(String theName, int theX, int theY) {
+	public Group addGroup(String theName) {
+		return addGroup(theName, 0, 0);
+	}
+
+	public Group addGroup(String theName, int theX, int theY) {
 		return addGroup(null, "", theName, theX, theY, 99);
 	}
 
@@ -457,7 +511,7 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	public ControlWindow addControlWindow(final String theWindowName, final int theWidth, final int theHeight) {
-		return addControlWindow(theWindowName, 400, 200, theWidth, theHeight, "", 30);
+		return addControlWindow(theWindowName, 100, 100, theWidth, theHeight, "", 30);
 	}
 
 	public ControlWindow addControlWindow(final String theWindowName, final int theX, final int theY, final int theWidth, final int theHeight) {
@@ -476,18 +530,18 @@ public class ControlP5Base implements ControlP5Constants {
 		return getTextlabel("", 0, 0);
 	}
 
-	protected ControllerGroup currentGroupPointer;
+	protected ControllerGroup<?> currentGroupPointer;
 
 	protected boolean isCurrentGroupPointerClosed = true;
 
 	protected int autoDirection = HORIZONTAL;
 
-	protected void setCurrentPointer(ControllerGroup theGroup) {
+	protected void setCurrentPointer(ControllerGroup<?> theGroup) {
 		currentGroupPointer = theGroup;
 		isCurrentGroupPointerClosed = false;
 	}
 
-	protected void releaseCurrentPointer(ControllerGroup theGroup) {
+	protected void releaseCurrentPointer(ControllerGroup<?> theGroup) {
 		if (isCurrentGroupPointerClosed == false) {
 			currentGroupPointer = theGroup;
 			isCurrentGroupPointerClosed = true;
@@ -526,7 +580,7 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	@SuppressWarnings("static-access")
-	protected void linebreak(Controller theController, boolean theFlag, int theW, int theH, PVector theSpacing) {
+	protected void linebreak(Controller<?> theController, boolean theFlag, int theW, int theH, PVector theSpacing) {
 		if (currentGroupPointer.autoPosition.x + theController.autoSpacing.x + theW > cp5.papplet.width) {
 			currentGroupPointer.autoPosition.y += currentGroupPointer.tempAutoPositionHeight;
 			currentGroupPointer.autoPosition.x = currentGroupPointer.autoPositionOffsetX;
@@ -620,8 +674,16 @@ public class ControlP5Base implements ControlP5Constants {
 		return addToggle(null, "", theName);
 	}
 
+	public Toggle addToggle(String theName, boolean theValue) {
+		return addToggle(null, "", theName, theValue);
+	}
+
 	public Toggle addToggle(Object theObject, final String theIndex, String theName) {
-		Toggle t = addToggle(theObject, theIndex, theName, currentGroupPointer.autoPosition.x, currentGroupPointer.autoPosition.y, Toggle.autoWidth, Toggle.autoHeight);
+		return addToggle(theObject, theIndex, theName, false);
+	}
+
+	public Toggle addToggle(Object theObject, final String theIndex, String theName, boolean theValue) {
+		Toggle t = addToggle(theObject, theIndex, theName, theValue, currentGroupPointer.autoPosition.x, currentGroupPointer.autoPosition.y, Toggle.autoWidth, Toggle.autoHeight);
 		linebreak(t, false, Toggle.autoWidth, Toggle.autoHeight, t.autoSpacing);
 		t.moveTo(currentGroupPointer);
 		return t;
@@ -661,7 +723,7 @@ public class ControlP5Base implements ControlP5Constants {
 	}
 
 	public ControlWindow addControlWindow(String theName) {
-		return addControlWindow(theName, 20, 20, 400, 400);
+		return addControlWindow(theName, 20, 20, 300, 400);
 	}
 
 	/**
@@ -670,25 +732,25 @@ public class ControlP5Base implements ControlP5Constants {
 	 * application level.
 	 */
 	public <C> C addController(final Object theObject, final String theIndex, final String theName, final Class<C> theClass, int theX, int theY) {
-		Controller c = null;
+		Controller<?> c = null;
 		if (theClass.equals(Slider.class)) {
-			c = addSlider(theObject, theIndex, theName, 0, 100, 0, 0, 0, 100, 10);
+			c = addSlider(theObject, theIndex, theName, 0, 100, 0, 0, 0, 99, 9);
 		} else if (theClass.equals(Bang.class)) {
-			c = addBang(theObject, theIndex, theName, 0, 0, 20, 20);
+			c = addBang(theObject, theIndex, theName, 0, 0, 19, 19);
 		} else if (theClass.equals(Button.class)) {
-			c = addButton(theObject, theIndex, theName, 0, 0, 0, 50, 20);
+			c = addButton(theObject, theIndex, theName, 0, 0, 0, 49, 19);
 		} else if (theClass.equals(Knob.class)) {
-			c = addKnob(theObject, theIndex, theName, 0, 100, 0, 0, 0, 50);
+			c = addKnob(theObject, theIndex, theName, 0, 100, 0, 0, 0, 49);
 		} else if (theClass.equals(Numberbox.class)) {
-			c = addNumberbox(theObject, theIndex, theName, 0, 0, 0, 100, 20);
+			c = addNumberbox(theObject, theIndex, theName, 0, 0, 0, 99, 19);
 		} else if (theClass.equals(Toggle.class)) {
-			c = addToggle(theObject, theIndex, theName, false, 0, 0, 50, 20);
+			c = addToggle(theObject, theIndex, theName, false, 0, 0, 49, 19);
 		} else if (theClass.equals(Textfield.class)) {
-			c = addTextfield(theObject, theIndex, theName, 0, 0, 100, 20);
+			c = addTextfield(theObject, theIndex, theName, 0, 0, 99, 19);
 		} else if (theClass.equals(Range.class)) {
-			c = addRange(theObject, theIndex, theName, 0, 100, 0, 100, 0, 0, 100, 10);
+			c = addRange(theObject, theIndex, theName, 0, 100, 0, 100, 0, 0, 99, 9);
 		} else if (theClass.equals(Slider2D.class)) {
-			c = addSlider2D(theObject, theIndex, theName, 0, 100, 0, 100, 0, 0, 0, 0, 100, 100);
+			c = addSlider2D(theObject, theIndex, theName, 0, 100, 0, 100, 0, 0, 0, 0, 99, 99);
 		} else if (theClass.equals(Textlabel.class)) {
 			c = addTextlabel(theName, "<empty>");
 		}
@@ -699,11 +761,12 @@ public class ControlP5Base implements ControlP5Constants {
 
 	/**
 	 * Use with caution, only for internal use.
+	 * 
 	 * @exclude
 	 */
 	@ControlP5.Invisible
 	public <C> C addGroup(final Object theObject, final String theIndex, final String theName, final Class<C> theClass, int theX, int theY, int theW, int theH) {
-		ControlGroup c = null;
+		ControlGroup<?> c = null;
 		if (theClass.equals(DropdownList.class)) {
 			c = addDropdownList(theName, theX, theY, theW, theH);
 		} else if (theClass.equals(ListBox.class)) {
@@ -715,6 +778,8 @@ public class ControlP5Base implements ControlP5Constants {
 		} else if (theClass.equals(CheckBox.class)) {
 			c = addCheckBox(theName, theX, theY);
 		} else if (theClass.equals(ControlGroup.class)) {
+			c = addGroup(theName, theX, theY);
+		} else if (theClass.equals(Group.class)) {
 			c = addGroup(theName, theX, theY);
 		}
 		c.setPosition(theX, theY);
@@ -744,12 +809,12 @@ public class ControlP5Base implements ControlP5Constants {
 		return this;
 	}
 
-	public Controller getController(String theName, Object theObject) {
+	public Controller<?> getController(String theName, Object theObject) {
 		if (_myObjectToControllerMap.containsKey(theObject)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
-			for (ControllerInterface c : cs) {
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface<?> c : cs) {
 				if (c.getName().equals(theName)) {
-					return (Controller) c;
+					return (Controller<?>) c;
 				}
 			}
 		}
@@ -773,8 +838,8 @@ public class ControlP5Base implements ControlP5Constants {
 
 	public ControlP5Base setPosition(int theX, int theY, Object o) {
 		if (o != null && _myObjectToControllerMap.containsKey(o)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(o);
-			for (ControllerInterface c : cs) {
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(o);
+			for (ControllerInterface<?> c : cs) {
 				int x = (int) c.getPosition().x + theX;
 				int y = (int) c.getPosition().y + theY;
 				c.setPosition(x, y);
@@ -785,8 +850,8 @@ public class ControlP5Base implements ControlP5Constants {
 
 	public ControlP5Base hide(Object theObject) {
 		if (theObject != null && _myObjectToControllerMap.containsKey(theObject)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
-			for (ControllerInterface c : cs) {
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface<?> c : cs) {
 				c.hide();
 			}
 		}
@@ -795,8 +860,8 @@ public class ControlP5Base implements ControlP5Constants {
 
 	public ControlP5Base show(Object theObject) {
 		if (theObject != null && _myObjectToControllerMap.containsKey(theObject)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
-			for (ControllerInterface c : cs) {
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface<?> c : cs) {
 				c.show();
 			}
 		}
@@ -805,8 +870,8 @@ public class ControlP5Base implements ControlP5Constants {
 
 	public ControlP5Base remove(Object theObject) {
 		if (theObject != null && _myObjectToControllerMap.containsKey(theObject)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
-			for (ControllerInterface c : cs) {
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface<?> c : cs) {
 				c.remove();
 			}
 		}
@@ -815,8 +880,8 @@ public class ControlP5Base implements ControlP5Constants {
 
 	public ControlP5Base setColor(CColor theColor, Object theObject) {
 		if (_myObjectToControllerMap.containsKey(theObject)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
-			for (ControllerInterface c : cs) {
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface<?> c : cs) {
 				c.setColor(theColor);
 			}
 		}
@@ -837,10 +902,10 @@ public class ControlP5Base implements ControlP5Constants {
 		return this;
 	}
 
-	public ControlP5Base moveTo(ControllerGroup theController, Object theObject) {
+	public ControlP5Base moveTo(ControllerGroup<?> theController, Object theObject) {
 		if (_myObjectToControllerMap.containsKey(theObject)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
-			for (ControllerInterface c : cs) {
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface<?> c : cs) {
 				c.moveTo(theController);
 			}
 		}
@@ -853,7 +918,7 @@ public class ControlP5Base implements ControlP5Constants {
 		return _myProperties;
 	}
 
-	public void removeProperty(ControllerInterface theController) {
+	public void removeProperty(ControllerInterface<?> theController) {
 		_myProperties.remove(theController);
 	}
 
@@ -874,7 +939,7 @@ public class ControlP5Base implements ControlP5Constants {
 		str += "* find a list of public methods available for the " + theClass.getSimpleName() + " Controller\n";
 		str += "* at the bottom of this sketch.\n";
 		str += "*\n";
-		str += "* by Andreas Schlegel, 2011\n";
+		str += "* by Andreas Schlegel, 2012\n";
 		str += "* www.sojamo.de/libraries/controlp5\n";
 		str += "*\n";
 		str += "*/\n\n";
@@ -928,7 +993,8 @@ public class ControlP5Base implements ControlP5Constants {
 						if (params.length() > 0) {
 							params = params.substring(0, params.length() - 2);
 						}
-						s.add(c.getCanonicalName() + " : " + method.getReturnType().getSimpleName() + " " + method.getName() + "(" + params + ") ");
+						s.add(c.getCanonicalName() + " : " + method.getReturnType().getSimpleName().replace("Object", theClass.getSimpleName()) + " " + method.getName() + "("
+								+ params + ") ");
 					}
 				}
 			}

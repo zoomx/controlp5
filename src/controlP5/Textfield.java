@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import processing.core.PApplet;
+import processing.core.PFont;
 
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -37,15 +39,17 @@ import processing.core.PApplet;
  * A singleline input textfield, use arrow keys to go back and forth, use backspace to delete
  * characters. Using the up and down arrows lets you cycle through the history of the textfield.
  * 
+ * This is the best you can get. Font handling, font switching, measuring, left align, right align,
+ * etc. was giving me a big headache. not perfect, i think this is a good compromise.
+ * 
  * @example controllers/ControlP5textfield
  * @nosuperclasses Controller Controller
  */
-public class Textfield extends Controller {
-	
+public class Textfield extends Controller<Textfield> {
+
 	/*
-	 * TODO 
-	 * textspacing does not work properly for bitfonts
-	 * sometimes first row of pixels in a bitfont texture gets cut off
+	 * TODO textspacing does not work properly for bitfonts sometimes first row of pixels in a
+	 * bitfont texture gets cut off
 	 */
 
 	private boolean isTexfieldActive;
@@ -64,7 +68,7 @@ public class Textfield extends Controller {
 
 	private Map<Integer, TextfieldCommand> keyMapping;
 
-	private InputFilter _myInputFilter = InputFilter.DEFAULT;
+	private InputFilter _myInputFilter = InputFilter.BITFONT;
 
 	private List<Integer> ignorelist;
 
@@ -76,14 +80,22 @@ public class Textfield extends Controller {
 
 	private int len = 0;
 
-	int offset = 4;
+	private int offset = 2;
 
-	int margin = 2;
+	private int margin = 2;
+
+	private boolean isPasswordMode;
 	
+	private boolean autoclear = true;
+
+	private int _myColorCursor = 0x88ffffff;
 	
 	public enum InputFilter {
-		INTEGER(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')), FLOAT(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')), DEFAULT(
-				new LinkedList<Character>());
+		INTEGER(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')), FLOAT(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')), BITFONT(Arrays
+				.asList('\n', '\r', ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';',
+						'<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+						'[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',
+						'z', '{', '|', '}', '~')), DEFAULT(new LinkedList<Character>());
 
 		final List<Character> allowed;
 
@@ -101,9 +113,12 @@ public class Textfield extends Controller {
 
 	}
 
-	public Textfield(ControlP5 theControlP5, ControllerGroup theParent, String theName, String theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
+	public Textfield(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, String theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel = new Label(cp5, theName.toUpperCase(), 0, 0, color.getCaptionLabel());
+		_myCaptionLabel.align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE);
+		_myCaptionLabel.setPaddingX(0);
+		
 		_myBroadcastType = STRING;
 		_myValueLabel.setFixedSize(true);
 		_myValueLabel.set("");
@@ -112,7 +127,11 @@ public class Textfield extends Controller {
 		_myValueLabel.align(LEFT, CENTER);
 		_myValueLabel.setColor(color.getValueLabel());
 		_myValueLabel.toUpperCase(false);
-		_myValueLabel.setFont(ControlP5.bitFont == ControlP5.standard58 ? ControlP5.standard56 : ControlP5.bitFont);
+		
+		if (_myValueLabel.getFont().get() instanceof ControlFont.BitFontLabel) {
+			_myValueLabel.setFont(ControlP5.standard56);
+		}
+
 		_myValueLabel.setLabeltype(_myValueLabel.new SinglelineTextfield());
 
 		_myHistory = new LinkedList<String>();
@@ -135,7 +154,7 @@ public class Textfield extends Controller {
 		ignorelist.add(TAB);
 		ignorelist.add(COMMANDKEY);
 
-		setInputFilter(DEFAULT);
+		setInputFilter((_myValueLabel.getFont().get() instanceof ControlFont.BitFontLabel) ? BITFONT : DEFAULT);
 		changed = true;
 
 	}
@@ -153,6 +172,32 @@ public class Textfield extends Controller {
 		}
 		return this;
 	}
+	
+	public Textfield setFont(PFont thePFont) {
+		getValueLabel().setFont(thePFont);
+		return this;
+	}
+	
+	public Textfield setFont(ControlFont theFont) {
+		getValueLabel().setFont(theFont);
+		return this;
+	}
+	
+	public Textfield setFont(int theFont) {
+		getValueLabel().setFont(theFont);
+		return this;
+	}
+	/**
+	 * TODO
+	 * set the mode of the textfield to password mode, each character is shown as a "*" like e.g. in
+	 * online password forms.
+	 * 
+	 * @param theFlag boolean
+	 */
+	public void setPasswordMode(boolean theFlag) {
+		ControlP5.logger().info("Password mode is not available with this version.");
+		isPasswordMode = theFlag;
+	}
 
 	public void setInputFilter(int theInputType) {
 		switch (theInputType) {
@@ -162,6 +207,9 @@ public class Textfield extends Controller {
 		case (FLOAT):
 			_myInputFilter = InputFilter.FLOAT;
 			break;
+		case (BITFONT):
+			_myInputFilter = InputFilter.BITFONT;
+			break;
 		default:
 			_myInputFilter = InputFilter.DEFAULT;
 			break;
@@ -170,7 +218,7 @@ public class Textfield extends Controller {
 
 	@Override
 	public Textfield setValue(float theValue) {
-		setValue("" + theValue);
+		// use setText(String) instead
 		return this;
 	}
 
@@ -190,16 +238,33 @@ public class Textfield extends Controller {
 	public Textfield setText(String theText) {
 		return setValue(theText);
 	}
+	
+	public Textfield clear() {
+		// create a new text buffer
+		_myTextBuffer = new StringBuffer();
+		// reset the buffer index
+		setIndex(0);
+		return this;
+	}
+	
+	public Textfield setAutoClear(boolean theValue) {
+		autoclear = theValue;
+		return this;
+	}
+	
+	public boolean isAutoClear() {
+		return autoclear;
+	}
 
 	@Override
 	protected void mousePressed() {
 		if (isActive) {
-			System.out.println("adjust cursor");
+			// TODO System.out.println("adjust cursor");
 		}
 		int x = (int) (getControlWindow().mouseX - getAbsolutePosition().x);
 		int y = (int) (getControlWindow().mouseY - getAbsolutePosition().y);
 
-		System.out.println(x + ":" + y);
+		// TODO System.out.println(x + ":" + y);
 		setFocus(true);
 	}
 
@@ -214,10 +279,20 @@ public class Textfield extends Controller {
 		return _myTextBufferIndex;
 	}
 
-	String getText() {
+	public String getText() {
 		return _myTextBuffer.toString();
 	}
-
+	
+	public Textfield setColor(int theColor) {
+		getValueLabel().setColor(theColor);
+		return this;
+	}
+	
+	public Textfield setColorCursor(int theColor) {
+		_myColorCursor = theColor;
+		return this;
+	}
+	
 	@Override
 	public void draw(PApplet theApplet) {
 		if (changed) {
@@ -230,36 +305,38 @@ public class Textfield extends Controller {
 		theApplet.translate(position.x, position.y);
 		theApplet.rect(0, 0, width, height);
 		theApplet.noStroke();
-		theApplet.fill(isTexfieldActive ? color.getActive() : color.getForeground());
-		theApplet.rect(0, 0, width, 1);
-		theApplet.rect(0, height - 1, width, 1);
-		theApplet.rect(-1, 0, 1, height);
-		theApplet.rect(width, 0, 1, height);
 
-		theApplet.fill(_myValueLabel.getColor(), 128);
-
+		theApplet.fill(_myColorCursor);
+		theApplet.pushMatrix();
 		if (_myValueLabel.getFont().get() instanceof ControlFont.PFontLabel) {
 			if (_myTextBufferIndexPosition > len - offset) {
 				theApplet.textAlign(PApplet.RIGHT);
-				theApplet.translate(getWidth() - margin * 2, 0);
+				theApplet.translate(getWidth() - margin, 0);
 				if (isTexfieldActive) {
-					theApplet.rect(2, 2, cursorWidth, height - 4);
+					theApplet.rect(0, 0, cursorWidth, height);
 				}
 			} else {
 				theApplet.textAlign(PApplet.LEFT);
 				theApplet.translate(margin, 0);
 				if (isTexfieldActive) {
-					theApplet.rect(PApplet.max(0, PApplet.min(_myTextBufferIndexPosition, getWidth() - margin)), 2, cursorWidth, height - 4);
+					theApplet.rect(PApplet.max(0, PApplet.min(_myTextBufferIndexPosition, getWidth() - margin)), 0, cursorWidth, height);
 				}
 			}
 		} else {
 			theApplet.translate(margin, 0);
 			if (isTexfieldActive) {
-				theApplet.rect(PApplet.min(getWidth() - margin * 2, _myTextBufferIndexPosition), 2, cursorWidth, height - 4);
+				theApplet.rect(PApplet.min(getWidth() - margin * 2, _myTextBufferIndexPosition), 0, cursorWidth, height);
 			}
 		}
-
 		_myValueLabel.draw(theApplet, 0, 0, this);
+		theApplet.popMatrix();
+		
+		theApplet.fill(isTexfieldActive ? color.getActive() : color.getForeground());
+		theApplet.rect(0, 0, width, 1);
+		theApplet.rect(0, height - 1, width, 1);
+		theApplet.rect(-1, 0, 1, height);
+		theApplet.rect(width, 0, 1, height);
+		_myCaptionLabel.draw(theApplet,0,0,this);
 		theApplet.popMatrix();
 		theApplet.popStyle();
 	}
@@ -273,6 +350,9 @@ public class Textfield extends Controller {
 	}
 
 	private void updateLabelBitFont(PApplet theApplet) {
+		if (_myInputFilter == InputFilter.DEFAULT) {
+			setInputFilter(BITFONT);
+		}
 		String str = getText();
 		String t1 = str;
 		int ww = ControlFont.getWidthFor(getText(), _myValueLabel, theApplet);
@@ -310,10 +390,14 @@ public class Textfield extends Controller {
 	}
 
 	private void updateLabelPFont(PApplet theApplet) {
+		if (_myInputFilter == InputFilter.BITFONT) {
+			setInputFilter(DEFAULT);
+		}
 		String str = getText();
 		String t1 = str;
+		int off = margin * 2;
 		int ww = ControlFont.getWidthFor(str, _myValueLabel, theApplet);
-		if ((ww < getWidth() - margin * 2)) {
+		if ((ww < getWidth() - off)) {
 			_myTextBufferIndexPosition = ControlFont.getWidthFor(t1.substring(0, _myTextBufferIndex), _myValueLabel, theApplet);
 			len = getWidth();
 		} else {
@@ -322,7 +406,7 @@ public class Textfield extends Controller {
 			int n = 0;
 			for (int i = 0; i < c.length; i++) {
 				n += theApplet.textWidth(c[i]);
-				if (n > _myValueLabel.getWidth() - offset) {
+				if (n > _myValueLabel.getWidth() - off) {
 					break;
 				}
 				len = n;
@@ -333,7 +417,7 @@ public class Textfield extends Controller {
 			for (int i = PApplet.max(mx, _myTextBufferIndex - 1); i >= 0; i--) {
 				n += theApplet.textWidth(c[i]);
 				t1 = c[i] + t1;
-				if (n >= _myValueLabel.getWidth() - offset) {
+				if (n >= _myValueLabel.getWidth() - off) {
 					_myTextBufferOverflow = str.indexOf(t1);
 					break;
 				}
@@ -378,16 +462,17 @@ public class Textfield extends Controller {
 
 	class Enter implements TextfieldCommand {
 		public void execute() {
+			setStringValue(_myTextBuffer.toString());
+			broadcast();
 			// update current buffer with the last item inside the input history
 			_myHistory.set(_myHistory.size() - 1, _myTextBuffer.toString());
 			// set the history index to our last item
 			_myHistoryIndex = _myHistory.size();
 			// add a new and empty buffer to the history
 			_myHistory.add("");
-			// create a new text buffer
-			_myTextBuffer = new StringBuffer();
-			// reset the buffer index
-			setIndex(0);
+			if(autoclear) {
+				clear();
+			}
 		}
 	}
 

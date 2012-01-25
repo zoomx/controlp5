@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -39,7 +39,7 @@ import processing.core.PApplet;
  * 
  * @example controllers/ControlP5slider
  */
-public class Slider extends Controller {
+public class Slider extends Controller<Slider> {
 
 	public final static int FIX = 1;
 
@@ -61,11 +61,9 @@ public class Slider extends Controller {
 
 	protected boolean isSnapToTickMarks;
 
-	protected static int autoWidth = 100;
+	protected static int autoWidth = 99;
 
-	protected static int autoHeight = 10;
-
-	protected int alignValueLabel = CENTER;
+	protected static int autoHeight = 9;
 
 	private float scrollSensitivity = 0.1f;
 
@@ -73,10 +71,10 @@ public class Slider extends Controller {
 
 	private SliderView _myView;
 
-	/*
-	 * TODO currently the slider value goes up and down linear, provide an option to make it
-	 * logarithmic, potential, curved.
-	 */
+	private float _myMinReal = 0;
+
+	private float _myMaxReal = 1;
+
 	/**
 	 * 
 	 * @example ControlP5slider
@@ -92,21 +90,43 @@ public class Slider extends Controller {
 	 * @param theWidth int
 	 * @param theHeight int
 	 */
-	public Slider(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
+	public Slider(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myMin = theMin;
-		_myMax = theMax;
-		_myValue = theDefaultValue;
-		
-		_myCaptionLabel = new Label(cp5, theName).setColor(color.getCaptionLabel());
-		
-		_myValueLabel = new Label(cp5, "" + (((adjustValue(_myMax)).length() > (adjustValue(_myMin)).length()) ? adjustValue(_myMax) : adjustValue(_myMin)));
-		_myValueLabel.setColor(color.getValueLabel()).set("" + adjustValue(_myValue));
 
-		_myView = (width > height) ? new SliderViewH() : new SliderViewV();
+		_myMin = 0;
+		_myMax = 1;
+		
+		// with _myMinReal and _myMaxReal the range of values can now range 
+		// from big to small (e.g. 255 to 0) as well as from small to big (e.g. 0 to 255)
+		_myMinReal = theMin;
+		_myMaxReal = theMax;
+		
+		_myValue = PApplet.map(theDefaultValue, _myMinReal, _myMaxReal, 0, 1);
+
+		_myCaptionLabel = new Label(cp5, theName).setColor(color.getCaptionLabel());
+		_myValueLabel = new Label(cp5, "" + getValue()).setColor(color.getValueLabel());
 
 		setSliderMode(FIX);
-
+		
+	}
+	
+	
+	@ControlP5.Invisible
+	@Override
+	public void init() {
+		// need to override init here since _myValue will only be a 
+		// normalized value here but _myDefaultValue needs to be absolute.
+		// by normalizing _myValue the range of values can be from 'big-to-small'
+		// as well as from 'small-to-big'
+		// in order not to break anything, init() will be overriden here.
+		
+		_myDefaultValue = getValue();
+		cp5.getControlBroadcaster().plug(cp5.papplet, this, _myName);
+		initControllerValue();
+		isInit = cp5.isAutoInitialization;
+		setValue(_myDefaultValue);
+		isInit = true;
+		updateDisplayMode(DEFAULT);
 	}
 
 	/**
@@ -115,7 +135,9 @@ public class Slider extends Controller {
 	 * 
 	 * @param theMode int
 	 */
-	public void setSliderMode(int theMode) {
+	public Slider setSliderMode(int theMode) {
+		_myView = (width > height) ? new SliderViewH() : new SliderViewV();
+		_myControllerView = (width > height) ? new SliderViewH() : new SliderViewV();
 		_mySliderMode = theMode;
 		if (_mySliderMode == FLEXIBLE) {
 			_myHandleSize = (_myDefaultHandleSize >= getHeight() / 2) ? _myDefaultHandleSize / 2 : _myDefaultHandleSize;
@@ -123,7 +145,8 @@ public class Slider extends Controller {
 			_myHandleSize = 0;
 		}
 		_myView.updateUnit();
-		setValue(_myValue);
+		setValue(PApplet.map(_myValue, 0, 1, _myMinReal, _myMaxReal));
+		return this;
 	}
 
 	public int getSliderMode() {
@@ -136,9 +159,10 @@ public class Slider extends Controller {
 	 * 
 	 * @param theSize
 	 */
-	public void setHandleSize(int theSize) {
+	public Slider setHandleSize(int theSize) {
 		_myDefaultHandleSize = theSize;
 		setSliderMode(_mySliderMode);
+		return this;
 	}
 
 	public int getHandleSize() {
@@ -165,8 +189,9 @@ public class Slider extends Controller {
 	 * 
 	 * @param theEventID
 	 */
-	public void setTriggerEvent(int theEventID) {
+	public Slider setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
+		return this;
 	}
 
 	/**
@@ -191,11 +216,12 @@ public class Slider extends Controller {
 		}
 	}
 
-	protected void snapValue(float theValue) {
+	protected Slider snapValue(float theValue) {
 		if (isSnapToTickMarks) {
 			_myValuePosition = ((_myValue - _myMin) / _myUnit);
 			_myView.setSnapValue();
 		}
+		return this;
 	}
 
 	public float getValuePosition() {
@@ -209,19 +235,25 @@ public class Slider extends Controller {
 	 */
 	@Override
 	public Slider setValue(float theValue) {
-		if (isMousePressed && theValue == _myValue) {
+		if (isMousePressed && theValue == getValue()) {
 			return this;
 		}
-		_myValue = theValue;
+
+		_myValue = PApplet.map(theValue, _myMinReal, _myMaxReal, 0, 1);
 		snapValue(_myValue);
 		_myValue = (_myValue <= _myMin) ? _myMin : _myValue;
 		_myValue = (_myValue >= _myMax) ? _myMax : _myValue;
 		_myValuePosition = ((_myValue - _myMin) / _myUnit);
-		_myValueLabel.set(adjustValue(_myValue));
+		_myValueLabel.set(adjustValue(getValue()));
 		if (triggerId == PRESSED) {
 			broadcast(FLOAT);
 		}
 		return this;
+	}
+
+	@Override
+	public float getValue() {
+		return PApplet.map(_myValue, 0, 1, _myMinReal, _myMaxReal);
 	}
 
 	/**
@@ -229,7 +261,7 @@ public class Slider extends Controller {
 	 */
 	public Slider shuffle() {
 		float r = (float) Math.random();
-		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
+		setValue(PApplet.map(r, 0, 1, _myMinReal, _myMaxReal));
 		return this;
 	}
 
@@ -256,10 +288,10 @@ public class Slider extends Controller {
 	@ControlP5.Invisible
 	public Slider scrolled(int theRotationValue) {
 		if (isVisible) {
-			float f = getValue();
+			float f = _myValue;
 			float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity * 0.1f;
-			f += (getMax() - getMin()) * (-theRotationValue * steps);
-			setValue(f);
+			f += (_myMax - _myMin) * (-theRotationValue * steps);
+			setValue(PApplet.map(f, 0, 1, _myMinReal, _myMaxReal));
 			if (triggerId == RELEASE) {
 				broadcast(FLOAT);
 			}
@@ -269,7 +301,7 @@ public class Slider extends Controller {
 
 	@Override
 	public Slider update() {
-		return setValue(_myValue);
+		return setValue(PApplet.map(_myValue, 0, 1, _myMinReal, _myMaxReal));
 	}
 
 	/**
@@ -279,7 +311,9 @@ public class Slider extends Controller {
 	 */
 	@Override
 	public Slider setMin(float theValue) {
-		_myMin = theValue;
+		float f = getValue();
+		_myMinReal = theValue;
+		_myValue = PApplet.map(f, _myMinReal, _myMaxReal, 0, 1);
 		setSliderMode(_mySliderMode);
 		return this;
 	}
@@ -291,7 +325,28 @@ public class Slider extends Controller {
 	 */
 	@Override
 	public Slider setMax(float theValue) {
-		_myMax = theValue;
+		float f = getValue();
+		_myMaxReal = theValue;
+		_myValue = PApplet.map(f, _myMinReal, _myMaxReal, 0, 1);
+		setSliderMode(_mySliderMode);
+		return this;
+	}
+	
+	@Override 
+	public float getMin() {
+		return _myMinReal;
+	}
+	
+	@Override 
+	public float getMax() {
+		return _myMaxReal;
+	}
+	
+	public Slider setRange(float theMin, float theMax) {
+		float f = getValue();
+		_myMinReal = theMin;
+		_myMaxReal = theMax;
+		_myValue = PApplet.map(f, _myMinReal, _myMaxReal, 0, 1);
 		setSliderMode(_mySliderMode);
 		return this;
 	}
@@ -320,12 +375,20 @@ public class Slider extends Controller {
 		return this;
 	}
 
+	@Override
+	public Slider setSize(int theWidth, int theHeight) {
+		setWidth(theWidth);
+		setHeight(theHeight);
+		_myView = (width > height) ? new SliderViewH() : new SliderViewV();
+		return this;
+	}
+
 	/*
 	 * TODO new implementations follow: http://www.ibm.com/developerworks/java/library/j-dynui/ take
 	 * interface builder as reference
 	 */
-	protected void setTickMarks() {
-
+	protected Slider setTickMarks() {
+		return this;
 	}
 
 	/**
@@ -347,7 +410,7 @@ public class Slider extends Controller {
 			snapToTickMarks(false);
 			setHandleSize(_myDefaultHandleSize);
 		}
-		setValue(_myValue);
+		setValue(PApplet.map(_myValue, 0, 1, _myMinReal, _myMaxReal));
 		return this;
 	}
 
@@ -407,17 +470,6 @@ public class Slider extends Controller {
 	}
 
 	/**
-	 * use static variables ControlP5.TOP, ControlP5.CENTER, ControlP5.BOTTOM to align the
-	 * ValueLabel of a slider.
-	 * 
-	 * @param theValue
-	 */
-	public Slider alignValueLabel(int theValue) {
-		alignValueLabel = theValue;
-		return this;
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -466,7 +518,7 @@ public class Slider extends Controller {
 		return this;
 	}
 
-	private abstract class SliderView implements ControllerView {
+	private abstract class SliderView implements ControllerView<Slider> {
 
 		abstract void updateInternalEvents(PApplet theApplet);
 
@@ -481,10 +533,10 @@ public class Slider extends Controller {
 	private class SliderViewV extends SliderView {
 
 		SliderViewV() {
-			_myCaptionLabel.setColor(color.getValueLabel()).align(LEFT, BOTTOM_OUTSIDE).setPadding(0,Label.paddingY);
-			_myValueLabel.set("" + adjustValue(_myValue)).align(RIGHT_OUTSIDE, TOP);
+			_myCaptionLabel.setColor(color.getValueLabel()).align(LEFT, BOTTOM_OUTSIDE).setPadding(0, Label.paddingY);
+			_myValueLabel.set("" + adjustValue(getValue())).align(RIGHT_OUTSIDE, TOP);
 		}
-		
+
 		void setSnapValue() {
 			float n = PApplet.round(PApplet.map(_myValuePosition, 0, getHeight(), 0, _myTickMarks.size() - 1));
 			_myValue = PApplet.map(n, 0, _myTickMarks.size() - 1, _myMin, _myMax);
@@ -495,14 +547,16 @@ public class Slider extends Controller {
 		}
 
 		void update() {
-			setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
+			float f = _myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit;
+			setValue(PApplet.map(f, 0, 1, _myMinReal, _myMaxReal));
 		}
 
 		void updateInternalEvents(PApplet theApplet) {
-			setValue(_myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit);
+			float f = _myMin + (-(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y) - height)) * _myUnit;
+			setValue(PApplet.map(f, 0, 1, _myMinReal, _myMaxReal));
 		}
 
-		public void display(PApplet theApplet, Controller theController) {
+		public void display(PApplet theApplet, Slider theController) {
 			theApplet.fill(getColor().getBackground());
 			theApplet.noStroke();
 			if ((getColor().getBackground() >> 24 & 0xff) > 0) {
@@ -523,7 +577,7 @@ public class Slider extends Controller {
 			if (isLabelVisible) {
 				getCaptionLabel().draw(theApplet, 0, 0, theController);
 				theApplet.pushMatrix();
-				theApplet.translate(0,(int)PApplet.map(_myValue, _myMax, _myMin, 0, getHeight()-_myValueLabel.getHeight()));
+				theApplet.translate(0, (int) PApplet.map(_myValue, _myMax, _myMin, 0, getHeight() - _myValueLabel.getHeight()));
 				getValueLabel().draw(theApplet, 0, 0, theController);
 				theApplet.popMatrix();
 			}
@@ -548,10 +602,9 @@ public class Slider extends Controller {
 
 		SliderViewH() {
 			_myCaptionLabel.setColor(color.getValueLabel()).align(RIGHT_OUTSIDE, CENTER);
-			_myValueLabel.set("" + adjustValue(_myValue)).align(LEFT, CENTER);
+			_myValueLabel.set("" + adjustValue(getValue())).align(LEFT, CENTER);
 		}
 
-		
 		void setSnapValue() {
 			float n = PApplet.round(PApplet.map(_myValuePosition, 0, getWidth(), 0, _myTickMarks.size() - 1));
 			_myValue = PApplet.map(n, 0, _myTickMarks.size() - 1, _myMin, _myMax);
@@ -562,14 +615,16 @@ public class Slider extends Controller {
 		}
 
 		void update() {
-			setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
+			float f = _myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit;
+			setValue(PApplet.map(f, 0, 1, _myMinReal, _myMaxReal));
 		}
 
 		void updateInternalEvents(PApplet theApplet) {
-			setValue(_myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit);
+			float f = _myMin + (_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x)) * _myUnit;
+			setValue(PApplet.map(f, 0, 1, _myMinReal, _myMaxReal));
 		}
 
-		public void display(PApplet theApplet, Controller theController) {
+		public void display(PApplet theApplet, Slider theController) {
 			theApplet.fill(getColor().getBackground());
 			theApplet.noStroke();
 			if ((getColor().getBackground() >> 24 & 0xff) > 0) {

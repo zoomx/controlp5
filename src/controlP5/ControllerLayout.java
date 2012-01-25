@@ -40,7 +40,7 @@ class ControllerLayout {
 		theLayoutPath = cp5.checkPropertiesPath(theLayoutPath);
 		Class<?>[] classes = new Class<?>[] { RadioButton.class, ListBox.class, ColorPicker.class, DropdownList.class };
 		HashSet<ControllerLayoutElement> layoutelements = new HashSet<ControllerLayoutElement>();
-		for (ControllerInterface c : cp5.getList()) {
+		for (ControllerInterface<?> c : cp5.getList()) {
 			if (!Arrays.asList(classes).contains(c.getParent().getClass())) {
 				layoutelements.add(new ControllerLayoutElement(c));
 				System.out.print(c.getAddress());
@@ -69,7 +69,7 @@ class ControllerLayout {
 		}
 	}
 
-	private boolean isClassAssignableFromSuperclass(Class<?> theClass, Class<?> theSuper) {
+	protected boolean isClassAssignableFromSuperclass(Class<?> theClass, Class<?> theSuper) {
 		Class<?> _mySuper = theClass.getSuperclass();
 		while (_mySuper.getSuperclass() != null) {
 			if (_mySuper.isAssignableFrom(theSuper)) {

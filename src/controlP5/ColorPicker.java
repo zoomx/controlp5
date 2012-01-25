@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  * 
- * 2006-2011 by Andreas Schlegel
+ * 2006-2012 by Andreas Schlegel
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -30,7 +30,7 @@ import processing.core.PApplet;
  * 
  * @example controllers/ControlP5colorPicker
  */
-public class ColorPicker extends ControlGroup {
+public class ColorPicker extends ControlGroup<ColorPicker> {
 
 	protected Slider sliderRed;
 	protected Slider sliderGreen;
@@ -38,7 +38,7 @@ public class ColorPicker extends ControlGroup {
 	protected Slider sliderAlpha;
 	protected ControlWindowCanvas currentColor;
 
-	protected ColorPicker(ControlP5 theControlP5, ControllerGroup theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
+	protected ColorPicker(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		isBarVisible = false;
 		isCollapse = false;
@@ -49,9 +49,8 @@ public class ColorPicker extends ControlGroup {
 		sliderRed = cp5.addSlider(theName + "-red", 0, 255, 0, 0, theWidth, 10);
 		cp5.removeProperty(sliderRed);
 		sliderRed.setId(0);
-		sliderRed.isBroadcast = false;
+		sliderRed.setBroadcast(false);
 		sliderRed.addListener(this);
-		sliderRed.setValue(255);
 		sliderRed.moveTo(this);
 		sliderRed.setMoveable(false);
 		sliderRed.setColorBackground(0xff660000);
@@ -59,13 +58,13 @@ public class ColorPicker extends ControlGroup {
 		sliderRed.setColorActive(0xffff0000);
 		sliderRed.getCaptionLabel().setVisible(false);
 		sliderRed.setDecimalPrecision(0);
-
+		sliderRed.setValue(255);
+		
 		sliderGreen = cp5.addSlider(theName + "-green", 0, 255, 0, 11, theWidth, 10);
 		cp5.removeProperty(sliderGreen);
 		sliderGreen.setId(1);
-		sliderGreen.isBroadcast = false;
+		sliderGreen.setBroadcast(false);
 		sliderGreen.addListener(this);
-		sliderGreen.setValue(255);
 		sliderGreen.moveTo(this);
 		sliderGreen.setMoveable(false);
 		sliderGreen.setColorBackground(0xff006600);
@@ -73,13 +72,13 @@ public class ColorPicker extends ControlGroup {
 		sliderGreen.setColorActive(0xff00ff00);
 		sliderGreen.getCaptionLabel().setVisible(false);
 		sliderGreen.setDecimalPrecision(0);
-
+		sliderGreen.setValue(255); 
+		
 		sliderBlue = cp5.addSlider(theName + "-blue", 0, 255, 0, 22, theWidth, 10);
 		cp5.removeProperty(sliderBlue);
 		sliderBlue.setId(2);
-		sliderBlue.isBroadcast = false;
+		sliderBlue.setBroadcast(false);
 		sliderBlue.addListener(this);
-		sliderBlue.setValue(255);
 		sliderBlue.moveTo(this);
 		sliderBlue.setMoveable(false);
 		sliderBlue.setColorBackground(0xff000066);
@@ -87,13 +86,14 @@ public class ColorPicker extends ControlGroup {
 		sliderBlue.setColorActive(0xff0000ff);
 		sliderBlue.getCaptionLabel().setVisible(false);
 		sliderBlue.setDecimalPrecision(0);
-
+		sliderBlue.setValue(255);
+		
 		sliderAlpha = cp5.addSlider(theName + "-alpha", 0, 255, 0, 33, theWidth, 10);
 		cp5.removeProperty(sliderAlpha);
 		sliderAlpha.setId(3);
-		sliderAlpha.isBroadcast = false;
+		sliderAlpha.setBroadcast(false);
 		sliderAlpha.addListener(this);
-		sliderAlpha.setValue(255);
+		
 		sliderAlpha.moveTo(this);
 		sliderAlpha.setMoveable(false);
 		sliderAlpha.setColorBackground(0xff666666);
@@ -102,6 +102,8 @@ public class ColorPicker extends ControlGroup {
 		sliderAlpha.getCaptionLabel().setVisible(false);
 		sliderAlpha.setDecimalPrecision(0);
 		sliderAlpha.getValueLabel().setColor(0xff000000);
+		sliderAlpha.setValue(255);
+		
 	}
 
 	/**
@@ -137,9 +139,6 @@ public class ColorPicker extends ControlGroup {
 		return this;
 	}
 
-	/**
-	 * @return int
-	 */
 	public int getColorValue() {
 		int cc = 0xffffffff;
 		return cc & (int) (_myArrayValue[3]) << 24 | (int) (_myArrayValue[0]) << 16 | (int) (_myArrayValue[1]) << 8 | (int) (_myArrayValue[2]) << 0;
@@ -151,7 +150,7 @@ public class ColorPicker extends ControlGroup {
 			theApplet.rect(0, 44, getWidth(), 15);
 		}
 	}
-
+	
 	/**
 	 * @exclude
 	 * {@inheritDoc}

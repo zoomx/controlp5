@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -34,7 +34,7 @@ import processing.core.PVector;
  * 
  * @example controllers/ControlP5knob
  */
-public class Knob extends Controller {
+public class Knob extends Controller<Knob> {
 
 	protected float _myDiameter;
 
@@ -44,7 +44,7 @@ public class Knob extends Controller {
 
 	protected float startAngle;
 
-	protected float range;
+	protected float angleRange;
 
 	protected float resolution = 200.0f; // sensitivity.
 
@@ -58,7 +58,7 @@ public class Knob extends Controller {
 
 	protected float myTickMarkWeight = 1;
 
-	protected boolean isShowRange = true;
+	protected boolean isShowAngleRange = true;
 
 	protected float currentValue;
 
@@ -70,11 +70,11 @@ public class Knob extends Controller {
 
 	protected int _myDragDirection = HORIZONTAL;
 
-	protected int displayStyle = LINE;
+	protected int viewStyle = LINE;
 
-	public static int autoWidth = 40;
+	public static int autoWidth = 39;
 
-	public static int autoHeight = 40;
+	public static int autoHeight = 39;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
 
@@ -83,7 +83,7 @@ public class Knob extends Controller {
 	/**
 	 * @exclude
 	 */
-	public Knob(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth) {
+	public Knob(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theWidth);
 		_myValue = theDefaultValue;
 		setMin(theMin);
@@ -92,16 +92,21 @@ public class Knob extends Controller {
 		_myRadius = _myDiameter / 2;
 		_myUnit = (_myMax - _myMin) / ControlP5Constants.TWO_PI;
 		startAngle = HALF_PI + PI * 0.25f;
-		range = PI + HALF_PI;
+		angleRange = PI + HALF_PI;
 		myAngle = startAngle;
 		isConstrained = true;
 		getCaptionLabel().align(CENTER, BOTTOM_OUTSIDE);
+	}
+
+	public Knob setSize(float theWidth, float theHeight) {
+		return setRadius(theWidth / 2);
 	}
 
 	public Knob setRadius(float theValue) {
 		_myRadius = theValue;
 		_myDiameter = _myRadius * 2;
 		width = (int) _myDiameter;
+		height = (int) _myDiameter;
 		return this;
 	}
 
@@ -129,26 +134,26 @@ public class Knob extends Controller {
 	/**
 	 * set the range in between which the know operates. By default the range is PI + HALF_PI
 	 */
-	public Knob setRange(float theRange) {
-		range = theRange;
+	public Knob setAngleRange(float theRange) {
+		angleRange = theRange;
 		setInternalValue(modifiedValue);
 		return this;
 	}
 
-	public float getRange() {
-		return range;
+	public float getAngleRange() {
+		return angleRange;
 	}
 
 	public float getAngle() {
 		return myAngle;
 	}
 
-	public boolean isShowRange() {
-		return isShowRange;
+	public boolean isShowAngleRange() {
+		return isShowAngleRange;
 	}
 
-	public Knob setShowRange(boolean theValue) {
-		isShowRange = theValue;
+	public Knob setShowAngleRange(boolean theValue) {
+		isShowAngleRange = theValue;
 		return this;
 	}
 
@@ -192,6 +197,7 @@ public class Knob extends Controller {
 
 	public Knob setNumberOfTickMarks(int theNumber) {
 		_myTickMarksNum = theNumber;
+		showTickMarks();
 		return this;
 	}
 
@@ -199,8 +205,13 @@ public class Knob extends Controller {
 		return _myTickMarksNum;
 	}
 
-	public Knob showTickMarks(boolean theFlag) {
-		isShowTickMarks = theFlag;
+	public Knob showTickMarks() {
+		isShowTickMarks = true;
+		return this;
+	}
+
+	public Knob hideTickMarks() {
+		isShowTickMarks = false;
 		return this;
 	}
 
@@ -210,6 +221,7 @@ public class Knob extends Controller {
 
 	public Knob snapToTickMarks(boolean theFlag) {
 		isSnapToTickMarks = theFlag;
+		update();
 		return this;
 	}
 
@@ -233,6 +245,11 @@ public class Knob extends Controller {
 
 	public Knob setConstrained(boolean theValue) {
 		isConstrained = theValue;
+		if (!isConstrained) {
+			setShowAngleRange(false);
+		} else {
+			setShowAngleRange(true);
+		}
 		return this;
 	}
 
@@ -285,7 +302,7 @@ public class Knob extends Controller {
 				if (isConstrained) {
 					myAngle %= TWO_PI;
 				}
-				currentValue = PApplet.map(myAngle, 0, range, 0, 1);
+				currentValue = PApplet.map(myAngle, 0, angleRange, 0, 1);
 				setInternalValue(currentValue);
 			}
 		}
@@ -297,7 +314,7 @@ public class Knob extends Controller {
 	@Override
 	@ControlP5.Invisible
 	public void mouseReleased() {
-		isActive = false;
+		// isActive = false;
 	}
 
 	/**
@@ -306,31 +323,32 @@ public class Knob extends Controller {
 	@Override
 	@ControlP5.Invisible
 	public void mouseReleasedOutside() {
-		mouseReleased();
+		isActive = false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Knob setMin(float theValue) {
 		_myMin = theValue;
 		return this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Knob setMax(float theValue) {
 		_myMax = theValue;
 		return this;
 	}
 
+	public Knob setRange(float theMin, float theMax) {
+		setMin(theMin);
+		setMax(theMax);
+		update();
+		return this;
+	}
+
 	protected void setInternalValue(float theValue) {
 		modifiedValue = (isSnapToTickMarks) ? PApplet.round((theValue * _myTickMarksNum)) / ((float) _myTickMarksNum) : theValue;
 		currentValue = theValue;
-		myAngle = PApplet.map(isSnapToTickMarks == true ? modifiedValue : currentValue, 0, 1, startAngle, startAngle + range);
+		myAngle = PApplet.map(isSnapToTickMarks == true ? modifiedValue : currentValue, 0, 1, startAngle, startAngle + angleRange);
 
 		if (isSnapToTickMarks) {
 			if (previousValue != modifiedValue && isSnapToTickMarks) {
@@ -345,9 +363,6 @@ public class Knob extends Controller {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Knob setValue(float theValue) {
 		theValue = PApplet.map(theValue, _myMin, _myMax, 0, 1);
@@ -358,9 +373,6 @@ public class Knob extends Controller {
 		return this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public float getValue() {
 		_myValue = PApplet.map(_myTickMarksNum > 0 ? modifiedValue : currentValue, 0, 1, _myMin, _myMax);
@@ -390,17 +402,10 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * @see controlP5.Knob#setScrollSensitivity(float)
-	 */
-	public Knob setSensitivity(float theValue) {
-		scrollSensitivity = theValue;
-		return this;
-	}
-
-	/**
 	 * Changes the value of the knob when hovering and using the mouse wheel or the scroll function
 	 * of a multi-touch track pad.
 	 */
+	@ControlP5.Invisible
 	public Knob scrolled(int theRotationValue) {
 		float f = getValue();
 		float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity;
@@ -410,9 +415,10 @@ public class Knob extends Controller {
 	}
 
 	/**
-	 * @exclude {@inheritDoc}
+	 * @exclude
 	 */
 	@Override
+	@ControlP5.Invisible
 	public Knob update() {
 		setValue(_myValue);
 		return this;
@@ -426,12 +432,12 @@ public class Knob extends Controller {
 	 * @return Knob
 	 */
 	public Knob setViewStyle(int theStyle) {
-		displayStyle = theStyle;
+		viewStyle = theStyle;
 		return this;
 	}
 
 	public int getViewStyle() {
-		return displayStyle;
+		return viewStyle;
 	}
 
 	/**
@@ -456,8 +462,8 @@ public class Knob extends Controller {
 		return this;
 	}
 
-	class KnobView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class KnobView implements ControllerView<Knob> {
+		public void display(PApplet theApplet, Knob theController) {
 			theApplet.translate(getRadius(), getRadius());
 
 			theApplet.pushMatrix();
@@ -468,16 +474,16 @@ public class Knob extends Controller {
 			theApplet.popMatrix();
 			int c = isActive() ? getColor().getActive() : getColor().getForeground();
 			theApplet.pushMatrix();
-			if (getDisplayStyle() == Controller.LINE) {
+			if (getViewStyle() == Controller.LINE) {
 				theApplet.rotate(getAngle());
 				theApplet.stroke(c);
 				theApplet.strokeWeight(getTickMarkWeight());
 				theApplet.line(0, 0, getRadius(), 0);
-			} else if (getDisplayStyle() == Controller.ELLIPSE) {
+			} else if (getViewStyle() == Controller.ELLIPSE) {
 				theApplet.rotate(getAngle());
 				theApplet.fill(c);
 				theApplet.ellipse(getRadius() * 0.75f, 0, getRadius() * 0.2f, getRadius() * 0.2f);
-			} else if (getDisplayStyle() == Controller.ARC) {
+			} else if (getViewStyle() == Controller.ARC) {
 				theApplet.fill(c);
 				theApplet.arc(0, 0, getRadius() * 1.8f, getRadius() * 1.8f, getStartAngle(), getAngle() + ((getStartAngle() == getAngle()) ? 0.06f : 0f));
 				theApplet.fill(getColor().getBackground());
@@ -489,7 +495,7 @@ public class Knob extends Controller {
 			theApplet.rotate(getStartAngle());
 
 			if (isShowTickMarks()) {
-				float step = getRange() / getNumberOfTickMarks();
+				float step = getAngleRange() / getNumberOfTickMarks();
 				theApplet.stroke(getColor().getForeground());
 				theApplet.strokeWeight(getTickMarkWeight());
 				for (int i = 0; i <= getNumberOfTickMarks(); i++) {
@@ -497,17 +503,19 @@ public class Knob extends Controller {
 					theApplet.rotate(step);
 				}
 			} else {
-				if (isShowRange()) {
+				if (isShowAngleRange()) {
 					theApplet.stroke(getColor().getForeground());
 					theApplet.strokeWeight(getTickMarkWeight());
 					theApplet.line(getRadius() + 2, 0, getRadius() + getTickMarkLength() + 2, 0);
-					theApplet.rotate(getRange());
+					theApplet.rotate(getAngleRange());
 					theApplet.line(getRadius() + 2, 0, getRadius() + getTickMarkLength() + 2, 0);
 				}
 			}
 			theApplet.noStroke();
 			theApplet.popMatrix();
-			getCaptionLabel().draw(theApplet, -getWidth()/2, -getHeight()/2, theController);
+			if (isLabelVisible) {
+				_myCaptionLabel.draw(theApplet, -getWidth() / 2, -getHeight() / 2, theController);
+			}
 		}
 	}
 
@@ -516,8 +524,8 @@ public class Knob extends Controller {
 	 * @deprecated
 	 */
 	@Deprecated
-	public void setOffsetAngle(float theValue) {
-		setStartAngle(theValue);
+	public Knob setOffsetAngle(float theValue) {
+		return setStartAngle(theValue);
 	}
 
 	/**
@@ -535,7 +543,7 @@ public class Knob extends Controller {
 	 */
 	@Deprecated
 	public Knob setDisplayStyle(int theStyle) {
-		displayStyle = theStyle;
+		viewStyle = theStyle;
 		return this;
 	}
 
@@ -545,7 +553,28 @@ public class Knob extends Controller {
 	 */
 	@Deprecated
 	public int getDisplayStyle() {
-		return displayStyle;
+		return viewStyle;
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	@ControlP5.Invisible
+	public Knob setSensitivity(float theValue) {
+		scrollSensitivity = theValue;
+		return this;
+	}
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public Knob showTickMarks(boolean theFlag) {
+		isShowTickMarks = theFlag;
+		return this;
 	}
 
 }

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -41,7 +41,7 @@ import processing.core.PApplet;
  */
 class ControllerAutomator {
 
-	static Map<Set<Class<?>>, Class<? extends Controller>> mapping = new HashMap<Set<Class<?>>, Class<? extends Controller>>();
+	static Map<Set<Class<?>>, Class<? extends Controller<?>>> mapping = new HashMap<Set<Class<?>>, Class<? extends Controller<?>>>();
 
 	static {
 		mapping.put(makeKey(boolean.class), Toggle.class);
@@ -50,7 +50,7 @@ class ControllerAutomator {
 		mapping.put(makeKey(String.class), Textfield.class);
 	}
 
-	static Map<String, Class<? extends Controller>> types = new HashMap<String, Class<? extends Controller>>();
+	static Map<String, Class<? extends Controller<?>>> types = new HashMap<String, Class<? extends Controller<?>>>();
 
 	static {
 		types.put("slider", Slider.class);
@@ -114,7 +114,7 @@ class ControllerAutomator {
 
 				Map<String, String> params = new HashMap<String, String>();
 
-				Class<? extends Controller> type = null;
+				Class<? extends Controller<?>> type = null;
 
 				for (String s : ce.properties()) {
 					String[] a = PApplet.split(s, "=");
@@ -141,7 +141,7 @@ class ControllerAutomator {
 
 				Map<String, String> params = new HashMap<String, String>();
 
-				Class<? extends Controller> type = null;
+				Class<? extends Controller<?>> type = null;
 
 				for (String s : ce.properties()) {
 					String[] a = PApplet.split(s, "=");
@@ -152,7 +152,7 @@ class ControllerAutomator {
 					}
 				}
 
-				Controller cntr = null;
+				Controller<?> cntr = null;
 
 				f.setAccessible(true);
 

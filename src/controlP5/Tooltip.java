@@ -14,7 +14,7 @@ import processing.core.PVector;
  */
 public class Tooltip {
 
-	private ControllerView _myDisplay;
+	private ControllerView<?> _myView;
 
 	private PVector position = new PVector();
 
@@ -24,7 +24,7 @@ public class Tooltip {
 
 	private PVector offset = new PVector();
 
-	private Controller _myController;
+	private Controller<?> _myController;
 
 	private long startTime = 0;
 
@@ -40,7 +40,7 @@ public class Tooltip {
 
 	private int _myAlpha = 0;
 
-	private Map<Controller, String> map;
+	private Map<Controller<?>, String> map;
 
 	private Label _myLabel;
 
@@ -58,7 +58,7 @@ public class Tooltip {
 		currentPosition = new PVector();
 		previousPosition = new PVector();
 		offset = new PVector(0, 24, 0);
-		map = new HashMap<Controller, String>();
+		map = new HashMap<Controller<?>, String>();
 		_myLabel = new Label(cp5, "tooltip");
 		_myLabel.setColor(0xff000000);
 		_myLabel.setPadding(0, 0);
@@ -174,7 +174,7 @@ public class Tooltip {
 							theWindow.papplet().pushMatrix();
 							theWindow.papplet().translate(position.x, position.y);
 							theWindow.papplet().translate(offset.x, offset.y);
-							_myDisplay.display(theWindow.papplet(), null);
+							_myView.display(theWindow.papplet(), null);
 							theWindow.papplet().popMatrix();
 						}
 						if (_myMode < ControlP5.FADEOUT) {
@@ -209,7 +209,7 @@ public class Tooltip {
 	 * 
 	 * @param theController
 	 */
-	protected void activate(Controller theController) {
+	protected void activate(Controller<?> theController) {
 		if (map.containsKey(theController)) {
 			startTime = System.nanoTime();
 			_myController = theController;
@@ -243,8 +243,8 @@ public class Tooltip {
 	 * @param theDisplay
 	 * @return Tooltip
 	 */
-	public Tooltip setView(ControllerView theDisplay) {
-		_myDisplay = theDisplay;
+	public Tooltip setView(ControllerView<?> theDisplay) {
+		_myView = theDisplay;
 		return this;
 	}
 
@@ -256,14 +256,14 @@ public class Tooltip {
 	 * @param theText
 	 * @return Tooltip
 	 */
-	public Tooltip register(Controller theController, String theText) {
+	public Tooltip register(Controller<?> theController, String theText) {
 		map.put(theController, theText);
 		theController.registerProperty("setTooltipEnabled", "isTooltipEnabled");
 		return this;
 	}
 
 	public Tooltip register(String theControllerName, String theText) {
-		Controller c = cp5.getController(theControllerName);
+		Controller<?> c = cp5.getController(theControllerName);
 		if (c == null) {
 			return this;
 		}
@@ -278,14 +278,14 @@ public class Tooltip {
 	 * @param theController
 	 * @return Tooltip
 	 */
-	public Tooltip unregister(Controller theController) {
+	public Tooltip unregister(Controller<?> theController) {
 		map.remove(theController);
 		theController.removeProperty("setTooltipEnabled", "isTooltipEnabled");
 		return this;
 	}
 
 	public Tooltip unregister(String theControllerName) {
-		Controller c = cp5.getController(theControllerName);
+		Controller<?> c = cp5.getController(theControllerName);
 		if (c == null) {
 			return this;
 		}
@@ -408,9 +408,9 @@ public class Tooltip {
 		return this;
 	}
 
-	class TooltipView implements ControllerView {
+	class TooltipView implements ControllerView<Controller<?>> {
 
-		public void display(PApplet theApplet, Controller theController) {
+		public void display(PApplet theApplet, Controller<?> theController) {
 			theApplet.fill(_myBackgroundColor, _myAlpha);
 			theApplet.rect(0, 0, getWidth() + _myBorder * 2, _myHeight + _myBorder);
 			theApplet.pushMatrix();

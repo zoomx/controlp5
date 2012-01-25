@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -34,22 +34,22 @@ import java.util.Vector;
  */
 public class ControllerList {
 
-	protected List<ControllerInterface> controllers;
+	protected List<ControllerInterface<?>> controllers;
 
 	protected List<CDrawable> drawables;
 
 	public ControllerList() {
-		controllers = new Vector<ControllerInterface>();
+		controllers = new Vector<ControllerInterface<?>>();
 		drawables = new Vector<CDrawable>();
 	}
 
-	public void add(ControllerInterface theController) {
+	public void add(ControllerInterface<?> theController) {
 		if (controllers.indexOf(theController) < 0) {
 			controllers.add(theController);
 		}
 	}
 
-	protected void remove(ControllerInterface theController) {
+	protected void remove(ControllerInterface<?> theController) {
 		controllers.remove(theController);
 	}
 
@@ -63,11 +63,11 @@ public class ControllerList {
 		drawables.remove(theController);
 	}
 
-	public ControllerInterface get(int theIndex) {
+	public ControllerInterface<?> get(int theIndex) {
 		return controllers.get(theIndex);
 	}
 
-	public List<ControllerInterface> get() {
+	public List<ControllerInterface<?>> get() {
 		return controllers;
 	}
 

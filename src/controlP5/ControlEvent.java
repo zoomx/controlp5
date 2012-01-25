@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -35,7 +35,7 @@ package controlP5;
  */
 public class ControlEvent {
 
-	protected final ControllerInterface _myController;
+	protected final ControllerInterface<?> _myController;
 
 	protected boolean isTab;
 
@@ -57,7 +57,7 @@ public class ControlEvent {
 	 * 
 	 * @param theController Controller
 	 */
-	protected ControlEvent(Controller theController) {
+	protected ControlEvent(Controller<?> theController) {
 		_myController = theController;
 		isTab = false;
 		isController = true;
@@ -79,7 +79,7 @@ public class ControlEvent {
 	 * @exclude
 	 * @param theController Controller
 	 */
-	public ControlEvent(ControllerGroup theController) {
+	public ControlEvent(ControllerGroup<?> theController) {
 		_myController = theController;
 		isTab = false;
 		isGroup = true;
@@ -91,7 +91,7 @@ public class ControlEvent {
 	}
 
 	public String getStringValue() {
-		return ((Controller) _myController).getStringValue();
+		return ((Controller<?>) _myController).getStringValue();
 	}
 
 	/**
@@ -108,8 +108,8 @@ public class ControlEvent {
 	 * 
 	 * @return Controller
 	 */
-	public Controller getController() {
-		return ((Controller) _myController);
+	public Controller<?> getController() {
+		return ((Controller<?>) _myController);
 	}
 
 	/**
@@ -122,12 +122,12 @@ public class ControlEvent {
 	}
 
 	/**
-	 * Returns the tab that evoked the ControlEvent
+	 * Returns the group that evoked the ControlEvent
 	 * 
-	 * @return Tab Tab
+	 * @return ControlGroup 
 	 */
-	public ControlGroup getGroup() {
-		return (ControlGroup) _myController;
+	public ControlGroup<?> getGroup() {
+		return (ControlGroup<?>) _myController;
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class ControlEvent {
 	 * @return String
 	 */
 	public String getLabel() {
-		return ((Controller) _myController).getLabel();
+		return ((Controller<?>) _myController).getLabel();
 	}
 
 	/**
@@ -208,7 +208,7 @@ public class ControlEvent {
 	 * @param theController
 	 * @return boolean
 	 */
-	public boolean isFrom(ControllerInterface theController) {
+	public boolean isFrom(ControllerInterface<?> theController) {
 		return _myController.equals(theController);
 	}
 
@@ -296,7 +296,7 @@ public class ControlEvent {
 	 * @deprecated
 	 */
 	@Deprecated
-	public Controller controller() {
+	public Controller<?> controller() {
 		return getController();
 	}
 
@@ -305,7 +305,7 @@ public class ControlEvent {
 	 * @deprecated
 	 */
 	@Deprecated
-	public ControlGroup group() {
+	public ControlGroup<?> group() {
 		return getGroup();
 	}
 

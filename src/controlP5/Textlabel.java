@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -26,6 +26,7 @@ package controlP5;
  */
 
 import processing.core.PApplet;
+import processing.core.PFont;
 
 /**
  * a textlabel is an image containing text rendered from a bitfont source image. available bit fonts
@@ -38,7 +39,7 @@ import processing.core.PApplet;
  * @example controllers/ControlP5textlabel
  * @nosuperclasses Controller Controller Textarea
  */
-public class Textlabel extends Controller {
+public class Textlabel extends Controller<Textlabel> {
 
 	protected int _myLetterSpacing = 0;
 
@@ -131,7 +132,7 @@ public class Textlabel extends Controller {
 		_myStringValue = theValue;
 		_myValueLabel = new Label(cp5, _myStringValue, theW, theH, 0xffffffff);
 		if (!cp5.isControlFont) {
-			_myValueLabel.setFont(ControlP5.synt24);
+			_myValueLabel.setFont(ControlP5.standard56);
 		}
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
@@ -146,12 +147,12 @@ public class Textlabel extends Controller {
 		_myValueLabel.toUpperCase(false);
 	}
 
-	public Controller setWidth(int theValue) {
+	public Textlabel setWidth(int theValue) {
 		_myValueLabel.setWidth(theValue);
 		return this;
 	}
 
-	public Controller setHeight(int theValue) {
+	public Textlabel setHeight(int theValue) {
 		_myValueLabel.setHeight(theValue);
 		return this;
 	}
@@ -185,7 +186,7 @@ public class Textlabel extends Controller {
 	 * 
 	 * @param theValue float
 	 */
-	public Controller setValue(float theValue) {
+	public Textlabel setValue(float theValue) {
 		return this;
 	}
 
@@ -244,12 +245,17 @@ public class Textlabel extends Controller {
 	 * @param theFont int
 	 */
 	public Textlabel setFont(final int theFont) {
-		_myValueLabel.setFont(theFont);
+		getValueLabel().setFont(theFont);
 		return this;
 	}
 
 	public Textlabel setFont(ControlFont theControlFont) {
-		_myValueLabel.setFont(theControlFont);
+		getValueLabel().setFont(theControlFont);
+		return this;
+	}
+	
+	public Textlabel setFont(PFont thePFont) {
+		getValueLabel().setFont(thePFont);
 		return this;
 	}
 

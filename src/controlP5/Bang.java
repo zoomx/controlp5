@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -37,13 +37,13 @@ import processing.core.PApplet;
  * @example controllers/ControlP5bang
  */
 @ControlP5.Layout
-public class Bang extends Controller {
+public class Bang extends Controller<Bang> {
 
 	protected int cnt;
 
 	protected int triggerId = PRESSED;
 
-	protected Bang(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
+	protected Bang(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel.setPadding(0,Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
 		_myValue = 1;
@@ -156,8 +156,8 @@ public class Bang extends Controller {
 		return this;
 	}
 
-	private class BangView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	private class BangView implements ControllerView<Bang> {
+		public void display(PApplet theApplet, Bang theController) {
 			if (isActive) {
 				theApplet.fill(color.getActive());
 			} else {
@@ -175,8 +175,8 @@ public class Bang extends Controller {
 		}
 	}
 
-	private class BangImageView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	private class BangImageView implements ControllerView<Bang> {
+		public void display(PApplet theApplet, Bang theController) {
 			if (isActive) {
 				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
 			} else {
@@ -211,8 +211,8 @@ public class Bang extends Controller {
 	}
 
 	@Deprecated
-	private class BangSpriteView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	private class BangSpriteView implements ControllerView<Bang> {
+		public void display(PApplet theApplet, Bang theController) {
 			if (isActive) {
 				sprite.setState(1);
 			} else {

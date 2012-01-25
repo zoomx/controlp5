@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -28,17 +28,19 @@ package controlP5;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
+import controlP5.ControlP5.Invisible;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 
 /**
- * A range slider works like a normal slider but can be adjusted on both ends.
+ * A range slider works just like a slider but can be adjusted on both ends.
  * 
  * @see Slider
  * @example controllers/ControlP5range
  * @nosuperclasses Controller Controller
  */
-public class Range extends Controller {
+public class Range extends Controller<Range> {
 
 	/*
 	 * TODO if range value is int, value labels do initialize as floats. first click makes them
@@ -72,11 +74,11 @@ public class Range extends Controller {
 
 	protected int handleSize = 10;
 
-	protected float minHandle = 0;
+	protected int minHandle = 0;
 
-	protected float maxHandle = 0;
+	protected int maxHandle = 0;
 
-	protected float mr = 0;
+	protected int mr = 0;
 
 	protected final ArrayList<TickMark> _myTickMarks = new ArrayList<TickMark>();
 
@@ -84,9 +86,9 @@ public class Range extends Controller {
 
 	protected boolean isSnapToTickMarks;
 
-	public static int autoWidth = 200;
+	public static int autoWidth = 99;
 
-	public static int autoHeight = 10;
+	public static int autoHeight = 9;
 
 	public static PVector autoSpacing = new PVector(0, 5, 0);
 
@@ -110,7 +112,7 @@ public class Range extends Controller {
 	 * @param theHeight int
 	 */
 	@ControlP5.Invisible
-	public Range(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theMin, float theMax, float theDefaultMinValue, float theDefaultMaxValue, int theX, int theY, int theWidth, int theHeight) {
+	public Range(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theMin, float theMax, float theDefaultMinValue, float theDefaultMaxValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 
 		_myArrayValue = new float[] { theDefaultMinValue, theDefaultMaxValue };
@@ -119,8 +121,8 @@ public class Range extends Controller {
 		_myMax = theMax;
 		_myValueRange = _myMax - _myMin;
 
-		minHandle = PApplet.map(theDefaultMinValue, _myMin, _myMax, handleSize, getWidth() - handleSize);
-		maxHandle = PApplet.map(theDefaultMaxValue, _myMin, _myMax, handleSize, getWidth() - handleSize);
+		minHandle = (int)PApplet.map(theDefaultMinValue, _myMin, _myMax, handleSize, getWidth() - handleSize);
+		maxHandle = (int)PApplet.map(theDefaultMaxValue, _myMin, _myMax, handleSize, getWidth() - handleSize);
 		mr = maxHandle - minHandle;
 
 		_myCaptionLabel = new Label(cp5, theName).setColor(color.getCaptionLabel()).align(RIGHT_OUTSIDE, CENTER);
@@ -139,45 +141,38 @@ public class Range extends Controller {
 	public Range setColorValueLabel(int theColor) {
 		_myValueLabel.setColor(theColor);
 		_myHighValueLabel.setColor(theColor);
-		setValueLabel("");
+		return this;
+	}
+	
+	@Override
+	public Range setColorCaptionLabel(int theColor) {
+		_myCaptionLabel.setColor(theColor);
 		return this;
 	}
 
-	public Controller setHightValueLabel(final String theLabel) {
+	public Range setHighValueLabel(final String theLabel) {
 		_myHighValueLabel.set(theLabel);
 		return this;
 	}
 
-	public Controller setLowValueLabel(final String theLabel) {
+	public Range setLowValueLabel(final String theLabel) {
 		_myValueLabel.set(theLabel);
 		return this;
 	}
 
-	/**
-	 * 
-	 * @param theMode int
-	 */
 	@ControlP5.Invisible
 	public Range setSliderMode(int theMode) {
 		return this;
 	}
 
-	/**
-	 * adjusts the size of both slider handles.
-	 * 
-	 * @param theSize
-	 */
 	public Range setHandleSize(int theSize) {
 		handleSize = theSize;
-		setLowValue(_myArrayValue[0]);
-		setHighValue(_myArrayValue[1]);
+		setLowValue(_myArrayValue[0], false);
+		setHighValue(_myArrayValue[1], false);
+		mr = maxHandle - minHandle;
 		return this;
 	}
 
-	/**
-	 * @see ControllerInterface.updateInternalEvents
-	 * 
-	 */
 	@ControlP5.Invisible
 	public Range updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
@@ -204,7 +199,9 @@ public class Range extends Controller {
 		return this;
 	}
 
+	
 	@Override
+	@Invisible
 	public void mousePressed() {
 
 		final float posX = _myParent.getAbsolutePosition().x + position.x;
@@ -232,11 +229,17 @@ public class Range extends Controller {
 
 	/**
 	 * set the value of the range-slider.
+	 * to set the low and high value, use setLowValue and setHighValue or setRangeValues
+	 * 
+	 * @see #setLowValue(float)
+	 * @see #setHighValue(float)
+	 * @see #setRangeValues(float, float)
 	 * 
 	 * @param theValue float
 	 * @return Range
 	 */
 	@Override
+	@ControlP5.Invisible
 	public Range setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(ARRAY);
@@ -244,11 +247,10 @@ public class Range extends Controller {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * 
-	 * @return Range
+	 * @exclude
 	 */
 	@Override
+	@ControlP5.Invisible
 	public Range update() {
 		_myArrayValue[0] = PApplet.map(minHandle, handleSize, getWidth() - handleSize, _myMin, _myMax);
 		_myArrayValue[1] = PApplet.map(maxHandle, handleSize, getWidth() - handleSize, _myMin, _myMax);
@@ -258,115 +260,75 @@ public class Range extends Controller {
 		return setValue(_myValue);
 	}
 
-	/**
-	 * 
-	 * @param theFlag
-	 * @return Range
-	 */
+	@ControlP5.Invisible
 	public Range setDraggable(boolean theFlag) {
 		isDraggable = theFlag;
 		isDragging = (theFlag == false) ? false : isDragging;
 		return this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public float[] getArrayValue() {
 		return _myArrayValue;
 	}
 
 	@Override
 	public Range setArrayValue(float[] theArray) {
-		setLowValue(theArray[0]);
-		setHighValue(theArray[1]);
-		return this;
+		setLowValue(theArray[0], false);
+		setHighValue(theArray[1], false);
+		return update();
 	}
 
-	/**
-	 * set the minimum value of the slider.
-	 * 
-	 * @param theValue float
-	 * @return Range
-	 */
+	
 	@Override
 	public Range setMin(float theValue) {
 		_myMin = theValue;
 		_myValueRange = _myMax - _myMin;
-		setLowValue(_myArrayValue[0]);
-		return this;
+		return setLowValue(_myArrayValue[0]);
 	}
 
-	/**
-	 * set the maximum value of the slider.
-	 * 
-	 * @param theValue float
-	 * @return Range
-	 */
+	
 	@Override
 	public Range setMax(float theValue) {
 		_myMax = theValue;
 		_myValueRange = _myMax - _myMin;
-		setHighValue(_myArrayValue[1]);
-		return this;
+		return setHighValue(_myArrayValue[1]);
 	}
 
-	/**
-	 * @return float
-	 */
 	public float getLowValue() {
 		return _myArrayValue[0];
 	}
 
-	/**
-	 * @return float
-	 */
 	public float getHighValue() {
 		return _myArrayValue[1];
 	}
 
-	/**
-	 * sets the width of the slider.
-	 * 
-	 * @param theValue int
-	 * @return Range
-	 */
+	@Override
 	public Range setWidth(int theValue) {
 		width = theValue;
 		return this;
 	}
 
-	/**
-	 * sets the height of the slider.
-	 * 
-	 * @param theValue int
-	 * @return Range
-	 */
+	@Override
 	public Range setHeight(int theValue) {
 		height = theValue;
 		return this;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
+	
+	@Override
 	@ControlP5.Invisible
 	public void mouseReleased() {
 		isDragging = isMinHandle = isMaxHandle = isMoveHandle = false;
 		mode = -1;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
+	
+	
+	@Override
 	@ControlP5.Invisible
 	public void mouseReleasedOutside() {
 		mouseReleased();
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
+	
+	@Override
 	@ControlP5.Invisible
 	public void onLeave() {
 		isMinHandle = false;
@@ -374,33 +336,19 @@ public class Range extends Controller {
 	}
 
 	protected void setTickMarks() {
-
+		System.out.println("Range Tickmarks not yet supported");
 	}
 
-	/**
-	 * sets the color of tick marks if enabled. by default the color is set to white.
-	 * 
-	 * @param theColor
-	 * @return Slider
-	 */
 	public Range setColorTickMark(int theColor) {
 		_myColorTickMark = theColor;
 		return this;
 	}
 
-	/**
-	 * @param theFlag
-	 * @return Range
-	 */
 	public Range showTickMarks(boolean theFlag) {
 		isShowTickMarks = theFlag;
 		return this;
 	}
 
-	/**
-	 * @param theFlag
-	 * @return Range
-	 */
 	public Range snapToTickMarks(boolean theFlag) {
 		isSnapToTickMarks = theFlag;
 		System.out.println("Range Tickmarks not yet supported");
@@ -412,21 +360,11 @@ public class Range extends Controller {
 		System.out.println("Range Tickmarks not yet supported");
 		return null;
 	}
-	
-	/**
-	 * returns an ArrayList of available tick marks for a slider.
-	 * 
-	 * @return ArrayList<TickMark>
-	 */
+
 	public ArrayList<TickMark> getTickMarks() {
 		return _myTickMarks;
 	}
-	
 
-	/**
-	 * @param theNumber
-	 * @return Timeline
-	 */
 	public Range setNumberOfTickMarks(int theNumber) {
 		System.out.println("Range Tickmarks not yet supported");
 		_myTickMarks.clear();
@@ -441,31 +379,39 @@ public class Range extends Controller {
 			snapToTickMarks(false);
 		}
 		_myUnit = (_myMax - _myMin) / ((width > height) ? width - 1 : height - 1);
-		setLowValue(_myArrayValue[0]);
-		setHighValue(_myArrayValue[1]);
-		setValue(_myValue);
+		setLowValue(_myArrayValue[0], false);
+		setHighValue(_myArrayValue[1], false);
+		return update();
+	}
+	
+	public Range setRange(float theMinValue, float theMaxValue) {
+		setMin(theMinValue);
+		setMax(theMaxValue);
 		return this;
 	}
-
-	/**
-	 * @param theValue
-	 * @return Timeline
-	 */
-	public Range setLowValue(float theValue) {
+	
+	public Range setRangeValues(float theLowValue, float theHighValue) {
+		return setArrayValue(new float[] {theLowValue, theHighValue});
+	}
+	
+	private Range setLowValue(float theValue, boolean isUpdate) {
 		_myArrayValue[0] = PApplet.max(_myMin, snapValue(theValue));
-		minHandle = PApplet.map(_myArrayValue[0], _myMin, _myMax, handleSize, getWidth() - handleSize);
-		return update();
-
+		minHandle = (int)PApplet.map(_myArrayValue[0], _myMin, _myMax, handleSize, getWidth() - handleSize);
+		return (isUpdate) ? update() : this;
 	}
 
-	/**
-	 * @param theValue
-	 * @return Timeline
-	 */
-	public Range setHighValue(float theValue) {
+	public Range setLowValue(float theValue) {
+		return setLowValue(theValue, true);
+	}
+
+	private Range setHighValue(float theValue, boolean isUpdate) {
 		_myArrayValue[1] = PApplet.min(_myMax, snapValue(theValue));
-		maxHandle = PApplet.map(_myArrayValue[1], _myMin, _myMax, handleSize, getWidth() - handleSize);
-		return update();
+		maxHandle = (int)PApplet.map(_myArrayValue[1], _myMin, _myMax, handleSize, getWidth() - handleSize);
+		return (isUpdate) ? update() : this;
+	}
+
+	public Range setHighValue(float theValue) {
+		return setHighValue(theValue, true);
 	}
 
 	protected float snapValue(float theValue) {
@@ -480,9 +426,6 @@ public class Range extends Controller {
 		return theValue;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	@ControlP5.Invisible
 	public Range updateDisplayMode(int theMode) {
@@ -504,14 +447,15 @@ public class Range extends Controller {
 		return this;
 	}
 
-	class RangeSpriteView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class RangeSpriteView implements ControllerView<Range> {
+		public void display(PApplet theApplet, Range theController) {
 			ControlP5.logger().log(Level.INFO, "RangeSpriteDisplay not available.");
 		}
 	}
 
-	class RangeView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class RangeView implements ControllerView<Range> {
+		
+		public void display(PApplet theApplet, Range theController) {
 
 			int high = mode;
 
@@ -519,7 +463,7 @@ public class Range extends Controller {
 			int x0 = (int) (posX + minHandle);
 			int x1 = (int) (posX + maxHandle);
 
-			if (isInside() && high<0) {
+			if (isInside() && high < 0) {
 				if (_myControlWindow.mouseX >= x0 - handleSize && _myControlWindow.mouseX < x0) {
 					high = LEFT;
 				} else if (_myControlWindow.mouseX >= x1 && _myControlWindow.mouseX < x1 + handleSize) {
@@ -528,9 +472,9 @@ public class Range extends Controller {
 					high = CENTER;
 				}
 			}
-			
+
 			theApplet.pushMatrix();
-			
+
 			theApplet.fill(color.getBackground());
 
 			theApplet.noStroke();
@@ -549,7 +493,7 @@ public class Range extends Controller {
 			} else {
 				theApplet.rect(minHandle, 0, mr, height);
 				theApplet.fill((isMinHandle || high == LEFT) ? color.getActive() : color.getForeground());
-				theApplet.rect(minHandle - handleSize, 0, handleSize, height);
+				theApplet.rect((minHandle - handleSize), 0, handleSize, height);
 				theApplet.fill((isMaxHandle || high == RIGHT) ? color.getActive() : color.getForeground());
 				theApplet.rect(maxHandle, 0, handleSize, height);
 
@@ -560,30 +504,32 @@ public class Range extends Controller {
 				_myValueLabel.draw(theApplet, 0, 0, theController);
 				_myHighValueLabel.draw(theApplet, 0, 0, theController);
 			}
-			
+
 			theApplet.popMatrix();
-			
+
 			if (isShowTickMarks) {
 				theApplet.pushMatrix();
-				float x = (getWidth()-handleSize) / (getTickMarks().size() - 1);
-				theApplet.translate(handleSize/2, getHeight());
+				float x = (getWidth() - handleSize) / (getTickMarks().size() - 1);
+				theApplet.translate(handleSize / 2, getHeight());
 				theApplet.fill(_myColorTickMark);
 				for (TickMark tm : getTickMarks()) {
 					tm.draw(theApplet);
-					theApplet.translate(x,0);
+					theApplet.translate(x, 0);
 				}
 				theApplet.popMatrix();
 			}
 		}
 	}
 
-	class RangeImageView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class RangeImageView implements ControllerView<Range> {
+		public void display(PApplet theApplet, Range theController) {
 			ControlP5.logger().log(Level.INFO, "RangeImageDisplay not implemented.");
 		}
 	}
 
+	
 	@Override
+	@ControlP5.Invisible
 	public String toString() {
 		return "type:\tRange\n" + super.toString();
 	}
@@ -602,5 +548,5 @@ public class Range extends Controller {
 	public float[] arrayValue() {
 		return _myArrayValue;
 	}
-	
+
 }

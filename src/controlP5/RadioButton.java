@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -26,6 +26,8 @@ package controlP5;
  */
 
 import java.util.ArrayList;
+import java.util.List;
+
 import processing.core.PImage;
 
 /**
@@ -43,21 +45,21 @@ import processing.core.PImage;
  * 
  * @nosuperclasses Controller Controller
  */
-public class RadioButton extends ControlGroup {
+public class RadioButton extends ControlGroup<RadioButton> {
 
-	protected ArrayList<Toggle> _myRadioToggles;
+	protected List<Toggle> _myRadioToggles;
 
-	protected int rowSpacing = 2;
+	protected int spacingRow = 1;
 
-	protected int columnSpacing = 2;
+	protected int spacingColumn = 1;
 
 	protected int itemsPerRow = -1;
 
 	protected boolean isMultipleChoice;
 
-	protected int itemHeight = 11;
+	protected int itemHeight = 9;
 
-	protected int itemWidth = 11;
+	protected int itemWidth = 9;
 
 	protected boolean[] availableImages = new boolean[3];
 
@@ -73,26 +75,27 @@ public class RadioButton extends ControlGroup {
 	 * @param theX
 	 * @param theY
 	 */
-	public RadioButton(final ControlP5 theControlP5, final ControllerGroup theParent, final String theName, final int theX, final int theY) {
-		super(theControlP5, theParent, theName, theX, theY, 100, 9);
+	public RadioButton(final ControlP5 theControlP5, final ControllerGroup<?> theParent, final String theName, final int theX, final int theY) {
+		super(theControlP5, theParent, theName, theX, theY, 99, 9);
 		isBarVisible = false;
 		isCollapse = false;
 		_myRadioToggles = new ArrayList<Toggle>();
 		setItemsPerRow(1);
-    	}
+	}
 
 	/**
 	 * @param theName
 	 * @param theValue
 	 * @return
 	 */
-	public Toggle addItem(final String theName, final float theValue) {
+	public RadioButton addItem(final String theName, final float theValue) {
 		Toggle t = cp5.addToggle(theName, 0, 0, itemWidth, itemHeight);
-		t.getCaptionLabel().align(RIGHT_OUTSIDE,CENTER).setPadding(Label.paddingX,0);
+		t.getCaptionLabel().align(RIGHT_OUTSIDE, CENTER).setPadding(Label.paddingX, 0);
 		t.setMode(ControlP5.DEFAULT);
 		t.setImages(images[0], images[1], images[2]);
 		t.setSize(images[0]);
-		return addItem(t, theValue);
+		addItem(t, theValue);
+		return this;
 	}
 
 	/**
@@ -100,7 +103,7 @@ public class RadioButton extends ControlGroup {
 	 * @param theValue
 	 * @return
 	 */
-	public Toggle addItem(final Toggle theToggle, final float theValue) {
+	public RadioButton addItem(final Toggle theToggle, final float theValue) {
 		theToggle.setGroup(this);
 		theToggle.isMoveable = false;
 		theToggle.setInternalValue(theValue);
@@ -111,13 +114,13 @@ public class RadioButton extends ControlGroup {
 		theToggle.addListener(this);
 		updateValues(false);
 		cp5.removeProperty(theToggle);
-		return theToggle;
+		return this;
 	}
 
 	/**
 	 * @param theName
 	 */
-	public void removeItem(final String theName) {
+	public RadioButton removeItem(final String theName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			if ((_myRadioToggles.get(i)).getName().equals(theName)) {
@@ -126,6 +129,7 @@ public class RadioButton extends ControlGroup {
 			}
 		}
 		updateValues(false);
+		return this;
 	}
 
 	/**
@@ -145,7 +149,7 @@ public class RadioButton extends ControlGroup {
 	/**
 	 * @param theImage
 	 */
-	public PImage setImage(PImage theImage) {
+	public RadioButton setImage(PImage theImage) {
 		return setImage(theImage, DEFAULT);
 	}
 
@@ -155,25 +159,25 @@ public class RadioButton extends ControlGroup {
 	 *            Controller.ACTIVE (active)
 	 * @return
 	 */
-	public PImage setImage(PImage theImage, int theState) {
+	public RadioButton setImage(PImage theImage, int theState) {
 		if (theImage != null) {
 			images[theState] = theImage;
 			availableImages[theState] = true;
 			for (int i = 0; i < _myRadioToggles.size(); i++) {
 				_myRadioToggles.get(i).setImage(theImage, theState);
 			}
-			return theImage;
 		}
-		return null;
+		return this;
 	}
 
-	public void setSize(PImage theImage) {
-		setSize(theImage.width, theImage.height);
+	public RadioButton setSize(PImage theImage) {
+		return setSize(theImage.width, theImage.height);
 	}
 
-	public void setSize(int theWidth, int theHeight) {
+	public RadioButton setSize(int theWidth, int theHeight) {
 		setItemWidth(theWidth);
 		setItemHeight(theHeight);
+		return this;
 	}
 
 	/**
@@ -183,8 +187,13 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theItemHeight
 	 */
-	public void setItemHeight(int theItemHeight) {
+	public RadioButton setItemHeight(int theItemHeight) {
 		itemHeight = theItemHeight;
+		for (Toggle t : _myRadioToggles) {
+			t.setHeight(theItemHeight);
+		}
+		updateLayout();
+		return this;
 	}
 
 	/**
@@ -194,8 +203,13 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theItemWidth
 	 */
-	public void setItemWidth(int theItemWidth) {
+	public RadioButton setItemWidth(int theItemWidth) {
 		itemWidth = theItemWidth;
+		for (Toggle t : _myRadioToggles) {
+			t.setWidth(theItemWidth);
+		}
+		updateLayout();
+		return this;
 	}
 
 	/**
@@ -205,8 +219,13 @@ public class RadioButton extends ControlGroup {
 	 * @return Toggle
 	 */
 	public Toggle getItem(int theIndex) {
-		return ((Toggle) _myRadioToggles.get(theIndex));
+		return _myRadioToggles.get(theIndex);
 	}
+	
+	public List<Toggle> getItems() {
+		return _myRadioToggles;
+	}
+
 
 	/**
 	 * Gets the state of an item - this can be true (for on) or false (for off) - by index.
@@ -251,12 +270,12 @@ public class RadioButton extends ControlGroup {
 			t.position.y = yy;
 			t.position.x = xx;
 
-			xx += t.width + columnSpacing;
+			xx += t.width + spacingColumn;
 			nn++;
 			if (nn == itemsPerRow) {
 				nn = 0;
 				_myWidth = xx;
-				yy += t.height + rowSpacing;
+				yy += t.height + spacingRow;
 				xx = 0;
 			} else {
 				_myWidth = xx;
@@ -270,9 +289,10 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theValue
 	 */
-	public void setItemsPerRow(final int theValue) {
+	public RadioButton setItemsPerRow(final int theValue) {
 		itemsPerRow = theValue;
 		updateLayout();
+		return this;
 	}
 
 	/**
@@ -280,9 +300,10 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theSpacing
 	 */
-	public void setSpacingColumn(final int theSpacing) {
-		columnSpacing = theSpacing;
+	public RadioButton setSpacingColumn(final int theSpacing) {
+		spacingColumn = theSpacing;
 		updateLayout();
+		return this;
 	}
 
 	/**
@@ -290,14 +311,15 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theSpacing
 	 */
-	public void setSpacingRow(final int theSpacing) {
-		rowSpacing = theSpacing;
+	public RadioButton setSpacingRow(final int theSpacing) {
+		spacingRow = theSpacing;
 		updateLayout();
+		return this;
 	}
 
-	public void deactivateAll() {
+	public RadioButton deactivateAll() {
 		if (!isMultipleChoice && !noneSelectedAllowed) {
-			return;
+			return this;
 		}
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
@@ -305,6 +327,7 @@ public class RadioButton extends ControlGroup {
 		}
 		_myValue = -1;
 		updateValues(true);
+		return this;
 	}
 
 	/**
@@ -313,7 +336,7 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theIndex
 	 */
-	public void activate(int theIndex) {
+	public RadioButton activate(int theIndex) {
 		int n = _myRadioToggles.size();
 		if (theIndex < n) {
 			for (int i = 0; i < n; i++) {
@@ -323,14 +346,15 @@ public class RadioButton extends ControlGroup {
 			_myValue = _myRadioToggles.get(theIndex).internalValue();
 			updateValues(true);
 		}
+		return this;
 	}
 
 	/**
 	 * @param theIndex
 	 */
-	public void deactivate(int theIndex) {
+	public RadioButton deactivate(int theIndex) {
 		if (!isMultipleChoice && !noneSelectedAllowed) {
-			return;
+			return this;
 		}
 		if (theIndex < _myRadioToggles.size()) {
 			Toggle t = _myRadioToggles.get(theIndex);
@@ -340,6 +364,7 @@ public class RadioButton extends ControlGroup {
 				updateValues(true);
 			}
 		}
+		return this;
 	}
 
 	/**
@@ -347,15 +372,16 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theName
 	 */
-	public void activate(String theName) {
+	public RadioButton activate(String theName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			Toggle t = _myRadioToggles.get(i);
 			if (theName.equals(t.getName())) {
 				activate(i);
-				return;
+				return this;
 			}
 		}
+		return this;
 	}
 
 	/**
@@ -364,7 +390,7 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theName
 	 */
-	public void deactivate(String theName) {
+	public RadioButton deactivate(String theName) {
 		int n = _myRadioToggles.size();
 		for (int i = 0; i < n; i++) {
 			Toggle t = _myRadioToggles.get(i);
@@ -372,16 +398,17 @@ public class RadioButton extends ControlGroup {
 				t.deactivate();
 				_myValue = -1;
 				updateValues(true);
-				return;
+				return this;
 			}
 		}
+		return this;
 	}
 
 	/**
 	 * @exclude
 	 * @param theIndex
 	 */
-	public void toggle(int theIndex) {
+	public RadioButton toggle(int theIndex) {
 		// TODO
 		// boolean itemState = ((Toggle)
 		// _myRadioToggles.get(theIndex)).getState();
@@ -394,6 +421,7 @@ public class RadioButton extends ControlGroup {
 		// }
 		// }
 		ControlP5.logger().info("toggle() not yet implemented, working on it.");
+		return this;
 	}
 
 	/**
@@ -450,8 +478,9 @@ public class RadioButton extends ControlGroup {
 	 * 
 	 * @param theValue
 	 */
-	public void setNoneSelectedAllowed(boolean theValue) {
+	public RadioButton setNoneSelectedAllowed(boolean theValue) {
 		noneSelectedAllowed = theValue;
+		return this;
 	}
 
 	/**
@@ -473,13 +502,48 @@ public class RadioButton extends ControlGroup {
 		return this;
 	}
 
+	public RadioButton setColorLabels(int theColor) {
+		for (Toggle t : _myRadioToggles) {
+			t.getCaptionLabel().setColor(theColor);
+		}
+		return this;
+	}
+
+	public RadioButton hideLabels() {
+		for (Toggle t : _myRadioToggles) {
+			t.getCaptionLabel().setVisible(false);
+		}
+		return this;
+	}
+	
+	public RadioButton showLabels() {
+		for (Toggle t : _myRadioToggles) {
+			t.getCaptionLabel().setVisible(true);
+		}
+		return this;
+	}
+	
+	public RadioButton toUpperCase(boolean theValue) {
+		for (Toggle t : _myRadioToggles) {
+			t.getCaptionLabel().toUpperCase(theValue);
+		}
+		return this;
+	}
+
 	/**
-	 * @exclude
-	 * {@inheritDoc}
+	 * @exclude {@inheritDoc}
 	 */
 	@Override
 	public String getInfo() {
 		return "type:\tRadioButton\n" + super.getInfo();
 	}
 
+	/**
+	 * @deprecated
+	 * @exclude
+	 */
+	@Deprecated
+	public RadioButton add(final String theName, final float theValue) {
+		return addItem(theName, theValue);
+	}
 }

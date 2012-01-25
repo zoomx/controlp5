@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -36,7 +36,7 @@ import processing.core.PVector;
  * classes.
  * 
  */
-public interface ControllerInterface {
+public interface ControllerInterface<T> {
 
 	
 	@ControlP5.Invisible
@@ -46,11 +46,11 @@ public interface ControllerInterface {
 
 	public int getHeight();
 
-	public ControllerInterface setValue(float theValue);
+	public T setValue(float theValue);
 
 	public float getValue();
 
-	public ControllerInterface setStringValue(String theValue);
+	public T setStringValue(String theValue);
 
 	public String getStringValue();
 
@@ -61,31 +61,31 @@ public interface ControllerInterface {
 	public PVector getPosition();
 
 	@ControlP5.Invisible
-	public ControllerInterface setPosition(float theX, float theY);
+	public T setPosition(float theX, float theY);
 
 	@ControlP5.Invisible
-	public ControllerInterface setPosition(PVector thePVector);
+	public T setPosition(PVector thePVector);
 
 	public PVector getAbsolutePosition();
 
-	public ControllerInterface setAbsolutePosition(PVector thePVector);
+	public T setAbsolutePosition(PVector thePVector);
 
-	public ControllerInterface updateAbsolutePosition();
+	public T updateAbsolutePosition();
 
-	public ControllerInterface getParent();
+	public ControllerInterface<?> getParent();
 
-	public ControllerInterface update();
+	public T update();
 
-	public ControllerInterface setUpdate(boolean theFlag);
+	public T setUpdate(boolean theFlag);
 	
-	public ControllerInterface bringToFront();
+	public T bringToFront();
 	
-	public ControllerInterface bringToFront(ControllerInterface theController);
+	public T bringToFront(ControllerInterface<?> theController);
 
 	public boolean isUpdate();
 
 	@ControlP5.Invisible
-	public ControllerInterface updateEvents();
+	public T updateEvents();
 
 	@ControlP5.Invisible
 	public void continuousUpdateEvents();
@@ -98,14 +98,14 @@ public interface ControllerInterface {
 	 * 
 	 */
 	@ControlP5.Invisible
-	public ControllerInterface updateInternalEvents(PApplet theApplet);
+	public T updateInternalEvents(PApplet theApplet);
 
 	@ControlP5.Invisible
 	public void draw(PApplet theApplet);
 
-	public ControllerInterface add(ControllerInterface theElement);
+	public T add(ControllerInterface<?> theElement);
 
-	public ControllerInterface remove(ControllerInterface theElement);
+	public T remove(ControllerInterface<?> theElement);
 
 	public void remove();
 
@@ -123,58 +123,58 @@ public interface ControllerInterface {
 	public void keyEvent(KeyEvent theEvent);
 
 	@ControlP5.Invisible
-	public ControllerInterface setAddress(String theAddress);
+	public T setAddress(String theAddress);
 
-	public ControllerInterface setId(int theValue);
+	public T setId(int theValue);
 
-	public ControllerInterface setLabel(String theString);
+	public T setLabel(String theString);
 
-	public ControllerInterface setColorActive(int theColor);
+	public T setColorActive(int theColor);
 
-	public ControllerInterface setColorForeground(int theColor);
+	public T setColorForeground(int theColor);
 
-	public ControllerInterface setColorBackground(int theColor);
+	public T setColorBackground(int theColor);
 
-	public ControllerInterface setColorLabel(int theColor);
+	public T setColorLabel(int theColor);
 
-	public ControllerInterface setColorValue(int theColor);
+	public T setColorValue(int theColor);
 	
-	public ControllerInterface setColor(CColor theColor);
+	public T setColor(CColor theColor);
 	
 	public CColor getColor();
 	
-	public ControllerInterface show();
+	public T show();
 
-	public ControllerInterface hide();
+	public T hide();
 
 	public boolean isVisible();
 
-	public ControllerInterface moveTo(ControllerGroup theGroup, Tab theTab, ControlWindow theWindow);
+	public T moveTo(ControllerGroup<?> theGroup, Tab theTab, ControlWindow theWindow);
 
-	public ControllerInterface moveTo(ControllerGroup theGroup);
+	public T moveTo(ControllerGroup<?> theGroup);
 
 
 	@ControlP5.Invisible
 	public int getPickingColor();
 
 	@ControlP5.Invisible
-	public ControllerInterface parent();
+	public ControllerInterface<?> parent();
 
 	public ControllerProperty getProperty(String thePropertyName);
 
 	public ControllerProperty getProperty(String theSetter, String theGetter);
 
-	public ControllerInterface registerProperty(String thePropertyName);
+	public T registerProperty(String thePropertyName);
 
-	public ControllerInterface registerProperty(String theSetter, String theGetter);
+	public T registerProperty(String theSetter, String theGetter);
 
-	public ControllerInterface removeProperty(String thePropertyName);
+	public T removeProperty(String thePropertyName);
 
-	public ControllerInterface removeProperty(String theSetter, String theGetter);
+	public T removeProperty(String theSetter, String theGetter);
 
 	public boolean isMouseOver();
 	
-	public ControllerInterface setMouseOver(boolean theFlag);
+	public T setMouseOver(boolean theFlag);
 	
 	/**
 	 * @exclude

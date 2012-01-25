@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -35,7 +35,7 @@ import processing.core.PVector;
  * @example controllers/ControlP5toggle
  * @nosuperclasses Controller Controller
  */
-public class Toggle extends Controller {
+public class Toggle extends Controller<Toggle> {
 
 	int cnt;
 
@@ -43,9 +43,9 @@ public class Toggle extends Controller {
 
 	protected float internalValue = -1;
 
-	public static int autoWidth = 40;
+	public static int autoWidth = 39;
 
-	public static int autoHeight = 20;
+	public static int autoHeight = 19;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
 
@@ -237,8 +237,8 @@ public class Toggle extends Controller {
 		return this;
 	}
 
-	class ToggleView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class ToggleView implements ControllerView<Toggle> {
+		public void display(PApplet theApplet, Toggle theController) {
 			if (isActive) {
 				theApplet.fill(isOn ? color.getActive() : color.getForeground());
 			} else {
@@ -252,8 +252,8 @@ public class Toggle extends Controller {
 	}
 	
 	@Deprecated
-	class ToggleSpriteView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class ToggleSpriteView implements ControllerView<Toggle> {
+		public void display(PApplet theApplet, Toggle theController) {
 			if (isActive) {
 				sprite.setState(1);
 			} else {
@@ -266,8 +266,8 @@ public class Toggle extends Controller {
 		}
 	}
 
-	class ToggleImageView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class ToggleImageView implements ControllerView<Toggle> {
+		public void display(PApplet theApplet, Toggle theController) {
 			if (isActive) {
 				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
 			} else {
@@ -281,8 +281,8 @@ public class Toggle extends Controller {
 		}
 	}
 
-	class ToggleSwitchView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class ToggleSwitchView implements ControllerView<Toggle> {
+		public void display(PApplet theApplet, Toggle theController) {
 			theApplet.fill(color.getBackground());
 			theApplet.rect(0, 0, width, height);
 			theApplet.fill(color.getActive());

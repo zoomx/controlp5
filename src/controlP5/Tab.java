@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -36,7 +36,7 @@ import processing.core.PVector;
  * @example controllers/ControlP5tab
  * @nosuperclasses ControllerGroup ControllerGroup
  */
-public class Tab extends ControllerGroup {
+public class Tab extends ControllerGroup<Tab> {
 
 	protected int _myOffsetX = -1000;
 

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -34,7 +34,7 @@ import processing.core.PApplet;
  * 
  * @example controllers/ControlP5matrix
  */
-public class Matrix extends Controller {
+public class Matrix extends Controller<Matrix> {
 
 	protected int cnt;
 
@@ -66,7 +66,7 @@ public class Matrix extends Controller {
 
 	private Thread t;
 
-	public Matrix(ControlP5 theControlP5, ControllerGroup theParent, String theName, int theCellX, int theCellY, int theX, int theY, int theWidth, int theHeight) {
+	public Matrix(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theCellX, int theCellY, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myInterval = 100;
 		initCells(theCellX, theCellY);
@@ -294,8 +294,8 @@ public class Matrix extends Controller {
 		return this;
 	}
 
-	class MatrixView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	class MatrixView implements ControllerView<Matrix> {
+		public void display(PApplet theApplet, Matrix theController) {
 			theApplet.noStroke();
 			theApplet.fill(color.getBackground());
 			theApplet.rect(0, 0, width, height);

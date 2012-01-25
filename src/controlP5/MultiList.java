@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -38,7 +38,7 @@ import processing.core.PApplet;
  * 
  * @nosuperclasses Controller Controller
  */
-public class MultiList extends Controller implements MultiListInterface, ControlListener {
+public class MultiList extends Controller<MultiList> implements MultiListInterface, ControlListener {
 
 	/*
 	 * TODO reflection does not work properly. TODO add an option to remove
@@ -77,8 +77,8 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	
 	public MultiList toUpperCase(boolean theValue) {
 		isUpperCase = theValue;
-		for(Controller c:_myChildren) {
-			((MultiListButton)c).toUpperCase(isUpperCase);
+		for(MultiListButton c:_myChildren) {
+			c.toUpperCase(isUpperCase);
 		}
 		return this;
 	}
@@ -95,12 +95,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 		return _myChildren;
 	}
 	
-	@Override
-	@ControlP5.Invisible
-	public List<Controller> getSubElements() {
-		return null;
-	}
-
+	
 	protected void updateRect(float theX, float theY, float theW, float theH) {
 		_myRect = new CRect(theX, theY, theW, theH);
 	}
@@ -164,7 +159,7 @@ public class MultiList extends Controller implements MultiListInterface, Control
 	public MultiListButton add(String theName, int theValue) {
 		int x = (int) position.x;
 		int yy = 0;
-		for(Controller c:_myChildren) {
+		for(MultiListButton c:_myChildren) {
 			yy+=c.getHeight()+1;
 		}
 		int y = (int) position.y + yy;//(_myDefaultButtonHeight + 1) * _myChildren.size();
