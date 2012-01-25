@@ -14,12 +14,14 @@
 
 import controlP5.*;
 
-ControlP5 controlP5;
-ControlWindow controlWindow;
-ControlWindowCanvas cc;
+ControlP5 cp5;
 
-// MyCanvas, your controlWindowCanvas render class
-class MyCanvas extends ControlWindowCanvas {
+ControlWindow controlWindow;
+
+Canvas cc;
+
+// MyCanvas, your Canvas render class
+class MyCanvas extends Canvas {
 
   int y;
 
@@ -27,11 +29,14 @@ class MyCanvas extends ControlWindowCanvas {
     y = 200;
   }  
 
-  public void draw(PApplet theApplet) {
+  public void draw(PApplet p) {
     // renders a square with randomly changing colors
     // make changes here.
-    theApplet.fill(random(255));
-    theApplet.rect(theApplet.mouseX, y, 100, 100);
+    p.fill(100);
+    p.rect(p.mouseX-20, y-20, 240, 30);
+    p.fill(255);
+    p.text("This text is drawn by MyCanvas", p.mouseX,y);
+    p.text("This text is drawn by MyCanvas", p.mouseX,y);
   }
 }
 
@@ -39,12 +44,10 @@ class MyCanvas extends ControlWindowCanvas {
 void setup() {
   size(400, 400);
   frameRate(30);
-  controlP5 = new ControlP5(this);
-
-  ControlP5.printPublicMethodsFor(ControlWindowCanvas.class);
+  cp5 = new ControlP5(this);
 
   // create a new control window.
-  controlWindow = controlP5.addControlWindow("controlP5window", 100, 100, 400, 400, 30);
+  controlWindow = cp5.addControlWindow("controlP5window", 100, 100, 300, 400);
 
   // for continuous update use ControlWindow.NORMAL  to update a control
   // window only when it is in focus, use ControlWindow.ECONOMIC
@@ -62,29 +65,32 @@ void setup() {
   // here, the draw() method of the ControlWindowCanvas will be called a second time every frame,
   // therefore the color value of the square does not match the color of the canvas rendered
   // inside the controlWindow (see above).
-  controlP5.addCanvas(cc);
+  
+  //controlP5.addCanvas(cc);
 }
 
 void draw() {
   background(0);
-  fill(255, 0, 0);
+  fill(60);
   rect(100, 100, 200, 200);
 }
 
 
 /*
  a list of all methods available for the ControlWindowCanvas Controller
- use ControlP5.printPublicMethodsFor(ControlWindowCanvas.class);
+ use ControlP5.printPublicMethodsFor(Canvas.class);
  to print the following list into the console.
  
- You can find further details about class ControlWindowCanvas in the javadoc.
+ You can find further details about class Canvas in the javadoc.
  
  Format:
  ClassName : returnType methodName(parameter type)
  
- controlP5.ControlWindowCanvas : void moveTo(ControlWindow) 
- controlP5.ControlWindowCanvas : void setup(PApplet) 
- controlP5.ControlWindowCanvas : void draw(PApplet) 
+ controlP5.Canvas : void moveTo(ControlWindow) 
+ controlP5.Canvas : void setup(PApplet) 
+ controlP5.Canvas : void draw(PApplet) 
  java.lang.Object : String toString() 
  java.lang.Object : boolean equals(Object) 
  */
+ 
+ 

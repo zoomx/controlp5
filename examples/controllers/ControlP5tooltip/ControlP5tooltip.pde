@@ -18,8 +18,9 @@ ControlP5 cp5;
 float s1 = 20, s2 = 100;
 
 void setup() {
-  size(400,400);
+  size(700,400);
   smooth();
+  noStroke();
   cp5 = new ControlP5(this);
   cp5.begin(100,100);
   cp5.addSlider("s1",10,200).linebreak();

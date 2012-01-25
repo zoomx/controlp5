@@ -18,7 +18,7 @@ ControlP5 cp5;
 
 int col = color(255);
 
-boolean toggleValue = true;
+boolean toggleValue = false;
 
 void setup() {
   size(400,400);
@@ -26,10 +26,19 @@ void setup() {
   cp5 = new ControlP5(this);
   
   // create a toggle
-  cp5.addToggle("toggleValue",true,40,100,50,20);
+  cp5.addToggle("toggleValue")
+     .setPosition(40,100)
+     .setSize(50,20)
+     ;
   
   // create a toggle and change the default look to a (on/off) switch look
-  cp5.addToggle("toggle",40,250,50,20).setMode(ControlP5.SWITCH);
+  cp5.addToggle("toggle")
+     .setPosition(40,250)
+     .setSize(50,20)
+     .setValue(true)
+     .setMode(ControlP5.SWITCH)
+     ;
+     
 }
   
 
@@ -58,9 +67,9 @@ void draw() {
 
 void toggle(boolean theFlag) {
   if(theFlag==true) {
-    col = color(100);
-  } else {
     col = color(255);
+  } else {
+    col = color(100);
   }
   println("a toggle event.");
 }
