@@ -5,7 +5,7 @@
  * find a list of public methods available for the Button Controller 
  * at the bottom of this sketch's source code
  *
- * by Andreas Schlegel, 2011
+ * by Andreas Schlegel, 2012
  * www.sojamo.de/libraries/controlp5
  *
  */
@@ -16,25 +16,36 @@ ControlP5 cp5;
 
 Button b;
 
-// the controlP5 button controller 'buttonValue' will change the
-// value of variable 'buttonValue'  when pressed.
-int buttonValue = 0;
+// the controlP5 button-controller 'buttonValue' will change the
+// value of variable 'buttonValue' when pressed.
+int buttonValue = 255;
 
-int myColor = color(0,255,0);
+int myColor = color(255);
 
 
 void setup() {
-  size(640,480);
-  smooth();
-  frameRate(30);
+  size(700,400);
+  noStroke();
   cp5 = new ControlP5(this);
   
   // create a new button with name 'buttonA'
-  cp5.addButton("buttonA",0,100,100,80,19);
+  cp5.addButton("buttonA")
+     .setValue(0)
+     .setPosition(100,100)
+     .setSize(200,19)
+     ;
   
   // and add another 2 buttons
-  cp5.addButton("buttonB",255,100,120,80,19);
-  cp5.addButton("buttonValue",128,100,140,80,19);
+  cp5.addButton("buttonB")
+     .setValue(255)
+     .setPosition(100,120)
+     .setSize(200,19)
+     ;
+     
+  cp5.addButton("buttonValue")
+     .setPosition(100,140)
+     .setSize(200,19)
+     ;
 
 }
 
@@ -46,23 +57,21 @@ void draw() {
 
 public void controlEvent(ControlEvent theEvent) {
   println(theEvent.controller().name());
-  
 }
 
 // function buttonA will receive changes from 
 // controller with name buttonA
 public void buttonA(int theValue) {
   println("a button event from buttonA: "+theValue);
-  myColor = color(255,0,0);
+  myColor = color(0);
 }
 
 // function buttonB will receive changes from 
 // controller with name buttonB
 public void buttonB(int theValue) {
   println("a button event from buttonB: "+theValue);
-  myColor = theValue;
+  myColor = color(128);
 }
-
 
 
 /*
@@ -84,69 +93,74 @@ controlP5.Button : Button setValue(float)
 controlP5.Button : Button update() 
 controlP5.Button : String getInfo() 
 controlP5.Button : String toString() 
-controlP5.Button : boolean booleanValue() 
+controlP5.Button : boolean getBooleanValue() 
+controlP5.Button : boolean isOn() 
+controlP5.Button : boolean isPressed() 
+controlP5.Controller : Button addCallback(CallbackListener) 
+controlP5.Controller : Button addListener(ControlListener) 
+controlP5.Controller : Button bringToFront() 
+controlP5.Controller : Button bringToFront(ControllerInterface) 
+controlP5.Controller : Button hide() 
+controlP5.Controller : Button linebreak() 
+controlP5.Controller : Button listen(boolean) 
+controlP5.Controller : Button lock() 
+controlP5.Controller : Button plugTo(Object) 
+controlP5.Controller : Button plugTo(Object, String) 
+controlP5.Controller : Button plugTo(Object[]) 
+controlP5.Controller : Button plugTo(Object[], String) 
+controlP5.Controller : Button registerProperty(String) 
+controlP5.Controller : Button registerProperty(String, String) 
+controlP5.Controller : Button registerTooltip(String) 
+controlP5.Controller : Button removeBehavior() 
+controlP5.Controller : Button removeCallback() 
+controlP5.Controller : Button removeCallback(CallbackListener) 
+controlP5.Controller : Button removeListener(ControlListener) 
+controlP5.Controller : Button removeProperty(String) 
+controlP5.Controller : Button removeProperty(String, String) 
+controlP5.Controller : Button setArrayValue(float[]) 
+controlP5.Controller : Button setArrayValue(int, float) 
+controlP5.Controller : Button setBehavior(ControlBehavior) 
+controlP5.Controller : Button setBroadcast(boolean) 
+controlP5.Controller : Button setCaptionLabel(String) 
+controlP5.Controller : Button setColor(CColor) 
+controlP5.Controller : Button setColorActive(int) 
+controlP5.Controller : Button setColorBackground(int) 
+controlP5.Controller : Button setColorCaptionLabel(int) 
+controlP5.Controller : Button setColorForeground(int) 
+controlP5.Controller : Button setColorValueLabel(int) 
+controlP5.Controller : Button setDecimalPrecision(int) 
+controlP5.Controller : Button setDefaultValue(float) 
+controlP5.Controller : Button setHeight(int) 
+controlP5.Controller : Button setId(int) 
+controlP5.Controller : Button setImages(PImage, PImage, PImage) 
+controlP5.Controller : Button setImages(PImage, PImage, PImage, PImage) 
+controlP5.Controller : Button setLabelVisible(boolean) 
+controlP5.Controller : Button setLock(boolean) 
+controlP5.Controller : Button setMax(float) 
+controlP5.Controller : Button setMin(float) 
+controlP5.Controller : Button setMouseOver(boolean) 
+controlP5.Controller : Button setMoveable(boolean) 
+controlP5.Controller : Button setPosition(PVector) 
+controlP5.Controller : Button setPosition(float, float) 
+controlP5.Controller : Button setSize(PImage) 
+controlP5.Controller : Button setSize(int, int) 
+controlP5.Controller : Button setStringValue(String) 
+controlP5.Controller : Button setUpdate(boolean) 
+controlP5.Controller : Button setValueLabel(String) 
+controlP5.Controller : Button setView(ControllerView) 
+controlP5.Controller : Button setVisible(boolean) 
+controlP5.Controller : Button setWidth(int) 
+controlP5.Controller : Button show() 
+controlP5.Controller : Button unlock() 
+controlP5.Controller : Button unplugFrom(Object) 
+controlP5.Controller : Button unplugFrom(Object[]) 
+controlP5.Controller : Button unregisterTooltip() 
+controlP5.Controller : Button update() 
+controlP5.Controller : Button updateSize() 
 controlP5.Controller : CColor getColor() 
 controlP5.Controller : ControlBehavior getBehavior() 
 controlP5.Controller : ControlWindow getControlWindow() 
 controlP5.Controller : ControlWindow getWindow() 
-controlP5.Controller : Controller addCallback(CallbackListener) 
-controlP5.Controller : Controller addListener(ControlListener) 
-controlP5.Controller : Controller hide() 
-controlP5.Controller : Controller linebreak() 
-controlP5.Controller : Controller listen(boolean) 
-controlP5.Controller : Controller lock() 
-controlP5.Controller : Controller plugTo(Object) 
-controlP5.Controller : Controller plugTo(Object, String) 
-controlP5.Controller : Controller plugTo(Object[]) 
-controlP5.Controller : Controller plugTo(Object[], String) 
-controlP5.Controller : Controller registerProperty(String) 
-controlP5.Controller : Controller registerProperty(String, String) 
-controlP5.Controller : Controller registerTooltip(String) 
-controlP5.Controller : Controller removeBehavior() 
-controlP5.Controller : Controller removeCallback() 
-controlP5.Controller : Controller removeCallback(CallbackListener) 
-controlP5.Controller : Controller removeListener(ControlListener) 
-controlP5.Controller : Controller removeProperty(String) 
-controlP5.Controller : Controller removeProperty(String, String) 
-controlP5.Controller : Controller setArrayValue(float[]) 
-controlP5.Controller : Controller setArrayValue(int, float) 
-controlP5.Controller : Controller setBehavior(ControlBehavior) 
-controlP5.Controller : Controller setBroadcast(boolean) 
-controlP5.Controller : Controller setCaptionLabel(String) 
-controlP5.Controller : Controller setColor(CColor) 
-controlP5.Controller : Controller setColorActive(int) 
-controlP5.Controller : Controller setColorBackground(int) 
-controlP5.Controller : Controller setColorCaptionLabel(int) 
-controlP5.Controller : Controller setColorForeground(int) 
-controlP5.Controller : Controller setColorValueLabel(int) 
-controlP5.Controller : Controller setDecimalPrecision(int) 
-controlP5.Controller : Controller setDefaultValue(float) 
-controlP5.Controller : Controller setDisplay(ControllerDisplay) 
-controlP5.Controller : Controller setHeight(int) 
-controlP5.Controller : Controller setId(int) 
-controlP5.Controller : Controller setImages(PImage, PImage, PImage) 
-controlP5.Controller : Controller setImages(PImage, PImage, PImage, PImage) 
-controlP5.Controller : Controller setLabelVisible(boolean) 
-controlP5.Controller : Controller setLock(boolean) 
-controlP5.Controller : Controller setMax(float) 
-controlP5.Controller : Controller setMin(float) 
-controlP5.Controller : Controller setMoveable(boolean) 
-controlP5.Controller : Controller setPosition(PVector) 
-controlP5.Controller : Controller setPosition(float, float) 
-controlP5.Controller : Controller setSize(PImage) 
-controlP5.Controller : Controller setSize(int, int) 
-controlP5.Controller : Controller setStringValue(String) 
-controlP5.Controller : Controller setUpdate(boolean) 
-controlP5.Controller : Controller setValueLabel(String) 
-controlP5.Controller : Controller setVisible(boolean) 
-controlP5.Controller : Controller setWidth(int) 
-controlP5.Controller : Controller show() 
-controlP5.Controller : Controller unlock() 
-controlP5.Controller : Controller unplugFrom(Object) 
-controlP5.Controller : Controller unplugFrom(Object[]) 
-controlP5.Controller : Controller unregisterTooltip() 
-controlP5.Controller : Controller update() 
-controlP5.Controller : Controller updateSize() 
 controlP5.Controller : ControllerProperty getProperty(String) 
 controlP5.Controller : ControllerProperty getProperty(String, String) 
 controlP5.Controller : Label getCaptionLabel() 
@@ -158,7 +172,6 @@ controlP5.Controller : PVector getAbsolutePosition()
 controlP5.Controller : PVector getPosition() 
 controlP5.Controller : String getAddress() 
 controlP5.Controller : String getInfo() 
-controlP5.Controller : String getLabel() 
 controlP5.Controller : String getName() 
 controlP5.Controller : String getStringValue() 
 controlP5.Controller : String toString() 
@@ -166,6 +179,7 @@ controlP5.Controller : Tab getTab()
 controlP5.Controller : boolean isActive() 
 controlP5.Controller : boolean isBroadcast() 
 controlP5.Controller : boolean isInside() 
+controlP5.Controller : boolean isLabelVisible() 
 controlP5.Controller : boolean isListening() 
 controlP5.Controller : boolean isLock() 
 controlP5.Controller : boolean isMouseOver() 
@@ -179,15 +193,18 @@ controlP5.Controller : float getMax()
 controlP5.Controller : float getMin() 
 controlP5.Controller : float getValue() 
 controlP5.Controller : float[] getArrayValue() 
+controlP5.Controller : int getDecimalPrecision() 
 controlP5.Controller : int getHeight() 
 controlP5.Controller : int getId() 
 controlP5.Controller : int getWidth() 
 controlP5.Controller : int listenerSize() 
 controlP5.Controller : void remove() 
-controlP5.Controller : void setDisplay(ControllerDisplay, int) 
+controlP5.Controller : void setView(ControllerView, int) 
 java.lang.Object : String toString() 
 java.lang.Object : boolean equals(Object) 
 
 
 */
+
+
 

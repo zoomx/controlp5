@@ -8,7 +8,7 @@
  * at the bottom of this sketch's source code
  *
  *
- * by andreas schlegel, 2011
+ * by andreas schlegel, 2012
  * www.sojamo.de/libraries/controlp5
  */
 
@@ -21,17 +21,24 @@ DropdownList d1, d2;
 int cnt = 0;
 
 void setup() {
-  size(400, 400);
-frameRate(15);
+  size(700, 400);
+  
   cp5 = new ControlP5(this);
   // create a DropdownList
-  d1 = cp5.addDropdownList("myList-d1", 90, 100, 100, 120);
-  // customize the list
-  customize(d1);
+  d1 = cp5.addDropdownList("myList-d1")
+          .setPosition(100, 100)
+          ;
+          
+  customize(d1); // customize the first list
+  
   // create a second DropdownList
-  d2 = cp5.addDropdownList("myList-d2", 210, 100, 100, 120);
-  // and customize it
-  customize(d2);
+  d2 = cp5.addDropdownList("myList-d2")
+          .setPosition(400, 100)
+          .setSize(200,200)
+          ;
+  
+  customize(d2); // customize the second list
+  d2.setIndex(10);
 }
 
 
@@ -47,7 +54,7 @@ void customize(DropdownList ddl) {
   for (int i=0;i<40;i++) {
     ddl.addItem("item "+i, i);
   }
-  ddl.scroll(0);
+  //ddl.scroll(0);
   ddl.setColorBackground(color(60));
   ddl.setColorActive(color(255, 128));
 }
@@ -64,26 +71,26 @@ void keyPressed() {
     // set the height of a pulldown menu, should always be a multiple of itemHeight
     d1.setHeight(120);
   }
-  else if (key=='i') {
+  else if (key=='3') {
     // set the height of a pulldown menu item, should always be a fraction of the pulldown menu
     d1.setItemHeight(30);
   } 
-  else if (key=='u') {
+  else if (key=='4') {
     // set the height of a pulldown menu item, should always be a fraction of the pulldown menu
     d1.setItemHeight(12);
     d1.setBackgroundColor(color(255));
   } 
-  else if (key=='a') {
+  else if (key=='5') {
     // add new items to the pulldown menu
     int n = (int)(random(100000));
     d1.addItem("item "+n, n);
   } 
-  else if (key=='d') {
+  else if (key=='6') {
     // remove items from the pulldown menu  by name
     d1.removeItem("item "+cnt);
     cnt++;
   }
-  else if (key=='c') {
+  else if (key=='7') {
     d1.clear();
   }
 }
@@ -97,10 +104,10 @@ void controlEvent(ControlEvent theEvent) {
 
   if (theEvent.isGroup()) {
     // check if the Event was triggered from a ControlGroup
-    println(theEvent.getGroup().getValue()+" from "+theEvent.getGroup());
+    println("event from group : "+theEvent.getGroup().getValue()+" from "+theEvent.getGroup());
   } 
   else if (theEvent.isController()) {
-    println(theEvent.getController().getValue()+" from "+theEvent.getController());
+    println("event from controller : "+theEvent.getController().getValue()+" from "+theEvent.getController());
   }
 }
 

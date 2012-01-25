@@ -1,11 +1,12 @@
 /**
 * ControlP5 ListBox
 *
-*
 * find a list of public methods available for the ListBox Controller
 * at the bottom of this sketch.
+* use the scrollwheel, up or down cursors to scroll through 
+* a listbox when hovering with the mouse.
 *
-* by Andreas Schlegel, 2011
+* by Andreas Schlegel, 2012
 * www.sojamo.de/libraries/controlp5
 *
 */
@@ -13,32 +14,45 @@
 
 import controlP5.*;
 
-ControlP5 controlP5;
+ControlP5 cp5;
 
 ListBox l;
+
 int cnt = 0;
+
 void setup() {
-  size(600, 400);
-  frameRate(30);
+  size(700, 400);
+  
   ControlP5.printPublicMethodsFor(ListBox.class);
 
-  controlP5 = new ControlP5(this);
-  l = controlP5.addListBox("myList", 100, 100, 120, 120);
-  l.setItemHeight(15);
-  l.setBarHeight(15);
+  cp5 = new ControlP5(this);
+  l = cp5.addListBox("myList")
+         .setPosition(100, 100)
+         .setSize(120, 120)
+         .setItemHeight(15)
+         .setBarHeight(15)
+         .setColorBackground(color(40, 128))
+         .setColorActive(color(255, 128))
+         ;
 
   l.captionLabel().toUpperCase(true);
   l.captionLabel().set("A Listbox");
+  l.captionLabel().setColor(0xffff0000);
   l.captionLabel().style().marginTop = 3;
   l.valueLabel().style().marginTop = 3;
+  
   for (int i=0;i<80;i++) {
-    l.addItem("item "+i, i);
+    ListBoxItem lbi = l.addItem("item "+i, i);
+    lbi.setColorBackground(0xffff0000);
   }
-  l.setColorBackground(color(40, 128));
-  l.setColorActive(color(255, 128));
+  
 }
 
 void keyPressed() {
+  if (key=='0') {
+    // will activate the listbox item with value 5
+    l.setValue(5);
+  }
   if (key=='1') {
     // set the height of a listBox should always be a multiple of itemHeight
     l.setHeight(210);
@@ -67,6 +81,8 @@ void keyPressed() {
   else if (key=='d') {
     l.removeItem("item "+cnt);
     cnt++;
+  } else if (key=='c') {
+    l.clear();
   }
 }
 
@@ -82,6 +98,11 @@ void controlEvent(ControlEvent theEvent) {
     // an event from a group e.g. scrollList
     println(theEvent.group().value()+" from "+theEvent.group());
   }
+  
+  if(theEvent.isGroup() && theEvent.name().equals("myList")){
+    int test = (int)theEvent.group().value();
+    println("test "+test);
+}
 }
 
 void draw() {

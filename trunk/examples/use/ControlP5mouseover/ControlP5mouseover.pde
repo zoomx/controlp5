@@ -1,4 +1,17 @@
 
+/**
+* ControlP5 Mouseover
+*
+*
+* this example demonstrates the use of the mouseover methods 
+* isMouseOver(), getMouseOverList()
+*
+* by Andreas Schlegel, 2012
+* www.sojamo.de/libraries/controlp5
+*
+*/
+
+
 import controlP5.*;
 
 ControlP5 cp5;
@@ -8,7 +21,7 @@ public int slider2 = 128;
 
 
 void setup() {
-  size(400, 400);
+  size(700, 400);
   smooth();
   cp5 = new ControlP5(this);
 
@@ -29,7 +42,6 @@ color hover = color(0, 230, 150);
 
 void draw() {
   background(0);
-
   // check if the mouse is inside of any of the controllers 
   // displayed in the main window
   if(cp5.isMouseOver()) {
@@ -65,3 +77,22 @@ void mousePressed() {
   print("The Current mouseoverlist:\t");
   println(cp5.getWindow().getMouseOverList());
 }
+
+
+/*
+a list of all methods available for the ControlP5 Controller
+use ControlP5.printPublicMethodsFor(ControlP5.class);
+to print the full list into the console.
+
+You can find further details about class ControlP5 in the javadoc.
+
+Format:
+ClassName : returnType methodName(parameter type)
+
+controlP5.ControlP5 : List getMouseOverList() 
+controlP5.ControlP5 : boolean isMouseOver() 
+controlP5.ControlP5 : boolean isMouseOver(ControllerInterface) 
+
+*/
+
+

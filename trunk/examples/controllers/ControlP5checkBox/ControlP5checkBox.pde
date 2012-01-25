@@ -8,7 +8,7 @@
  * find a list of public methods available for the Checkbox Controller 
  * at the bottom of this sketch's source code
  *
- * by Andreas Schlegel, 2011
+ * by Andreas Schlegel, 2012
  * www.sojamo.de/libraries/controlP5
  *
  */
@@ -21,25 +21,27 @@ ControlP5 cp5;
 CheckBox checkbox;
 
 int myColorBackground;
+
 void setup() {
-  size(400, 400);
+  size(700, 400);
   smooth();
   cp5 = new ControlP5(this);
-  checkbox = cp5.addCheckBox("checkBox", 20, 20);  
-  // make adjustments to the layout of a checkbox.
-  checkbox.setColorForeground(color(120));
-  checkbox.setColorActive(color(255));
-  checkbox.setColorLabel(color(128));
-  checkbox.setItemsPerRow(3);
-  checkbox.setSpacingColumn(30);
-  checkbox.setSpacingRow(10);
-  // add items to a checkbox.
-  checkbox.addItem("0", 0);
-  checkbox.addItem("10", 10);
-  checkbox.addItem("50", 50);
-  checkbox.addItem("100", 100);
-  checkbox.addItem("200", 200);
-  checkbox.addItem("5", 5);
+  checkbox = cp5.addCheckBox("checkBox")
+                .setPosition(100, 200)
+                .setColorForeground(color(120))
+                .setColorActive(color(255))
+                .setColorLabel(color(255))
+                .setSize(40, 40)
+                .setItemsPerRow(3)
+                .setSpacingColumn(30)
+                .setSpacingRow(20)
+                .addItem("0", 0)
+                .addItem("10", 10)
+                .addItem("50", 50)
+                .addItem("100", 100)
+                .addItem("200", 200)
+                .addItem("5", 5)
+                ;
 }
 
 void keyPressed() {
@@ -63,163 +65,161 @@ void keyPressed() {
 }
 
 void draw() {
-  background(myColorBackground);
-  fill(0);
-  rect(10, 10, 150, 60);
+  background(0);
+  pushMatrix();
+  translate(width/2 + 200, height/2);
+  fill(myColorBackground);
+  ellipse(0,0,200,200);
+  popMatrix();
 }
 
 void controlEvent(ControlEvent theEvent) {
-  if (theEvent.isGroup()) {
+  if (theEvent.isFrom(checkbox)) {
     myColorBackground = 0;
-    print("got an event from "+theEvent.group().name()+"\t");
+    print("got an event from "+checkbox.getName()+"\t");
     // checkbox uses arrayValue to store the state of 
     // individual checkbox-items. usage:
-    for (int i=0;i<theEvent.group().arrayValue().length;i++) {
-      int n = (int)theEvent.group().arrayValue()[i];
+    println(checkbox.getArrayValue());
+    int col = 0;
+    for (int i=0;i<checkbox.getArrayValue().length;i++) {
+      int n = (int)checkbox.getArrayValue()[i];
       print(n);
-      if (n==1) {
-        myColorBackground += ((RadioButton)theEvent.group()).getItem(i).internalValue();
+      if(n==1) {
+        myColorBackground += checkbox.getItem(i).internalValue();
       }
     }
-    println();
+    println();    
   }
 }
 
 
+
 /*
- a list of all methods available for the CheckBox Controller
- use ControlP5.printPublicMethodsFor(CheckBox.class);
- to print the following list into the console.
- 
- You can find further details about class CheckBox in the javadoc.
- 
- Format:
- ClassName : returnType methodName(parameter type)
- 
- controlP5.CheckBox : void setArrayValue(float[]) 
- controlP5.RadioButton : PImage setImage(PImage) 
- controlP5.RadioButton : PImage setImage(PImage, int) 
- controlP5.RadioButton : RadioButton setImages(PImage, PImage, PImage) 
- controlP5.RadioButton : String info() 
- controlP5.RadioButton : String toString() 
- controlP5.RadioButton : Toggle addItem(String, float) 
- controlP5.RadioButton : Toggle addItem(Toggle, float) 
- controlP5.RadioButton : Toggle getItem(int) 
- controlP5.RadioButton : boolean getState(String) 
- controlP5.RadioButton : boolean getState(int) 
- controlP5.RadioButton : void activate(String) 
- controlP5.RadioButton : void activate(int) 
- controlP5.RadioButton : void controlEvent(ControlEvent) 
- controlP5.RadioButton : void deactivate(String) 
- controlP5.RadioButton : void deactivate(int) 
- controlP5.RadioButton : void deactivateAll() 
- controlP5.RadioButton : void removeItem(String) 
- controlP5.RadioButton : void setArrayValue(float[]) 
- controlP5.RadioButton : void setItemHeight(int) 
- controlP5.RadioButton : void setItemWidth(int) 
- controlP5.RadioButton : void setItemsPerRow(int) 
- controlP5.RadioButton : void setNoneSelectedAllowed(boolean) 
- controlP5.RadioButton : void setSize(PImage) 
- controlP5.RadioButton : void setSize(int, int) 
- controlP5.RadioButton : void setSpacingColumn(int) 
- controlP5.RadioButton : void setSpacingRow(int) 
- controlP5.RadioButton : void toggle(int) 
- controlP5.RadioButton : void updateLayout() 
- controlP5.ControlGroup : ControlGroup activateEvent(boolean) 
- controlP5.ControlGroup : String info() 
- controlP5.ControlGroup : String stringValue() 
- controlP5.ControlGroup : String toString() 
- controlP5.ControlGroup : boolean isBarVisible() 
- controlP5.ControlGroup : int getBackgroundHeight() 
- controlP5.ControlGroup : int getBarHeight() 
- controlP5.ControlGroup : int listenerSize() 
- controlP5.ControlGroup : void addCloseButton() 
- controlP5.ControlGroup : void addListener(ControlListener) 
- controlP5.ControlGroup : void controlEvent(ControlEvent) 
- controlP5.ControlGroup : void hideBar() 
- controlP5.ControlGroup : void mousePressed() 
- controlP5.ControlGroup : void removeCloseButton() 
- controlP5.ControlGroup : void removeListener(ControlListener) 
- controlP5.ControlGroup : void setBackgroundColor(int) 
- controlP5.ControlGroup : void setBackgroundHeight(int) 
- controlP5.ControlGroup : void setBarHeight(int) 
- controlP5.ControlGroup : void showBar() 
- controlP5.ControllerGroup : CColor getColor() 
- controlP5.ControllerGroup : ControlWindow getWindow() 
- controlP5.ControllerGroup : ControlWindowCanvas addCanvas(ControlWindowCanvas) 
- controlP5.ControllerGroup : Controller getController(String) 
- controlP5.ControllerGroup : ControllerGroup setHeight(int) 
- controlP5.ControllerGroup : ControllerGroup setValue(float) 
- controlP5.ControllerGroup : ControllerGroup setWidth(int) 
- controlP5.ControllerGroup : ControllerInterface add(ControllerInterface) 
- controlP5.ControllerGroup : ControllerInterface hide() 
- controlP5.ControllerGroup : ControllerInterface moveTo(ControlGroup, Tab, ControlWindow) 
- controlP5.ControllerGroup : ControllerInterface registerProperty(String) 
- controlP5.ControllerGroup : ControllerInterface registerProperty(String, String) 
- controlP5.ControllerGroup : ControllerInterface remove(ControllerInterface) 
- controlP5.ControllerGroup : ControllerInterface removeProperty(String) 
- controlP5.ControllerGroup : ControllerInterface removeProperty(String, String) 
- controlP5.ControllerGroup : ControllerInterface setColor(CColor) 
- controlP5.ControllerGroup : ControllerInterface setColorActive(int) 
- controlP5.ControllerGroup : ControllerInterface setColorBackground(int) 
- controlP5.ControllerGroup : ControllerInterface setColorForeground(int) 
- controlP5.ControllerGroup : ControllerInterface setColorLabel(int) 
- controlP5.ControllerGroup : ControllerInterface setColorValue(int) 
- controlP5.ControllerGroup : ControllerInterface setId(int) 
- controlP5.ControllerGroup : ControllerInterface setLabel(String) 
- controlP5.ControllerGroup : ControllerInterface show() 
- controlP5.ControllerGroup : ControllerProperty getProperty(String) 
- controlP5.ControllerGroup : ControllerProperty getProperty(String, String) 
- controlP5.ControllerGroup : Label captionLabel() 
- controlP5.ControllerGroup : Label valueLabel() 
- controlP5.ControllerGroup : PVector getAbsolutePosition() 
- controlP5.ControllerGroup : PVector getPosition() 
- controlP5.ControllerGroup : String getName() 
- controlP5.ControllerGroup : String getStringValue() 
- controlP5.ControllerGroup : String info() 
- controlP5.ControllerGroup : String toString() 
- controlP5.ControllerGroup : Tab getTab() 
- controlP5.ControllerGroup : boolean isCollapse() 
- controlP5.ControllerGroup : boolean isMoveable() 
- controlP5.ControllerGroup : boolean isOpen() 
- controlP5.ControllerGroup : boolean isUpdate() 
- controlP5.ControllerGroup : boolean isVisible() 
- controlP5.ControllerGroup : boolean setMousePressed(boolean) 
- controlP5.ControllerGroup : float getValue() 
- controlP5.ControllerGroup : float[] getArrayValue() 
- controlP5.ControllerGroup : int getHeight() 
- controlP5.ControllerGroup : int getId() 
- controlP5.ControllerGroup : int getWidth() 
- controlP5.ControllerGroup : void close() 
- controlP5.ControllerGroup : void disableCollapse() 
- controlP5.ControllerGroup : void enableCollapse() 
- controlP5.ControllerGroup : void moveTo(ControlGroup) 
- controlP5.ControllerGroup : void moveTo(ControlWindow) 
- controlP5.ControllerGroup : void moveTo(ControlWindow, String) 
- controlP5.ControllerGroup : void moveTo(String) 
- controlP5.ControllerGroup : void moveTo(String, ControlWindow) 
- controlP5.ControllerGroup : void moveTo(Tab) 
- controlP5.ControllerGroup : void moveTo(Tab, ControlWindow) 
- controlP5.ControllerGroup : void open() 
- controlP5.ControllerGroup : void remove() 
- controlP5.ControllerGroup : void remove(CDrawable) 
- controlP5.ControllerGroup : void removeCanvas(ControlWindowCanvas) 
- controlP5.ControllerGroup : void setAbsolutePosition(PVector) 
- controlP5.ControllerGroup : void setArrayValue(float[]) 
- controlP5.ControllerGroup : void setGroup(ControllerGroup) 
- controlP5.ControllerGroup : void setGroup(String) 
- controlP5.ControllerGroup : void setMoveable(boolean) 
- controlP5.ControllerGroup : void setOpen(boolean) 
- controlP5.ControllerGroup : void setPosition(PVector) 
- controlP5.ControllerGroup : void setPosition(float, float) 
- controlP5.ControllerGroup : void setTab(ControlWindow, String) 
- controlP5.ControllerGroup : void setTab(String) 
- controlP5.ControllerGroup : void setTab(Tab) 
- controlP5.ControllerGroup : void setUpdate(boolean) 
- controlP5.ControllerGroup : void setVisible(boolean) 
- controlP5.ControllerGroup : void update() 
- controlP5.ControllerGroup : void updateAbsolutePosition() 
- java.lang.Object : String toString() 
- java.lang.Object : boolean equals(Object) 
- 
- */
+a list of all methods available for the CheckBox Controller
+use ControlP5.printPublicMethodsFor(CheckBox.class);
+to print the following list into the console.
+
+You can find further details about class CheckBox in the javadoc.
+
+Format:
+ClassName : returnType methodName(parameter type)
+
+
+controlP5.CheckBox : CheckBox addItem(String, float) 
+controlP5.CheckBox : CheckBox addItem(Toggle, float) 
+controlP5.CheckBox : CheckBox deactivateAll() 
+controlP5.CheckBox : CheckBox hideLabels() 
+controlP5.CheckBox : CheckBox removeItem(String) 
+controlP5.CheckBox : CheckBox setArrayValue(float[]) 
+controlP5.CheckBox : CheckBox setColorLabels(int) 
+controlP5.CheckBox : CheckBox setImage(PImage) 
+controlP5.CheckBox : CheckBox setImage(PImage, int) 
+controlP5.CheckBox : CheckBox setImages(PImage, PImage, PImage) 
+controlP5.CheckBox : CheckBox setItemHeight(int) 
+controlP5.CheckBox : CheckBox setItemWidth(int) 
+controlP5.CheckBox : CheckBox setItemsPerRow(int) 
+controlP5.CheckBox : CheckBox setNoneSelectedAllowed(boolean) 
+controlP5.CheckBox : CheckBox setSize(PImage) 
+controlP5.CheckBox : CheckBox setSize(int, int) 
+controlP5.CheckBox : CheckBox setSpacingColumn(int) 
+controlP5.CheckBox : CheckBox setSpacingRow(int) 
+controlP5.CheckBox : CheckBox showLabels() 
+controlP5.CheckBox : String getInfo() 
+controlP5.CheckBox : String toString() 
+controlP5.CheckBox : Toggle getItem(int)
+controlP5.CheckBox : List getItems()
+controlP5.CheckBox : boolean getState(String) 
+controlP5.CheckBox : boolean getState(int) 
+controlP5.CheckBox : void updateLayout() 
+controlP5.ControlGroup : CheckBox activateEvent(boolean) 
+controlP5.ControlGroup : CheckBox addListener(ControlListener) 
+controlP5.ControlGroup : CheckBox hideBar() 
+controlP5.ControlGroup : CheckBox removeListener(ControlListener) 
+controlP5.ControlGroup : CheckBox setBackgroundColor(int) 
+controlP5.ControlGroup : CheckBox setBackgroundHeight(int) 
+controlP5.ControlGroup : CheckBox setBarHeight(int) 
+controlP5.ControlGroup : CheckBox showBar() 
+controlP5.ControlGroup : CheckBox updateInternalEvents(PApplet) 
+controlP5.ControlGroup : String getInfo() 
+controlP5.ControlGroup : String toString() 
+controlP5.ControlGroup : boolean isBarVisible() 
+controlP5.ControlGroup : int getBackgroundHeight() 
+controlP5.ControlGroup : int getBarHeight() 
+controlP5.ControlGroup : int listenerSize() 
+controlP5.ControllerGroup : CColor getColor() 
+controlP5.ControllerGroup : CheckBox add(ControllerInterface) 
+controlP5.ControllerGroup : CheckBox bringToFront() 
+controlP5.ControllerGroup : CheckBox bringToFront(ControllerInterface) 
+controlP5.ControllerGroup : CheckBox close() 
+controlP5.ControllerGroup : CheckBox disableCollapse() 
+controlP5.ControllerGroup : CheckBox enableCollapse() 
+controlP5.ControllerGroup : CheckBox hide() 
+controlP5.ControllerGroup : CheckBox moveTo(ControlWindow) 
+controlP5.ControllerGroup : CheckBox moveTo(PApplet) 
+controlP5.ControllerGroup : CheckBox open() 
+controlP5.ControllerGroup : CheckBox registerProperty(String) 
+controlP5.ControllerGroup : CheckBox registerProperty(String, String) 
+controlP5.ControllerGroup : CheckBox remove(CDrawable) 
+controlP5.ControllerGroup : CheckBox remove(ControllerInterface) 
+controlP5.ControllerGroup : CheckBox removeCanvas(ControlWindowCanvas) 
+controlP5.ControllerGroup : CheckBox removeProperty(String) 
+controlP5.ControllerGroup : CheckBox removeProperty(String, String) 
+controlP5.ControllerGroup : CheckBox setAddress(String) 
+controlP5.ControllerGroup : CheckBox setArrayValue(float[]) 
+controlP5.ControllerGroup : CheckBox setColor(CColor) 
+controlP5.ControllerGroup : CheckBox setColorActive(int) 
+controlP5.ControllerGroup : CheckBox setColorBackground(int) 
+controlP5.ControllerGroup : CheckBox setColorForeground(int) 
+controlP5.ControllerGroup : CheckBox setColorLabel(int) 
+controlP5.ControllerGroup : CheckBox setColorValue(int) 
+controlP5.ControllerGroup : CheckBox setHeight(int) 
+controlP5.ControllerGroup : CheckBox setId(int) 
+controlP5.ControllerGroup : CheckBox setLabel(String) 
+controlP5.ControllerGroup : CheckBox setMouseOver(boolean) 
+controlP5.ControllerGroup : CheckBox setMoveable(boolean) 
+controlP5.ControllerGroup : CheckBox setOpen(boolean) 
+controlP5.ControllerGroup : CheckBox setPosition(PVector) 
+controlP5.ControllerGroup : CheckBox setPosition(float, float) 
+controlP5.ControllerGroup : CheckBox setStringValue(String) 
+controlP5.ControllerGroup : CheckBox setUpdate(boolean) 
+controlP5.ControllerGroup : CheckBox setValue(float) 
+controlP5.ControllerGroup : CheckBox setVisible(boolean) 
+controlP5.ControllerGroup : CheckBox setWidth(int) 
+controlP5.ControllerGroup : CheckBox show() 
+controlP5.ControllerGroup : CheckBox update() 
+controlP5.ControllerGroup : CheckBox updateAbsolutePosition() 
+controlP5.ControllerGroup : ControlWindow getWindow() 
+controlP5.ControllerGroup : ControlWindowCanvas addCanvas(ControlWindowCanvas) 
+controlP5.ControllerGroup : Controller getController(String) 
+controlP5.ControllerGroup : ControllerProperty getProperty(String) 
+controlP5.ControllerGroup : ControllerProperty getProperty(String, String) 
+controlP5.ControllerGroup : Label getCaptionLabel() 
+controlP5.ControllerGroup : Label getValueLabel() 
+controlP5.ControllerGroup : PVector getPosition() 
+controlP5.ControllerGroup : String getAddress() 
+controlP5.ControllerGroup : String getInfo() 
+controlP5.ControllerGroup : String getName() 
+controlP5.ControllerGroup : String getStringValue() 
+controlP5.ControllerGroup : String toString() 
+controlP5.ControllerGroup : Tab getTab() 
+controlP5.ControllerGroup : boolean isCollapse() 
+controlP5.ControllerGroup : boolean isMouseOver() 
+controlP5.ControllerGroup : boolean isMoveable() 
+controlP5.ControllerGroup : boolean isOpen() 
+controlP5.ControllerGroup : boolean isUpdate() 
+controlP5.ControllerGroup : boolean isVisible() 
+controlP5.ControllerGroup : boolean setMousePressed(boolean) 
+controlP5.ControllerGroup : float getValue() 
+controlP5.ControllerGroup : float[] getArrayValue() 
+controlP5.ControllerGroup : int getHeight() 
+controlP5.ControllerGroup : int getId() 
+controlP5.ControllerGroup : int getWidth() 
+controlP5.ControllerGroup : void remove() 
+java.lang.Object : String toString() 
+java.lang.Object : boolean equals(Object) 
+
+
+*/
+
+
+

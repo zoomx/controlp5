@@ -1,39 +1,77 @@
 /**
- * ControlP5 Group
- * by andreas schlegel, 2009
- */
+* ControlP5 Group
+*
+*
+* find a list of public methods available for the Group Controller
+* at the bottom of this sketch.
+*
+* by Andreas Schlegel, 2012
+* www.sojamo.de/libraries/controlp5
+*
+*/
+
+
 import controlP5.*;
 
-ControlP5 controlP5;
+ControlP5 cp5;
 
-void setup() {
-  size(400,400);
-  frameRate(30);
+void setup() {  
+  size(700,400);
 
-  controlP5 = new ControlP5(this);
-  ControlGroup l = controlP5.addGroup("myGroup",100,200);
-  controlP5.addBang("A-1",0,4,20,20).setGroup(l);
-  controlP5.addBang("A-2",30,4,20,20).setGroup(l);
-  l.setBackgroundColor(color(255,100));
-  l.setBackgroundHeight(150);
-  println("the height of controlgroup l: "+l.getBackgroundHeight());
+  cp5 = new ControlP5(this);
   
-  ControlGroup l2 = controlP5.addGroup("myGroup2",100,40,200);
-  l2.activateEvent(true);
+  Group g1 = cp5.addGroup("g1")
+                .setPosition(100,100)
+                .setBackgroundHeight(100)
+                .setBackgroundColor(color(255,50))
+                ;
+                     
+  cp5.addBang("A-1")
+     .setPosition(10,20)
+     .setSize(80,20)
+     .setGroup(g1)
+     ;
+          
+  cp5.addBang("A-2")
+     .setPosition(10,60)
+     .setSize(80,20)
+     .setGroup(g1)
+     ;
+     
   
+  Group g2 = cp5.addGroup("g2")
+                .setPosition(300,100)
+                .setWidth(300)
+                .activateEvent(true)
+                .setBackgroundColor(color(255,80))
+                .setBackgroundHeight(100)
+                .setLabel("Hello World.")
+                ;
   
-  controlP5.addBang("B-1",0,4,20,20).setGroup(l2);
-  Radio r = controlP5.addRadio("radio",100,4);
-  r.add("black",0);
-  r.add("red",1);
-  r.add("green",2);
-  r.add("blue",3);
-  r.add("grey",4);
-  r.setColorLabel(0xffff0000);
-  r.setGroup(l2);
-  
-  
+  cp5.addSlider("S-1")
+     .setPosition(80,10)
+     .setSize(180,9)
+     .setGroup(g2)
+     ;
+     
+  cp5.addSlider("S-2")
+     .setPosition(80,20)
+     .setSize(180,9)
+     .setGroup(g2)
+     ;
+     
+  cp5.addRadioButton("radio")
+     .setPosition(10,10)
+     .setSize(20,9)
+     .addItem("black",0)
+     .addItem("red",1)
+     .addItem("green",2)
+     .addItem("blue",3)
+     .addItem("grey",4)
+     .setGroup(g2)
+     ;
 }
+
 
 void draw() {
   background(0);
@@ -42,15 +80,128 @@ void draw() {
 
 void controlEvent(ControlEvent theEvent) {
   if(theEvent.isGroup()) {
-    println("got an event from group "+theEvent.group().name()+", isOpen? "+theEvent.group().isOpen());  
+    println("got an event from group "
+            +theEvent.group().name()
+            +", isOpen? "+theEvent.group().isOpen()
+            );
+            
   } else if (theEvent.isController()){
-    println("got something from a controller "+theEvent.controller().name());
+    println("got something from a controller "
+            +theEvent.controller().name()
+            );
   }
 }
 
 
 void keyPressed() {
   if(key==' ') {
-    controlP5.group("myGroup").remove();
+    cp5.group("g1").remove();
   }
 }
+
+
+
+
+/*
+a list of all methods available for the Group Controller
+use ControlP5.printPublicMethodsFor(Group.class);
+to print the following list into the console.
+
+You can find further details about class Group in the javadoc.
+
+Format:
+ClassName : returnType methodName(parameter type)
+
+
+controlP5.ControlGroup : Group activateEvent(boolean) 
+controlP5.ControlGroup : Group addListener(ControlListener) 
+controlP5.ControlGroup : Group hideBar() 
+controlP5.ControlGroup : Group removeListener(ControlListener) 
+controlP5.ControlGroup : Group setBackgroundColor(int) 
+controlP5.ControlGroup : Group setBackgroundHeight(int) 
+controlP5.ControlGroup : Group setBarHeight(int) 
+controlP5.ControlGroup : Group showBar() 
+controlP5.ControlGroup : Group updateInternalEvents(PApplet) 
+controlP5.ControlGroup : String getInfo() 
+controlP5.ControlGroup : String toString() 
+controlP5.ControlGroup : boolean isBarVisible() 
+controlP5.ControlGroup : int getBackgroundHeight() 
+controlP5.ControlGroup : int getBarHeight() 
+controlP5.ControlGroup : int listenerSize() 
+controlP5.ControllerGroup : CColor getColor() 
+controlP5.ControllerGroup : ControlWindow getWindow() 
+controlP5.ControllerGroup : ControlWindowCanvas addCanvas(ControlWindowCanvas) 
+controlP5.ControllerGroup : Controller getController(String) 
+controlP5.ControllerGroup : ControllerProperty getProperty(String) 
+controlP5.ControllerGroup : ControllerProperty getProperty(String, String) 
+controlP5.ControllerGroup : Group add(ControllerInterface) 
+controlP5.ControllerGroup : Group bringToFront() 
+controlP5.ControllerGroup : Group bringToFront(ControllerInterface) 
+controlP5.ControllerGroup : Group close() 
+controlP5.ControllerGroup : Group disableCollapse() 
+controlP5.ControllerGroup : Group enableCollapse() 
+controlP5.ControllerGroup : Group hide() 
+controlP5.ControllerGroup : Group moveTo(ControlWindow) 
+controlP5.ControllerGroup : Group moveTo(PApplet) 
+controlP5.ControllerGroup : Group open() 
+controlP5.ControllerGroup : Group registerProperty(String) 
+controlP5.ControllerGroup : Group registerProperty(String, String) 
+controlP5.ControllerGroup : Group remove(CDrawable) 
+controlP5.ControllerGroup : Group remove(ControllerInterface) 
+controlP5.ControllerGroup : Group removeCanvas(ControlWindowCanvas) 
+controlP5.ControllerGroup : Group removeProperty(String) 
+controlP5.ControllerGroup : Group removeProperty(String, String) 
+controlP5.ControllerGroup : Group setAddress(String) 
+controlP5.ControllerGroup : Group setArrayValue(float[]) 
+controlP5.ControllerGroup : Group setColor(CColor) 
+controlP5.ControllerGroup : Group setColorActive(int) 
+controlP5.ControllerGroup : Group setColorBackground(int) 
+controlP5.ControllerGroup : Group setColorForeground(int) 
+controlP5.ControllerGroup : Group setColorLabel(int) 
+controlP5.ControllerGroup : Group setColorValue(int) 
+controlP5.ControllerGroup : Group setHeight(int) 
+controlP5.ControllerGroup : Group setId(int) 
+controlP5.ControllerGroup : Group setLabel(String) 
+controlP5.ControllerGroup : Group setMouseOver(boolean) 
+controlP5.ControllerGroup : Group setMoveable(boolean) 
+controlP5.ControllerGroup : Group setOpen(boolean) 
+controlP5.ControllerGroup : Group setPosition(PVector) 
+controlP5.ControllerGroup : Group setPosition(float, float) 
+controlP5.ControllerGroup : Group setStringValue(String) 
+controlP5.ControllerGroup : Group setUpdate(boolean) 
+controlP5.ControllerGroup : Group setValue(float) 
+controlP5.ControllerGroup : Group setVisible(boolean) 
+controlP5.ControllerGroup : Group setWidth(int) 
+controlP5.ControllerGroup : Group show() 
+controlP5.ControllerGroup : Group update() 
+controlP5.ControllerGroup : Group updateAbsolutePosition() 
+controlP5.ControllerGroup : Label getCaptionLabel() 
+controlP5.ControllerGroup : Label getValueLabel() 
+controlP5.ControllerGroup : PVector getPosition() 
+controlP5.ControllerGroup : String getAddress() 
+controlP5.ControllerGroup : String getInfo() 
+controlP5.ControllerGroup : String getName() 
+controlP5.ControllerGroup : String getStringValue() 
+controlP5.ControllerGroup : String toString() 
+controlP5.ControllerGroup : Tab getTab() 
+controlP5.ControllerGroup : boolean isCollapse() 
+controlP5.ControllerGroup : boolean isMouseOver() 
+controlP5.ControllerGroup : boolean isMoveable() 
+controlP5.ControllerGroup : boolean isOpen() 
+controlP5.ControllerGroup : boolean isUpdate() 
+controlP5.ControllerGroup : boolean isVisible() 
+controlP5.ControllerGroup : boolean setMousePressed(boolean) 
+controlP5.ControllerGroup : float getValue() 
+controlP5.ControllerGroup : float[] getArrayValue() 
+controlP5.ControllerGroup : int getHeight() 
+controlP5.ControllerGroup : int getId() 
+controlP5.ControllerGroup : int getWidth() 
+controlP5.ControllerGroup : void remove() 
+java.lang.Object : String toString() 
+java.lang.Object : boolean equals(Object) 
+
+
+*/
+
+
+

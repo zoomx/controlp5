@@ -17,7 +17,7 @@ void setup() {
   myChart = controlP5.addChart("Hello", 20, 20, 100, 100);
   controlP5.addButton("hello", 2, 200, 200, 100, 20);
   controlP5.addSlider("slider", 0, 100, 50, 320, 200, 100, 20).setNumberOfTickMarks(11);
-  myChart.setDisplay(new ChartBarDisplay(myChart));
+  myChart.setView(new ChartBarDisplay(myChart));
   myChart.setStrokeWeight(1);
   ChartDataSet cds = myChart.addDataSet();
   cds.getColor().setForeground(color(255, 150));
@@ -47,7 +47,7 @@ void draw() {
 
 
 
-class ChartBarDisplay implements ControllerDisplay {
+class ChartBarDisplay implements ControllerView<Chart> {
 
   Chart myChart;
 
@@ -55,7 +55,7 @@ class ChartBarDisplay implements ControllerDisplay {
     myChart = theChart;
   }
 
-  public void display(PApplet p, Controller theController) {
+  public void display(PApplet p, Chart theController) {
     p.pushMatrix();
     for (int n=0;n<myChart.size();n++) {
       float total = 0;
