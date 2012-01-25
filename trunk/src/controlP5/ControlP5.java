@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PVector;
 import controlP5.ControlWindow.Pointer;
 
 /**
@@ -86,7 +87,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.6.13";// "##version##";
+	public static final String VERSION = "0.7.0";// "##version##";
 
 	/**
 	 * @exclude
@@ -113,7 +114,7 @@ public class ControlP5 extends ControlP5Base {
 	@ControlP5.Invisible
 	public static final Logger logger = Logger.getLogger(ControlP5.class.getName());
 
-	private Map<String, ControllerInterface> _myControllerMap;
+	private Map<String, ControllerInterface<?>> _myControllerMap;
 
 	protected ControlBroadcaster _myControlBroadcaster;
 
@@ -173,7 +174,7 @@ public class ControlP5 extends ControlP5Base {
 		papplet.registerPre(this);
 		papplet.registerKeyEvent(new ControlWindowKeyListener(this));
 		papplet.registerDispose(this);
-		_myControllerMap = new TreeMap<String, ControllerInterface>();
+		_myControllerMap = new TreeMap<String, ControllerInterface<?>>();
 		controlWindowList.add(controlWindow);
 		isApplet = papplet.online;
 		_myTooltip = new Tooltip(this);
@@ -301,7 +302,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @see controlP5.CallbackEvent
 	 * @see controlP5.CallbackListener
 	 */
-	public ControlP5 addCallback(CallbackListener theListener, Controller... theControllers) {
+	public ControlP5 addCallback(CallbackListener theListener, Controller<?>... theControllers) {
 		getControlBroadcaster().addCallback(theListener, theControllers);
 		return this;
 	}
@@ -319,7 +320,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @see controlP5.CallbackEvent
 	 * @see controlP5.CallbackListener
 	 */
-	public ControlP5 removeCallback(Controller... theControllers) {
+	public ControlP5 removeCallback(Controller<?>... theControllers) {
 		getControlBroadcaster().removeCallback(theControllers);
 		return this;
 	}
@@ -328,7 +329,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @see controlP5.CallbackEvent
 	 * @see controlP5.CallbackListener
 	 */
-	public ControlP5 removeCallback(Controller theController) {
+	public ControlP5 removeCallback(Controller<?> theController) {
 		getControlBroadcaster().removeCallback(theController);
 		return this;
 	}
@@ -373,7 +374,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theController ControllerInterface
 	 * @return ControlP5
 	 */
-	public ControlP5 register(Object theObject, String theIndex, ControllerInterface theController) {
+	public ControlP5 register(Object theObject, String theIndex, ControllerInterface<?> theController) {
 		String address = "";
 		if (theObject == papplet) {
 			address = (theController.getName().startsWith("/")) ? "" : "/";
@@ -407,16 +408,16 @@ public class ControlP5 extends ControlP5Base {
 		/*
 		 * handle controller plugs and map controllers to its reference objects if applicable.
 		 */
-		if (theController instanceof Controller) {
+		if (theController instanceof Controller<?>) {
 			if (theObject == null) {
 				theObject = papplet;
 			}
 			if (!theObject.equals(papplet)) {
-				((Controller) theController).unplugFrom(papplet).plugTo(theObject);
+				((Controller<?>) ((Controller<?>) theController).unplugFrom(papplet)).plugTo(theObject);
 			}
 
 			if (!_myObjectToControllerMap.containsKey(theObject)) {
-				_myObjectToControllerMap.put(theObject, new ArrayList<ControllerInterface>());
+				_myObjectToControllerMap.put(theObject, new ArrayList<ControllerInterface<?>>());
 			}
 			_myObjectToControllerMap.get(theObject).add(theController);
 		} else {
@@ -428,16 +429,12 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * returns a list of registered Controllers. Controllers with duplicated reference names will be
-	 * ignored, only the latest of such Controllers will be included in the list.
+	 * Returns a List of all controllers currently registered.
 	 * 
-	 * @see controlP5.ControlP5#getAll(Class)
-	 * @return ControllerInterface[]
+	 * @return List<ControllerInterface<?>>
 	 */
-	public ControllerInterface[] getControllerList() {
-		ControllerInterface[] myControllerList = new ControllerInterface[_myControllerMap.size()];
-		_myControllerMap.values().toArray(myControllerList);
-		return myControllerList;
+	public List<ControllerInterface<?>> getAll() {
+		return new ArrayList<ControllerInterface<?>>(_myControllerMap.values());
 	}
 
 	/**
@@ -469,7 +466,7 @@ public class ControlP5 extends ControlP5Base {
 
 	protected void deactivateControllers() {
 		if (getControllerList() != null) {
-			ControllerInterface[] n = getControllerList();
+			ControllerInterface<?>[] n = getControllerList();
 			for (int i = 0; i < n.length; i++) {
 				if (n[i] instanceof Textfield) {
 					((Textfield) n[i]).setFocus(false);
@@ -523,7 +520,7 @@ public class ControlP5 extends ControlP5Base {
 	 * 
 	 * @param theController ControllerInterface
 	 */
-	protected void remove(ControllerInterface theController) {
+	protected void remove(ControllerInterface<?> theController) {
 		_myControllerMap.remove(theController.getAddress());
 	}
 
@@ -553,7 +550,7 @@ public class ControlP5 extends ControlP5Base {
 		_myControllerMap.remove(address);
 	}
 
-	public ControllerInterface get(String theName) {
+	public ControllerInterface<?> get(String theName) {
 		String address = checkAddress(theName);
 		if (_myControllerMap.containsKey(address)) {
 			return _myControllerMap.get(address);
@@ -562,7 +559,7 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public <C> C get(Class<C> theClass, String theName) {
-		for (ControllerInterface ci : _myControllerMap.values()) {
+		for (ControllerInterface<?> ci : _myControllerMap.values()) {
 			if (ci.getClass() == theClass || ci.getClass().getSuperclass() == theClass) {
 				return (C) get(theName);
 			}
@@ -576,30 +573,31 @@ public class ControlP5 extends ControlP5Base {
 	 * @return List<ControllerInterface>
 	 */
 	@ControlP5.Invisible
-	public List<ControllerInterface> getList() {
-		LinkedList<ControllerInterface> l = new LinkedList<ControllerInterface>();
+	public List<ControllerInterface<?>> getList() {
+		LinkedList<ControllerInterface<?>> l = new LinkedList<ControllerInterface<?>>();
 		for (ControlWindow c : controlWindowList) {
 			l.addAll(c.getTabs().get());
 		}
-		l.addAll(Arrays.asList(getControllerList()));
+		// l.addAll(Arrays.asList(getControllerList()));
+		l.addAll(getAll());
 		return l;
 	}
 
-	public Controller getController(String theName) {
+	public Controller<?> getController(String theName) {
 		String address = checkAddress(theName);
 		if (_myControllerMap.containsKey(address)) {
-			if (_myControllerMap.get(address) instanceof Controller) {
-				return (Controller) _myControllerMap.get(address);
+			if (_myControllerMap.get(address) instanceof Controller<?>) {
+				return (Controller<?>) _myControllerMap.get(address);
 			}
 		}
 		return null;
 	}
 
-	public ControllerGroup getGroup(String theGroupName) {
+	public ControllerGroup<?> getGroup(String theGroupName) {
 		String address = checkAddress(theGroupName);
 		if (_myControllerMap.containsKey(address)) {
-			if (_myControllerMap.get(address) instanceof ControllerGroup) {
-				return (ControllerGroup) _myControllerMap.get(address);
+			if (_myControllerMap.get(address) instanceof ControllerGroup<?>) {
+				return (ControllerGroup<?>) _myControllerMap.get(address);
 			}
 		}
 		return null;
@@ -613,16 +611,16 @@ public class ControlP5 extends ControlP5Base {
 		return false;
 	}
 
-	public void moveControllersForObject(Object theObject, ControllerGroup theGroup) {
+	public void moveControllersForObject(Object theObject, ControllerGroup<?> theGroup) {
 		if (_myObjectToControllerMap.containsKey(theObject)) {
-			ArrayList<ControllerInterface> cs = _myObjectToControllerMap.get(theObject);
-			for (ControllerInterface c : cs) {
-				((Controller) c).moveTo(theGroup);
+			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
+			for (ControllerInterface<?> c : cs) {
+				((Controller<?>) c).moveTo(theGroup);
 			}
 		}
 	}
 
-	public void move(Object theObject, ControllerGroup theGroup) {
+	public void move(Object theObject, ControllerGroup<?> theGroup) {
 		moveControllersForObject(theObject, theGroup);
 	}
 
@@ -702,6 +700,8 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * convenience method to check if the mouse (or pointer) is hovering over any controller.
+	 * only applies to the main window. To receive the mouseover information for a ControlWindow use
+	 * getWindow(nameOfWindow).isMouseOver();
 	 */
 	public boolean isMouseOver() {
 		return getWindow(papplet).isMouseOver();
@@ -709,9 +709,20 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * convenience method to check if the mouse (or pointer) is hovering over a specific controller.
+	 * only applies to the main window. To receive the mouseover information for a ControlWindow use
+	 * getWindow(nameOfWindow).isMouseOver(ControllerInterface<?>);
 	 */
-	public boolean isMouseOver(ControllerInterface theController) {
+	public boolean isMouseOver(ControllerInterface<?> theController) {
 		return getWindow(papplet).isMouseOver(theController);
+	}
+	
+	/**
+	 * convenience method to check if the mouse (or pointer) is hovering over a specific controller.
+	 * only applies to the main window. To receive the mouseover information for a ControlWindow use
+	 * getWindow(nameOfWindow).getMouseOverList();
+	 */
+	public List<ControllerInterface<?>> getMouseOverList() {
+		return getWindow(papplet).getMouseOverList();
 	}
 
 	public ControlWindow getWindow(PApplet theApplet) {
@@ -863,7 +874,7 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * Loads properties from a properties file and changes values of controllers accordingly, the
+	 * Loads properties from a properties file and changes the values of controllers accordingly, the
 	 * filepath is given by parameter theFilePath.
 	 * 
 	 * @param theFilePath
@@ -872,6 +883,11 @@ public class ControlP5 extends ControlP5Base {
 	public boolean loadProperties(String theFilePath) {
 		theFilePath = checkPropertiesPath(theFilePath);
 		File f = new File(theFilePath);
+		if (f.exists()) {
+			return _myProperties.load(theFilePath);
+		}
+		theFilePath = checkPropertiesPath(theFilePath+".ser");
+		f = new File(theFilePath);
 		if (f.exists()) {
 			return _myProperties.load(theFilePath);
 		}
@@ -1054,28 +1070,28 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * controlP5.begin() and controlP5.end() are mechanisms to
-	 * 
-	 * @return
+	 * cp5.begin() and cp5.end() are mechanisms to auto-layout controllers, see the
+	 * ControlP5beginEnd example. 
 	 */
-	public ControllerGroup begin() {
+	public ControllerGroup<?> begin() {
 		// TODO replace controlWindow.tab("default") with
 		// controlWindow.tabs().get(1);
 		return begin(controlWindow.getTab("default"));
 	}
-
-	public ControllerGroup begin(ControllerGroup theGroup) {
+	
+	
+	public ControllerGroup<?> begin(ControllerGroup<?> theGroup) {
 		setCurrentPointer(theGroup);
 		return theGroup;
 	}
 
-	public ControllerGroup begin(int theX, int theY) {
+	public ControllerGroup<?> begin(int theX, int theY) {
 		// TODO replace controlWindow.tab("default") with
 		// controlWindow.tabs().get(1);
 		return begin(controlWindow.getTab("default"), theX, theY);
 	}
 
-	public ControllerGroup begin(ControllerGroup theGroup, int theX, int theY) {
+	public ControllerGroup<?> begin(ControllerGroup<?> theGroup, int theX, int theY) {
 		setCurrentPointer(theGroup);
 		theGroup.autoPosition.x = theX;
 		theGroup.autoPosition.y = theY;
@@ -1083,21 +1099,36 @@ public class ControlP5 extends ControlP5Base {
 		return theGroup;
 	}
 
-	public ControllerGroup begin(ControlWindow theWindow) {
+	public ControllerGroup<?> begin(ControlWindow theWindow) {
 		return begin(theWindow.getTab("default"));
 	}
 
-	public ControllerGroup begin(ControlWindow theWindow, int theX, int theY) {
+	public ControllerGroup<?> begin(ControlWindow theWindow, int theX, int theY) {
 		return begin(theWindow.getTab("default"), theX, theY);
 	}
 
-	public ControllerGroup end(ControllerGroup theGroup) {
+	public ControllerGroup<?> end(ControllerGroup<?> theGroup) {
 		releaseCurrentPointer(theGroup);
 		return theGroup;
 	}
 
-	public ControllerGroup end() {
+	/**
+	 * cp5.begin() and cp5.end() are mechanisms to auto-layout controllers, see the
+	 * ControlP5beginEnd example. 
+	 */
+	public ControllerGroup<?> end() {
 		return end(controlWindow.getTab("default"));
+	}
+
+	public void addPositionTo(int theX, int theY, List<ControllerInterface<?>> theControllers) {
+		PVector v = new PVector(theX, theY);
+		for (ControllerInterface<?> c : theControllers) {
+			c.setPosition(PVector.add(c.getPosition(), v));
+		}
+	}
+
+	public void addPositionTo(int theX, int theY, ControllerInterface<?>... theControllers) {
+		addPositionTo(theX, theY, Arrays.asList(theControllers));
 	}
 
 	/**
@@ -1210,8 +1241,8 @@ public class ControlP5 extends ControlP5Base {
 		Iterator<?> iter = _myControllerMap.keySet().iterator();
 		while (iter.hasNext()) {
 			Object key = iter.next();
-			if (_myControllerMap.get(key) instanceof Controller) {
-				((Controller) _myControllerMap.get(key)).trigger();
+			if (_myControllerMap.get(key) instanceof Controller<?>) {
+				((Controller<?>) _myControllerMap.get(key)).trigger();
 			}
 		}
 	}
@@ -1273,7 +1304,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@Deprecated
-	public Controller controller(String theName) {
+	public Controller<?> controller(String theName) {
 		return getController(theName);
 	}
 
@@ -1282,7 +1313,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@Deprecated
-	public ControllerGroup group(String theGroupName) {
+	public ControllerGroup<?> group(String theGroupName) {
 		return getGroup(theGroupName);
 	}
 
@@ -1338,6 +1369,23 @@ public class ControlP5 extends ControlP5Base {
 	@Deprecated
 	public Tab tab(String theName) {
 		return getTab(theName);
+	}
+
+	/**
+	 * returns a list of registered Controllers. Controllers with duplicated reference names will be
+	 * ignored, only the latest of such Controllers will be included in the list.
+	 * 
+	 * use getAll() instead
+	 * 
+	 * @see controlP5.ControlP5#getAll()
+	 * @see controlP5.ControlP5#getAll(Class)
+	 * @return ControllerInterface[]
+	 */
+	@Deprecated
+	public ControllerInterface<?>[] getControllerList() {
+		ControllerInterface<?>[] myControllerList = new ControllerInterface[_myControllerMap.size()];
+		_myControllerMap.values().toArray(myControllerList);
+		return myControllerList;
 	}
 
 }

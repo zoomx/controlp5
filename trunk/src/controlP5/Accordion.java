@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -38,9 +38,9 @@ import java.util.List;
  * @see controlP5.ControlGroup
  * @example controllers/ControlP5accordion
  */
-public class Accordion extends ControlGroup {
+public class Accordion extends ControlGroup<Accordion>  {
 
-	private final List<ControlGroup> items = new ArrayList<ControlGroup>();
+	private final List<ControlGroup<?>> items = new ArrayList<ControlGroup<?>>();
 
 	private int spacing = 1;
 
@@ -60,7 +60,7 @@ public class Accordion extends ControlGroup {
 	 * @param theGroup
 	 * @return Accordion
 	 */
-	public Accordion addItem(ControlGroup theGroup) {
+	public Accordion addItem(ControlGroup<?> theGroup) {
 		theGroup.close();
 		theGroup.moveTo(this);
 		theGroup.activateEvent(true);
@@ -83,10 +83,10 @@ public class Accordion extends ControlGroup {
 	 * @return ControllerInterface
 	 */
 	@Override
-	public Accordion remove(ControllerInterface theGroup) {
-		if (theGroup instanceof ControlGroup) {
+	public Accordion remove(ControllerInterface<?> theGroup) {
+		if (theGroup instanceof ControlGroup<?>) {
 			items.remove(theGroup);
-			((ControlGroup) theGroup).removeListener(this);
+			((ControlGroup<?>) theGroup).removeListener(this);
 			updateItems();
 		}
 		super.remove(theGroup);
@@ -100,7 +100,7 @@ public class Accordion extends ControlGroup {
 	 * 
 	 * @return Accordion
 	 */
-	public Accordion removeItem(ControlGroup theGroup) {
+	public Accordion removeItem(ControlGroup<?> theGroup) {
 		if (theGroup == null)
 			return this;
 		items.remove(theGroup);
@@ -119,7 +119,8 @@ public class Accordion extends ControlGroup {
 	 */
 	public Accordion updateItems() {
 		int n = 0;
-		for (ControlGroup cg : items) {
+		setWidth(_myWidth);
+		for (ControlGroup<?> cg : items) {
 			n += cg.getBarHeight() + spacing;
 			cg.setPosition(0, n);
 			if (cg.isOpen()) {
@@ -137,7 +138,7 @@ public class Accordion extends ControlGroup {
 	 */
 	public Accordion setMinItemHeight(int theHeight) {
 		minHeight = theHeight;
-		for (ControlGroup cg : items) {
+		for (ControlGroup<?> cg : items) {
 			if (cg.getBackgroundHeight() < minHeight) {
 				cg.setBackgroundHeight(minHeight);
 			}
@@ -152,7 +153,7 @@ public class Accordion extends ControlGroup {
 
 	public Accordion setItemHeight(int theHeight) {
 		itemheight = theHeight;
-		for (ControlGroup cg : items) {
+		for (ControlGroup<?> cg : items) {
 			cg.setBackgroundHeight(itemheight);
 		}
 		updateItems();
@@ -166,7 +167,7 @@ public class Accordion extends ControlGroup {
 	@Override
 	public Accordion setWidth(int theWidth) {
 		super.setWidth(theWidth);
-		for (ControlGroup cg : items) {
+		for (ControlGroup<?> cg : items) {
 			cg.setWidth(theWidth);
 		}
 		return this;
@@ -180,7 +181,7 @@ public class Accordion extends ControlGroup {
 	public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.isGroup()) {
 			int n = 0;
-			for (ControlGroup cg : items) {
+			for (ControlGroup<?> cg : items) {
 				n += cg.getBarHeight() + spacing;
 				cg.setPosition(0, n);
 				if (cg == theEvent.getGroup() && cg.isOpen()) {

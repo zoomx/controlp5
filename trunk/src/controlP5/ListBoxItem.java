@@ -1,9 +1,11 @@
 package controlP5;
 
+import java.lang.reflect.Method;
+
 /**
  * controlP5 is a processing gui library.
  * 
- * 2006-2011 by Andreas Schlegel
+ * 2006-2012 by Andreas Schlegel
  * 
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -40,11 +42,11 @@ public class ListBoxItem {
 
 	protected int id = -1;
 
-	protected ListBox parent;
+	protected ControlGroup<?> parent;
 
 	private boolean toUpperCase = true;
 
-	protected ListBoxItem(ListBox theListBox, String theName, int theValue) {
+	protected ListBoxItem(ControlGroup<?> theListBox, String theName, int theValue) {
 		name = theName;
 		text = theName;
 		value = theValue;
@@ -58,27 +60,27 @@ public class ListBoxItem {
 
 	public void setColor(CColor theColor) {
 		color.set(theColor);
-		parent.updateListBoxItems();
+		updateListBoxItems();
 	}
 
 	public void setColorActive(int theColor) {
 		color.setActive(theColor);
-		parent.updateListBoxItems();
+		updateListBoxItems();
 	}
 
 	public void setColorForeground(int theColor) {
 		color.setForeground(theColor);
-		parent.updateListBoxItems();
+		updateListBoxItems();
 	}
 
 	public void setColorBackground(int theColor) {
 		color.setBackground(theColor);
-		parent.updateListBoxItems();
+		updateListBoxItems();
 	}
 
 	public void setColorLabel(int theColor) {
 		color.setCaptionLabel(theColor);
-		parent.updateListBoxItems();
+		updateListBoxItems();
 	}
 
 	/**
@@ -106,13 +108,12 @@ public class ListBoxItem {
 	 */
 	public ListBoxItem setText(String theText) {
 		text = theText;
-		parent.updateListBoxItems();
+		updateListBoxItems();
 		return this;
 	}
 
 	/**
-	 * returns the text displayed for this listboxitem. use setText(String) to
-	 * apply changes.
+	 * returns the text displayed for this listboxitem. use setText(String) to apply changes.
 	 * 
 	 * @return
 	 */
@@ -121,8 +122,8 @@ public class ListBoxItem {
 	}
 
 	/**
-	 * returns the name of the listboxitem. use
-	 * ListBox.itme(ListBoxItem.getName()) to access a listboxitem by name.
+	 * returns the name of the listboxitem. use ListBox.itme(ListBoxItem.getName()) to access a
+	 * listboxitem by name.
 	 */
 	public String getName() {
 		return name;
@@ -151,19 +152,19 @@ public class ListBoxItem {
 	 * {@inheritDoc}
 	 */
 	public String toString() {
-		return "\ntype:\t" + this.getClass() + "\nname:\t" + name + "\n" + "label:\t" + text + "\n" + "id:\t" + id + "\n"
-				+ "value:\t" + value + "\n" + "color:\t" + getColor() + "\n";
+		return "\ntype:\t" + this.getClass() + "\nname:\t" + name + "\n" + "label:\t" + text + "\n" + "id:\t" + id + "\n" + "value:\t" + value + "\n" + "color:\t" + getColor()
+				+ "\n";
 	}
 
 	/**
-	 * by default the text of a listboxitem is set to uppercase, use
-	 * toUpperCase(false) to make changes.
+	 * by default the text of a listboxitem is set to uppercase, use toUpperCase(false) to make
+	 * changes.
 	 * 
 	 * @param theFlag
 	 */
 	public void toUpperCase(boolean theFlag) {
 		toUpperCase = theFlag;
-		parent.updateListBoxItems();
+		updateListBoxItems();
 	}
 
 	/**
@@ -173,5 +174,14 @@ public class ListBoxItem {
 	 */
 	public boolean getToUpperCase() {
 		return toUpperCase;
+	}
+
+	private void updateListBoxItems() {
+		try {
+			Method m = parent.getClass().getMethod("updateListBoxItems");
+			m.invoke(parent);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -34,27 +34,24 @@ import processing.core.PApplet;
  * this controller see the {@link Controller} class.
  * </p>
  * 
- * @see controlP5.ControllerGroup
  * @example controllers/ControlP5button
  */
 
-public class Button extends Controller {
-
+public class Button extends Controller<Button> {
 
 	protected boolean isPressed;
 
 	protected boolean isOn = false;
 
-	public static int autoWidth = 70;
+	public static int autoWidth = 69;
 
-	public static int autoHeight = 20;
+	public static int autoHeight = 19;
 
 	protected int activateBy = RELEASE;
 
 	protected boolean isSwitch = false;
 	
-
-	protected Button(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
+	protected Button(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 		_myCaptionLabel.align(LEFT,CENTER);
@@ -266,9 +263,9 @@ public class Button extends Controller {
 		return this;
 	}
 
-	private class ButtonView implements ControllerView {
+	private class ButtonView implements ControllerView<Button> {
 
-		public void display(PApplet theApplet, Controller theController) {
+		public void display(PApplet theApplet, Button theController) {
 			if (isOn && isSwitch) {
 				theApplet.fill(color.getActive());
 			} else {
@@ -289,9 +286,9 @@ public class Button extends Controller {
 		}
 	}
 
-	private class ButtonImageView implements ControllerView {
+	private class ButtonImageView implements ControllerView<Button> {
 
-		public void display(PApplet theApplet, Controller theController) {
+		public void display(PApplet theApplet, Button theController) {
 			if (isOn && isSwitch) {
 				theApplet.image((availableImages[HIGHLIGHT] == true) ? images[HIGHLIGHT] : images[DEFAULT], 0, 0);
 				return;
@@ -325,8 +322,8 @@ public class Button extends Controller {
 	}
 
 	@Deprecated
-	private class ButtonSpriteView implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	private class ButtonSpriteView implements ControllerView<Button> {
+		public void display(PApplet theApplet, Button theController) {
 			if (isOn && isSwitch) {
 				sprite.setState(2);
 			} else {

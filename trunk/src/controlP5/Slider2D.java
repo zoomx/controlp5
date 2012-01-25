@@ -11,7 +11,7 @@ import processing.core.PApplet;
  * @example controllers/ControlP5slider2D
  * 
  */
-public class Slider2D extends Controller {
+public class Slider2D extends Controller<Slider2D> {
 
 	protected int cursorWidth = 10, cursorHeight = 10;
 
@@ -25,7 +25,7 @@ public class Slider2D extends Controller {
 
 	private String _myValueLabelSeparator = ",";
 
-	protected Slider2D(ControlP5 theControlP5, ControllerGroup theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
+	protected Slider2D(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myArrayValue = new float[] { 0.0f, 0.0f };
 		_myMinX = 0;
@@ -206,9 +206,9 @@ public class Slider2D extends Controller {
 		return this;
 	}
 
-	class Slider2DView implements ControllerView {
+	class Slider2DView implements ControllerView<Slider2D> {
 
-		public void display(PApplet theApplet, Controller theController) {
+		public void display(PApplet theApplet, Slider2D theController) {
 
 			if (theController.isInside()) {
 				theApplet.fill(theController.getColor().getForeground());

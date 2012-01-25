@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -26,6 +26,7 @@ package controlP5;
  */
 
 import processing.core.PApplet;
+import processing.core.PFont;
 
 /**
  * a textarea can be used to leave notes, it uses the controlP5 BitFont to render text. Scrollbars
@@ -34,7 +35,7 @@ import processing.core.PApplet;
  * 
  * @example controllers/ControlP5textarea
  */
-public class Textarea extends ControllerGroup implements ControlListener {
+public class Textarea extends ControllerGroup<Textarea> implements ControlListener {
 
 	protected String _myText;
 
@@ -63,7 +64,7 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * @param theW int
 	 * @param theH int
 	 */
-	protected Textarea(ControlP5 theControlP5, ControllerGroup theGroup, String theName, String theText, int theX, int theY, int theW, int theH) {
+	protected Textarea(ControlP5 theControlP5, ControllerGroup<?> theGroup, String theName, String theText, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theGroup, theName, theX, theY);
 		_myWidth = theW;
 		_myHeight = theH;
@@ -119,17 +120,19 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		scroll();
 	}
 
-	public void hideScrollbar() {
+	public Textarea hideScrollbar() {
 		isScrollbarVisible = false;
 		_myScrollbar.hide();
+		return this;
 	}
 
-	public void showScrollbar() {
+	public Textarea showScrollbar() {
 		isScrollbarVisible = true;
 		boolean isScrollbar = _myHeight < (_myValueLabel.getTextHeight() + _myValueLabel.getLineHeight());
 		if (isScrollbar) {
 			_myScrollbar.show();
 		}
+		return this;
 	}
 
 	public boolean isScrollable() {
@@ -143,12 +146,14 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		return this;
 	}
 
-	public void disableColorBackground() {
+	public Textarea disableColorBackground() {
 		isColorBackground = false;
+		return this;
 	}
 
-	public void enableColorBackground() {
+	public Textarea enableColorBackground() {
 		isColorBackground = true;
+		return this;
 	}
 
 	/**
@@ -156,8 +161,9 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * 
 	 * @param theValue
 	 */
-	public void scroll(float theValue) {
+	public Textarea scroll(float theValue) {
 		_myScrollbar.setValue(1 - theValue);
+		return this;
 	}
 
 	/**
@@ -174,7 +180,6 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		}
 		isScrollbar = (isScrollbarVisible) ? isScrollbar : false;
 		_myScrollbar.setVisible(isScrollbar);
-		System.out.println("textarea "+myLen+", "+_myScrollValue);
 		_myValueLabel.setOffsetYratio(_myScrollValue);
 	}
 
@@ -219,14 +224,21 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		return this;
 	}
 
+	public Textarea setSize(int theWidth, int theHeight) {
+		setWidth(theWidth);
+		setHeight(theHeight);
+		return this;
+	}
+	
 	/**
 	 * set the lineheight of the textarea.
 	 * 
 	 * @param theLineHeight int
 	 */
-	public void setLineHeight(int theLineHeight) {
+	public Textarea setLineHeight(int theLineHeight) {
 		_myValueLabel.setLineHeight(theLineHeight);
 		scroll();
+		return this;
 	}
 
 	/**
@@ -234,8 +246,9 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * 
 	 * @param theColor int
 	 */
-	public void setColor(int theColor) {
+	public Textarea setColor(int theColor) {
 		_myValueLabel.setColor(theColor, true);
+		return this;
 	}
 
 	/**
@@ -252,10 +265,11 @@ public class Textarea extends ControllerGroup implements ControlListener {
 	 * 
 	 * @param theText String
 	 */
-	public void setText(String theText) {
+	public Textarea setText(String theText) {
 		_myValueLabel.set(theText);
 		_myScrollValue = (float) (_myHeight) / (float) (_myValueLabel.getTextHeight());
 		_myScrollbar.setHeight(_myHeight + _myValueLabel.getStyle().paddingTop + _myValueLabel.getStyle().paddingBottom);
+		return this;
 	}
 
 	/**
@@ -297,21 +311,18 @@ public class Textarea extends ControllerGroup implements ControlListener {
 		return _myValueLabel.getText();
 	}
 
-	/**
-	 * @param theFont
-	 * @return Textarea
-	 */
 	public Textarea setFont(ControlFont theFont) {
-		_myValueLabel.setFont(theFont);
+		getValueLabel().setFont(theFont);
+		return this;
+	}
+	
+	public Textarea setFont(PFont thePFont) {
+		getValueLabel().setFont(thePFont);
 		return this;
 	}
 
-	/**
-	 * @param theFontIndex
-	 * @return Textarea
-	 */
 	public Textarea setFont(int theFontIndex) {
-		_myValueLabel.setFont(theFontIndex);
+		getValueLabel().setFont(theFontIndex);
 		return this;
 	}
 

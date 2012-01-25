@@ -8,13 +8,13 @@ class ControllerLayoutElement implements Serializable, Cloneable {
 	
 	private static final long serialVersionUID = -5006855922546529005L;
 
-	private transient ControllerInterface controller;
+	private transient ControllerInterface<?> controller;
 
 	private Class<?> type;
 
 	private Map<String,Object> values;
 	
-	ControllerLayoutElement(ControllerInterface theController) {
+	ControllerLayoutElement(ControllerInterface<?> theController) {
 		controller = theController;
 		type = theController.getClass();
 		values = new HashMap<String,Object>();

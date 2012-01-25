@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -38,7 +38,7 @@ import processing.core.PApplet;
  * @see controlP5.DropdownList
  * @example controllers/ControlP5listBox
  */
-public class ListBox extends ControlGroup implements ControlListener {
+public class ListBox extends ControlGroup<ListBox> implements ControlListener {
 
 	protected int _myItemHeight = 13;
 
@@ -74,7 +74,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 
 	private boolean bulkadding;
 
-	protected ListBox(ControlP5 theControlP5, ControllerGroup theGroup, String theName, int theX, int theY, int theW, int theH) {
+	protected ListBox(ControlP5 theControlP5, ControllerGroup<?> theGroup, String theName, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theGroup, theName, theX, theY, theW, 9);
 
 		items = new ArrayList<ListBoxItem>();
@@ -152,7 +152,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 		scroll((1 - getScrollPosition()) + (theStep * step));
 	}
 
-	private void scroll() {
+	protected void scroll() {
 		itemOffset = 0;
 		if (buttons.size() < items.size() && isScrollbarVisible) {
 			_myScrollbar.show();
@@ -282,10 +282,16 @@ public class ListBox extends ControlGroup implements ControlListener {
 		return this;
 	}
 
+	public ListBox setSize(int theWidth, int theHeight) {
+		setWidth(theWidth);
+		setHeight(theHeight);
+		return this;
+	}
+	
 	protected ListBox addListButton(int theNum) {
 		for (int i = 0; (i < theNum) && (buttons.size() < maxButtons); i++) {
 			int index = buttons.size();
-			Button b = new Button(cp5, (ControllerGroup) this, _myName + "Button" + index, index, 0, index * (_myItemHeight + spacing), _myWidth, _myItemHeight);
+			Button b = new Button(cp5, (ControllerGroup<?>) this, _myName + "Button" + index, index, 0, index * (_myItemHeight + spacing), _myWidth, _myItemHeight);
 			b.setMoveable(false);
 			add(b);
 			cp5.register(null, "", b);
@@ -402,7 +408,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @param theButton
 	 * @return
 	 */
-	public ListBoxItem getItem(Controller theButton) {
+	public ListBoxItem getItem(Controller<?> theButton) {
 		if (theButton instanceof Button) {
 			int n = buttons.indexOf(theButton);
 			if (n >= 0) {
@@ -439,7 +445,16 @@ public class ListBox extends ControlGroup implements ControlListener {
 			_myScrollValue = -(1 - theEvent.getValue());
 			scroll();
 		}
+	}
 
+	@Override
+	public ListBox setValue(float theValue) {
+		for (int i = 1; i < controllers.size(); i++) {
+			if (controllers.get(i).getValue() == theValue) {
+				controllers.get(i).update();
+			}
+		}
+		return this;
 	}
 
 	/**
@@ -623,7 +638,7 @@ public class ListBox extends ControlGroup implements ControlListener {
 	 * @deprecated
 	 */
 	@Deprecated
-	public ListBoxItem item(Controller theButton) {
+	public ListBoxItem item(Controller<?> theButton) {
 		return getItem(theButton);
 	}
 

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -47,7 +47,7 @@ import processing.core.PVector;
  * @example controllers/ControlP5numberbox
  * @nosuperclasses Controller Controller
  */
-public class Numberbox extends Controller {
+public class Numberbox extends Controller<Numberbox> {
 
 	protected int cnt;
 
@@ -65,9 +65,9 @@ public class Numberbox extends Controller {
 
 	protected float _myMultiplier = 1;
 
-	public static int autoWidth = 70;
+	public static int autoWidth = 69;
 
-	public static int autoHeight = 15;
+	public static int autoHeight = 19;
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
 
@@ -187,10 +187,18 @@ public class Numberbox extends Controller {
 	 */
 	public Numberbox shuffle() {
 		float r = (float) Math.random();
-		setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
+		if(getMax() != Float.MAX_VALUE && getMin() != -Float.MAX_VALUE) {
+			setValue(PApplet.map(r, 0, 1, getMin(), getMax()));
+		}
 		return this;
 	}
 
+	public Numberbox setRange(float theMin, float theMax) {
+		setMin(theMin);
+		setMax(theMax);
+		setValue(getValue());
+		return this;
+	}
 	/**
 	 * sets the sensitivity for the scroll behavior when using the mouse wheel
 	 * or the scroll function of a multi-touch track pad. The smaller the value
@@ -211,6 +219,7 @@ public class Numberbox extends Controller {
 	 * @param theRotationValue
 	 * @return Numberbox
 	 */
+	@ControlP5.Invisible
 	public Numberbox scrolled(int theRotationValue) {
 		float f = getValue();
 		f += (_myMultiplier == 1) ? (theRotationValue * scrollSensitivity) : theRotationValue * _myMultiplier;
@@ -273,9 +282,9 @@ public class Numberbox extends Controller {
 		return this;
 	}
 
-	class NumberboxView implements ControllerView {
+	class NumberboxView implements ControllerView<Numberbox> {
 
-		public void display(PApplet theApplet, Controller theController) {
+		public void display(PApplet theApplet, Numberbox theController) {
 			theApplet.fill(color.getBackground());
 			theApplet.rect(0, 0, width, height);
 			theApplet.fill((isActive) ? color.getActive() : color.getForeground());

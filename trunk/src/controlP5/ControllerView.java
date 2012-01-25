@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -36,7 +36,7 @@ import processing.core.PApplet;
  * 
  * @example use/ControlP5customDisplay
  */
-public interface ControllerView {
+public interface ControllerView<T> {
 
 	/**
 	 * draws your custom controllers. display() will be called by a controller's
@@ -46,6 +46,6 @@ public interface ControllerView {
 	 * @param theApplet
 	 * @param theController
 	 */
-	public void display(PApplet theApplet, Controller theController);
+	public void display(PApplet theApplet, T theController);
 
 }

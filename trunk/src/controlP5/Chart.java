@@ -10,7 +10,7 @@ import processing.core.PApplet;
  * 
  * @example controllers/ControlP5chart
  */
-public class Chart extends Controller {
+public class Chart extends Controller<Chart> {
 
 	// STATUS unfinished
 	// TODO pie-chart, histogram-chart, bar chart, line chart
@@ -33,7 +33,7 @@ public class Chart extends Controller {
 
 	protected float strokeWeight = 1;
 
-	protected Chart(ControlP5 theControlP5, ControllerGroup theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
+	protected Chart(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myDataSet = new ArrayList<ChartDataSet>();
 		addDataSet();
@@ -210,7 +210,7 @@ public class Chart extends Controller {
 	}
 
 	@Override
-	public Controller setValue(float theValue) {
+	public Chart setValue(float theValue) {
 		// TODO Auto-generated method stub
 		return this;
 	}
@@ -239,6 +239,7 @@ public class Chart extends Controller {
 	public Chart updateDisplayMode(int theMode) {
 		return updateViewMode(theMode);
 	}
+
 	/**
 	 * @exclude
 	 */
@@ -247,7 +248,7 @@ public class Chart extends Controller {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
-			_myControllerView = new ChartViewBarCentered();
+			_myControllerView = new ChartViewPie();
 			break;
 		case (IMAGE):
 			// _myDisplay = new ChartImageDisplay();
@@ -261,10 +262,10 @@ public class Chart extends Controller {
 		}
 		return this;
 	}
-	
-private class ChartViewBar implements ControllerView {
-		
-		public void display(PApplet theApplet, Controller theController) {
+
+	private class ChartViewBar implements ControllerView<Chart> {
+
+		public void display(PApplet theApplet, Chart theController) {
 			theApplet.pushStyle();
 			theApplet.fill(getColor().getBackground());
 			theApplet.rect(0, 0, getWidth(), getHeight());
@@ -274,16 +275,16 @@ private class ChartViewBar implements ControllerView {
 				int s = getDataSet(n).size();
 				for (int i = 0; i < s; i++) {
 					int ww = (int) ((width / s));
-					theApplet.rect(i * ww, getHeight(), ww-1, -PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
+					theApplet.rect(i * ww, getHeight(), ww - 1, -PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
 				}
 			}
 			theApplet.popStyle();
 		}
 	}
 
-	private class ChartViewBarCentered implements ControllerView {
-		
-		public void display(PApplet theApplet, Controller theController) {
+	private class ChartViewBarCentered implements ControllerView<Chart> {
+
+		public void display(PApplet theApplet, Chart theController) {
 			theApplet.pushStyle();
 			theApplet.fill(getColor().getBackground());
 			theApplet.rect(0, 0, getWidth(), getHeight());
@@ -291,14 +292,15 @@ private class ChartViewBar implements ControllerView {
 			for (int n = 0; n < size(); n++) {
 				theApplet.fill(getDataSet(n).getColor().getForeground());
 				int s = getDataSet(n).size();
-				float step = (float)width /(float)(s);
+				float step = (float) width / (float) (s);
 				float steps = 0;
 				float ww = step - (width % step);
 				ww -= 1;
-				ww = PApplet.max(1,ww);
+				ww = PApplet.max(1, ww);
 				for (int i = 0; i < s; i++) {
-//					theApplet.rect(steps,getHeight(),ww,-PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
-//					steps += step;
+					// theApplet.rect(steps,getHeight(),ww,-PApplet.max(0, PApplet.min(getHeight(),
+					// getDataSet(n).get(i).getValue())));
+					// steps += step;
 					ww = ((width / s) * 0.5f);
 					theApplet.rect(i * ((width / s)) + ww / 2, getHeight(), ww, -PApplet.max(0, PApplet.min(getHeight(), getDataSet(n).get(i).getValue())));
 				}
@@ -307,8 +309,8 @@ private class ChartViewBar implements ControllerView {
 		}
 	}
 
-	private class ChartViewLine implements ControllerView {
-		public void display(PApplet theApplet, Controller theController) {
+	private class ChartViewLine implements ControllerView<Chart> {
+		public void display(PApplet theApplet, Chart theController) {
 
 			theApplet.pushStyle();
 			theApplet.fill(getColor().getBackground());
@@ -324,6 +326,35 @@ private class ChartViewBar implements ControllerView {
 				theApplet.endShape();
 			}
 			theApplet.noStroke();
+			theApplet.popStyle();
+		}
+	}
+
+	private class ChartViewPie implements ControllerView<Chart> {
+		public void display(PApplet theApplet, Chart theController) {
+			theApplet.pushStyle();
+			theApplet.pushMatrix();
+			int from = theApplet.color(255,0, 0);
+			int to = theApplet.color(255, 255,0);
+			
+			for (int n = 0; n < size(); n++) {
+				float total = 0;
+				for (int i = 0; i < getDataSet(n).size(); i++) {
+					total += getDataSet(n).get(i).getValue();
+				}
+
+				float segment = TWO_PI / total;
+				float angle = 0;
+				theApplet.translate(0, n * (getWidth() + 10));
+				for (int i = 0; i < getDataSet(n).size(); i++) {
+					int c = theApplet.lerpColor(from, to, i/(float)getDataSet(n).size());
+					theApplet.fill(c);
+					float nextAngle = angle + getDataSet(n).get(i).getValue() * segment;
+					theApplet.arc(0, 0, getWidth(), getHeight(), angle - 0.1f, nextAngle);
+					angle = nextAngle;
+				}
+			}
+			theApplet.popMatrix();
 			theApplet.popStyle();
 		}
 	}

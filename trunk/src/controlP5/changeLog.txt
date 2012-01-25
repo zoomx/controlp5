@@ -1,3 +1,17 @@
+2012-01-15  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.7.0
+      
+      * src controlP5.ControllerInterface.java, controlP5.Controller.java,controlP5.ControllerGroup.java: 
+      adding generic type declaration for object specific method chaining (fluent interface)
+      
+      * src controlP5.RadioButton.java:
+      changed return type for methods addItem from Toggle to RadioButton
+      changed return type for methods setImage from PImage to RadioButton
+      
+      
+      
+
 2011-10-14  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.6.9

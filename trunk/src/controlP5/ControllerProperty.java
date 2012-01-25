@@ -21,9 +21,9 @@ public class ControllerProperty implements Serializable, Cloneable {
 	private String address;
 	private int id;
 	private transient boolean active;
-	private transient ControllerInterface controller;
+	private transient ControllerInterface<?> controller;
 
-	ControllerProperty(ControllerInterface theController, String theSetter, String theGetter) {
+	ControllerProperty(ControllerInterface<?> theController, String theSetter, String theGetter) {
 		setController(theController);
 		setAddress(theController.getAddress());
 		setSetter(theSetter);
@@ -101,11 +101,11 @@ public class ControllerProperty implements Serializable, Cloneable {
 		return address;
 	}
 
-	ControllerInterface getController() {
+	ControllerInterface<?> getController() {
 		return controller;
 	}
 
-	void setController(ControllerInterface theController) {
+	void setController(ControllerInterface<?> theController) {
 		controller = theController;
 	}
 

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -58,6 +58,8 @@ public interface ControlP5Constants {
 	public final static int STRING = 4;
 
 	public final static int ARRAY = 5;
+	
+	public final static int BITFONT = 100; 
 
 	public final static Class<?>[] acceptClassList = { int.class, float.class, boolean.class, String.class };
 
@@ -67,9 +69,9 @@ public interface ControlP5Constants {
 
 	public final static int DOWN = KeyEvent.VK_DOWN;
 
-	public final static int LEFT = KeyEvent.VK_LEFT;
+	public final static int LEFT = KeyEvent.VK_LEFT; // PApplet.LEFT
 	
-	public final static int RIGHT = KeyEvent.VK_RIGHT;
+	public final static int RIGHT = KeyEvent.VK_RIGHT; // PApplet.RIGHT
 
 	public final static int SHIFT = KeyEvent.VK_SHIFT;
 
@@ -111,13 +113,13 @@ public interface ControlP5Constants {
 
 	public final static char KEYCONTROL = 'K';
 
-	public final static int TOP = 1;
+	public final static int TOP = 101; // PApplet.TOP
 
-	public final static int BOTTOM = 2;
-
-	public final static int CENTER = 3;
+	public final static int BOTTOM = 102;  // PApplet.BOTTOM
+ 
+	public final static int CENTER = 3;  // PApplet.CENTER
 	
-	public final static int BASELINE = 4;
+	public final static int BASELINE = 0;  // PApplet.BASELINE
 
 	public static final int HORIZONTAL = 0;
 

@@ -3,7 +3,7 @@ package controlP5;
 /**
  * controlP5 is a processing gui library.
  *
- *  2006-2011 by Andreas Schlegel
+ *  2006-2012 by Andreas Schlegel
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,8 +25,9 @@ package controlP5;
  *
  */
 
-import controlP5.ControlFont.BitFontLabel;
 import processing.core.PApplet;
+import processing.core.PFont;
+import controlP5.ControlFont.BitFontLabel;
 
 /**
  * A custom label using controlP5's BitFonts or PFont based ControlFonts.
@@ -154,7 +155,17 @@ public class Label implements CDrawable {
 		return this;
 	}
 	
-	public void draw(PApplet theApplet, int theX, int theY, ControllerInterface theController) {
+	public Label setPaddingX(int thePaddingX) {
+		_myPaddingX = thePaddingX;
+		return this;
+	}
+	
+	public Label setPaddingY(int thePaddingY) {
+		_myPaddingY = thePaddingY;
+		return this;
+	}
+	
+	public void draw(PApplet theApplet, int theX, int theY, ControllerInterface<?> theController) {
 		if (isVisible) {
 			getLabeltype().draw(this, theApplet, theX, theY, theController);
 		}
@@ -200,6 +211,14 @@ public class Label implements CDrawable {
 		}
 	}
 
+	public Label hide() {
+		return setVisible(false);
+	}
+	
+	public Label show() {
+		return setVisible(true);
+	}
+	
 	public Label setVisible(boolean theValue) {
 		isVisible = theValue;
 		return this;
@@ -283,6 +302,10 @@ public class Label implements CDrawable {
 	public Label setFont(int theBitFontIndex) {
 		setFont(new ControlFont(theBitFontIndex));
 		return this;
+	}
+	
+	public Label setFont(PFont thePFont) {
+		return setFont(new ControlFont(thePFont, thePFont.findFont().getSize()));
 	}
 
 	public Label setFont(ControlFont theFont) {
@@ -400,7 +423,7 @@ public class Label implements CDrawable {
 
 	interface Labeltype {
 
-		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface theController);
+		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface<?> theController);
 
 		public int getWidth();
 
@@ -420,7 +443,7 @@ public class Label implements CDrawable {
 	
 	class SinglelineLabel implements Labeltype {
 
-		private void align(PApplet theApplet, ControllerInterface theController, int theAlignX, int theAlignY) {
+		private void align(PApplet theApplet, ControllerInterface<?> theController, int theAlignX, int theAlignY) {
 			int x = 0;
 			int y = 0;
 			switch (theAlignX) {
@@ -463,7 +486,7 @@ public class Label implements CDrawable {
 			theApplet.translate(x, y);
 		}
 
-		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface theController) {
+		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface<?> theController) {
 			_myFontLabel.adjust(theApplet, theLabel);
 			theApplet.pushMatrix();
 			align(theApplet, theController, alignX, alignY);
@@ -495,7 +518,7 @@ public class Label implements CDrawable {
 	class MultilineLabel implements Labeltype {
 
 		@Override
-		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface theController) {
+		public void draw(Label theLabel, PApplet theApplet, int theX, int theY, ControllerInterface<?> theController) {
 			_myFontLabel.adjust(theApplet, theLabel);
 			theLabel.draw(theApplet, theX, theY);
 		}
@@ -529,4 +552,24 @@ public class Label implements CDrawable {
 	public ControllerStyle style() {
 		return getStyle();
 	}
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public Label setControlFont(ControlFont theFont) {
+		return setFont(theFont);
+	}
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public Label setControlFontSize(int theSize) {
+		System.out.println("Label.getControlFontSize has been deprecated");
+		return this;
+	}
+
 }
