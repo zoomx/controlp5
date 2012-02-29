@@ -1,20 +1,23 @@
 import controlP5.*;
 
-ControlP5 controlP5;
+ControlP5 cp5;
 
-int myColor = color(255);
+int myColor = color(0);
 
 
 void setup() {
-  size(400,400);
-  controlP5 = new ControlP5(this);
-  Button b = controlP5.addButton("buttonA",128,100,100,10,10);
+  size(400,600);
+  cp5 = new ControlP5(this);
   
   // replace the default controlP5 button with an image.
-  //button.setImages(defaultImage, rolloverImage, pressedImage);
-  b.setImages(loadImage("Arrow-Left.png"), loadImage("Arrow-Right.png"), loadImage("Refresh.png"));
-  // adjust the size of the button and resize to the dimensions of the defaultImage
-  b.updateSize();
+  // button.setImages(defaultImage, rolloverImage, pressedImage);
+  // use button.updateSize() to adjust the size of the button and 
+  // resize to the dimensions of the defaultImage
+  
+  cp5.addButton("buttonA")
+     .setPosition(175,275)
+     .setImages(loadImage("Arrow-Left.png"), loadImage("Arrow-Right.png"), loadImage("Refresh.png"))
+     .updateSize();
 }
 
 void draw() {
@@ -30,6 +33,6 @@ public void controlEvent(ControlEvent theEvent) {
 // controller with name buttonA
 public void buttonA(int theValue) {
   println("a button event from buttonA: "+theValue);
-  myColor = theValue;
+  myColor = color(128);
 }
 

@@ -13,9 +13,9 @@
 	</path>		
 	<property name="javaVersion"                value="1.5"/>
 	<property name="author"                     value="Andreas Schlegel"/>	
-	<property name="copyright"                  value="(c) 2011"/>
+	<property name="copyright"                  value="(c) 2012"/>
 	<property name="libraryName"                value="controlP5"/>
-	<property name="versionNumber"              value="0.6.13"/>
+	<property name="versionNumber"              value="0.7.1"/>
 	<property name="yourLink"                   value="http://www.sojamo.de" />
 	<property name="keywords"                   value="gui, controller, interface, user interface" />
 	<property name="tested:platform"            value="osx, windows" />
@@ -46,6 +46,7 @@
 	<property name="bin" 				location="bin"/>
 	<property name="reference" 			location="reference"/>
 	<property name="dist" 				location="distribution"/>
+	<property name="resources" 			location="resources"/>
 	
 
 	<target name="init">
@@ -73,7 +74,8 @@
 	
 	
 	<delete dir="${bin}"/>
-	<mkdir dir="${bin}"/>	
+	<mkdir dir="${bin}"/>
+	<delete dir="${dist}"/>	
 	<mkdir dir="${dist}"/>
   
   </target>
@@ -155,9 +157,29 @@
   			<fileset dir="${dist}"/>
   		</copy> 
 
+  	<mkdir dir="${dist}/${libraryName}-${versionNumber}" />
+  	<mkdir dir="${dist}/${libraryName}-${versionNumber}/controlP5" />
+  	<mkdir dir="${dist}/${libraryName}-${versionNumber}/controlP5/src" />
+  	<mkdir dir="${dist}/${libraryName}-${versionNumber}/controlP5/examples" />
+  	<mkdir dir="${dist}/${libraryName}-${versionNumber}/controlP5/reference" />
+  	<mkdir dir="${dist}/${libraryName}-${versionNumber}/controlP5/library" />
+  	<mkdir dir="${dist}/tmp" />
+	<mkdir dir="${dist}/tmp/${libraryName}" />
+
+  	<copy todir="${dist}/${libraryName}-${versionNumber}/controlP5/src"><fileset dir="${dist}/src"/></copy>
+  	<copy todir="${dist}/${libraryName}-${versionNumber}/controlP5/examples"><fileset dir="${dist}/examples"/></copy>
+  	<copy todir="${dist}/${libraryName}-${versionNumber}/controlP5/reference"><fileset dir="${dist}/reference"/></copy>
+  	<copy todir="${dist}/${libraryName}-${versionNumber}/controlP5/library"><fileset dir="${dist}/library"/></copy>
+
+  	<copyfile src="${resources}/install_instructions.txt" dest="${dist}/tmp/install_instructions.txt"/>
+
+  	<move todir="${dist}/tmp/${libraryName}">
+  		<fileset dir="${dist}/${libraryName}-${versionNumber}/controlP5" />
+  	</move>
+
   	<!-- zip the distribution of the library -->
-  	<zip destfile="${dist}/${libraryName}.zip"
-  	       basedir="${dist}"
+  	<zip destfile="${dist}/${libraryName}-${versionNumber}.zip"
+  	       basedir="${dist}/tmp"
   	       excludes="**/.DS_Store"
 	/>
   	
@@ -256,7 +278,7 @@
   	  	  						
   	<!-- finish organizating library's distribution -->
   	<mkdir dir="${dist}/web/download" />
-  	<copy file="${dist}/${libraryName}.zip" todir="${dist}/web/download" />
+  	<copy file="${dist}/${libraryName}-${versionNumber}.zip" todir="${dist}/web/download" />
   	
   	<copy todir="${processing}/${libraryName}/reference">
 		<fileset dir="${reference}" />

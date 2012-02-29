@@ -3,7 +3,7 @@ import controlP5.*;
 ControlP5 cp5;
 
 void setup() {
-  size(800, 400);
+  size(400, 600);
 
   cp5 = new ControlP5(this);
   // disable outodraw because we want to draw our 
@@ -19,7 +19,7 @@ void setup() {
 
 
 void draw() {
-  background(0);
+  background(cp5.get("hello").getValue());
   // first draw controlP5
   cp5.draw();
   

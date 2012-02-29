@@ -442,9 +442,25 @@ public class Textfield extends Controller<Textfield> {
 		}
 	}
 
-	private void setIndex(int theIndex) {
+	/**
+     * make the controller execute a return event. submit the current content of the texfield.
+     * 
+     */
+    public Textfield submit() {
+    	keyMapping.get(ENTER).execute();
+    	return this;
+    }
+
+   public String[] getTextList() {
+	   String[] s =new String[_myHistory.size()];  
+	   _myHistory.toArray(s); 
+	   return s;
+   }
+   
+	private Textfield setIndex(int theIndex) {
 		_myTextBufferIndex = theIndex;
 		changed = true;
+		return this;
 	}
 
 	interface TextfieldCommand {

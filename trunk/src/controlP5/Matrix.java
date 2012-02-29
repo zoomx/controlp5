@@ -25,6 +25,9 @@ package controlP5;
  *
  */
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import processing.core.PApplet;
 
 /**
@@ -66,14 +69,27 @@ public class Matrix extends Controller<Matrix> {
 
 	private Thread t;
 
+	private int gapX = 1;
+
+	private int gapY = 1;
+
+	private Object _myPlug;
+
+	private String _myPlugName;
+
 	public Matrix(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theCellX, int theCellY, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myInterval = 100;
-		initCells(theCellX, theCellY);
+		setGrid(theCellX, theCellY);
+
+		_myPlug = cp5.papplet;
+		_myPlugName = getName();
+		_myCaptionLabel.align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE);
+		_myCaptionLabel.setPadding(0, 4);
 		runThread();
 	}
 
-	private void initCells(int theCellX, int theCellY) {
+	public Matrix setGrid(int theCellX, int theCellY) {
 		_myCellX = theCellX;
 		_myCellY = theCellY;
 		sum = _myCellX * _myCellY;
@@ -85,7 +101,7 @@ public class Matrix extends Controller<Matrix> {
 				_myCells[x][y] = 0;
 			}
 		}
-
+		return this;
 	}
 
 	/**
@@ -169,8 +185,8 @@ public class Matrix extends Controller<Matrix> {
 			isActive = false;
 		}
 		isPressed = false;
-		currentX = 0;
-		currentY = 0;
+		currentX = -1;
+		currentY = -1;
 	}
 
 	@Override
@@ -185,6 +201,23 @@ public class Matrix extends Controller<Matrix> {
 		return setValue(_myValue);
 	}
 
+	public Matrix setGap(int theX, int theY) {
+		gapX = theX;
+		gapY = theY;
+		return this;
+	}
+
+	public Matrix plugTo(Object theObject) {
+		_myPlug = theObject;
+		return this;
+	}
+
+	public Matrix plugTo(Object theObject, String thePlugName) {
+		_myPlug = theObject;
+		_myPlugName = thePlugName;
+		return this;
+	}
+
 	/**
 	 * set the state of a particular cell inside a matrix. use true or false for parameter theValue
 	 * 
@@ -195,6 +228,19 @@ public class Matrix extends Controller<Matrix> {
 	 */
 	public Matrix set(int theX, int theY, boolean theValue) {
 		_myCells[theX][theY] = (theValue == true) ? 1 : 0;
+		return this;
+	}
+
+	public boolean get(int theX, int theY) {
+		return _myCells[theX][theY] == 1 ? true : false;
+	}
+
+	public Matrix clear() {
+		for (int x = 0; x < _myCells.length; x++) {
+			for (int y = 0; y < _myCells[x].length; y++) {
+				_myCells[x][y] = 0;
+			}
+		}
 		return this;
 	}
 
@@ -215,7 +261,7 @@ public class Matrix extends Controller<Matrix> {
 	}
 
 	public Matrix setCells(int[][] theCells) {
-		initCells(theCells.length, theCells[0].length);
+		setGrid(theCells.length, theCells[0].length);
 		_myCells = theCells;
 		return this;
 	}
@@ -232,6 +278,21 @@ public class Matrix extends Controller<Matrix> {
 				_myValue = 0;
 				_myValue = (cnt << 0) + (i << 8);
 				setValue(_myValue);
+				try {
+					Method method = _myPlug.getClass().getMethod(_myPlugName, int.class, int.class);
+					method.setAccessible(true);
+					method.invoke(_myPlug, cnt, i);
+				} catch (SecurityException ex) {
+					ex.printStackTrace();
+				} catch (NoSuchMethodException ex) {
+					ex.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					ex.printStackTrace();
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				} catch (InvocationTargetException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
@@ -297,23 +358,30 @@ public class Matrix extends Controller<Matrix> {
 	class MatrixView implements ControllerView<Matrix> {
 		public void display(PApplet theApplet, Matrix theController) {
 			theApplet.noStroke();
-			theApplet.fill(color.getBackground());
-			theApplet.rect(0, 0, width, height);
-			theApplet.noStroke();
-			if (isInside()) {
-				theApplet.fill(color.getForeground());
-				theApplet.rect((int) ((theApplet.mouseX - position.x) / stepX) * stepX, (int) ((theApplet.mouseY - position.y) / stepY) * stepY, stepX, stepY);
-			}
-			theApplet.stroke(color.getActive());
-			theApplet.line(cnt * stepX, 0, cnt * stepX, height);
-			theApplet.noStroke();
-			theApplet.fill(color.getActive());
 			for (int x = 0; x < _myCellX; x++) {
 				for (int y = 0; y < _myCellY; y++) {
+
 					if (_myCells[x][y] == 1) {
-						theApplet.rect(x * stepX, y * stepY, stepX - 1, stepY - 1);
+						theApplet.fill(color.getActive());
+						theApplet.rect(x * stepX, y * stepY, stepX - gapX, stepY - gapY);
+					} else {
+						theApplet.fill(color.getBackground());
+						theApplet.rect(x * stepX, y * stepY, stepX - gapX, stepY - gapY);
 					}
 				}
+			}
+			if (isInside()) {
+				int x = (int) ((theApplet.mouseX - position.x) / stepX);
+				int y = (int) ((theApplet.mouseY - position.y) / stepY);
+				if (x >= 0 && x < _myCellX && y >= 0 && y < _myCellY) {
+					theApplet.fill(_myCells[x][y] == 1 ? color.getActive() : color.getForeground());
+					theApplet.rect(x * stepX, y * stepY, stepX - gapX, stepY - gapY);
+				}
+			}
+			theApplet.fill(color.getActive());
+			theApplet.rect(cnt * stepX, 0, 1, height - gapY);
+			if (isLabelVisible) {
+				_myCaptionLabel.draw(theApplet, 0, 0, theController);
 			}
 		}
 	}

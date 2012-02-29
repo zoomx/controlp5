@@ -182,7 +182,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 	private String _myAddress = "";
 
-	protected int[][] alignLabel = new int[][] { { CENTER, CENTER }, { CENTER, CENTER } };
 	
 	private T me;
 	/**
@@ -1588,6 +1587,17 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		setImage(theImageHighlight, HIGHLIGHT);
 		return me;
 	}
+	
+	public T setImages(PImage... imgs) {
+		if(imgs.length<3 || imgs.length>4) {
+			return me;
+		} 
+		setImage(imgs[0], DEFAULT);
+		setImage(imgs[1], OVER);
+		setImage(imgs[2], ACTIVE);
+		setImage(imgs.length==3 ? imgs[2]:imgs[3], HIGHLIGHT);
+		return me;
+	}
 
 	/**
 	 * @param theImage
@@ -1812,7 +1822,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		_myValueLabel.set("" + adjustValue(getValue()));
 		return me;
 	}
-
+	
 	/**
 	 * @return int
 	 */
@@ -1868,7 +1878,13 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 		return myLabelValue;
 	}
-
+	
+	public T align(int theCaptionX, int theCaptionY, int theValueX, int theValueY) {
+		getCaptionLabel().align(theCaptionX, theCaptionY);
+		getCaptionLabel().align(theValueX, theValueY);
+		return me;
+	}
+	
 	/**
 	 * @return ControlWindow
 	 */

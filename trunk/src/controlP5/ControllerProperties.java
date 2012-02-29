@@ -737,12 +737,11 @@ public class ControllerProperties {
 	class SerializedFormat implements PropertiesStorageFormat {
 
 		public boolean load(String thePropertiesPath) {
-			System.out.println("serialized, loading file " + thePropertiesPath);
 			try {
 				FileInputStream fis = new FileInputStream(thePropertiesPath);
 				ObjectInputStream ois = new ObjectInputStream(fis);
 				int size = ois.readInt();
-				logger.info("loading " + size + " property-items." + fis.getFD());
+				logger.info("loading " + size + " property-items.");
 
 				for (int i = 0; i < size; i++) {
 					try {

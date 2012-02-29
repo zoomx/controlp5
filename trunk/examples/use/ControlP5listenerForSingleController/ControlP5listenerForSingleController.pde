@@ -4,21 +4,30 @@
  * ControlListener which listens for incoming ControlEvent from specific
  * controller(s). MyControlListener in the example below listens to
  * ControlEvents coming in from controller 'mySlider'.
- * by andreas schlegel, 2009
+ *
+ * by andreas schlegel, 2012
  */
 import controlP5.*;
 
-ControlP5 controlP5;
+ControlP5 cp5;
 MyControlListener myListener;
 
 void setup() {
-  size(400,400);
-  frameRate(30);
-  controlP5 = new ControlP5(this);
-  controlP5.addSlider("mySlider",100,200,140,200,200,100,10);
+  size(700,400);
+
+
+  cp5 = new ControlP5(this);
+  cp5.setColor(new CColor(0xffaa0000, 0xff330000, 0xffff0000, 0xffffffff, 0xffffffff));  
+  
+  cp5.addSlider("mySlider")
+     .setRange(100,200)
+     .setValue(140)
+     .setPosition(200,200)
+     .setSize(100,20);
   
   myListener = new MyControlListener();
-  controlP5.controller("mySlider").addListener(myListener);
+  
+  cp5.getController("mySlider").addListener(myListener);
 }
 
 void draw() {
@@ -31,8 +40,8 @@ class MyControlListener implements ControlListener {
   public void controlEvent(ControlEvent theEvent) {
     println("i got an event from mySlider, " +
             "changing background color to "+
-            theEvent.controller().value());
-    col = (int)theEvent.controller().value();
+            theEvent.getController().getValue());
+    col = (int)theEvent.getController().getValue();
   }
 
 }

@@ -26,6 +26,10 @@ package controlP5;
  */
 
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Handles key events.
@@ -50,6 +54,8 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 
 	protected int keyCode = -1;
 
+	Map<KeyCode, ControlKey> keymap = new HashMap<KeyCode, ControlKey>();
+
 	public ControlWindowKeyHandler(ControlP5 theControlP5) {
 		_myMasterControlWindow = theControlP5.controlWindow;
 	}
@@ -59,6 +65,8 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 	}
 
 	public void keyEvent(final KeyEvent theKeyEvent, final ControlWindow theControlWindow, final boolean isMasterWindow) {
+
+		List<Integer> keys = new LinkedList<Integer>();
 
 		if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
 			switch (theKeyEvent.getKeyCode()) {
@@ -105,25 +113,13 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			}
 			if (theKeyEvent.getKeyCode() == SAVE) {
 				if (isShiftDown) {
-					_myMasterControlWindow.controlP5.saveProperties(); // save
-					// properties
+					_myMasterControlWindow.controlP5.saveProperties(); // save properties
 				}
-				// else {
-				// ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
-				// }
 			}
 			if (theKeyEvent.getKeyCode() == LOAD) {
 				if (isShiftDown) {
-					// load properties
-					_myMasterControlWindow.controlP5.loadProperties();
+					_myMasterControlWindow.controlP5.loadProperties(); // load properties
 				}
-				// else {
-				// if (isMasterWindow) {
-				// ControlP5.logger().info("Loading ControlP5 from an XML file has been removed, have a look at controlP5's properties instead.");
-				// isAltDown = false;
-				// isShiftDown = false;
-				// }
-				// }
 			}
 			if (theKeyEvent.getKeyCode() == HIDE) {
 				if (_myMasterControlWindow.isVisible) {
@@ -134,6 +130,20 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			}
 		}
 
+		keys.add(new Integer(key));
+		if (isShiftDown)
+			keys.add(new Integer(KeyEvent.VK_SHIFT));
+		if (isAltDown)
+			keys.add(new Integer(KeyEvent.VK_ALT));
+		if (isCommandDown)
+			keys.add(new Integer(157));
+
+		if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
+			KeyCode code = new KeyCode(keys);
+			if (keymap.containsKey(code)) {
+				keymap.get(code).keyEvent();
+			}
+		}
 		/*
 		 * during re/loading period of settings theControlWindow might be null
 		 */
@@ -163,6 +173,77 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 		isAltDown = false;
 		isKeyMenu = false;
 		isCommandDown = false;
+	}
+
+	public void mapKey(ControlKey theKey, int... theChar) {
+		keymap.put(new KeyCode(theChar), theKey);
+	}
+
+	class KeyCode {
+
+		List<Integer> chars;
+
+		KeyCode(List<Integer> theChars) {
+			chars = new LinkedList<Integer>(theChars);
+		}
+
+		KeyCode(int... theChars) {
+			chars = new LinkedList<Integer>();
+			for (int i : theChars) {
+				chars.add(i);
+			}
+		}
+
+		KeyCode(char... theChars) {
+			chars = new LinkedList<Integer>();
+			for (int i : theChars) {
+				chars.add(i);
+			}
+		}
+
+		public int size() {
+			return chars.size();
+		}
+
+		public List<Integer> getChars() {
+			return chars;
+		}
+
+		public boolean equals(Object obj) {
+			if (!(obj instanceof KeyCode)) {
+				return false;
+			}
+
+			KeyCode k = (KeyCode) obj;
+
+			if (k.size() != size()) {
+				return false;
+			}
+
+			for (int c : k.getChars()) {
+				if (!contains(c)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		boolean contains(int n) {
+			for (int c : chars) {
+				if (n == c) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public int hashCode() {
+			int hashCode = 0;
+			for (int c : chars) {
+				hashCode += c;
+			}
+			return hashCode;
+		}
 	}
 
 }

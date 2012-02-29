@@ -24,12 +24,12 @@ color[] col = new color[] {
 
 
 void setup() {
-  size(700, 400);
-
+  size(400, 600);
+  noStroke();
   cp5 = new ControlP5(this);
   for (int i=0;i<col.length;i++) {
     cp5.addBang("bang"+i)
-       .setPosition(40+i*80, 150)
+       .setPosition(40+i*80, 200)
        .setSize(40, 40)
        .setId(i)
        ;
@@ -37,8 +37,8 @@ void setup() {
   
   // change the trigger event, by default it is PRESSED.
   cp5.addBang("bang")
-     .setPosition(40, 250)
-     .setSize(120, 40)
+     .setPosition(40, 300)
+     .setSize(280, 40)
      .setTriggerEvent(Bang.RELEASE)
      .setLabel("changeBackground")
      ;
@@ -62,7 +62,7 @@ public void bang() {
 
 public void controlEvent(ControlEvent theEvent) {
   for (int i=0;i<col.length;i++) {
-    if (theEvent.controller().name().equals("bang"+i)) {
+    if (theEvent.getController().getName().equals("bang"+i)) {
       col[i] = color(random(255));
     }
   }

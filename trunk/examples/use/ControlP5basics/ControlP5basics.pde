@@ -25,7 +25,8 @@ public int myColorBackground = 100;
 
 void setup() {
   size(400, 400);
-
+  noStroke();
+  
   cp5 = new ControlP5(this);
 
   // create a slider
@@ -81,10 +82,10 @@ public void controlEvent(ControlEvent theEvent) {
   println("got a control event from controller with id "+theEvent.getId());
   switch(theEvent.getId()) {
     case(1): // numberboxA is registered with id 1
-    myColorRect = (int)(theEvent.controller().getValue());
+    myColorRect = (int)(theEvent.getController().getValue());
     break;
     case(2):  // numberboxB is registered with id 2
-    myColorBackground = (int)(theEvent.controller().getValue());
+    myColorBackground = (int)(theEvent.getController().getValue());
     break;
   }
 }

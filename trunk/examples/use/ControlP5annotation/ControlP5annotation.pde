@@ -11,7 +11,7 @@
  * Annotations can be applied to variables and functions of the main program 
  * as well as individual classes. More details are included in the comments below.
  *
- * by Andreas Schlegel, 2011
+ * by Andreas Schlegel, 2012
  * www.sojamo.de/libraries/controlp5
  *
  */
@@ -69,8 +69,14 @@ void setup() {
   tc2 = new TestControl();
   CColor col = new CColor();
   col.setActive(color(0, 200, 100));
-  cp5.addControllersFor("hello", tc2).setPosition(200, 150, tc2).moveTo(extraTab, tc2).setColor(col, tc2);
-  cp5.getController("s", tc2).setStringValue("Second Control"); 
+  
+  cp5.addControllersFor("hello", tc2)
+     .setPosition(200, 150, tc2)
+     .moveTo(extraTab, tc2)
+     .setColor(col, tc2);
+     
+  cp5.getController("s", tc2)
+     .setStringValue("Second Control"); 
   
   // with listening turned on, a controller can listen to changes made to its connected variable 
   // here the controller will listen to variable x of object tc2

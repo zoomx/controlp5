@@ -43,11 +43,12 @@ import processing.core.PVector;
  */
 public class ControlP5Base implements ControlP5Constants {
 
+	
 	private ControlP5 cp5;
 
 	ControllerProperties _myProperties;
 
-	ControllerAutomator _myAutomator;
+	private ControllerAutomator _myAutomator;
 
 	protected Map<Object, ArrayList<ControllerInterface<?>>> _myObjectToControllerMap = new HashMap<Object, ArrayList<ControllerInterface<?>>>();
 
@@ -142,6 +143,7 @@ public class ControlP5Base implements ControlP5Constants {
 	 * Matrix is a 2-D matrix controller using toggle controllers in a rows and a columns setup.
 	 * useful for software drum machines.
 	 */
+	
 	public Matrix addMatrix(final Object theObject, final String theIndex, final String theName, final int theCellX, final int theCellY, final int theX, final int theY, final int theWidth, final int theHeight) {
 		Matrix myController = new Matrix(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theCellX, theCellY, theX, theY, theWidth, theHeight);
 		cp5.register(theObject, theIndex, myController);
@@ -149,6 +151,10 @@ public class ControlP5Base implements ControlP5Constants {
 		return myController;
 	}
 
+	public Matrix addMatrix(final String theName) {
+		return addMatrix(theName, 10, 10, 0, 0, 100, 100);
+	}
+	
 	public Matrix addMatrix(final String theName, final int theCellX, final int theCellY, final int theX, final int theY, final int theWidth, final int theHeight) {
 		return addMatrix(null, "", theName, theCellX, theCellY, theX, theY, theWidth, theHeight);
 	}
@@ -387,7 +393,24 @@ public class ControlP5Base implements ControlP5Constants {
 		myController.registerProperty("arrayValue");
 		return myController;
 	}
+	
+	
+	/**
+	 * Use radio buttons for multiple choice options.
+	 */
+	public RadioButton addRadio(final String theName) {
+		return addRadioButton(theName, 0, 0);
+	}
 
+	public RadioButton addRadio(final String theName, final int theX, final int theY) {
+		RadioButton myController = new RadioButton(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theX, theY);
+		cp5.register(null, "", myController);
+		myController.registerProperty("arrayValue");
+		return myController;
+	}
+
+	
+	
 	// TODO
 	// addRadioButton theObject
 
@@ -877,7 +900,8 @@ public class ControlP5Base implements ControlP5Constants {
 		}
 		return this;
 	}
-
+	
+	
 	public ControlP5Base setColor(CColor theColor, Object theObject) {
 		if (_myObjectToControllerMap.containsKey(theObject)) {
 			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
@@ -1007,5 +1031,11 @@ public class ControlP5Base implements ControlP5Constants {
 		}
 		return s;
 	}
-
+	
+	
+	
+	public ControlP5 mapKey(ControlKey theKey,int...theChar) {
+		cp5.keyHandler.mapKey(theKey, theChar);
+		return cp5;
+	}
 }

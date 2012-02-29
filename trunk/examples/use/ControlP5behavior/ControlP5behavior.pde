@@ -10,7 +10,7 @@
  * find a list of public methods available for the ControlBehavior Controller 
  * at the bottom of this sketch.
  *
- * by Andreas Schlegel, 2011
+ * by Andreas Schlegel, 2012
  * www.sojamo.de/libraries/controlp5
  *
  */
@@ -26,13 +26,26 @@ public int sliderValue = 100;
 
 void setup() {
   size(400, 400);
-  frameRate(30);
+  noStroke();
 
   cp5 = new ControlP5(this);
-  cp5.addSlider("sliderValue", 0, 255, 128, 100, 50 + height/2, 40, 100);
-  cp5.addSlider("slider", 100, 255, 128, 100, 50, 100, 40);
+  cp5.addSlider("sliderValue")
+     .setRange(0,255)
+     .setValue(128)
+     .setPosition(100, 50 + height/2)
+     .setSize(40, 100);
+     
+  cp5.addSlider("slider")
+     .setRange(100, 255)
+     .setValue(128)
+     .setPosition(100, 50)
+     .setSize(100, 40);
+     
 
-  cp5.addBang("bang", 40, 50 + height/2, 40, 40);
+  cp5.addBang("bang")
+     .setPosition(40, 50 + height/2)
+     .setSize(40, 40);
+     
   // add a custom ControlBehavior to controller bang,
   // class TimerEvent is included in this sketch at the bottom
   // and extends abstract class ControlBehavior.

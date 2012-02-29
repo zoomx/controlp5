@@ -14,17 +14,19 @@ import controlP5.*;
 
 ControlP5 cp5;
 
-float v1 = 50, v2 = 100, v3 = 100;
+float v1 = 50, v2 = 100, v3 = 100, v4 = 100;
 
 void setup() {
-  size(400,400);
+  size(400,600);
   smooth();
+  noStroke();
   cp5 = new ControlP5(this);
   
   cp5.begin(100,100);
   cp5.addSlider("v1",0,255).linebreak();
-  cp5.addSlider("v2",0,255).linebreak();
-  cp5.addSlider("v3",0,255);
+  cp5.addSlider("v2",0,200).linebreak();
+  cp5.addSlider("v3",0,300).linebreak();
+  cp5.addSlider("v4",0,400);
   cp5.end();
   
   // change the caption label for controller v1 and apply styles
@@ -39,6 +41,10 @@ void setup() {
   cp5.getController("v3").setCaptionLabel("Ellipse B");
   style("v3");
   
+  // change the caption label for controller v3 and apply styles
+  cp5.getController("v4").setCaptionLabel("Ellipse C");
+  style("v4");
+  
   
 }
 
@@ -48,7 +54,7 @@ void style(String theControllerName) {
   c.setHeight(15);
   
   // add some padding to the caption label background
-  c.getCaptionLabel().getStyle().setPadding(4,0,2,4);
+  c.getCaptionLabel().getStyle().setPadding(4,4,2,4);
   
   // shift the caption label up by 4px
   c.getCaptionLabel().getStyle().setMargin(-4,0,0,0); 
@@ -60,8 +66,9 @@ void style(String theControllerName) {
 void draw() {
   background(v1);
   fill(255,255,220,100);
-  ellipse(width/2-100, height/2,v2 + 50,v2 + 50);
+  ellipse(width/2-100, height/2-100,v2 + 50,v2 + 50);
   ellipse(width/2+100, height/2,v3,v3);
+  ellipse(width/2, height/2+100,v4,v4);
 }
 
 

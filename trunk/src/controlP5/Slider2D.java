@@ -21,7 +21,7 @@ public class Slider2D extends Controller<Slider2D> {
 
 	protected float _myMaxX, _myMaxY;
 
-	public boolean isCrosshairs;
+	public boolean isCrosshairs = true;
 
 	private String _myValueLabelSeparator = ",";
 

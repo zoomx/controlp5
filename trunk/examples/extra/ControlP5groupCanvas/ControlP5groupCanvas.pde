@@ -1,25 +1,26 @@
 /**
- * ControlP5 GroupCanvas
- * by andreas schlegel, 2009
+ * ControlP5 Canvas
+ *
+ * by andreas schlegel, 2011
+ * www.sojamo.de/libraries/controlp5
+ * 
  */
+ 
 import controlP5.*;
-
-/**
-  * WARNING
-  * ControlCanvas and ControlWindowCanvas are yet EXPERIMENTAL
-  * and therefore will undergo changes in the future before being
-  * fully functional!
-  */
   
-ControlP5 controlP5;
+ControlP5 cp5;
   
 void setup() {
-  size(400,400);
-  frameRate(30);
-
-  controlP5 = new ControlP5(this);
-  ControlGroup l = controlP5.addGroup("myGroup",100,40);
-  l.addCanvas(new TestCanvas());
+  size(400,600);
+  smooth();
+  
+  cp5 = new ControlP5(this);
+  cp5.addGroup("myGroup")
+     .setLabel("Testing Canvas")
+     .setPosition(100,200)
+     .setWidth(200)
+     .addCanvas(new TestCanvas())
+     ;
 }
 
 void draw() {
@@ -27,17 +28,24 @@ void draw() {
 }
 
 
-void controlEvent(ControlEvent theEvent) {
-  println("got an event from "+theEvent.controller().name());
-}
-
-
-class TestCanvas extends ControlCanvas {
-  TestCanvas() {
-  }
+class TestCanvas extends Canvas {
   
-  public void draw(PApplet theApplet) {
-    theApplet.fill(int(random(244)));
-    theApplet.rect(0,0,100,100);
+  float n;
+  float a;
+  
+  public void setup(PApplet p) {
+    println("starting a test canvas.");
+    n = 1;
+  }
+  public void draw(PApplet p) {
+    n += 0.01;
+    p.ellipseMode(CENTER);
+    p.fill(lerpColor(color(0,100,200),color(0,200,100),map(sin(n),-1,1,0,1)));
+    p.rect(0,0,200,200);
+    p.fill(255,150);
+    a+=0.01;
+    ellipse(100,100,abs(sin(a)*150),abs(sin(a)*150));
+    ellipse(40,40,abs(sin(a+0.5)*50),abs(sin(a+0.5)*50));
+    ellipse(60,140,abs(cos(a)*80),abs(cos(a)*80));
   }
 }
