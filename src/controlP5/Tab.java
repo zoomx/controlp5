@@ -52,6 +52,8 @@ public class Tab extends ControllerGroup<Tab> {
 
 	public static int padding = 4;
 
+	public boolean autoWidth = true;
+
 	/**
 	 * 
 	 * @param theControlP5 ControlP5
@@ -67,7 +69,7 @@ public class Tab extends ControllerGroup<Tab> {
 		isEventActive = theControlP5.isTabEventsActive;
 		_myHeight = 16;
 		_myWidth = _myLabel.getWidth() + padding * 2;
-		_myLabel.align(LEFT, CENTER).setPadding(0,0);
+		_myLabel.align(LEFT, CENTER).setPadding(0, 0);
 	}
 
 	protected void setOffset(int theValueX, int theValueY) {
@@ -85,7 +87,9 @@ public class Tab extends ControllerGroup<Tab> {
 	}
 
 	protected void drawLabel(PApplet theApplet) {
-		_myWidth = _myLabel.getWidth() + padding*2;
+		if (autoWidth) {
+			_myWidth = _myLabel.getWidth() + padding * 2;
+		}
 		theApplet.pushMatrix();
 		theApplet.fill(isInside ? color.getForeground() : color.getBackground());
 		if (isActive) {
@@ -106,7 +110,6 @@ public class Tab extends ControllerGroup<Tab> {
 	 */
 	public Tab setLabel(String theLabel) {
 		_myLabel.set(theLabel);
-		setWidth(_myLabel.getWidth());
 		return this;
 	}
 
@@ -120,6 +123,7 @@ public class Tab extends ControllerGroup<Tab> {
 	 */
 	public Tab setWidth(int theWidth) {
 		_myWidth = theWidth + padding;
+		autoWidth = false;
 		return this;
 	}
 
@@ -163,11 +167,12 @@ public class Tab extends ControllerGroup<Tab> {
 		return isActive;
 	}
 
-	@Override 
+	@Override
 	public Tab bringToFront() {
 		_myControlWindow.activateTab(this);
 		return this;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */

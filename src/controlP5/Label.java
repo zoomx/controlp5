@@ -185,10 +185,6 @@ public class Label implements CDrawable {
 			theApplet.translate(_myControllerStyle.marginLeft, _myControllerStyle.marginTop);
 			theApplet.translate(theX, theY);
 			if (isColorBackground) {
-				int a = _myColorBackground >> 24 & 0xff;
-				int r = _myColorBackground >> 16 & 0xff;
-				int g = _myColorBackground >> 8 & 0xff;
-				int b = _myColorBackground >> 0 & 0xff;
 
 				float ww = getStyle().paddingRight + getStyle().paddingLeft;
 				if (getStyle().backgroundWidth > -1) {
@@ -202,7 +198,7 @@ public class Label implements CDrawable {
 				} else {
 					hh += _myFontLabel.getHeight();
 				}
-				theApplet.fill(r, g, b, a);
+				theApplet.fill(_myColorBackground);
 				theApplet.rect(0, 0, ww, hh);
 			}
 			theApplet.translate(_myControllerStyle.paddingLeft, _myControllerStyle.paddingTop);
@@ -313,7 +309,7 @@ public class Label implements CDrawable {
 			setLineHeight(BitFontRenderer.getHeight((ControlFont.BitFontLabel) theFont.get()));
 			_myFontLabel = new ControlFont(((ControlFont.BitFontLabel) theFont.get()).getFontIndex());
 		} else {
-			setLineHeight(((ControlFont.PFontLabel) theFont.get()).getFont().getSize());
+			setLineHeight(((ControlFont.PFontLabel) theFont.get()).getSize());
 			_myFontLabel = new ControlFont(((ControlFont.PFontLabel) theFont.get()).getFont());
 		}
 		_myFontLabel.init(this);

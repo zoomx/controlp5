@@ -8,7 +8,7 @@
  * find a list of public methods available for ControlEvent
  * at the bottom of this sketch's source code
  *
- * by Andreas Schlegel, 2011
+ * by Andreas Schlegel, 2012
  * www.sojamo.de/libraries/controlP5
  *
  */
@@ -24,10 +24,26 @@ public int myColorBackground = 100;
 
 void setup() {
   size(400, 400);
+  noStroke();
+  
   cp5 = new ControlP5(this);
-  cp5.addNumberbox("n1", myColorRect, 100, 160, 100, 14).setId(1);
-  cp5.addNumberbox("n2", myColorBackground, 100, 200, 100, 14).setId(2);
-  cp5.addTextfield("n3", 100, 240, 100, 20).setId(3);
+  cp5.addNumberbox("n1")
+     .setValue(myColorRect)
+     .setPosition(100, 160)
+     .setSize(100, 14)
+     .setId(1);
+     
+  cp5.addNumberbox("n2")
+     .setValue(myColorBackground)
+     .setPosition(100, 200)
+     .setSize(100, 14)
+     .setId(2);
+     
+  cp5.addTextfield("n3")
+     .setPosition(100, 240)
+     .setSize(100, 20)
+     .setId(3);
+     
 }
 
 void draw() {

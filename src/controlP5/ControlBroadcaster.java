@@ -258,11 +258,11 @@ public class ControlBroadcaster {
 
 	protected void callTarget(final ControllerPlug thePlug, final float theValue) {
 		if (thePlug.checkType(ControlP5Constants.METHOD)) {
+
 			invokeMethod(thePlug.getObject(), thePlug.getMethod(), thePlug.getMethodParameter(theValue));
 		} else if (thePlug.checkType(ControlP5Constants.FIELD)) {
 			invokeField(thePlug.getObject(), thePlug.getField(), thePlug.getFieldParameter(theValue));
 		}
-
 	}
 
 	protected void callTarget(final ControllerPlug thePlug, final String theValue) {
@@ -331,11 +331,11 @@ public class ControlBroadcaster {
 			}
 		}
 	}
-	
+
 	public static void ignoreErrorMessage(boolean theFlag) {
 		ignoreErrorMessage = theFlag;
 	}
-	
+
 	public static void setPrintStackTrace(boolean theFlag) {
 		setPrintStackTrace = theFlag;
 	}

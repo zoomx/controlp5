@@ -65,12 +65,17 @@ public class ControlP5 extends ControlP5Base {
 	@ControlP5.Invisible
 	public ControlWindow controlWindow;
 
+	public final static CColor RETRO = new CColor(0xff00698c, 0xff003652, 0xff08a2cf, 0xffffffff, 0xffffffff);
+	public final static CColor CP5BLUE = new CColor(0xff016c9e, 0xff02344d, 0xff00b4ea, 0xffffffff, 0xffffffff);
+	public final static CColor RED = new CColor(0xffaa0000, 0xff660000, 0xffff0000, 0xffffffff, 0xffffffff);
+	public final static CColor WHITE = new CColor(0x99ffffff, 0x55ffffff, 0xffffffff, 0xffffffff, 0xffffffff);
+
 	/**
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public CColor color = new CColor();
-
+	static CColor color = new CColor(CP5BLUE);
+	
 	/**
 	 * @exclude
 	 */
@@ -87,7 +92,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.7.0";// "##version##";
+	public static final String VERSION = "0.7.1";// "##version##";
 
 	/**
 	 * @exclude
@@ -699,8 +704,8 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * convenience method to check if the mouse (or pointer) is hovering over any controller.
-	 * only applies to the main window. To receive the mouseover information for a ControlWindow use
+	 * convenience method to check if the mouse (or pointer) is hovering over any controller. only
+	 * applies to the main window. To receive the mouseover information for a ControlWindow use
 	 * getWindow(nameOfWindow).isMouseOver();
 	 */
 	public boolean isMouseOver() {
@@ -715,7 +720,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean isMouseOver(ControllerInterface<?> theController) {
 		return getWindow(papplet).isMouseOver(theController);
 	}
-	
+
 	/**
 	 * convenience method to check if the mouse (or pointer) is hovering over a specific controller.
 	 * only applies to the main window. To receive the mouseover information for a ControlWindow use
@@ -754,6 +759,21 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+	
+	public ControlP5 setColor(CColor theColor) {
+		setColorBackground(theColor.getBackground());
+		setColorForeground(theColor.getForeground());
+		setColorActive(theColor.getActive());
+		setColorCaptionLabel(theColor.getCaptionLabel());
+		setColorValueLabel(theColor.getValueLabel());
+		return this;
+	}
+
+	public static CColor getColor() {
+		return color;
+	}
+
+	
 	/**
 	 * sets the active state color of tabs and controllers, this cascades down to all known
 	 * controllers.
@@ -796,7 +816,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * sets the label color of tabs and controllers, this cascades down to all known controllers.
 	 */
-	public ControlP5 setColorLabel(int theColor) {
+	public ControlP5 setColorCaptionLabel(int theColor) {
 		color.setCaptionLabel(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
@@ -804,11 +824,12 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return this;
 	}
+	
 
 	/**
 	 * sets the value color of controllers, this cascades down to all known controllers.
 	 */
-	public ControlP5 setColorValue(int theColor) {
+	public ControlP5 setColorValueLabel(int theColor) {
 		color.setValueLabel(theColor);
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
 			ControlWindow myControlWindow = e.nextElement();
@@ -816,6 +837,8 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return this;
 	}
+	
+	
 
 	protected Vector<ControlWindow> getControlWindows() {
 		return controlWindowList;
@@ -874,8 +897,8 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	/**
-	 * Loads properties from a properties file and changes the values of controllers accordingly, the
-	 * filepath is given by parameter theFilePath.
+	 * Loads properties from a properties file and changes the values of controllers accordingly,
+	 * the filepath is given by parameter theFilePath.
 	 * 
 	 * @param theFilePath
 	 * @return
@@ -886,7 +909,7 @@ public class ControlP5 extends ControlP5Base {
 		if (f.exists()) {
 			return _myProperties.load(theFilePath);
 		}
-		theFilePath = checkPropertiesPath(theFilePath+".ser");
+		theFilePath = checkPropertiesPath(theFilePath + ".ser");
 		f = new File(theFilePath);
 		if (f.exists()) {
 			return _myProperties.load(theFilePath);
@@ -1071,15 +1094,14 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * cp5.begin() and cp5.end() are mechanisms to auto-layout controllers, see the
-	 * ControlP5beginEnd example. 
+	 * ControlP5beginEnd example.
 	 */
 	public ControllerGroup<?> begin() {
 		// TODO replace controlWindow.tab("default") with
 		// controlWindow.tabs().get(1);
 		return begin(controlWindow.getTab("default"));
 	}
-	
-	
+
 	public ControllerGroup<?> begin(ControllerGroup<?> theGroup) {
 		setCurrentPointer(theGroup);
 		return theGroup;
@@ -1114,7 +1136,7 @@ public class ControlP5 extends ControlP5Base {
 
 	/**
 	 * cp5.begin() and cp5.end() are mechanisms to auto-layout controllers, see the
-	 * ControlP5beginEnd example. 
+	 * ControlP5beginEnd example.
 	 */
 	public ControllerGroup<?> end() {
 		return end(controlWindow.getTab("default"));
@@ -1387,7 +1409,26 @@ public class ControlP5 extends ControlP5Base {
 		_myControllerMap.values().toArray(myControllerList);
 		return myControllerList;
 	}
-
+	
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public ControlP5 setColorLabel(int theColor) {
+		return setColorCaptionLabel(theColor);
+	}
+	
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated
+	public ControlP5 setColorValue(int theColor) {
+		return setColorValueLabel(theColor);
+	}
+	
 }
 
 // new controllers

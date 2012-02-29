@@ -371,7 +371,7 @@ public class ControlFont {
 		
 		@Override
 		public int getSize() {
-			return pfont.getSize();
+			return pfont.getFont().getSize();
 		}
 
 		@Override

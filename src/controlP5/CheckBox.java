@@ -1,5 +1,7 @@
 package controlP5;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,9 @@ import processing.core.PImage;
  */
 public class CheckBox extends ControlGroup<CheckBox>{
 
+	
+	private Object _myPlug;
+	
 	/**
 	 * A CheckBox should only be added to controlP5 by using controlP5.addCheckBox()
 	 * 
@@ -58,6 +63,7 @@ public class CheckBox extends ControlGroup<CheckBox>{
 		_myRadioToggles = new ArrayList<Toggle>();
 		setItemsPerRow(1);
 		isMultipleChoice = true;
+		_myPlug = cp5.papplet;
 	}
 
 	public final CheckBox activateAll() {
@@ -500,8 +506,28 @@ public class CheckBox extends ControlGroup<CheckBox>{
 				}
 			}
 		}
+		try {
+            Method method = _myPlug.getClass().getMethod(getName(),int.class);
+            method.invoke(_myPlug, (int)_myValue);
+        } catch (SecurityException ex) {
+            ex.printStackTrace();
+        } catch (NoSuchMethodException ex) {
+            ex.printStackTrace();
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        } catch (InvocationTargetException ex) {
+            ex.printStackTrace();
+        }
 		updateValues(true);
 	}
+	
+	public CheckBox plugTo(Object theObject) {
+		_myPlug = theObject;
+		return this;
+	}
+
 
 	protected void updateValues(boolean theBroadcastFlag) {
 		int n = _myRadioToggles.size();

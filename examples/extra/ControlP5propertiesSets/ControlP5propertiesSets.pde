@@ -31,7 +31,7 @@ public int slider4 = 255;
 
 
 void setup() {
-  size(400, 400);
+  size(400, 600);
   cp5 = new ControlP5(this);
   ControlP5.printPublicMethodsFor(ControllerProperties.class);
   // add a vertical slider

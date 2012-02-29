@@ -11,7 +11,7 @@
  * find a list of public methods available for the CallbackEvent Controller
  * at the bottom of this sketch.
  *
- * by Andreas Schlegel, 2011
+ * by Andreas Schlegel, 2012
  * www.sojamo.de/libraries/controlp5
  *
  */
@@ -28,14 +28,25 @@ void setup() {
 
   cp5 = new ControlP5(this);
 
-  // add 2 sliders
-  s1 = cp5.addSlider("hello", 0, 100, 50, 10, 10, 100, 10);
-  s2 = cp5.addSlider("hello2", 0, 100, 50, 10, 40, 100, 10);
-
+  
   // create a new instance of class Info
   // info will be used to display a controller's information and
   // will fade in when a CallbackEvent is invoked.
   info = new Info();
+
+
+  // add 2 sliders
+  s1 = cp5.addSlider("hello")
+          .setRange(0, 100)
+          .setValue(50)
+          .setPosition(40, 40)
+          .setSize(100, 20);
+          
+  s2 = cp5.addSlider("world")
+          .setRange(0, 100)
+          .setValue(10)
+          .setPosition(40, 70)
+          .setSize(100, 20);
 
 
   // the following CallbackListener will listen to any controlP5 
@@ -65,8 +76,8 @@ void setup() {
   // add another callback to slider s1, callback event will only be invoked for this 
   // particular controller.
   s1.addCallback(new CallbackListener() {
-    public void controlEvent(CallbackEvent e) {
-      if (e.getAction()==ControlP5.ACTION_BROADCAST) {
+    public void controlEvent(CallbackEvent theEvent) {
+      if (theEvent.getAction()==ControlP5.ACTION_BROADCAST) {
         s2.setValue(s2.getMax() - s1.getValue());
       }
     }
@@ -76,12 +87,13 @@ void setup() {
 
 void draw() {
   background(0);
-  info.display();
+  info.update();
 }
 
 
 void controlEvent(ControlEvent theEvent) {
   println("Got a ControlEvent for "+theEvent.name()+" = "+theEvent.value());
+  info.label.setText(theEvent.getController().getInfo());
 }
 
 void keyPressed() {
@@ -124,21 +136,20 @@ class Info {
   float a;
   float n = 0;
   String txt = "";
-  Textlabel label;
+  Textarea label;
+  
   Info() {
-    label = cp5.getTextlabel("Hello\nWorld", 10, 10);
-    label.setFont(ControlP5.standard56);
-    label.setColor(color(0)).setMultiline(true);
+    label = cp5.addTextarea("Hello\nWorld")
+               .setSize(200,200)
+               .setPosition(300,40)
+               .setFont(ControlP5.standard56)
+               .setColor(color(255))
+               .setColorBackground(color(100,0));
   }
-  void display() {
+  
+  void update() {
     a += (n-a)*0.1;
-    fill(255, a*255);
-    pushMatrix();
-    translate(200, 10);
-    fill(255, a*255);
-    rect(0, 0, label.get().getWidth(), label.get().getHeight()+10);
-    label.draw();
-    popMatrix();
+    label.setColorBackground(color(100,255*a));
   }
 }
 

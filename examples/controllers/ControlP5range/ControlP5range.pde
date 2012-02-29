@@ -29,7 +29,7 @@ void setup() {
              // disable boradcasting since setRange and setRangeValues will trigger an event
              .setBroadcast(false) 
              .setPosition(50,50)
-             .setSize(400,100)
+             .setSize(400,40)
              .setHandleSize(20)
              .setRange(0,255)
              .setRangeValues(50,100)

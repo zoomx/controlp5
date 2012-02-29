@@ -26,6 +26,7 @@ package controlP5;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ import java.util.List;
  * @see controlP5.ControlGroup
  * @example controllers/ControlP5accordion
  */
-public class Accordion extends ControlGroup<Accordion>  {
+public class Accordion extends ControlGroup<Accordion> {
 
 	private final List<ControlGroup<?>> items = new ArrayList<ControlGroup<?>>();
 
@@ -47,6 +48,8 @@ public class Accordion extends ControlGroup<Accordion>  {
 	private int minHeight = 100;
 
 	private int itemheight;
+
+	private int _myMode = SINGLE;
 
 	Accordion(ControlP5 theControlP5, Tab theTab, String theName, int theX, int theY, int theW) {
 		super(theControlP5, theTab, theName, theX, theY, theW, 9);
@@ -184,12 +187,67 @@ public class Accordion extends ControlGroup<Accordion>  {
 			for (ControlGroup<?> cg : items) {
 				n += cg.getBarHeight() + spacing;
 				cg.setPosition(0, n);
-				if (cg == theEvent.getGroup() && cg.isOpen()) {
-					n += cg.getBackgroundHeight();
+				if (_myMode == SINGLE) {
+					if (cg == theEvent.getGroup() && cg.isOpen()) {
+						n += cg.getBackgroundHeight();
+					} else {
+						cg.close();
+					}
 				} else {
-					cg.close();
+					if (cg.isOpen()) {
+						n += cg.getBackgroundHeight();
+					}
 				}
 			}
+		}
+	}
+
+	public void open(int... theId) {
+		int n = 0, i = 0;
+		for (ControlGroup<?> cg : items) {
+			boolean a = false;
+			for (int j = 0; j < theId.length; j++) {
+				if (theId[j] == i) {
+					a = true;
+				}
+			}
+			boolean b = cg.isOpen() || a ? true : false;
+			i++;
+			n += cg.getBarHeight() + spacing;
+			cg.setPosition(0, n);
+			if (b) {
+				n += cg.getBackgroundHeight();
+				cg.open();
+			}
+		}
+	}
+
+	public void close(int... theId) {
+		int n = 0, i = 0;
+		for (ControlGroup<?> cg : items) {
+			boolean a = false;
+			for (int j = 0; j < theId.length; j++) {
+				if (theId[j] == i) {
+					a = true;
+				}
+			}
+			boolean b = !cg.isOpen() || a ? true : false;
+			i++;
+			n += cg.getBarHeight() + spacing;
+			cg.setPosition(0, n);
+			if (b) {
+				cg.close();
+			} else {
+				n += cg.getBackgroundHeight();
+			}
+		}
+	}
+
+	public void setCollapseMode(int theMode) {
+		if (theMode == 0) {
+			_myMode = SINGLE;
+		} else {
+			_myMode = ALL;
 		}
 	}
 }

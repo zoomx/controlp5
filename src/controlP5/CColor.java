@@ -63,7 +63,7 @@ public class CColor implements Serializable {
 
 	int maskB = 0xffffff00;
 
-	protected void set(CColor theColor) {
+	protected CColor set(CColor theColor) {
 		colorBackground = theColor.colorBackground;
 		colorForeground = theColor.colorForeground;
 		colorActive = theColor.colorActive;
@@ -74,13 +74,15 @@ public class CColor implements Serializable {
 		colorActiveAlpha = theColor.colorActiveAlpha;
 		colorCaptionLabelAlpha = theColor.colorCaptionLabelAlpha;
 		colorValueLabelAlpha = theColor.colorValueLabelAlpha;
+		return this;
 	}
 
-	protected void copyTo(ControllerInterface<?> theControl) {
+	protected CColor copyTo(ControllerInterface<?> theControl) {
 		theControl.setColorBackground(colorBackground);
 		theControl.setColorForeground(colorForeground);
 		theControl.setColorActive(colorActive);
 		theControl.setColorLabel(colorCaptionLabel);
+		return this;
 	}
 
 	/**
@@ -117,6 +119,15 @@ public class CColor implements Serializable {
 	}
 
 	public CColor() {
+		set(ControlP5.getColor());
+	}
+	
+	public CColor(int cfg, int cbg, int cactive, int ccl, int cvl) {
+		setForeground(cfg);
+		setBackground(cbg);
+		setActive(cactive);
+		setCaptionLabel(ccl);
+		setValueLabel(cvl);
 	}
 
 	public CColor(CColor theColor) {
@@ -127,39 +138,44 @@ public class CColor implements Serializable {
 	 * @exclude
 	 * @param theAlpha
 	 */
-	public void setAlpha(int theAlpha) {
+	public CColor setAlpha(int theAlpha) {
 		alpha = theAlpha;
 		colorBackground = (colorBackground & maskA) | (int) (colorBackgroundAlpha * (alpha / 255.0f)) << 24;
 		colorForeground = (colorForeground & maskA) | (int) (colorForegroundAlpha * (alpha / 255.0f)) << 24;
 		colorActive = (colorActive & maskA) | (int) (colorActiveAlpha * (alpha / 255.0f)) << 24;
 		colorCaptionLabel = (colorCaptionLabel & maskA) | (int) (colorCaptionLabelAlpha * (alpha / 255.0f)) << 24;
 		colorValueLabel = (colorValueLabel & maskA) | (int) (colorValueLabel * (alpha / 255.0f)) << 24;
+		return this;
 	}
 
-	public void setForeground(int theColor) {
+	public CColor setForeground(int theColor) {
 		colorForegroundAlpha = theColor >> 24 & 0xff;
 		colorForeground = (theColor & maskA) | (colorForegroundAlpha & alpha) << 24;
+		return this;
 	}
 
-	public void setBackground(int theColor) {
+	public CColor setBackground(int theColor) {
 		colorBackgroundAlpha = theColor >> 24 & 0xff;
 		colorBackground = (theColor & maskA) | (colorBackgroundAlpha & alpha) << 24;
-		;
+		return this;
 	}
 
-	public void setActive(int theColor) {
+	public CColor setActive(int theColor) {
 		colorActiveAlpha = theColor >> 24 & 0xff;
 		colorActive = (theColor & maskA) | (colorActiveAlpha & alpha) << 24;
+		return this;
 	}
 
-	public void setCaptionLabel(int theColor) {
+	public CColor setCaptionLabel(int theColor) {
 		colorCaptionLabelAlpha = theColor >> 24 & 0xff;
 		colorCaptionLabel = (theColor & maskA) | (colorCaptionLabelAlpha & alpha) << 24;
+		return this;
 	}
 
-	public void setValueLabel(int theColor) {
+	public CColor setValueLabel(int theColor) {
 		colorValueLabelAlpha = theColor >> 24 & 0xff;
 		colorValueLabel = (theColor & maskA) | (colorValueLabelAlpha & alpha) << 24;
+		return this;
 	}
 
 	public int getAlpha() {

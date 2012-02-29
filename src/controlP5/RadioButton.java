@@ -25,6 +25,8 @@ package controlP5;
  *
  */
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +68,11 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	protected PImage[] images = new PImage[3];
 
 	protected boolean noneSelectedAllowed = true;
-
+	
+	private Object _myPlug;
+	
+	private String _myPlugName;
+	
 	/**
 	 * @exclude
 	 * @param theControlP5
@@ -81,6 +87,8 @@ public class RadioButton extends ControlGroup<RadioButton> {
 		isCollapse = false;
 		_myRadioToggles = new ArrayList<Toggle>();
 		setItemsPerRow(1);
+		_myPlug = cp5.papplet;
+		_myPlugName = getName();
 	}
 
 	/**
@@ -220,6 +228,15 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	 */
 	public Toggle getItem(int theIndex) {
 		return _myRadioToggles.get(theIndex);
+	}
+	
+	public Toggle getItem(String theName) {
+		for (Toggle t: _myRadioToggles) {
+			if (theName.equals(t.getName())) {
+				return t;
+			}
+		}
+		return null;
 	}
 	
 	public List<Toggle> getItems() {
@@ -456,9 +473,37 @@ public class RadioButton extends ControlGroup<RadioButton> {
 				}
 			}
 		}
+		try {
+            Method method = _myPlug.getClass().getMethod(_myPlugName,int.class);
+            method.setAccessible(true);
+            method.invoke(_myPlug, (int)_myValue);
+        } catch (SecurityException ex) {
+            ex.printStackTrace();
+        } catch (NoSuchMethodException ex) {
+            ex.printStackTrace();
+        } catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        } catch (InvocationTargetException ex) {
+            ex.printStackTrace();
+        }
 		updateValues(true);
 	}
 
+	
+	public RadioButton plugTo(Object theObject) {
+		_myPlug = theObject;
+		return this;
+	}
+	
+	public RadioButton plugTo(Object theObject,String thePlugName) {
+		_myPlug = theObject;
+		_myPlugName = thePlugName;
+		return this;
+	}
+
+	
 	protected void updateValues(boolean theBroadcastFlag) {
 		int n = _myRadioToggles.size();
 		_myArrayValue = new float[n];
@@ -470,6 +515,7 @@ public class RadioButton extends ControlGroup<RadioButton> {
 			ControlEvent myEvent = new ControlEvent(this);
 			cp5.getControlBroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
 		}
+		
 	}
 
 	/**

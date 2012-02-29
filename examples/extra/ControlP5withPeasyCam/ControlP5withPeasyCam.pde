@@ -9,7 +9,7 @@ import controlP5.*;
 import processing.opengl.*;
 
 PeasyCam cam;
-ControlP5 controlP5;
+ControlP5 cp5;
 
 int buttonValue = 1;
 
@@ -18,10 +18,10 @@ int myColor = color(255, 0, 0);
 void setup() {
   size(400, 400, OPENGL);
   cam = new PeasyCam(this, 100);
-  controlP5 = new ControlP5(this);
-  controlP5.addButton("button", 10, 100, 60, 80, 20).setId(1);
-  controlP5.addButton("buttonValue", 4, 100, 90, 80, 20).setId(2);
-  controlP5.setAutoDraw(false);
+  cp5 = new ControlP5(this);
+  cp5.addButton("button", 10, 100, 60, 80, 20).setId(1);
+  cp5.addButton("buttonValue", 4, 100, 90, 80, 20).setId(2);
+  cp5.setAutoDraw(false);
 }
 void draw() {
 
@@ -40,12 +40,12 @@ void draw() {
 
 void gui() {
   cam.beginHUD();
-  controlP5.draw();
+  cp5.draw();
   cam.endHUD();
 }
 
 void controlEvent(ControlEvent theEvent) {
-  println(theEvent.controller().id());
+  println(theEvent.getController().getId());
 }
 
 void button(float theValue) {

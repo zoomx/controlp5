@@ -18,11 +18,11 @@ ControlP5 cp5;
 ColorPicker cp;
 
 void setup() {
-  size(700,400);
+  size(400,600);
   noStroke();
   cp5 = new ControlP5(this);
   cp = cp5.addColorPicker("picker")
-          .setPosition(200,160)
+          .setPosition(60,100)
           .setColorValue(color(255,128,0,128))
           ;
 }
@@ -30,7 +30,7 @@ void setup() {
 void draw() {
   background(cp.getColorValue());
   fill(0,80);
-  rect(190,150,275,80);
+  rect(50,90,275,80);
 }
 
 void keyPressed() {
