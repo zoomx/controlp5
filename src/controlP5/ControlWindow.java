@@ -31,6 +31,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -47,7 +49,7 @@ import processing.core.PVector;
  * 
  * @example controllers/ControlP5window
  */
-public class ControlWindow implements MouseWheelListener {
+public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 
 	protected ControlP5 controlP5;
 
@@ -95,8 +97,6 @@ public class ControlWindow implements MouseWheelListener {
 
 	protected List<ControlWindowCanvas> _myControlWindowCanvas;
 
-	protected List<ControlWindowCanvas> _myControlCanvas;
-
 	private List<ControllerInterface<?>> mouseoverlist;
 
 	private boolean isMouseOver;
@@ -134,6 +134,7 @@ public class ControlWindow implements MouseWheelListener {
 		_myApplet = theApplet;
 		_myApplet.registerMouseEvent(this);
 		_myApplet.addMouseWheelListener(this);
+		_myApplet.frame.addWindowFocusListener(this);
 		isAutoDraw = true;
 		init();
 	}
@@ -146,7 +147,6 @@ public class ControlWindow implements MouseWheelListener {
 
 		_myTabs = new ControllerList();
 		_myControlWindowCanvas = new ArrayList<ControlWindowCanvas>();
-		_myControlCanvas = new ArrayList<ControlWindowCanvas>();
 
 		// TODO next section conflicts with Android
 		if (_myApplet instanceof PAppletWindow) {
@@ -193,6 +193,15 @@ public class ControlWindow implements MouseWheelListener {
 			}
 		}
 		isInit = true;
+	}
+
+	@Override
+	public void windowGainedFocus(WindowEvent e) {
+	}
+
+	@Override
+	public void windowLostFocus(WindowEvent e) {
+		controlP5.keyHandler.clear();
 	}
 
 	public Tab getCurrentTab() {
@@ -662,9 +671,9 @@ public class ControlWindow implements MouseWheelListener {
 						((Numberbox) c).scrolled(mouseWheelMoved);
 					} else if (c instanceof ListBox) {
 						((ListBox) c).scrolled(mouseWheelMoved);
-					}  else if (c instanceof DropdownList) {
+					} else if (c instanceof DropdownList) {
 						((DropdownList) c).scrolled(mouseWheelMoved);
-					}else if (c instanceof Textarea) {
+					} else if (c instanceof Textarea) {
 						((Textarea) c).scrolled(mouseWheelMoved);
 					}
 					break;
@@ -938,7 +947,7 @@ public class ControlWindow implements MouseWheelListener {
 	public ControlWindow setPosition(int theX, int theY) {
 		return setLocation(theX, theY);
 	}
-	
+
 	public ControlWindow setLocation(int theX, int theY) {
 		_myApplet.frame.setLocation(theX, theY);
 		return this;
@@ -969,7 +978,6 @@ public class ControlWindow implements MouseWheelListener {
 	 */
 	public class Pointer {
 
-
 		public Pointer setX(int theX) {
 			mouseX = theX;
 			return this;
@@ -987,7 +995,7 @@ public class ControlWindow implements MouseWheelListener {
 		public int getX() {
 			return mouseX;
 		}
-		
+
 		public int getPreviousX() {
 			return pmouseX;
 		}
@@ -996,7 +1004,6 @@ public class ControlWindow implements MouseWheelListener {
 			return pmouseY;
 		}
 
-		
 		public Pointer set(int theX, int theY) {
 			setX(theX);
 			setY(theY);

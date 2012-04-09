@@ -44,7 +44,7 @@ public class Slider2D extends Controller<Slider2D> {
 	@ControlP5.Invisible
 	public Slider2D updateInternalEvents(PApplet theApplet) {
 		if (isInside()) {
-			if (!cp5.keyHandler.isAltDown) {
+			if (!cp5.keyHandler.isAltDown()) {
 				float tX = PApplet.constrain(_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x), 0, width - cursorWidth);
 				float tY = PApplet.constrain(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y), 0, height - cursorHeight);
 				if (isMousePressed) {

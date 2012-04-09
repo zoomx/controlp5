@@ -428,7 +428,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		}
 		if (isVisible) {
 			if ((isMousePressed == _myControlWindow.mouselock)) {
-				if (isMousePressed && cp5.keyHandler.isAltDown && isMoveable) {
+				if (isMousePressed && cp5.keyHandler.isAltDown() && isMoveable) {
 					if (!cp5.isMoveable) {
 						positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
 						positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;

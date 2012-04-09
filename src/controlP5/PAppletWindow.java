@@ -25,18 +25,20 @@ package controlP5;
  *
  */
 
-import processing.core.PApplet;
-import java.awt.event.WindowEvent;
-import java.awt.Frame;
 import java.awt.Color;
-import java.awt.event.WindowListener;
-import java.awt.Insets;
-import java.awt.event.ComponentListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowListener;
+
+import processing.core.PApplet;
 
 /**
  * The PAppletWindow class is used when creating separate ControlWindows to draw
@@ -356,7 +358,8 @@ class PAppletWindow extends PApplet implements WindowListener, ComponentListener
 		// System.out.println("componentShown event from " +
 		// e.getComponent().getClass().getName());
 	}
-
+	 
+    
 	/**
 	 * set the rendering mode of the PAppletWindow which can either be
 	 * ControlP5.ECONOMIC or ControlP5.NORMAL.

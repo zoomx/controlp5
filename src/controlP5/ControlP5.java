@@ -75,7 +75,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	@ControlP5.Invisible
 	static CColor color = new CColor(CP5BLUE);
-	
+
 	/**
 	 * @exclude
 	 */
@@ -92,7 +92,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.7.1";// "##version##";
+	public static final String VERSION = "0.7.2";// "##version##";
 
 	/**
 	 * @exclude
@@ -143,7 +143,13 @@ public class ControlP5 extends ControlP5Base {
 
 	protected static int bitFont = standard58;
 
-	protected boolean isShortcuts = true;
+	/**
+	 * from version 0.7.2 onwards shortcuts are disabled by default. shortcuts can be enabled using
+	 * controlP5.enableShortcuts();
+	 * 
+	 * @see #enableShortcuts()
+	 */
+	protected boolean isShortcuts = false;
 
 	/*
 	 * use blockDraw to prevent controlp5 from drawing any elements. this is useful when using
@@ -188,6 +194,29 @@ public class ControlP5 extends ControlP5Base {
 			welcome();
 		}
 		addControllersFor("", papplet);
+		mapKeyFor(new ControlKey() {
+			public void keyEvent() {
+				saveProperties();
+			}
+		}, PApplet.ALT, PApplet.SHIFT, 's');
+		
+		mapKeyFor(new ControlKey() {
+			public void keyEvent() {
+				loadProperties();
+			}
+		}, PApplet.ALT, PApplet.SHIFT, 'l');
+		
+		mapKeyFor(new ControlKey() {
+			public void keyEvent() {
+				if (controlWindow.isVisible) {
+					hide();
+				} else {
+					show();
+				}
+			}
+		}, PApplet.ALT, PApplet.SHIFT, 'h');
+		
+		
 	}
 
 	static int welcome = 0;
@@ -759,7 +788,6 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
-	
 	public ControlP5 setColor(CColor theColor) {
 		setColorBackground(theColor.getBackground());
 		setColorForeground(theColor.getForeground());
@@ -773,7 +801,6 @@ public class ControlP5 extends ControlP5Base {
 		return color;
 	}
 
-	
 	/**
 	 * sets the active state color of tabs and controllers, this cascades down to all known
 	 * controllers.
@@ -824,7 +851,6 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return this;
 	}
-	
 
 	/**
 	 * sets the value color of controllers, this cascades down to all known controllers.
@@ -837,8 +863,6 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return this;
 	}
-	
-	
 
 	protected Vector<ControlWindow> getControlWindows() {
 		return controlWindowList;
@@ -1075,6 +1099,10 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public void disableShortcuts() {
 		isShortcuts = false;
+	}
+
+	public boolean isShortcuts() {
+		return isShortcuts;
 	}
 
 	/**
@@ -1409,8 +1437,7 @@ public class ControlP5 extends ControlP5Base {
 		_myControllerMap.values().toArray(myControllerList);
 		return myControllerList;
 	}
-	
-	
+
 	/**
 	 * @exclude
 	 * @deprecated
@@ -1419,7 +1446,7 @@ public class ControlP5 extends ControlP5Base {
 	public ControlP5 setColorLabel(int theColor) {
 		return setColorCaptionLabel(theColor);
 	}
-	
+
 	/**
 	 * @exclude
 	 * @deprecated
@@ -1428,7 +1455,7 @@ public class ControlP5 extends ControlP5Base {
 	public ControlP5 setColorValue(int theColor) {
 		return setColorValueLabel(theColor);
 	}
-	
+
 }
 
 // new controllers

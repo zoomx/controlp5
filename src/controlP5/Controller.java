@@ -513,7 +513,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public final T updateEvents() {
 
 		if (isVisible && (isMousePressed == _myControlWindow.mouselock)) {
-			if (isMousePressed && cp5.keyHandler.isAltDown && isMoveable) {
+			if (isMousePressed && cp5.keyHandler.isAltDown() && isMoveable) {
 				if (!cp5.isMoveable) {
 					positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
 					positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
@@ -1010,7 +1010,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		if (theStatus == true) {
 			if (isInside) {
 				isMousePressed = true;
-				if (!cp5.keyHandler.isAltDown) {
+				if (!cp5.keyHandler.isAltDown()) {
 					mousePressed();
 					cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_PRESSED));
 				}
@@ -1019,7 +1019,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		} else {
 			if (isMousePressed == true && inside()) {
 				isMousePressed = false;
-				if (!cp5.keyHandler.isAltDown) {
+				if (!cp5.keyHandler.isAltDown()) {
 					mouseReleased();
 					cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_RELEASED));
 				}
