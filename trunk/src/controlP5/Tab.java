@@ -44,6 +44,8 @@ public class Tab extends ControllerGroup<Tab> {
 
 	protected boolean isActive = false;
 
+	private boolean isAlwaysActive = false;
+
 	protected boolean isEventActive = false;
 
 	protected float _myValue = 0;
@@ -158,13 +160,22 @@ public class Tab extends ControllerGroup<Tab> {
 		return this;
 	}
 
+	public Tab setAlwaysActive(boolean theFlag) {
+		isAlwaysActive = theFlag;
+		return this;
+	}
+
 	/**
 	 * checks if a tab is active.
 	 * 
 	 * @return boolean
 	 */
-	protected boolean isActive() {
-		return isActive;
+	public boolean isActive() {
+		return isAlwaysActive ? true : isActive;
+	}
+
+	public boolean isAlwaysActive() {
+		return isAlwaysActive;
 	}
 
 	@Override

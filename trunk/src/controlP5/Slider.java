@@ -176,7 +176,7 @@ public class Slider extends Controller<Slider> {
 	@ControlP5.Invisible
 	public Slider updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
-			if (isMousePressed && !cp5.keyHandler.isAltDown) {
+			if (isMousePressed && !cp5.keyHandler.isAltDown()) {
 				_myView.updateInternalEvents(theApplet);
 			}
 		}

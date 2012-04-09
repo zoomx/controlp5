@@ -491,7 +491,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 			float step = (1.0f / (float) items.size());
 			if (cp5.keyHandler.isShiftDown) {
 				step *= 10;
-			} else if (cp5.keyHandler.isAltDown) {
+			} else if (cp5.keyHandler.isAltDown()) {
 				step = 1;
 			}
 			if (theEvent.getID() == KeyEvent.KEY_PRESSED) {

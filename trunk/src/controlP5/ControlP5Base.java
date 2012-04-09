@@ -43,7 +43,6 @@ import processing.core.PVector;
  */
 public class ControlP5Base implements ControlP5Constants {
 
-	
 	private ControlP5 cp5;
 
 	ControllerProperties _myProperties;
@@ -143,7 +142,7 @@ public class ControlP5Base implements ControlP5Constants {
 	 * Matrix is a 2-D matrix controller using toggle controllers in a rows and a columns setup.
 	 * useful for software drum machines.
 	 */
-	
+
 	public Matrix addMatrix(final Object theObject, final String theIndex, final String theName, final int theCellX, final int theCellY, final int theX, final int theY, final int theWidth, final int theHeight) {
 		Matrix myController = new Matrix(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theCellX, theCellY, theX, theY, theWidth, theHeight);
 		cp5.register(theObject, theIndex, myController);
@@ -154,7 +153,7 @@ public class ControlP5Base implements ControlP5Constants {
 	public Matrix addMatrix(final String theName) {
 		return addMatrix(theName, 10, 10, 0, 0, 100, 100);
 	}
-	
+
 	public Matrix addMatrix(final String theName, final int theCellX, final int theCellY, final int theX, final int theY, final int theWidth, final int theHeight) {
 		return addMatrix(null, "", theName, theCellX, theCellY, theX, theY, theWidth, theHeight);
 	}
@@ -303,11 +302,10 @@ public class ControlP5Base implements ControlP5Constants {
 		return addMultiList(null, "", theName, theX, theY, theWidth, theHeight);
 	}
 
-	
 	public Textlabel addTextlabel(final String theName) {
-		return addTextlabel(theName,"",0,0);
+		return addTextlabel(theName, "", 0, 0);
 	}
-	
+
 	public Textlabel addTextlabel(final Object theObject, final String theIndex, final String theName, final String theText, final int theX, final int theY) {
 		Textlabel myController = new Textlabel(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, theText, theX, theY);
 		cp5.register(theObject, theIndex, myController);
@@ -326,11 +324,11 @@ public class ControlP5Base implements ControlP5Constants {
 	public Textlabel addTextlabel(final String theName, final String theText) {
 		return addTextlabel(null, "", theName, theText, 0, 0);
 	}
-	
-	
+
 	public Textarea addTextarea(final String theName) {
-		return addTextarea(theName, "", 0,0,199,99);
+		return addTextarea(theName, "", 0, 0, 199, 99);
 	}
+
 	/**
 	 * A Textarea is a label without any controller functionality and can be used to leave notes,
 	 * headlines, etc when extending the dedicated area of the Textrea, a scrollbar is added on the
@@ -393,8 +391,7 @@ public class ControlP5Base implements ControlP5Constants {
 		myController.registerProperty("arrayValue");
 		return myController;
 	}
-	
-	
+
 	/**
 	 * Use radio buttons for multiple choice options.
 	 */
@@ -409,8 +406,6 @@ public class ControlP5Base implements ControlP5Constants {
 		return myController;
 	}
 
-	
-	
 	// TODO
 	// addRadioButton theObject
 
@@ -465,9 +460,9 @@ public class ControlP5Base implements ControlP5Constants {
 	// addDropdownList theObject
 
 	public ColorPicker addColorPicker(final String theName) {
-		return addColorPicker(theName, 0,0, 255, 20);
+		return addColorPicker(theName, 0, 0, 255, 20);
 	}
-			
+
 	/**
 	 * adds a simple RGBA colorpicker.
 	 */
@@ -900,8 +895,7 @@ public class ControlP5Base implements ControlP5Constants {
 		}
 		return this;
 	}
-	
-	
+
 	public ControlP5Base setColor(CColor theColor, Object theObject) {
 		if (_myObjectToControllerMap.containsKey(theObject)) {
 			ArrayList<ControllerInterface<?>> cs = _myObjectToControllerMap.get(theObject);
@@ -1031,11 +1025,32 @@ public class ControlP5Base implements ControlP5Constants {
 		}
 		return s;
 	}
+
+	public ControlP5 mapKeyFor(ControlKey theKey, int... theChar) {
+		char[] n = fromIntToChar(theChar);
+		cp5.keyHandler.mapKeyFor(theKey, n);
+		cp5.enableShortcuts();
+		return cp5;
+	}
 	
+	private char[] fromIntToChar(int ...theChar) {
+		char[] n = new char[theChar.length];
+		for (int i = 0; i < n.length; i++) {
+			if (theChar[i] >= 'a' && theChar[i] <= 'z') {
+				theChar[i] -= 32;
+			}
+			n[i] = (char) theChar[i];
+		}
+		return n;
+	} 
 	
+	public ControlP5 removeKeyFor(ControlKey theKey, int ...theChar) {
+		cp5.keyHandler.removeKeyFor(theKey, fromIntToChar(theChar));
+		return cp5;
+	}
 	
-	public ControlP5 mapKey(ControlKey theKey,int...theChar) {
-		cp5.keyHandler.mapKey(theKey, theChar);
+	public ControlP5 removeKeysFor(int ...theChar) {
+		cp5.keyHandler.removeKeysFor(fromIntToChar(theChar));
 		return cp5;
 	}
 }
