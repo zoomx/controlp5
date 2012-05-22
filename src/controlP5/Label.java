@@ -76,9 +76,9 @@ public class Label implements CDrawable {
 	public static int paddingX = 4;
 
 	public static int paddingY = 4;
-	
+
 	public int _myPaddingX = paddingX;
-	
+
 	public int _myPaddingY = paddingY;
 
 	private Labeltype _myLabeltype;
@@ -144,9 +144,19 @@ public class Label implements CDrawable {
 		alignY = theY;
 		return this;
 	}
-	
+
+	public Label alignX(int theX) {
+		alignX = theX;
+		return this;
+	}
+
+	public Label alignY(int theY) {
+		alignY = theY;
+		return this;
+	}
+
 	public int[] getAlign() {
-		return new int[] {alignX,alignY};
+		return new int[] { alignX, alignY };
 	}
 
 	public Label setPadding(int thePaddingX, int thePaddingY) {
@@ -154,17 +164,17 @@ public class Label implements CDrawable {
 		_myPaddingY = thePaddingY;
 		return this;
 	}
-	
+
 	public Label setPaddingX(int thePaddingX) {
 		_myPaddingX = thePaddingX;
 		return this;
 	}
-	
+
 	public Label setPaddingY(int thePaddingY) {
 		_myPaddingY = thePaddingY;
 		return this;
 	}
-	
+
 	public void draw(PApplet theApplet, int theX, int theY, ControllerInterface<?> theController) {
 		if (isVisible) {
 			getLabeltype().draw(this, theApplet, theX, theY, theController);
@@ -179,11 +189,12 @@ public class Label implements CDrawable {
 		}
 	}
 
-	private void draw(PApplet theApplet, int theX, int theY) {
+	public void draw(PApplet theApplet, int theX, int theY) {
 		if (isVisible) {
 			theApplet.pushMatrix();
 			theApplet.translate(_myControllerStyle.marginLeft, _myControllerStyle.marginTop);
 			theApplet.translate(theX, theY);
+
 			if (isColorBackground) {
 
 				float ww = getStyle().paddingRight + getStyle().paddingLeft;
@@ -210,11 +221,11 @@ public class Label implements CDrawable {
 	public Label hide() {
 		return setVisible(false);
 	}
-	
+
 	public Label show() {
 		return setVisible(true);
 	}
-	
+
 	public Label setVisible(boolean theValue) {
 		isVisible = theValue;
 		return this;
@@ -299,9 +310,9 @@ public class Label implements CDrawable {
 		setFont(new ControlFont(theBitFontIndex));
 		return this;
 	}
-	
+
 	public Label setFont(PFont thePFont) {
-		return setFont(new ControlFont(thePFont, thePFont.findFont().getSize()));
+		return setFont(new ControlFont(thePFont));
 	}
 
 	public Label setFont(ControlFont theFont) {
@@ -310,10 +321,18 @@ public class Label implements CDrawable {
 			_myFontLabel = new ControlFont(((ControlFont.BitFontLabel) theFont.get()).getFontIndex());
 		} else {
 			setLineHeight(((ControlFont.PFontLabel) theFont.get()).getSize());
-			_myFontLabel = new ControlFont(((ControlFont.PFontLabel) theFont.get()).getFont());
+			ControlFont.PFontLabel cpf = ((ControlFont.PFontLabel) theFont.get());
+			_myFontLabel = new ControlFont(cpf.getFont(), cpf.getSize());
 		}
 		_myFontLabel.init(this);
 		setChanged(true);
+		return this;
+	}
+
+	public Label setSize(int theSize) {
+		if (_myFontLabel.get() instanceof ControlFont.PFontLabel) {
+			((ControlFont.PFontLabel) _myFontLabel.get()).setSize(theSize);
+		}
 		return this;
 	}
 
@@ -426,17 +445,16 @@ public class Label implements CDrawable {
 		public int getHeight();
 
 		public int getOverflow();
-		
+
 		public String getTextFormatted();
 	}
-
 
 	class SinglelineTextfield extends SinglelineLabel {
 		public String getTextFormatted() {
 			return _myText;
 		}
 	}
-	
+
 	class SinglelineLabel implements Labeltype {
 
 		private void align(PApplet theApplet, ControllerInterface<?> theController, int theAlignX, int theAlignY) {
@@ -450,7 +468,7 @@ public class Label implements CDrawable {
 				x = _myPaddingX;
 				break;
 			case (ControlP5.RIGHT):
-				x = theController.getWidth() - _myFontLabel.getWidth()-_myPaddingX;
+				x = theController.getWidth() - _myFontLabel.getWidth() - _myPaddingX;
 				break;
 			case (ControlP5.LEFT_OUTSIDE):
 				x = -_myFontLabel.getWidth() - _myPaddingX;
@@ -504,7 +522,7 @@ public class Label implements CDrawable {
 		public int getOverflow() {
 			return -1;
 		}
-		
+
 		@Override
 		public String getTextFormatted() {
 			return (isToUpperCase ? _myText.toUpperCase() : _myText);
@@ -533,7 +551,7 @@ public class Label implements CDrawable {
 		public int getOverflow() {
 			return _myFontLabel.get().getOverflow();
 		}
-		
+
 		@Override
 		public String getTextFormatted() {
 			return (isToUpperCase ? _myText.toUpperCase() : _myText);
@@ -548,7 +566,7 @@ public class Label implements CDrawable {
 	public ControllerStyle style() {
 		return getStyle();
 	}
-	
+
 	/**
 	 * @exclude
 	 * @deprecated
@@ -557,7 +575,7 @@ public class Label implements CDrawable {
 	public Label setControlFont(ControlFont theFont) {
 		return setFont(theFont);
 	}
-	
+
 	/**
 	 * @exclude
 	 * @deprecated

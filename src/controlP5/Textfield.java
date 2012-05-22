@@ -158,6 +158,20 @@ public class Textfield extends Controller<Textfield> {
 		changed = true;
 
 	}
+	
+	@Override 
+	public Textfield setWidth(int theWidth) {
+		_myValueLabel.setWidth(theWidth);
+		return super.setWidth(theWidth);
+	}
+
+	@Override 
+	public Textfield setHeight(int theHeight) {
+		_myValueLabel.setHeight(theHeight);
+		return super.setHeight(theHeight);
+	}
+
+	
 
 	public Textfield setFocus(boolean theValue) {
 		isTexfieldActive = isActive = theValue;
@@ -194,12 +208,13 @@ public class Textfield extends Controller<Textfield> {
 	 * 
 	 * @param theFlag boolean
 	 */
-	public void setPasswordMode(boolean theFlag) {
+	public Textfield setPasswordMode(boolean theFlag) {
 		ControlP5.logger().info("Password mode is not available with this version.");
 		isPasswordMode = theFlag;
+		return this;
 	}
 
-	public void setInputFilter(int theInputType) {
+	public Textfield setInputFilter(int theInputType) {
 		switch (theInputType) {
 		case (INTEGER):
 			_myInputFilter = InputFilter.INTEGER;
@@ -214,6 +229,7 @@ public class Textfield extends Controller<Textfield> {
 			_myInputFilter = InputFilter.DEFAULT;
 			break;
 		}
+		return this;
 	}
 
 	@Override

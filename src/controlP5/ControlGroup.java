@@ -32,13 +32,14 @@ import processing.core.PApplet;
 
 /**
  * <p>
- * In previous versions you would use the ControlGroup class to bundle controllers in a group.
- * Now please use the Group class to do so.
+ * In previous versions you would use the ControlGroup class to bundle controllers in a group. Now
+ * please use the Group class to do so.
  * </p>
  * <p>
  * ControlGroup extends ControllerGroup, for a list and documentation of available methods see the
  * {@link ControllerGroup} documentation.
  * </p>
+ * 
  * @see controlP5.Group
  * @example controllers/ControlP5group
  */
@@ -55,6 +56,8 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 	protected boolean isBarVisible = true;
 
 	protected List<ControlListener> _myControlListener;
+	
+	protected boolean isArrowVisible = true;
 
 	public ControlGroup(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theParent, theName, theX, theY);
@@ -170,7 +173,7 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 			theApplet.fill(isInside ? color.getForeground() : color.getBackground());
 			theApplet.rect(0, -1, _myWidth, -_myHeight);
 			_myLabel.draw(theApplet, 0, -_myHeight, this);
-			if (isCollapse) {
+			if (isCollapse && isArrowVisible) {
 				theApplet.fill(_myLabel.getColor());
 				if (isOpen) {
 					theApplet.triangle(_myWidth - 10, -_myHeight / 2 - 3, _myWidth - 4, -_myHeight / 2 - 3, _myWidth - 7, -_myHeight / 2);
@@ -227,6 +230,23 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 	 */
 	public boolean isBarVisible() {
 		return isBarVisible;
+	}
+
+
+	/**
+	 * @return ControlGroup
+	 */
+	public T hideArrow() {
+		isArrowVisible = false;
+		return me;
+	}
+
+	/**
+	 * @return ControlGroup
+	 */
+	public T showArrow() {
+		isArrowVisible = true;
+		return me;
 	}
 
 	/*

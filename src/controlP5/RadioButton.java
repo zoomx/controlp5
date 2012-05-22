@@ -68,11 +68,11 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	protected PImage[] images = new PImage[3];
 
 	protected boolean noneSelectedAllowed = true;
-	
+
 	private Object _myPlug;
-	
+
 	private String _myPlugName;
-	
+
 	/**
 	 * @exclude
 	 * @param theControlP5
@@ -89,6 +89,9 @@ public class RadioButton extends ControlGroup<RadioButton> {
 		setItemsPerRow(1);
 		_myPlug = cp5.papplet;
 		_myPlugName = getName();
+		if (!ControllerPlug.checkPlug(_myPlug, _myPlugName, new Class[] { int.class })) {
+			_myPlug = null;
+		}
 	}
 
 	/**
@@ -229,20 +232,19 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	public Toggle getItem(int theIndex) {
 		return _myRadioToggles.get(theIndex);
 	}
-	
+
 	public Toggle getItem(String theName) {
-		for (Toggle t: _myRadioToggles) {
+		for (Toggle t : _myRadioToggles) {
 			if (theName.equals(t.getName())) {
 				return t;
 			}
 		}
 		return null;
 	}
-	
+
 	public List<Toggle> getItems() {
 		return _myRadioToggles;
 	}
-
 
 	/**
 	 * Gets the state of an item - this can be true (for on) or false (for off) - by index.
@@ -473,37 +475,44 @@ public class RadioButton extends ControlGroup<RadioButton> {
 				}
 			}
 		}
-		try {
-            Method method = _myPlug.getClass().getMethod(_myPlugName,int.class);
-            method.setAccessible(true);
-            method.invoke(_myPlug, (int)_myValue);
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
-            ex.printStackTrace();
-        }
+		if (_myPlug != null) {
+			try {
+				Method method = _myPlug.getClass().getMethod(_myPlugName, int.class);
+				method.invoke(_myPlug, (int) _myValue);
+			} catch (SecurityException ex) {
+				ex.printStackTrace();
+			} catch (NoSuchMethodException ex) {
+				ex.printStackTrace();
+			} catch (IllegalArgumentException ex) {
+				ex.printStackTrace();
+			} catch (IllegalAccessException ex) {
+				ex.printStackTrace();
+			} catch (InvocationTargetException ex) {
+				ex.printStackTrace();
+			}
+		}
 		updateValues(true);
 	}
 
-	
 	public RadioButton plugTo(Object theObject) {
 		_myPlug = theObject;
+		if (!ControllerPlug.checkPlug(_myPlug, _myPlugName, new Class[] { int.class })) {
+			_myPlug = null;
+		}
 		return this;
 	}
-	
-	public RadioButton plugTo(Object theObject,String thePlugName) {
+
+	public RadioButton plugTo(Object theObject, String thePlugName) {
 		_myPlug = theObject;
 		_myPlugName = thePlugName;
+		if (!ControllerPlug.checkPlug(_myPlug, _myPlugName, new Class[] { int.class })) {
+			_myPlug = null;
+		}
 		return this;
 	}
 
 	
+
 	protected void updateValues(boolean theBroadcastFlag) {
 		int n = _myRadioToggles.size();
 		_myArrayValue = new float[n];
@@ -515,7 +524,7 @@ public class RadioButton extends ControlGroup<RadioButton> {
 			ControlEvent myEvent = new ControlEvent(this);
 			cp5.getControlBroadcaster().broadcast(myEvent, ControlP5Constants.FLOAT);
 		}
-		
+
 	}
 
 	/**
@@ -561,14 +570,14 @@ public class RadioButton extends ControlGroup<RadioButton> {
 		}
 		return this;
 	}
-	
+
 	public RadioButton showLabels() {
 		for (Toggle t : _myRadioToggles) {
 			t.getCaptionLabel().setVisible(true);
 		}
 		return this;
 	}
-	
+
 	public RadioButton toUpperCase(boolean theValue) {
 		for (Toggle t : _myRadioToggles) {
 			t.getCaptionLabel().toUpperCase(theValue);

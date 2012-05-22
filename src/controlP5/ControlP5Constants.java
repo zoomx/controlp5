@@ -200,5 +200,9 @@ public interface ControlP5Constants {
 	public static final int VALUELABEL = 1;
 	
 	public static final int SINGLE = 0;
+	
+	@Deprecated
 	public static final int ALL = 1;
+	
+	public static final int MULTI = 1;
 }

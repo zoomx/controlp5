@@ -231,6 +231,16 @@ public class ControllerPlug {
 		return _myField;
 	}
 
+	
+	static public boolean checkPlug(Object theObject, String thePlugName, Class<?>[] theArgs) {
+		try {
+			theObject.getClass().getDeclaredMethod(thePlugName, theArgs);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 	@Deprecated
 	protected Class<?> classType() {
 		return _myParameterClass;

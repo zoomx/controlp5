@@ -1,5 +1,5 @@
 /**
-* ControlP5 ControlP5
+* ControlP5 plugTo
 *
 * This example demonstrate how to use the plugTo method to
 * connect a controller to a field or method of a particular object.

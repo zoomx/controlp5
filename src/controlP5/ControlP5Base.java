@@ -352,6 +352,7 @@ public class ControlP5Base implements ControlP5Constants {
 	public Textfield addTextfield(final Object theObject, final String theIndex, final String theName, final int theX, final int theY, final int theW, final int theH) {
 		Textfield myController = new Textfield(cp5, (Tab) cp5.controlWindow.getTabs().get(1), theName, "", theX, theY, theW, theH);
 		cp5.register(theObject, theIndex, myController);
+		myController.registerProperty("text");
 		return myController;
 	}
 
@@ -810,10 +811,15 @@ public class ControlP5Base implements ControlP5Constants {
 		return addController(null, "", theName, theClass, theX, theY);
 	}
 
+	public ControlP5Base addControllersFor(PApplet theApplet) {
+		addControllersFor("", theApplet);
+		return this;
+	}
+	
 	/**
 	 * Adds controllers for a specific object using annotations.
 	 * <p>
-	 * Uses a forward slash delimited address, for exaample:
+	 * Uses a forward slash delimited address, for example:
 	 * </p>
 	 * <p>
 	 * lets say the theAddressSpace parameter is set to "hello", and the Object (second parameter)

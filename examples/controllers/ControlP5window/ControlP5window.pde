@@ -1,34 +1,34 @@
 /**
  * ControlP5 ControlWindow
- * by andreas schlegel, 2009
+ * by andreas schlegel, 2012
  */
 
 import controlP5.*;
 
 ControlP5 cp5;
 
-int myColorBackground = color(0,0,0);
+int myColorBackground = color(0, 0, 0);
 
 ControlWindow controlWindow;
 
 public int sliderValue = 40;
 
 void setup() {
-  size(700,400);  
+  size(700, 400);  
 
   cp5 = new ControlP5(this);
 
-  controlWindow = cp5.addControlWindow("controlP5window",100,100,400,200)
-                     .hideCoordinates()
-                     .setBackground(color(40))
-                     ;
-                     
+  controlWindow = cp5.addControlWindow("controlP5window", 100, 100, 400, 200)
+    .hideCoordinates()
+      .setBackground(color(40))
+        ;
+
   cp5.addSlider("sliderValue")
-     .setRange(0,255)
-     .setPosition(40,40)
-     .setSize(200,29)
-     .setWindow(controlWindow)
-     ;  
+    .setRange(0, 255)
+      .setPosition(40, 40)
+        .setSize(200, 29)
+          .setWindow(controlWindow)
+            ;
 }
 
 
@@ -45,20 +45,20 @@ void myWindowTextfield(String theValue) {
 }
 
 void keyPressed() {
-  if(key==',') cp5.window("controlP5window").hide();
-  if(key=='.') cp5.window("controlP5window").show();
+  if (key==',') cp5.window("controlP5window").hide();
+  if (key=='.') cp5.window("controlP5window").show();
   // controlWindow = controlP5.addControlWindow("controlP5window2",600,100,400,200);
   // controlP5.controller("sliderValue1").moveTo(controlWindow);
-  
-  // since version 0.5.0, a controlWindow can be set undecorated.
-  if(key=='d') {
-    if(controlWindow.isUndecorated()) {
+
+  if (key=='d') {
+    if (controlWindow.isUndecorated()) {
       controlWindow.setUndecorated(false);
-    } else {
+    } 
+    else {
       controlWindow.setUndecorated(true);
     }
   }
-  if(key=='t') {
+  if (key=='t') {
     controlWindow.toggleUndecorated();
   }
 }

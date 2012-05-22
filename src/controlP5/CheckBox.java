@@ -41,11 +41,12 @@ import processing.core.PImage;
  * @see controlP5.Toggle
  * 
  */
-public class CheckBox extends ControlGroup<CheckBox>{
+public class CheckBox extends ControlGroup<CheckBox> {
 
-	
 	private Object _myPlug;
-	
+
+	private String _myPlugName;
+
 	/**
 	 * A CheckBox should only be added to controlP5 by using controlP5.addCheckBox()
 	 * 
@@ -64,6 +65,10 @@ public class CheckBox extends ControlGroup<CheckBox>{
 		setItemsPerRow(1);
 		isMultipleChoice = true;
 		_myPlug = cp5.papplet;
+		_myPlugName = getName();
+		if (!ControllerPlug.checkPlug(_myPlug, _myPlugName, new Class[] { float[].class })) {
+			_myPlug = null;
+		}
 	}
 
 	public final CheckBox activateAll() {
@@ -203,8 +208,7 @@ public class CheckBox extends ControlGroup<CheckBox>{
 	public String toString() {
 		return super.toString();
 	}
-	
-	
+
 	protected List<Toggle> _myRadioToggles;
 
 	protected int spacingRow = 1;
@@ -224,8 +228,6 @@ public class CheckBox extends ControlGroup<CheckBox>{
 	protected PImage[] images = new PImage[3];
 
 	protected boolean noneSelectedAllowed = true;
-
-	
 
 	/**
 	 * @param theName
@@ -365,7 +367,7 @@ public class CheckBox extends ControlGroup<CheckBox>{
 	public Toggle getItem(int theIndex) {
 		return _myRadioToggles.get(theIndex);
 	}
-	
+
 	public List<Toggle> getItems() {
 		return _myRadioToggles;
 	}
@@ -473,7 +475,6 @@ public class CheckBox extends ControlGroup<CheckBox>{
 		return this;
 	}
 
-	
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -482,6 +483,7 @@ public class CheckBox extends ControlGroup<CheckBox>{
 	@ControlP5.Invisible
 	@Override
 	public void controlEvent(ControlEvent theEvent) {
+		
 		if (!isMultipleChoice) {
 			if (noneSelectedAllowed == false && theEvent.getController().getValue() < 1) {
 				if (theEvent.getController() instanceof Toggle) {
@@ -506,28 +508,42 @@ public class CheckBox extends ControlGroup<CheckBox>{
 				}
 			}
 		}
-		try {
-            Method method = _myPlug.getClass().getMethod(getName(),int.class);
-            method.invoke(_myPlug, (int)_myValue);
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
-            ex.printStackTrace();
-        }
 		updateValues(true);
+		if (_myPlug != null) {
+			try {
+				Method method = _myPlug.getClass().getMethod(_myPlugName, float[].class);
+				method.invoke(_myPlug, (float[]) getArrayValue());
+			} catch (SecurityException ex) {
+				ex.printStackTrace();
+			} catch (NoSuchMethodException ex) {
+				ex.printStackTrace();
+			} catch (IllegalArgumentException ex) {
+				ex.printStackTrace();
+			} catch (IllegalAccessException ex) {
+				ex.printStackTrace();
+			} catch (InvocationTargetException ex) {
+				ex.printStackTrace();
+			}
+		}
+		
 	}
-	
+
 	public CheckBox plugTo(Object theObject) {
 		_myPlug = theObject;
+		if (!ControllerPlug.checkPlug(_myPlug, _myPlugName, new Class[] { float[].class })) {
+			_myPlug = null;
+		}
 		return this;
 	}
 
+	public CheckBox plugTo(Object theObject, String thePlugName) {
+		_myPlug = theObject;
+		_myPlugName = thePlugName;
+		if (!ControllerPlug.checkPlug(_myPlug, _myPlugName, new Class[] { float[].class })) {
+			_myPlug = null;
+		}
+		return this;
+	}
 
 	protected void updateValues(boolean theBroadcastFlag) {
 		int n = _myRadioToggles.size();
@@ -566,14 +582,14 @@ public class CheckBox extends ControlGroup<CheckBox>{
 		}
 		return this;
 	}
-	
+
 	public CheckBox showLabels() {
 		for (Toggle t : _myRadioToggles) {
 			t.getCaptionLabel().setVisible(true);
 		}
 		return this;
 	}
-	
+
 	public CheckBox toUpperCase(boolean theValue) {
 		for (Toggle t : _myRadioToggles) {
 			t.getCaptionLabel().toUpperCase(theValue);
@@ -581,7 +597,6 @@ public class CheckBox extends ControlGroup<CheckBox>{
 		return this;
 	}
 
-	
 	/**
 	 * @deprecated
 	 * @exclude
@@ -590,6 +605,5 @@ public class CheckBox extends ControlGroup<CheckBox>{
 	public CheckBox add(final String theName, final float theValue) {
 		return addItem(theName, theValue);
 	}
-
 
 }
