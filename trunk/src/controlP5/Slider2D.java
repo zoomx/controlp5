@@ -3,8 +3,8 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * The Slider2D allows to control a handle within a 2D area. This controller
- * returns an arrayValue with the current xy position of its handle.
+ * The Slider2D allows to control a handle within a 2D area. This controller returns an arrayValue
+ * with the current xy position of its handle.
  * 
  * @author andreas schlegel
  * 
@@ -32,8 +32,8 @@ public class Slider2D extends Controller<Slider2D> {
 		_myMinY = 0;
 		_myMaxX = theWidth;
 		_myMaxY = theHeight;
-		getCaptionLabel().setPadding(0,Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
-		getValueLabel().setPadding(0,Label.paddingY).align(RIGHT, BOTTOM_OUTSIDE);
+		getCaptionLabel().setPadding(0, Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
+		getValueLabel().setPadding(0, Label.paddingY).align(RIGHT, BOTTOM_OUTSIDE);
 	}
 
 	/*
@@ -41,8 +41,7 @@ public class Slider2D extends Controller<Slider2D> {
 	 * 
 	 * @see controlP5.Controller#updateInternalEvents(processing.core.PApplet)
 	 */
-	@ControlP5.Invisible
-	public Slider2D updateInternalEvents(PApplet theApplet) {
+	@ControlP5.Invisible public Slider2D updateInternalEvents(PApplet theApplet) {
 		if (isInside()) {
 			if (!cp5.keyHandler.isAltDown()) {
 				float tX = PApplet.constrain(_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x), 0, width - cursorWidth);
@@ -137,13 +136,23 @@ public class Slider2D extends Controller<Slider2D> {
 		return cursorHeight;
 	}
 
+	public Slider2D disableCrosshair() {
+		isCrosshairs = false;
+		return this;
+	}
+
+	public Slider2D enableCrosshair() {
+		isCrosshairs = false;
+		return this;
+	}
+
 	/*
 	 * (non-Javadoc)
+	 * TODO see https://forum.processing.org/topic/controlp5-slider2d-questions
 	 * 
 	 * @see controlP5.Controller#setArrayValue(float[])
 	 */
-	@Override
-	public Slider2D setArrayValue(float[] theArray) {
+	@Override public Slider2D setArrayValue(float[] theArray) {
 		_myArrayValue = theArray;
 		float rX = (width - cursorWidth) / (float) (_myMaxX - _myMinX);
 		float rY = (height - cursorHeight) / (float) (_myMaxY - _myMinY);
@@ -185,13 +194,11 @@ public class Slider2D extends Controller<Slider2D> {
 	public void setValueLabelSeparator(String theSeparator) {
 		_myValueLabelSeparator = theSeparator;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public Slider2D updateDisplayMode(int theMode) {
+	@Override @ControlP5.Invisible public Slider2D updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -215,7 +222,7 @@ public class Slider2D extends Controller<Slider2D> {
 			} else {
 				theApplet.fill(theController.getColor().getBackground());
 			}
-
+			theApplet.noStroke();
 			theApplet.rect(0, 0, getWidth(), getHeight());
 
 			if (isCrosshairs) {
@@ -224,16 +231,16 @@ public class Slider2D extends Controller<Slider2D> {
 				} else {
 					theApplet.stroke(theController.getColor().getForeground());
 				}
-				theApplet.line(0, getCursorY(), getWidth(), getCursorY());
-				theApplet.line(getCursorX(), 0, getCursorX(), getHeight());
+				theApplet.line(0, getCursorY() + getCursorHeight() / 2, getWidth(), getCursorY() + getCursorHeight() / 2);
+				theApplet.line(getCursorX() + getCursorWidth() / 2, 0, getCursorX() + getCursorWidth() / 2, getHeight());
 				theApplet.noStroke();
 			}
-
+			
 			theApplet.fill(theController.getColor().getActive());
 			theApplet.rect(getCursorX(), getCursorY(), getCursorWidth(), getCursorHeight());
 
 			getCaptionLabel().draw(theApplet, 0, 0, theController);
-			getValueLabel().draw(theApplet, 0,0, theController);
+			getValueLabel().draw(theApplet, 0, 0, theController);
 		}
 
 	}

@@ -1,3 +1,37 @@
+2012-05-18  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.7.3
+      
+      * src controlP5.ControlEvent.java:
+      adding getArrayValue(int), returns a float value for a given index, does not check for ArrayIndexOutOfBounds
+     
+      * src controlP5.Slider.java:
+      issue 47 http://code.google.com/p/controlp5/issues/detail?id=47 fixed
+      
+      * src controlP5.CheckBox.java, controlP5.RadioButton.java:
+      issue 41 http://code.google.com/p/controlp5/issues/detail?id=41 fixed
+      
+      * src controlP5.Chart.java:      
+      implemented
+      
+      * src controlP5.ControlFont.java:      
+      issue 46 http://code.google.com/p/controlp5/issues/detail?id=46 fixed
+      
+      * src controlP5.ControlWindow.java:      
+      sketches using controlP5 running in the browser as Applet did not work anymore, fixed
+
+      * src controlP5.ColorPicker.java:      
+      missing implementation reported in http://forum.processing.org/topic/controlp5-how-to-receive-colorpicker-controlevents fixed
+      ColorPicker example has been modified accordingly 
+      
+      * src controlP5.Textfield.java:
+      issue 44 http://code.google.com/p/controlp5/issues/detail?id=44 fixed
+      
+      * src controlP5.ControlWindowKeyHandler.java:
+      issue 49 http://code.google.com/p/controlp5/issues/detail?id=49 fixed, keys boolean array size increased to 525 due to windows key issue
+            
+      
+
 2012-01-15  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.7.0

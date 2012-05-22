@@ -1,5 +1,9 @@
 /**
  * ControlP5 DIY controller
+ *
+ * this example is not working with controlP5 version 0.7.2, 0.7.3
+ *
+ *
  * this example shows how to create your own controller by extending and
  * using the abstract class Controller, the base class for every controller.
  *
@@ -22,7 +26,7 @@ void setup() {
   // create a new instance of the ControlPad controller.
   pad = new ControlPad(cp5,"DIY",100,50,100,100);
   // register the newly created ControlPad with controlP5
-  cp5.register(pad);
+  cp5.register(this,"pad",pad);
 }
 
 void draw() {
@@ -54,14 +58,15 @@ class ControlPad extends Controller {
   }
 
   // overwrite the updateInternalEvents method to handle mouse and key inputs.
-  public void updateInternalEvents(PApplet theApplet) {
+  public Controller updateInternalEvents(PApplet theApplet) {
     if(getIsInside()) {
-      if(isMousePressed && !controlP5.keyHandler.isAltDown) {
+      if(isMousePressed && !cp5.keyHandler.isAltDown()) {
         cX = constrain(mouseX-position().x,0,width-cWidth);
         cY = constrain(mouseY-position().y,0,height-cHeight);
         setValue(0);
       }
     }
+    return this;
   }
 
   // override the draw(PApplet) method to display the controller.
@@ -84,6 +89,9 @@ class ControlPad extends Controller {
     rect(cX,cY,cWidth,cHeight);
     // draw the caption- and value-label of the controller
     // they are generated automatically by the super class
+    
+    // !!! nullpointer when drawing labels here
+    
     getCaptionLabel().draw(theApplet, 0, height + 4);
     getValueLabel().draw(theApplet, 40, height + 4);
 

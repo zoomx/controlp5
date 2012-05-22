@@ -86,11 +86,17 @@ public class Chart extends Controller<Chart> {
 		return this;
 	}
 
-	public Chart push(float theValue) {
-		return push(getFirstDataSetIndex(), theValue);
+	// array operations see syntax
+	// http://www.w3schools.com/jsref/jsref_obj_array.asp
+
+	/**
+	 * adds a new float at the beginning of the data set.
+	 */
+	public Chart unshift(float theValue) {
+		return unshift(getFirstDataSetIndex(), theValue);
 	}
 
-	public Chart push(String theSetIndex, float theValue) {
+	public Chart unshift(String theSetIndex, float theValue) {
 		if (getDataSet(theSetIndex).size() > (width / resolution)) {
 			removeLast(theSetIndex);
 		}

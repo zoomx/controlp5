@@ -201,7 +201,26 @@ public class Accordion extends ControlGroup<Accordion> {
 		}
 	}
 
-	public void open(int... theId) {
+	public Accordion open() {
+		int[] n = new int[items.size()];
+		for (int i = 0; i < items.size(); i++) {
+			n[i] = i;
+		}
+		return open(n);
+	}
+
+	public Accordion close() {
+		int[] n = new int[items.size()];
+		for (int i = 0; i < items.size(); i++) {
+			n[i] = i;
+		}
+		return close(n);
+	}
+
+	public Accordion open(int... theId) {
+		if(theId[0]==-1) {
+			return open();
+		}
 		int n = 0, i = 0;
 		for (ControlGroup<?> cg : items) {
 			boolean a = false;
@@ -219,9 +238,13 @@ public class Accordion extends ControlGroup<Accordion> {
 				cg.open();
 			}
 		}
+		return this;
 	}
 
-	public void close(int... theId) {
+	public Accordion close(int... theId) {
+		if(theId[0]==-1) {
+			return close();
+		}
 		int n = 0, i = 0;
 		for (ControlGroup<?> cg : items) {
 			boolean a = false;
@@ -240,13 +263,15 @@ public class Accordion extends ControlGroup<Accordion> {
 				n += cg.getBackgroundHeight();
 			}
 		}
+		return this;
 	}
 
-	public void setCollapseMode(int theMode) {
+	public Accordion setCollapseMode(int theMode) {
 		if (theMode == 0) {
 			_myMode = SINGLE;
 		} else {
-			_myMode = ALL;
+			_myMode = MULTI;
 		}
+		return this;
 	}
 }

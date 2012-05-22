@@ -13,12 +13,12 @@
 	</path>		
 	<property name="javaVersion"                value="1.5"/>
 	<property name="author"                     value="Andreas Schlegel"/>	
-	<property name="copyright"                  value="(c) 2012"/>
+	<property name="copyright"                  value="(c) 2006-2012"/>
 	<property name="libraryName"                value="controlP5"/>
-	<property name="versionNumber"              value="0.7.2"/>
+	<property name="versionNumber"              value="0.7.3"/>
 	<property name="yourLink"                   value="http://www.sojamo.de" />
 	<property name="keywords"                   value="gui, ui, controller, interface, user interface" />
-	<property name="tested:platform"            value="osx, windows" />
+	<property name="tested:platform"            value="osx, windows, linux" />
 	<property name="tested:processingVersion"  	value="1.5, 2.0" />	
 	<property name="tested:dependencies"        value="none" />
 	<property name="source:host"                value="google code" />
@@ -170,8 +170,9 @@
   	<copy todir="${dist}/${libraryName}-${versionNumber}/controlP5/examples"><fileset dir="${dist}/examples"/></copy>
   	<copy todir="${dist}/${libraryName}-${versionNumber}/controlP5/reference"><fileset dir="${dist}/reference"/></copy>
   	<copy todir="${dist}/${libraryName}-${versionNumber}/controlP5/library"><fileset dir="${dist}/library"/></copy>
-
+    
   	<copyfile src="${resources}/install_instructions.txt" dest="${dist}/tmp/install_instructions.txt"/>
+    <copyfile src="${resources}/library.properties" dest="${dist}/tmp/controlP5/library.properties"/>
 
   	<move todir="${dist}/tmp/${libraryName}">
   		<fileset dir="${dist}/${libraryName}-${versionNumber}/controlP5" />
@@ -276,7 +277,7 @@
   	  	  						flags="g" />
   	  	  						
   	  	  						
-  	<!-- finish organizating library's distribution -->
+  	<!-- finish organizing library's distribution -->
   	<mkdir dir="${dist}/web/download" />
   	<copy file="${dist}/${libraryName}-${versionNumber}.zip" todir="${dist}/web/download" />
   	

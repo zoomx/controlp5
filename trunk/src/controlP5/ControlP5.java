@@ -92,7 +92,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.7.2";// "##version##";
+	public static final String VERSION = "0.7.3";// "##version##";
 
 	/**
 	 * @exclude
@@ -142,7 +142,7 @@ public class ControlP5 extends ControlP5Base {
 	protected ControlFont controlFont;
 
 	protected static int bitFont = standard58;
-
+	
 	/**
 	 * from version 0.7.2 onwards shortcuts are disabled by default. shortcuts can be enabled using
 	 * controlP5.enableShortcuts();
@@ -158,6 +158,8 @@ public class ControlP5 extends ControlP5Base {
 	protected boolean blockDraw;
 
 	protected Tooltip _myTooltip;
+	
+	protected boolean isAnnotation;
 
 	/**
 	 * Create a new instance of controlP5.
@@ -193,7 +195,7 @@ public class ControlP5 extends ControlP5Base {
 		if (welcome++ < 1) {
 			welcome();
 		}
-		addControllersFor("", papplet);
+		
 		mapKeyFor(new ControlKey() {
 			public void keyEvent() {
 				saveProperties();
@@ -1076,7 +1078,7 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 	public boolean setFont(PFont thePFont) {
-		controlFont = new ControlFont(thePFont, thePFont.findFont().getSize());
+		controlFont = new ControlFont(thePFont);
 		isControlFont = true;
 		updateFont(controlFont);
 		return isControlFont;
@@ -1111,6 +1113,8 @@ public class ControlP5 extends ControlP5Base {
 	public void enableShortcuts() {
 		isShortcuts = true;
 	}
+	
+	
 
 	public Tooltip getTooltip() {
 		return _myTooltip;

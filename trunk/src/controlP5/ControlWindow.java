@@ -134,7 +134,9 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		_myApplet = theApplet;
 		_myApplet.registerMouseEvent(this);
 		_myApplet.addMouseWheelListener(this);
-		_myApplet.frame.addWindowFocusListener(this);
+		if (!_myApplet.online) {
+			_myApplet.frame.addWindowFocusListener(this);
+		}
 		isAutoDraw = true;
 		init();
 	}
@@ -181,8 +183,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		if (_myApplet.g.getClass().getName().indexOf("PGraphics2D") > -1 || _myApplet.g.getClass().getName().indexOf("PGraphics3D") > -1) {
 			if (rendererNotification == false) {
 				ControlP5.logger().info(
-						"You are using renderer " + _myApplet.g.getClass().getName() + ".\n"
-								+ "In order to render controlP5 elements you need to call the ControlP5's draw() manually.\n"
+						"You are using renderer " + _myApplet.g.getClass().getName() + ".\n" + "In order to render controlP5 elements you need to call the ControlP5's draw() manually.\n"
 								+ "Suggestion is to put controlP5.draw(); at the bottom of the draw function of your sketch.");
 				rendererNotification = true;
 			}

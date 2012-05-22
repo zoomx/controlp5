@@ -53,7 +53,11 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 
 	protected int keyCode = -1;
 
-	Map<KeyCode, List<ControlKey>> keymap = new HashMap<KeyCode, List<ControlKey>>();
+	private Map<KeyCode, List<ControlKey>> keymap = new HashMap<KeyCode, List<ControlKey>>();
+
+	private boolean[] keys = new boolean[525];
+
+	private int numOfActiveKeys = 0;
 
 	public ControlWindowKeyHandler(ControlP5 theControlP5) {
 		_myMasterControlWindow = theControlP5.controlWindow;
@@ -67,11 +71,8 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 		return isAltDown;
 	}
 
-	boolean[] keys = new boolean[255];
-	int numOfActiveKeys = 0;
-
 	public void clear() {
-		keys = new boolean[255];
+		keys = new boolean[525];
 		numOfActiveKeys = 0;
 	}
 
@@ -127,7 +128,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			}
 			isKeyDown = false;
 		}
-		
+
 		if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED && _myMasterControlWindow.controlP5.isShortcuts()) {
 			int n = 0;
 			for (boolean b : keys) {
@@ -162,28 +163,28 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 	}
 
 	public void mapKeyFor(ControlKey theKey, char... theChar) {
-		KeyCode kc = new KeyCode(theChar); 
-		if(!keymap.containsKey(kc)) {
+		KeyCode kc = new KeyCode(theChar);
+		if (!keymap.containsKey(kc)) {
 			keymap.put(kc, new ArrayList<ControlKey>());
 		}
 		keymap.get(kc).add(theKey);
 	}
-	
-	public void removeKeyFor(ControlKey theKey, char...theChar) {
+
+	public void removeKeyFor(ControlKey theKey, char... theChar) {
 		List<ControlKey> l = keymap.get(new KeyCode(theChar));
-		if(l!=null) {
+		if (l != null) {
 			l.remove(theKey);
 		}
 	}
-	
-	public void removeKeysFor(char ...theChar) {
+
+	public void removeKeysFor(char... theChar) {
 		keymap.remove(new KeyCode(theChar));
 	}
-	
+
 	class KeyCode {
 
 		final char[] chars;
-		
+
 		KeyCode(char... theChars) {
 			chars = theChars;
 			Arrays.sort(chars);

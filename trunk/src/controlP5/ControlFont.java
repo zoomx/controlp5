@@ -55,7 +55,17 @@ public class ControlFont {
 	public static boolean RENDER_2X;
 
 	public ControlFont(PFont theFont) {
-		this(theFont, theFont.getFont().getSize(), theFont.getFont().getSize());
+		this(theFont, checkFontSize(theFont));
+
+	}
+
+	static private int checkFontSize(PFont theFont) {
+		try {
+			return theFont.getFont().getSize();
+		} catch (NullPointerException e) {
+			System.out.println("ControlP5: could not find font-size details for font " + theFont.getName() + ", use constructor ControlFont(PFont theFont, int theFontSize) to specify the font size.");
+			return 10;
+		}
 	}
 
 	public ControlFont(PFont theFont, int theFontSize) {
@@ -63,7 +73,7 @@ public class ControlFont {
 	}
 
 	public ControlFont(PFont theFont, int theFontSize, int theLineHeight) {
-		_myFontLabel = new PFontLabel(theFont);
+		_myFontLabel = new PFontLabel(theFont, theFontSize, theLineHeight);
 	}
 
 	protected ControlFont(int theBitFontIndex) {
@@ -100,7 +110,7 @@ public class ControlFont {
 			return BitFontRenderer.getWidth(theLabel, bf, theText);
 		} else {
 			PFontLabel pf = ((PFontLabel) theLabel.getFont().get());
-			theApplet.textFont(pf.pfont);
+			theApplet.textFont(pf.pfont, pf.size);
 			return (int) theApplet.textWidth(theText);
 		}
 	}
@@ -130,7 +140,7 @@ public class ControlFont {
 		int getOverflow();
 
 		int getOffset(int theIndex);
-		
+
 		int getSize();
 
 	}
@@ -181,7 +191,7 @@ public class ControlFont {
 		public int getSize() {
 			return 6;
 		}
-		
+
 		@Override
 		public void adjust(PApplet theApplet, Label theLabel) {
 			if (_myImage == null) {
@@ -338,6 +348,7 @@ public class ControlFont {
 		List<String> txt;
 
 		String s = "";
+
 		private int top;
 
 		private int bottom;
@@ -354,8 +365,11 @@ public class ControlFont {
 
 		private int[] offset = new int[2];
 
-		PFontLabel(PFont theFont) {
+		private int size;
+
+		PFontLabel(PFont theFont, int theFontSize, int theLineHeight) {
 			pfont = theFont;
+			size = theFontSize;
 			txt = new ArrayList<String>();
 		}
 
@@ -369,9 +383,13 @@ public class ControlFont {
 			// to happen.
 		}
 		
+		public void setSize(int theSize) {
+			size = theSize;
+		}
 		@Override
 		public int getSize() {
-			return pfont.getFont().getSize();
+			/* quickfix http://code.google.com/p/controlp5/issues/detail?id=46 first check the pfont size then default back to size */
+			return size;
 		}
 
 		@Override
@@ -421,7 +439,7 @@ public class ControlFont {
 		@Override
 		public void adjust(PApplet theApplet, Label theLabel) {
 			if (theLabel.isChanged()) {
-				theApplet.textFont(pfont);
+				theApplet.textFont(pfont, size);
 				// the origin of a PFont Label is top left corner, therefore
 				// the following the following measures have to be calculated
 				// when a font is changed. we have to do that here since PApplet
@@ -482,8 +500,9 @@ public class ControlFont {
 
 		@Override
 		public void draw(PApplet theApplet, Label theLabel) {
-			theApplet.textFont(pfont);
-			theApplet.fill(theLabel.getColor());
+			System.out.println(size);
+			theApplet.textFont(pfont, size);
+			theApplet.fill(0xffff0000); //theLabel.getColor()
 			if (theLabel.isMultiline()) {
 				// theApplet.fill(255, 128, 0);
 				// theApplet.rect(0, 0, theLabel.getWidth(), theLabel.getHeight());

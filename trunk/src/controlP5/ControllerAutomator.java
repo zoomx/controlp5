@@ -100,9 +100,11 @@ class ControllerAutomator {
 	 * @param ts
 	 */
 	void addControllersFor(final String theAddressSpace, Object t) {
+		
 		if (t instanceof List<?>) {
 			return;
 		}
+		
 		Class<?> c = t.getClass();
 		Field[] fs = c.getDeclaredFields();
 		Method[] ms = c.getDeclaredMethods();

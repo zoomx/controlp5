@@ -74,6 +74,8 @@ public class Slider extends Controller<Slider> {
 	private float _myMinReal = 0;
 
 	private float _myMaxReal = 1;
+	
+	private float _myInternalValue = 0;
 
 	/**
 	 * 
@@ -238,7 +240,7 @@ public class Slider extends Controller<Slider> {
 		if (isMousePressed && theValue == getValue()) {
 			return this;
 		}
-
+		_myInternalValue = theValue;
 		_myValue = PApplet.map(theValue, _myMinReal, _myMaxReal, 0, 1);
 		snapValue(_myValue);
 		_myValue = (_myValue <= _myMin) ? _myMin : _myValue;
@@ -343,7 +345,7 @@ public class Slider extends Controller<Slider> {
 	}
 	
 	public Slider setRange(float theMin, float theMax) {
-		float f = getValue();
+		float f = _myInternalValue;
 		_myMinReal = theMin;
 		_myMaxReal = theMax;
 		_myValue = PApplet.map(f, _myMinReal, _myMaxReal, 0, 1);
