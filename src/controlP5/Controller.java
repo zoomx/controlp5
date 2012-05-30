@@ -183,9 +183,8 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	protected boolean isInside = false;
 
 	private T me;
-	
+
 	protected boolean dragged;
-	
 
 	/**
 	 * TODO add distribution options for MOVE, RELEASE, and PRESSED. setDecimalPoints:
@@ -503,10 +502,17 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	@ControlP5.Invisible public final T updateEvents() {
 		if (isInside) {
+
+			boolean moved = ((_myControlWindow.mouseX - _myControlWindow.pmouseX) != 0 || (_myControlWindow.mouseY - _myControlWindow.pmouseY) != 0);
+
 			if (isMousePressed) {
-				if ((_myControlWindow.mouseX - _myControlWindow.pmouseX) != 0 || (_myControlWindow.mouseY - _myControlWindow.pmouseY) != 0) {
+				if (moved) {
 					onDrag();
 					dragged = true;
+				}
+			} else {
+				if (moved) {
+					onMove();
 				}
 			}
 		}
@@ -558,29 +564,28 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-	
+
 	public final Pointer getPointer() {
 		return new Pointer() {
-			
+
 			public int x() {
-				return (int)(_myControlWindow.mouseX - _myParent.getAbsolutePosition().x - position.x);
+				return (int) (_myControlWindow.mouseX - _myParent.getAbsolutePosition().x - position.x);
 			}
-			
+
 			public int y() {
-				return (int)(_myControlWindow.mouseY - _myParent.getAbsolutePosition().y - position.y);
+				return (int) (_myControlWindow.mouseY - _myParent.getAbsolutePosition().y - position.y);
 			}
-			
+
 			public int px() {
-				return (int)(_myControlWindow.pmouseX - _myParent.getAbsolutePosition().x - position.x);
+				return (int) (_myControlWindow.pmouseX - _myParent.getAbsolutePosition().x - position.x);
 			}
-			
+
 			public int py() {
-				return (int)(_myControlWindow.pmouseY - _myParent.getAbsolutePosition().y - position.y);
+				return (int) (_myControlWindow.pmouseY - _myParent.getAbsolutePosition().y - position.y);
 			}
 		};
 	}
-	
-	
+
 	/**
 	 * @param theStatus boolean
 	 * @return boolean
@@ -603,7 +608,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 			if (isMousePressed == true && inside()) {
 				isMousePressed = false;
 				if (!cp5.keyHandler.isAltDown()) {
-					if(!dragged) {
+					if (!dragged) {
 						onClick();
 					}
 					mouseReleased();
@@ -628,7 +633,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return false;
 	}
-	
+
 	/**
 	 * enables a controller to listen to changes made to the variable linked to the controller. Use
 	 * true to enable and false to disable a controller from listening to changes.
@@ -1048,7 +1053,10 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 	protected void onDrag() {
 	}
-	
+
+	protected void onMove() {
+	}
+
 	protected void onClick() {
 	}
 
@@ -1057,7 +1065,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 	protected void onRelease() {
 	}
-	
+
 	protected void onScroll(int theAmount) {
 	}
 
@@ -1072,10 +1080,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 	protected void mouseReleasedOutside() {
 	}
-	
-	
-
-	
 
 	protected void setIsInside(boolean theFlag) {
 		isInside = theFlag;

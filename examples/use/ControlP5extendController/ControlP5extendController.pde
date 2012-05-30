@@ -88,60 +88,73 @@ class MyButton extends Controller<MyButton> {
     // replace the default view with a custom view.
     setView(new ControllerView() {
       public void display(PApplet p, Object b) {
+        // draw button background
         na += (a-na) * 0.1; 
         p.fill(current,na);
         p.rect(0, 0, getWidth(), getHeight());
-        p.fill(128);
-        p.text(getName(),0,getHeight()+14);
-        p.text(getName(),0,getHeight()+14);
+        
+        // draw horizontal line which can be moved on the x-axis 
+        // using the scroll wheel. 
         p.fill(0,255,0);
         p.rect(0,y,width,10);
+        
+        // draw the custom label 
+        p.fill(128);
+        translate(0,getHeight()+14);
+        p.text(getName(),0,0);
+        p.text(getName(),0,0);
+        
       }
     }
     );
   }
 
   // override various input methods for mouse input control
-  public void onEnter() {
+  void onEnter() {
     cursor(HAND);
     println("enter");
     a = 255;
   }
   
-  public void onScroll(int n) {
+  void onScroll(int n) {
     println("scrolling");
     y += n;
     y = constrain(y,0,getHeight()-10);
   }
   
-  public void onPress() {
+  void onPress() {
     println("press");
     current = 0xffffff00;
   }
   
-  public void onClick() {
+  void onClick() {
     Pointer p1 = getPointer();
     println("clicked at "+p1.x()+", "+p1.y());
     current = 0xffffff00;
     setValue(y);
   }
 
-  public void onRelease() {
+  void onRelease() {
     println("release");
     current = 0xffffffff;
   }
+  
+  void onMove() {
+    println("moving");
+  }
 
-  public void onDrag() {
+  void onDrag() {
     current = 0xff0000ff;
     Pointer p1 = getPointer();
     float dif = dist(p1.px(),p1.py(),p1.x(),p1.y());
     println("dragging at "+p1.x()+", "+p1.y()+" "+dif);
   }
-  public void onReleaseOutside() {
+  
+  void onReleaseOutside() {
     onLeave();
   }
 
-  public void onLeave() {
+  void onLeave() {
     println("leave");
     cursor(ARROW);
     a = 128;
