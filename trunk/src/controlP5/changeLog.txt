@@ -3,8 +3,8 @@
       * version 0.7.5
       
       * src controlP5.Controller.java:
-      adding empty methods onPress(),onClick(),onRelease(),onReleaseOutside(),onScroll() for
-      convenient input access when extending a controller.
+      adding empty methods onPress(), onClick(), onRelease(), onReleaseOutside(), 
+      onScroll(int),onMove(),onDrag() for input access when extending a controller.
       
       * adding convenience constructor to Controllers when extending a Controller.
       
