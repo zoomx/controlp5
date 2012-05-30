@@ -54,7 +54,7 @@ public class ListBox extends ControlGroup<ListBox> implements ControlListener {
 
 	protected boolean isScrollbarVisible = true;
 
-	private int _myScrollbarWidth = 5;
+	protected int _myScrollbarWidth = 5;
 
 	protected int _myHeight;
 
@@ -68,12 +68,25 @@ public class ListBox extends ControlGroup<ListBox> implements ControlListener {
 
 	protected boolean pulldown;
 
-	private int itemOffset = 0;
+	protected int itemOffset = 0;
 
-	private boolean isToUpperCase = true;
+	protected boolean isToUpperCase = true;
 
-	private boolean bulkadding;
+	protected boolean bulkadding;
 
+	/**
+	 * Convenience constructor to extend ListBox.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public ListBox(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 99, 199);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+	
+	
 	protected ListBox(ControlP5 theControlP5, ControllerGroup<?> theGroup, String theName, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theGroup, theName, theX, theY, theW, 9);
 
@@ -238,7 +251,7 @@ public class ListBox extends ControlGroup<ListBox> implements ControlListener {
 		return this;
 	}
 
-	private void updateScroll() {
+	protected void updateScroll() {
 		_myScrollValue = _myScrollbar.getValue();
 		_myScrollbar.setValue(_myScrollValue);
 		if (buttons.size() < items.size() && isScrollbarVisible) {
@@ -248,7 +261,7 @@ public class ListBox extends ControlGroup<ListBox> implements ControlListener {
 		scroll();
 	}
 
-	private void updateBackground() {
+	protected void updateBackground() {
 		if (items.size() * (_myItemHeight + spacing) < _myOriginalBackgroundHeight) {
 			_myBackgroundHeight = items.size() * (_myItemHeight + spacing);
 		}
@@ -261,7 +274,7 @@ public class ListBox extends ControlGroup<ListBox> implements ControlListener {
 		updateButtonWidth();
 	}
 
-	private void updateButtonWidth() {
+	protected void updateButtonWidth() {
 		boolean b = (buttons.size() < items.size() && isScrollbarVisible);
 		if (b) {
 			for (int i = 1; i < controllers.size(); i++) {

@@ -74,6 +74,18 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	private String _myPlugName;
 
 	/**
+	 * Convenience constructor to extend RadioButton.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public RadioButton(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+
+	/**
 	 * @exclude
 	 * @param theControlP5
 	 * @param theParent
@@ -448,9 +460,7 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	 * 
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	@Override
-	public void controlEvent(ControlEvent theEvent) {
+	@ControlP5.Invisible @Override public void controlEvent(ControlEvent theEvent) {
 		if (!isMultipleChoice) {
 			if (noneSelectedAllowed == false && theEvent.getController().getValue() < 1) {
 				if (theEvent.getController() instanceof Toggle) {
@@ -511,8 +521,6 @@ public class RadioButton extends ControlGroup<RadioButton> {
 		return this;
 	}
 
-	
-
 	protected void updateValues(boolean theBroadcastFlag) {
 		int n = _myRadioToggles.size();
 		_myArrayValue = new float[n];
@@ -542,8 +550,7 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	 * Sets the value for all RadioButton items according to the values of the array passed on. 0
 	 * will turn off an item, any other value will turn it on.
 	 */
-	@Override
-	public RadioButton setArrayValue(float[] theArray) {
+	@Override public RadioButton setArrayValue(float[] theArray) {
 		for (int i = 0; i < theArray.length; i++) {
 			if (_myArrayValue[i] != theArray[i]) {
 				if (theArray[i] == 0) {
@@ -588,8 +595,7 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	public String getInfo() {
+	@Override public String getInfo() {
 		return "type:\tRadioButton\n" + super.getInfo();
 	}
 
@@ -597,8 +603,7 @@ public class RadioButton extends ControlGroup<RadioButton> {
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public RadioButton add(final String theName, final float theValue) {
+	@Deprecated public RadioButton add(final String theName, final float theValue) {
 		return addItem(theName, theValue);
 	}
 }

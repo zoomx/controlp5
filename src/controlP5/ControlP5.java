@@ -92,7 +92,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @exclude
 	 */
 	@ControlP5.Invisible
-	public static final String VERSION = "0.7.3";// "##version##";
+	public static final String VERSION = "0.7.5";// "##version##";
 
 	/**
 	 * @exclude

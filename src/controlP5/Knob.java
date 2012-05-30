@@ -81,6 +81,18 @@ public class Knob extends Controller<Knob> {
 	private float scrollSensitivity = 1.0f / resolution;
 
 	/**
+	 * Convenience constructor to extend Knob.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Knob(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 100, 0, 0, 0, autoWidth);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+
+	/**
 	 * @exclude
 	 */
 	public Knob(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theMin, float theMax, float theDefaultValue, int theX, int theY, int theWidth) {
@@ -260,9 +272,7 @@ public class Knob extends Controller<Knob> {
 	/**
 	 * @exclude
 	 */
-	@Override
-	@ControlP5.Invisible
-	public Knob updateInternalEvents(PApplet theApplet) {
+	@Override @ControlP5.Invisible public Knob updateInternalEvents(PApplet theApplet) {
 		if (isMousePressed && !cp5.keyHandler.isAltDown()) {
 			if (isActive) {
 				float c = (_myDragDirection == HORIZONTAL) ? _myControlWindow.mouseX - _myControlWindow.pmouseX : _myControlWindow.mouseY - _myControlWindow.pmouseY;
@@ -287,9 +297,7 @@ public class Knob extends Controller<Knob> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public void mousePressed() {
+	@Override @ControlP5.Invisible public void mousePressed() {
 		float x = _myParent.getAbsolutePosition().x + position.x + _myRadius;
 		float y = _myParent.getAbsolutePosition().y + position.y + _myRadius;
 		if (PApplet.dist(x, y, _myControlWindow.mouseX, _myControlWindow.mouseY) < _myRadius) {
@@ -311,29 +319,16 @@ public class Knob extends Controller<Knob> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public void mouseReleased() {
-		// isActive = false;
-	}
-
-	/**
-	 * @exclude {@inheritDoc}
-	 */
-	@Override
-	@ControlP5.Invisible
-	public void mouseReleasedOutside() {
+	@Override @ControlP5.Invisible public void mouseReleasedOutside() {
 		isActive = false;
 	}
 
-	@Override
-	public Knob setMin(float theValue) {
+	@Override public Knob setMin(float theValue) {
 		_myMin = theValue;
 		return this;
 	}
 
-	@Override
-	public Knob setMax(float theValue) {
+	@Override public Knob setMax(float theValue) {
 		_myMax = theValue;
 		return this;
 	}
@@ -363,8 +358,7 @@ public class Knob extends Controller<Knob> {
 		}
 	}
 
-	@Override
-	public Knob setValue(float theValue) {
+	@Override public Knob setValue(float theValue) {
 		theValue = PApplet.map(theValue, _myMin, _myMax, 0, 1);
 		if (isConstrained) {
 			theValue = PApplet.constrain(theValue, 0, 1);
@@ -373,8 +367,7 @@ public class Knob extends Controller<Knob> {
 		return this;
 	}
 
-	@Override
-	public float getValue() {
+	@Override public float getValue() {
 		_myValue = PApplet.map(_myTickMarksNum > 0 ? modifiedValue : currentValue, 0, 1, _myMin, _myMax);
 		return _myValue;
 	}
@@ -405,8 +398,7 @@ public class Knob extends Controller<Knob> {
 	 * Changes the value of the knob when hovering and using the mouse wheel or the scroll function
 	 * of a multi-touch track pad.
 	 */
-	@ControlP5.Invisible
-	public Knob scrolled(int theRotationValue) {
+	@ControlP5.Invisible public Knob scrolled(int theRotationValue) {
 		float f = getValue();
 		float steps = isSnapToTickMarks ? (1.0f / getNumberOfTickMarks()) : scrollSensitivity;
 		f += (getMax() - getMin()) * (-theRotationValue * steps);
@@ -417,9 +409,7 @@ public class Knob extends Controller<Knob> {
 	/**
 	 * @exclude
 	 */
-	@Override
-	@ControlP5.Invisible
-	public Knob update() {
+	@Override @ControlP5.Invisible public Knob update() {
 		setValue(_myValue);
 		return this;
 	}
@@ -443,9 +433,7 @@ public class Knob extends Controller<Knob> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public Knob updateDisplayMode(int theMode) {
+	@Override @ControlP5.Invisible public Knob updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -523,8 +511,7 @@ public class Knob extends Controller<Knob> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public Knob setOffsetAngle(float theValue) {
+	@Deprecated public Knob setOffsetAngle(float theValue) {
 		return setStartAngle(theValue);
 	}
 
@@ -532,8 +519,7 @@ public class Knob extends Controller<Knob> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public float value() {
+	@Deprecated public float value() {
 		return getValue();
 	}
 
@@ -541,8 +527,7 @@ public class Knob extends Controller<Knob> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public Knob setDisplayStyle(int theStyle) {
+	@Deprecated public Knob setDisplayStyle(int theStyle) {
 		viewStyle = theStyle;
 		return this;
 	}
@@ -551,8 +536,7 @@ public class Knob extends Controller<Knob> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public int getDisplayStyle() {
+	@Deprecated public int getDisplayStyle() {
 		return viewStyle;
 	}
 
@@ -560,9 +544,7 @@ public class Knob extends Controller<Knob> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	@ControlP5.Invisible
-	public Knob setSensitivity(float theValue) {
+	@Deprecated @ControlP5.Invisible public Knob setSensitivity(float theValue) {
 		scrollSensitivity = theValue;
 		return this;
 	}
@@ -571,8 +553,7 @@ public class Knob extends Controller<Knob> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public Knob showTickMarks(boolean theFlag) {
+	@Deprecated public Knob showTickMarks(boolean theFlag) {
 		isShowTickMarks = theFlag;
 		return this;
 	}

@@ -34,7 +34,6 @@ import processing.core.PApplet;
  * @see controlP5.draw(processing.core.PApplet)
  * @see controlP5.setDisplay(ControllerDisplay)
  * 
- * @example use/ControlP5customDisplay
  */
 @SuppressWarnings("unchecked")
 @Deprecated

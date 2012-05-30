@@ -71,8 +71,20 @@ public class Numberbox extends Controller<Numberbox> {
 
 	protected PVector autoSpacing = new PVector(10, 20, 0);
 
-	float scrollSensitivity = 0.1f;
+	protected float scrollSensitivity = 0.1f;
 
+	/**
+	 * Convenience constructor to extend Numberbox.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Numberbox(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 0, autoWidth, autoHeight);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+	
 	/**
 	 * 
 	 * @param theControlP5 ControlP5

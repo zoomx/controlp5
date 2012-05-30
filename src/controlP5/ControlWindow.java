@@ -196,12 +196,10 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		isInit = true;
 	}
 
-	@Override
-	public void windowGainedFocus(WindowEvent e) {
+	@Override public void windowGainedFocus(WindowEvent e) {
 	}
 
-	@Override
-	public void windowLostFocus(WindowEvent e) {
+	@Override public void windowLostFocus(WindowEvent e) {
 		controlP5.keyHandler.clear();
 	}
 
@@ -336,8 +334,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public void updateEvents() {
+	@ControlP5.Invisible public void updateEvents() {
 		handleMouseOver();
 		handleMouseWheelMoved();
 		if (_myTabs.size() <= 0) {
@@ -652,18 +649,23 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@ControlP5.Invisible
-	public void mouseWheelMoved(MouseWheelEvent e) {
+	@ControlP5.Invisible public void mouseWheelMoved(MouseWheelEvent e) {
 		if (mousewheel && isMouseOver()) {
 			mouseWheelMoved = e.getWheelRotation();
 		}
 	}
 
-	private void handleMouseWheelMoved() {
+	@SuppressWarnings("unchecked") private void handleMouseWheelMoved() {
 		if (mouseWheelMoved != 0) {
 			CopyOnWriteArrayList<ControllerInterface<?>> mouselist = new CopyOnWriteArrayList<ControllerInterface<?>>(mouseoverlist);
 			for (ControllerInterface<?> c : mouselist) {
 				if (c.isVisible()) {
+					if (c instanceof Controller) {
+						((Controller) c).onScroll(mouseWheelMoved);
+					}
+					if (c instanceof ControllerGroup) {
+						((ControllerGroup) c).onScroll(mouseWheelMoved);
+					}
 					if (c instanceof Slider) {
 						((Slider) c).scrolled(mouseWheelMoved);
 					} else if (c instanceof Knob) {
@@ -674,6 +676,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 						((ListBox) c).scrolled(mouseWheelMoved);
 					} else if (c instanceof DropdownList) {
 						((DropdownList) c).scrolled(mouseWheelMoved);
+
 					} else if (c instanceof Textarea) {
 						((Textarea) c).scrolled(mouseWheelMoved);
 					}
@@ -688,8 +691,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	 * @exclude
 	 * @param theCoordinates
 	 */
-	@ControlP5.Invisible
-	public void multitouch(int[][] theCoordinates) {
+	@ControlP5.Invisible public void multitouch(int[][] theCoordinates) {
 		for (int n = 0; n < theCoordinates.length; n++) {
 			mouseX = theCoordinates[n][0];
 			mouseY = theCoordinates[n][1];
@@ -1038,8 +1040,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public ControllerList tabs() {
+	@Deprecated public ControllerList tabs() {
 		return _myTabs;
 	}
 
@@ -1047,8 +1048,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public Tab tab(String theTabName) {
+	@Deprecated public Tab tab(String theTabName) {
 		return controlP5.getTab(this, theTabName);
 	}
 
@@ -1056,8 +1056,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public Tab currentTab() {
+	@Deprecated public Tab currentTab() {
 		for (int i = 1; i < _myTabs.size(); i++) {
 			if (((Tab) _myTabs.get(i)).isActive()) {
 				return (Tab) _myTabs.get(i);
@@ -1071,8 +1070,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	 * @deprecated
 	 * @param theMode
 	 */
-	@Deprecated
-	public void setMode(int theMode) {
+	@Deprecated public void setMode(int theMode) {
 		setUpdateMode(theMode);
 	}
 

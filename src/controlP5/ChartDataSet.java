@@ -12,13 +12,13 @@ import processing.core.PGraphics;
 @SuppressWarnings("serial")
 public class ChartDataSet extends ArrayList<ChartData> {
 
-	private CColor _myColor;
+	protected CColor _myColor;
 
-	private float _myStrokeWeight = 1;
+	protected float _myStrokeWeight = 1;
 
-	private int[] colors = new int[0];
+	protected int[] colors = new int[0];
 
-	private final String _myName;
+	protected final String _myName;
 
 	public ChartDataSet(String theName) {
 		_myName = theName;

@@ -69,14 +69,27 @@ public class Matrix extends Controller<Matrix> {
 
 	private Thread t;
 
-	private int gapX = 1;
+	protected int gapX = 1;
 
-	private int gapY = 1;
+	protected int gapY = 1;
 
 	private Object _myPlug;
 
 	private String _myPlugName;
 
+	/**
+	 * Convenience constructor to extend Matrix.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Matrix(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 10, 10, 0, 0, 100, 100);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+	
+	
 	public Matrix(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theCellX, int theCellY, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myInterval = 100;

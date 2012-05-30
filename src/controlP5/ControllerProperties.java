@@ -102,9 +102,9 @@ public class ControllerProperties {
 		Format.JSON.set(new JSONFormat());
 	}
 
-	final static int OPEN = 0;
+	public final static int OPEN = 0;
 
-	final static int CLOSE = 1;
+	public final static int CLOSE = 1;
 
 	public static String defaultName = "controlP5";
 

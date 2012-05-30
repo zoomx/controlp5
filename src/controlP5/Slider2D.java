@@ -24,7 +24,20 @@ public class Slider2D extends Controller<Slider2D> {
 	public boolean isCrosshairs = true;
 
 	private String _myValueLabelSeparator = ",";
+	
+	/**
+	 * Convenience constructor to extend Slider2D.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Slider2D(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 99, 9);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
 
+	
 	protected Slider2D(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myArrayValue = new float[] { 0.0f, 0.0f };
