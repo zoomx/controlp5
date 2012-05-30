@@ -6,7 +6,9 @@ package controlP5;
 public class ChartData {
 
 	protected float _myValue;
+
 	protected String _myText;
+
 	protected int _myColor;
 
 	public ChartData(float theValue) {

@@ -71,6 +71,18 @@ public class DropdownList extends ControlGroup<DropdownList> {
 
 	private boolean bulkadding;
 
+	/**
+	 * Convenience constructor to extend DropdownList.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public DropdownList(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 99, 99);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+
 	protected DropdownList(ControlP5 theControlP5, ControllerGroup<?> theGroup, String theName, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theGroup, theName, theX, theY, theW, 9);
 
@@ -103,13 +115,11 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	public String getStringValue() {
+	@Override public String getStringValue() {
 		return getCaptionLabel().toString();
 	}
 
-	@Override
-	public DropdownList setValue(float theValue) {
+	@Override public DropdownList setValue(float theValue) {
 		for (ListBoxItem l : items) {
 			if ((l.value == theValue)) {
 				_myValue = l.value;
@@ -168,13 +178,11 @@ public class DropdownList extends ControlGroup<DropdownList> {
 		return this;
 	}
 
-	@ControlP5.Invisible
-	public float getScrollPosition() {
+	@ControlP5.Invisible public float getScrollPosition() {
 		return _myScrollbar.getValue();
 	}
 
-	@ControlP5.Invisible
-	public void scrolled(int theStep) {
+	@ControlP5.Invisible public void scrolled(int theStep) {
 		float step = 1.0f / items.size();
 		scroll((1 - getScrollPosition()) + (theStep * step));
 	}
@@ -199,8 +207,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 		}
 	}
 
-	@ControlP5.Invisible
-	public DropdownList updateListBoxItems() {
+	@ControlP5.Invisible public DropdownList updateListBoxItems() {
 		scroll();
 		return this;
 	}
@@ -222,8 +229,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 		return this;
 	}
 
-	@Override
-	public DropdownList setHeight(int theHeight) {
+	@Override public DropdownList setHeight(int theHeight) {
 		_myOriginalBackgroundHeight = theHeight;
 
 		// re-adjust the _myAdjustedListHeight variable based on height change.
@@ -252,9 +258,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public DropdownList updateInternalEvents(PApplet theApplet) {
+	@Override @ControlP5.Invisible public DropdownList updateInternalEvents(PApplet theApplet) {
 		boolean xx = _myControlWindow.mouseX > getAbsolutePosition().x && _myControlWindow.mouseX < getAbsolutePosition().x + _myWidth;
 		// there is a 1px gap between bar and controllers, so -1 the top-y-position
 		boolean yy = _myControlWindow.mouseY > getAbsolutePosition().y - 1 && _myControlWindow.mouseY < getAbsolutePosition().y + _myBackgroundHeight;
@@ -301,8 +305,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 		}
 	}
 
-	@Override
-	public DropdownList setWidth(int theWidth) {
+	@Override public DropdownList setWidth(int theWidth) {
 		_myWidth = theWidth;
 		updateButtonWidth();
 		_myScrollbar.position.x = _myWidth - _myScrollbarWidth;
@@ -448,8 +451,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@ControlP5.Invisible
-	public void controlEvent(ControlEvent theEvent) {
+	@ControlP5.Invisible public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.getController() instanceof Button) {
 			try {
 				_myValue = theEvent.getController().getValue();
@@ -480,13 +482,11 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	 * 
 	 * @exclude {@inheritDoc}
 	 */
-	@ControlP5.Invisible
-	public void keyEvent(final KeyEvent theEvent) {
+	@ControlP5.Invisible public void keyEvent(final KeyEvent theEvent) {
 		super.keyEvent(theEvent);
 		float x = getAbsolutePosition().x;
 		float y = getAbsolutePosition().y;
-		boolean b = (getWindow().mouseX > x && getWindow().mouseX < (x + _myWidth) && getWindow().mouseY > (y - getBarHeight()) && getWindow().mouseY < y
-				+ _myOriginalBackgroundHeight);
+		boolean b = (getWindow().mouseX > x && getWindow().mouseX < (x + _myWidth) && getWindow().mouseY > (y - getBarHeight()) && getWindow().mouseY < y + _myOriginalBackgroundHeight);
 		if (b && isOpen()) {
 			float step = (1.0f / (float) items.size());
 			if (cp5.keyHandler.isShiftDown) {
@@ -540,8 +540,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public DropdownList setColor(CColor theColor) {
+	@Override public DropdownList setColor(CColor theColor) {
 		setColorActive(theColor.getActive());
 		setColorForeground(theColor.getForeground());
 		setColorBackground(theColor.getBackground());
@@ -553,8 +552,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public DropdownList setColorActive(int theColor) {
+	@Override public DropdownList setColorActive(int theColor) {
 		super.setColorActive(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setActive(theColor);
@@ -566,8 +564,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public DropdownList setColorForeground(int theColor) {
+	@Override public DropdownList setColorForeground(int theColor) {
 		super.setColorForeground(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setForeground(theColor);
@@ -579,8 +576,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public DropdownList setColorBackground(int theColor) {
+	@Override public DropdownList setColorBackground(int theColor) {
 		super.setColorBackground(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setBackground(theColor);
@@ -592,8 +588,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public DropdownList setColorLabel(int theColor) {
+	@Override public DropdownList setColorLabel(int theColor) {
 		super.setColorLabel(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setCaptionLabel(theColor);
@@ -605,9 +600,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public DropdownList setColorValue(int theColor) {
+	@Override @ControlP5.Invisible public DropdownList setColorValue(int theColor) {
 		super.setColorValue(theColor);
 		for (int i = 0; i < items.size(); i++) {
 			(items.get(i)).getColor().setValueLabel(theColor);
@@ -636,8 +629,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public ListBoxItem item(int theIndex) {
+	@Deprecated public ListBoxItem item(int theIndex) {
 		return getItem(theIndex);
 	}
 
@@ -645,8 +637,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public ListBoxItem item(String theItemName) {
+	@Deprecated public ListBoxItem item(String theItemName) {
 		return getItem(theItemName);
 	}
 
@@ -654,8 +645,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public ListBoxItem item(Controller<?> theButton) {
+	@Deprecated public ListBoxItem item(Controller<?> theButton) {
 		return getItem(theButton);
 	}
 
@@ -664,8 +654,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	 * @deprecated
 	 * @return
 	 */
-	@Deprecated
-	public boolean isScrollbarVisible() {
+	@Deprecated public boolean isScrollbarVisible() {
 		return isScrollbarVisible;
 	}
 
@@ -673,9 +662,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 	 * @deprecated
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	@Deprecated
-	public String stringValue() {
+	@Override @Deprecated public String stringValue() {
 		return captionLabel().toString();
 	}
 

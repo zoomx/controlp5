@@ -500,7 +500,6 @@ public class ControlFont {
 
 		@Override
 		public void draw(PApplet theApplet, Label theLabel) {
-			System.out.println(size);
 			theApplet.textFont(pfont, size);
 			theApplet.fill(0xffff0000); //theLabel.getColor()
 			if (theLabel.isMultiline()) {

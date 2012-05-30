@@ -40,15 +40,27 @@ import java.util.List;
  */
 public class Accordion extends ControlGroup<Accordion> {
 
-	private final List<ControlGroup<?>> items = new ArrayList<ControlGroup<?>>();
+	protected final List<ControlGroup<?>> items = new ArrayList<ControlGroup<?>>();
 
-	private int spacing = 1;
+	protected int spacing = 1;
 
-	private int minHeight = 100;
+	protected int minHeight = 100;
 
-	private int itemheight;
+	protected int itemheight;
 
-	private int _myMode = SINGLE;
+	protected int _myMode = SINGLE;
+	
+	/**
+	 * Convenience constructor to extend Accordion.
+	 * 
+	 * @example use/ControlP5extendController 
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Accordion(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 200);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
 
 	Accordion(ControlP5 theControlP5, Tab theTab, String theName, int theX, int theY, int theW) {
 		super(theControlP5, theTab, theName, theX, theY, theW, 9);
@@ -84,8 +96,7 @@ public class Accordion extends ControlGroup<Accordion> {
 	 * @see controlP5.Accordion#removeItem(ControlGroup)
 	 * @return ControllerInterface
 	 */
-	@Override
-	public Accordion remove(ControllerInterface<?> theGroup) {
+	@Override public Accordion remove(ControllerInterface<?> theGroup) {
 		if (theGroup instanceof ControlGroup<?>) {
 			items.remove(theGroup);
 			((ControlGroup<?>) theGroup).removeListener(this);
@@ -166,8 +177,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		return itemheight;
 	}
 
-	@Override
-	public Accordion setWidth(int theWidth) {
+	@Override public Accordion setWidth(int theWidth) {
 		super.setWidth(theWidth);
 		for (ControlGroup<?> cg : items) {
 			cg.setWidth(theWidth);
@@ -178,9 +188,7 @@ public class Accordion extends ControlGroup<Accordion> {
 	/**
 	 * @exclude {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public void controlEvent(ControlEvent theEvent) {
+	@Override @ControlP5.Invisible public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.isGroup()) {
 			int n = 0;
 			for (ControlGroup<?> cg : items) {
@@ -218,7 +226,7 @@ public class Accordion extends ControlGroup<Accordion> {
 	}
 
 	public Accordion open(int... theId) {
-		if(theId[0]==-1) {
+		if (theId[0] == -1) {
 			return open();
 		}
 		int n = 0, i = 0;
@@ -242,7 +250,7 @@ public class Accordion extends ControlGroup<Accordion> {
 	}
 
 	public Accordion close(int... theId) {
-		if(theId[0]==-1) {
+		if (theId[0] == -1) {
 			return close();
 		}
 		int n = 0, i = 0;

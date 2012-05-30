@@ -19,15 +19,27 @@ public class Chart extends Controller<Chart> {
 	public final static int PIE = 4;
 	public final static int AREA = 5;
 
-	private LinkedHashMap<String, ChartDataSet> _myDataSet;
+	protected final LinkedHashMap<String, ChartDataSet> _myDataSet;
 
-	private float resolution = 1;
+	protected float resolution = 1;
 
-	private float strokeWeight = 1;
+	protected float strokeWeight = 1;
 
-	private float _myMin = 0;
+	protected float _myMin = 0;
 
-	private float _myMax = 1;
+	protected float _myMax = 1;
+
+	/**
+	 * Convenience constructor to extend Chart.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Chart(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 200, 100);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
 
 	protected Chart(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
@@ -222,16 +234,13 @@ public class Chart extends Controller<Chart> {
 		return getDataSet().size();
 	}
 
-	@Override
-	public void onEnter() {
+	@Override public void onEnter() {
 	}
 
-	@Override
-	public void onLeave() {
+	@Override public void onLeave() {
 	}
 
-	@Override
-	public Chart setValue(float theValue) {
+	@Override public Chart setValue(float theValue) {
 		// TODO Auto-generated method stub
 		return this;
 	}
@@ -266,17 +275,14 @@ public class Chart extends Controller<Chart> {
 	/**
 	 * @exclude
 	 */
-	@Override
-	@ControlP5.Invisible
-	public Chart updateDisplayMode(int theMode) {
+	@Override @ControlP5.Invisible public Chart updateDisplayMode(int theMode) {
 		return updateViewMode(theMode);
 	}
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public Chart updateViewMode(int theMode) {
+	@ControlP5.Invisible public Chart updateViewMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -473,13 +479,11 @@ public class Chart extends Controller<Chart> {
 		return this;
 	}
 
-	@Override
-	public String getInfo() {
+	@Override public String getInfo() {
 		return "type:\tChart\n" + super.toString();
 	}
 
-	@Override
-	public String toString() {
+	@Override public String toString() {
 		return super.toString() + " [ " + getValue() + " ]" + " Chart " + "(" + this.getClass().getSuperclass() + ")";
 	}
 

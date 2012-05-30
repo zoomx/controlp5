@@ -36,7 +36,9 @@ import processing.core.PApplet;
 public abstract class ControlCanvas {
 
 	public final static int PRE = 0;
+	
 	public final static int POST = 1;
+	
 	protected int _myMode = PRE;
 
 	public ControlCanvas() {

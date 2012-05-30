@@ -39,39 +39,40 @@ import controlP5.ControlFont.BitFontLabel;
  */
 public class Label implements CDrawable {
 
-	private int _myLetterSpacing = 0;
+	
+	protected int _myLetterSpacing = 0;
 
-	private boolean isMultiline;
+	protected boolean isMultiline;
 
-	private boolean isFixedSize;
+	protected boolean isFixedSize;
 
-	private ControllerStyle _myControllerStyle = new ControllerStyle();
+	protected ControllerStyle _myControllerStyle = new ControllerStyle();
 
-	private boolean isVisible = true;
+	protected boolean isVisible = true;
 
-	private int _myColor = 0xffffffff;
+	protected int _myColor = 0xffffffff;
 
-	private boolean isColorBackground;
+	protected boolean isColorBackground;
 
-	private boolean isToUpperCase = true;
+	protected boolean isToUpperCase = true;
 
-	private boolean changed;
+	protected boolean changed;
 
-	private int _myColorBackground = 0xffffffff;
+	protected int _myColorBackground = 0xffffffff;
 
-	private int _myHeight = -1;
+	protected int _myHeight = -1;
 
-	private int _myWidth = -1;
+	protected int _myWidth = -1;
 
-	private String _myText = "";
+	protected String _myText = "";
 
-	private ControlFont _myFontLabel;
+	protected ControlFont _myFontLabel;
 
-	private int _myLineHeight = 0;
+	protected int _myLineHeight = 0;
 
-	private int alignX = ControlP5.LEFT;
+	protected int alignX = ControlP5.LEFT;
 
-	private int alignY = ControlP5.LEFT;
+	protected int alignY = ControlP5.LEFT;
 
 	public static int paddingX = 4;
 
@@ -81,11 +82,11 @@ public class Label implements CDrawable {
 
 	public int _myPaddingY = paddingY;
 
-	private Labeltype _myLabeltype;
+	protected Labeltype _myLabeltype;
 
-	private int _myTextHeight = 1;
+	protected int _myTextHeight = 1;
 
-	private float offsetYratio = 0;
+	protected float offsetYratio = 0;
 
 	private Label(Label theLabel) {
 		_myText = theLabel.getText();

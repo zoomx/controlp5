@@ -51,6 +51,20 @@ public class ColorPicker extends ControlGroup<ColorPicker> {
 
 	private boolean broadcast;
 
+	
+	/**
+	 * Convenience constructor to extend ColorPicker.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public ColorPicker(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0,255,10);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+
+	
 	protected ColorPicker(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		isBarVisible = false;
@@ -58,7 +72,7 @@ public class ColorPicker extends ControlGroup<ColorPicker> {
 		_myArrayValue = new float[] { 255, 255, 255, 255 };
 
 		currentColor = addCanvas(new ColorField());
-		sliderRed = cp5.addSlider(theName + "-red", 0, 255, 0, 0, theWidth, 10);
+		sliderRed = cp5.addSlider(theName + "-red", 0, 255, 0, 0, theWidth, theHeight);
 		cp5.removeProperty(sliderRed);
 		sliderRed.setId(0);
 		sliderRed.setBroadcast(false);
@@ -72,7 +86,7 @@ public class ColorPicker extends ControlGroup<ColorPicker> {
 		sliderRed.setDecimalPrecision(0);
 		sliderRed.setValue(255);
 
-		sliderGreen = cp5.addSlider(theName + "-green", 0, 255, 0, 11, theWidth, 10);
+		sliderGreen = cp5.addSlider(theName + "-green", 0, 255, 0, theHeight+1, theWidth, theHeight);
 		cp5.removeProperty(sliderGreen);
 		sliderGreen.setId(1);
 		sliderGreen.setBroadcast(false);
@@ -86,7 +100,7 @@ public class ColorPicker extends ControlGroup<ColorPicker> {
 		sliderGreen.setDecimalPrecision(0);
 		sliderGreen.setValue(255);
 
-		sliderBlue = cp5.addSlider(theName + "-blue", 0, 255, 0, 22, theWidth, 10);
+		sliderBlue = cp5.addSlider(theName + "-blue", 0, 255, 0, (theHeight+1)*2, theWidth, theHeight);
 		cp5.removeProperty(sliderBlue);
 		sliderBlue.setId(2);
 		sliderBlue.setBroadcast(false);
@@ -100,7 +114,7 @@ public class ColorPicker extends ControlGroup<ColorPicker> {
 		sliderBlue.setDecimalPrecision(0);
 		sliderBlue.setValue(255);
 
-		sliderAlpha = cp5.addSlider(theName + "-alpha", 0, 255, 0, 33, theWidth, 10);
+		sliderAlpha = cp5.addSlider(theName + "-alpha", 0, 255, 0, (theHeight+1)*3, theWidth, theHeight);
 		cp5.removeProperty(sliderAlpha);
 		sliderAlpha.setId(3);
 		sliderAlpha.setBroadcast(false);

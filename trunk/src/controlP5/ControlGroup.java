@@ -58,6 +58,18 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 	protected List<ControlListener> _myControlListener;
 	
 	protected boolean isArrowVisible = true;
+	
+	/**
+	 * Convenience constructor to extend ControlGroup.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public ControlGroup(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0,100,9);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
 
 	public ControlGroup(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theX, int theY, int theW, int theH) {
 		super(theControlP5, theParent, theName, theX, theY);

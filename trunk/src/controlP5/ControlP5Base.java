@@ -53,6 +53,10 @@ public class ControlP5Base implements ControlP5Constants {
 
 	protected Map<String, FieldChangedListener> _myFieldChangedListenerMap = new HashMap<String, FieldChangedListener>();
 
+	public Tab getDefaultTab() {
+		return (Tab) cp5.controlWindow.getTabs().get(1);
+	}
+
 	protected void init(ControlP5 theControlP5) {
 		cp5 = theControlP5;
 		_myProperties = new ControllerProperties(cp5);
@@ -225,8 +229,7 @@ public class ControlP5Base implements ControlP5Constants {
 	 * A range controller, a slider that allows control on both ends of the slider.
 	 */
 	public Range addRange(Object theObject, final String theIndex, String theName, float theMin, float theMax, float theDefaultMinValue, float theDefaultMaxValue, int theX, int theY, int theW, int theH) {
-		Range myController = new Range(cp5, (ControllerGroup<?>) cp5.controlWindow.getTabs().get(1), theName, theMin, theMax, theDefaultMinValue, theDefaultMaxValue, theX, theY,
-				theW, theH);
+		Range myController = new Range(cp5, (ControllerGroup<?>) cp5.controlWindow.getTabs().get(1), theName, theMin, theMax, theDefaultMinValue, theDefaultMaxValue, theX, theY, theW, theH);
 		cp5.register(theObject, theIndex, myController);
 		myController.registerProperty("lowValue").registerProperty("highValue");
 		return myController;
@@ -461,7 +464,7 @@ public class ControlP5Base implements ControlP5Constants {
 	// addDropdownList theObject
 
 	public ColorPicker addColorPicker(final String theName) {
-		return addColorPicker(theName, 0, 0, 255, 20);
+		return addColorPicker(theName, 0, 0, 255, 10);
 	}
 
 	/**
@@ -598,8 +601,7 @@ public class ControlP5Base implements ControlP5Constants {
 		Controller.autoSpacing.z = theZ;
 	}
 
-	@SuppressWarnings("static-access")
-	protected void linebreak(Controller<?> theController, boolean theFlag, int theW, int theH, PVector theSpacing) {
+	@SuppressWarnings("static-access") protected void linebreak(Controller<?> theController, boolean theFlag, int theW, int theH, PVector theSpacing) {
 		if (currentGroupPointer.autoPosition.x + theController.autoSpacing.x + theW > cp5.papplet.width) {
 			currentGroupPointer.autoPosition.y += currentGroupPointer.tempAutoPositionHeight;
 			currentGroupPointer.autoPosition.x = currentGroupPointer.autoPositionOffsetX;
@@ -783,8 +785,7 @@ public class ControlP5Base implements ControlP5Constants {
 	 * 
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public <C> C addGroup(final Object theObject, final String theIndex, final String theName, final Class<C> theClass, int theX, int theY, int theW, int theH) {
+	@ControlP5.Invisible public <C> C addGroup(final Object theObject, final String theIndex, final String theName, final Class<C> theClass, int theX, int theY, int theW, int theH) {
 		ControlGroup<?> c = null;
 		if (theClass.equals(DropdownList.class)) {
 			c = addDropdownList(theName, theX, theY, theW, theH);
@@ -815,7 +816,7 @@ public class ControlP5Base implements ControlP5Constants {
 		addControllersFor("", theApplet);
 		return this;
 	}
-	
+
 	/**
 	 * Adds controllers for a specific object using annotations.
 	 * <p>
@@ -845,8 +846,7 @@ public class ControlP5Base implements ControlP5Constants {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object getObjectForController(ControllerInterface theController) {
+	@SuppressWarnings("unchecked") public Object getObjectForController(ControllerInterface theController) {
 		for (Iterator it = _myObjectToControllerMap.entrySet().iterator(); it.hasNext();) {
 			Map.Entry entry = (Map.Entry) it.next();
 			Object key = entry.getKey();
@@ -1017,8 +1017,7 @@ public class ControlP5Base implements ControlP5Constants {
 						if (params.length() > 0) {
 							params = params.substring(0, params.length() - 2);
 						}
-						s.add(c.getCanonicalName() + " : " + method.getReturnType().getSimpleName().replace("Object", theClass.getSimpleName()) + " " + method.getName() + "("
-								+ params + ") ");
+						s.add(c.getCanonicalName() + " : " + method.getReturnType().getSimpleName().replace("Object", theClass.getSimpleName()) + " " + method.getName() + "(" + params + ") ");
 					}
 				}
 			}
@@ -1038,8 +1037,8 @@ public class ControlP5Base implements ControlP5Constants {
 		cp5.enableShortcuts();
 		return cp5;
 	}
-	
-	private char[] fromIntToChar(int ...theChar) {
+
+	private char[] fromIntToChar(int... theChar) {
 		char[] n = new char[theChar.length];
 		for (int i = 0; i < n.length; i++) {
 			if (theChar[i] >= 'a' && theChar[i] <= 'z') {
@@ -1048,14 +1047,14 @@ public class ControlP5Base implements ControlP5Constants {
 			n[i] = (char) theChar[i];
 		}
 		return n;
-	} 
-	
-	public ControlP5 removeKeyFor(ControlKey theKey, int ...theChar) {
+	}
+
+	public ControlP5 removeKeyFor(ControlKey theKey, int... theChar) {
 		cp5.keyHandler.removeKeyFor(theKey, fromIntToChar(theChar));
 		return cp5;
 	}
-	
-	public ControlP5 removeKeysFor(int ...theChar) {
+
+	public ControlP5 removeKeysFor(int... theChar) {
 		cp5.keyHandler.removeKeysFor(fromIntToChar(theChar));
 		return cp5;
 	}

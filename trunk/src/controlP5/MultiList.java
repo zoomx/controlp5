@@ -59,15 +59,27 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 
 	protected MultiListInterface mostRecent;
 
-	private CRect _myRect;
+	protected CRect _myRect;
 
-	private int _myDirection = ControlP5Constants.RIGHT;
+	protected int _myDirection = ControlP5Constants.RIGHT;
 
 	public int closeDelay = 30;
 
-	private int _myDefaultButtonHeight = 10;
+	protected int _myDefaultButtonHeight = 10;
 
-	private boolean isUpperCase = true;
+	protected boolean isUpperCase = true;
+	
+	/**
+	 * Convenience constructor to extend MultiList.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public MultiList(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 99, 19);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
 	
 	public MultiList(ControlP5 theControlP5, Tab theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, 0);
@@ -290,13 +302,6 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	@Override
 	public MultiList update() {
 		return setValue(_myValue);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void mouseReleased() {
 	}
 
 	@Deprecated

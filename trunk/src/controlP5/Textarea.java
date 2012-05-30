@@ -54,6 +54,20 @@ public class Textarea extends ControllerGroup<Textarea> implements ControlListen
 	private int _myScrollbarWidth = 5;
 
 	/**
+	 * Convenience constructor to extend Textarea.
+	 * 
+	 * @example use/ControlP5extendController
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Textarea(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, "", 0, 0, 199, 99);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+
+
+	
+	/**
 	 * 
 	 * @param theControlP5 ControlP5
 	 * @param theGroup ControllerGroup

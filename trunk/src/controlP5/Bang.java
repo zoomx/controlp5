@@ -42,7 +42,19 @@ public class Bang extends Controller<Bang> {
 	protected int cnt;
 
 	protected int triggerId = PRESSED;
-
+	
+	/**
+	 * Convenience constructor to extend Bang.
+	 * 
+	 * @example use/ControlP5extendController 
+	 * @param theControlP5
+	 * @param theName
+	 */
+	public Bang(ControlP5 theControlP5, String theName) {
+		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 20, 20);
+		theControlP5.register(theControlP5.papplet, theName, this);
+	}
+	
 	protected Bang(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel.setPadding(0,Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
