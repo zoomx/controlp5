@@ -197,7 +197,6 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		_myControlWindow = _myParent.getWindow();
 
 		for (int i = 0; i < controllers.size(); i++) {
-			System.out.println("set parent for " + controllers.get(i) + " to " + _myControlWindow);
 			if (controllers.get(i) instanceof Controller<?>) {
 				((Controller<?>) controllers.get(i))._myControlWindow = _myControlWindow;
 			}
@@ -1178,6 +1177,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		}
 		return me;
 	}
+
 
 	/**
 	 * @param theArray
