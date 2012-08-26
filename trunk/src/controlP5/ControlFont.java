@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -54,10 +55,12 @@ public class ControlFont {
 	 */
 	public static boolean RENDER_2X;
 
+
 	public ControlFont(PFont theFont) {
 		this(theFont, checkFontSize(theFont));
 
 	}
+
 
 	static private int checkFontSize(PFont theFont) {
 		try {
@@ -68,78 +71,102 @@ public class ControlFont {
 		}
 	}
 
+
 	public ControlFont(PFont theFont, int theFontSize) {
 		this(theFont, theFontSize, theFontSize + 2);
 	}
+
 
 	public ControlFont(PFont theFont, int theFontSize, int theLineHeight) {
 		_myFontLabel = new PFontLabel(theFont, theFontSize, theLineHeight);
 	}
 
+
 	protected ControlFont(int theBitFontIndex) {
 		_myFontLabel = new BitFontLabel(theBitFontIndex);
 	}
+
 
 	void init(Label theLabel) {
 		_myFontLabel.init(theLabel);
 	}
 
+
 	void adjust(PApplet theApplet, Label theLabel) {
 		get().adjust(theApplet, theLabel);
 	}
+
 
 	public void draw(PApplet theApplet, Label theLabel) {
 		get().draw(theApplet, theLabel);
 	}
 
+
 	public FontLabel get() {
 		return _myFontLabel;
 	}
+
 
 	public int getWidth() {
 		return get().getWidth();
 	}
 
+
 	public int getHeight() {
 		return get().getHeight();
 	}
+
 
 	public static int getWidthFor(String theText, Label theLabel, PApplet theApplet) {
 		if (theLabel.getFont().get() instanceof BitFontLabel) {
 			BitFontLabel bf = ((BitFontLabel) theLabel.getFont().get());
 			return BitFontRenderer.getWidth(theLabel, bf, theText);
-		} else {
+		}
+		else {
 			PFontLabel pf = ((PFontLabel) theLabel.getFont().get());
 			theApplet.textFont(pf.pfont, pf.size);
 			return (int) theApplet.textWidth(theText);
 		}
 	}
 
+
 	interface FontLabel {
 
 		void adjust(PApplet theApplet, Label theLabel);
 
+
 		void draw(PApplet theApplet, Label theLabel);
+
 
 		int getWidth();
 
+
 		int getHeight();
+
 
 		void init(Label theLabel);
 
+
 		int getCenter();
+
 
 		int getTop();
 
+
 		int getBottom();
+
 
 		int getBaseline();
 
+
 		int getTextHeight();
+
 
 		int getOverflow();
 
+
 		int getOffset(int theIndex);
+
 
 		int getSize();
 
@@ -173,12 +200,13 @@ public class ControlFont {
 
 		private int[] offset = new int[2];
 
+
 		BitFontLabel(int theIndex) {
 			_myFontIndex = theIndex;
 		}
 
-		@Override
-		public void init(Label theLabel) {
+
+		@Override public void init(Label theLabel) {
 			width = BitFontRenderer.getWidth(theLabel, this);
 			height = BitFontRenderer.getHeight(this.getFontIndex());
 			bottom = 3;
@@ -187,13 +215,13 @@ public class ControlFont {
 			baseline = 0;
 		}
 
-		@Override
-		public int getSize() {
+
+		@Override public int getSize() {
 			return 6;
 		}
 
-		@Override
-		public void adjust(PApplet theApplet, Label theLabel) {
+
+		@Override public void adjust(PApplet theApplet, Label theLabel) {
 			if (_myImage == null) {
 				adjustTexture(theApplet, theLabel);
 			}
@@ -207,6 +235,7 @@ public class ControlFont {
 			}
 		}
 
+
 		private void calculateHeight(Label theLabel) {
 			_myTextHeight = BitFontRenderer.write(this, theLabel);
 			if (theLabel.isMultiline()) {
@@ -215,18 +244,18 @@ public class ControlFont {
 			}
 		}
 
-		@Override
-		public int getOverflow() {
+
+		@Override public int getOverflow() {
 			return (_myTextHeight - height);
 		}
 
-		@Override
-		public int getOffset(int theIndex) {
+
+		@Override public int getOffset(int theIndex) {
 			return offset[theIndex];
 		}
 
-		@Override
-		public void draw(PApplet theApplet, Label theLabel) {
+
+		@Override public void draw(PApplet theApplet, Label theLabel) {
 			theApplet.noStroke();
 			theApplet.translate(0, -top);
 			debug(theApplet, theLabel);
@@ -235,10 +264,11 @@ public class ControlFont {
 
 		}
 
-		@Override
-		public int getTextHeight() {
+
+		@Override public int getTextHeight() {
 			return _myTextHeight;
 		}
+
 
 		private void debug(PApplet theApplet, Label theLabel) {
 			if (DEBUG) {
@@ -258,11 +288,13 @@ public class ControlFont {
 			}
 		}
 
+
 		private void adjustTexture(PApplet theApplet, Label theLabel) {
 			if (theLabel.isMultiline() || theLabel.isFixedSize()) {
 				width = theLabel.getWidth();
 				height = theLabel.getHeight();
-			} else {
+			}
+			else {
 				width = BitFontRenderer.getWidth(theLabel, this);
 				height = BitFontRenderer.getHeight(this.getFontIndex());
 				width += changeInSizeThreshold;
@@ -275,6 +307,7 @@ public class ControlFont {
 			theLabel.setChanged(false);
 		}
 
+
 		private boolean changed(Label a, Label b) {
 			if (b.isMultiline()) {
 				if (b.isChanged()) {
@@ -284,7 +317,8 @@ public class ControlFont {
 			}
 			if (a == null || b == null) {
 				return false;
-			} else if (b.isChanged()) {
+			}
+			else if (b.isChanged()) {
 				b.setChanged(false);
 				return true;
 			}
@@ -292,48 +326,52 @@ public class ControlFont {
 			return !a.getText().equals(b.getText());
 		}
 
-		@Override
-		public int getHeight() {
+
+		@Override public int getHeight() {
 			return height;
 		}
 
-		@Override
-		public int getWidth() {
+
+		@Override public int getWidth() {
 			return width;
 		}
 
-		@Override
-		public int getCenter() {
+
+		@Override public int getCenter() {
 			return center;
 		}
 
-		@Override
-		public int getBaseline() {
+
+		@Override public int getBaseline() {
 			return baseline;
 		}
 
-		@Override
-		public int getTop() {
+
+		@Override public int getTop() {
 			return top;
 		}
 
-		@Override
-		public int getBottom() {
+
+		@Override public int getBottom() {
 			return bottom;
 		}
+
 
 		public void setFontIndex(int theIndex) {
 			_myFontIndex = theIndex;
 			_myImage = null;
 		}
 
+
 		public int getFontIndex() {
 			return _myFontIndex;
 		}
 
+
 		public PImage getImage() {
 			return _myImage;
 		}
+
 
 		public PImage getImageMask() {
 			return _myImageMask;
@@ -367,14 +405,15 @@ public class ControlFont {
 
 		private int size;
 
+
 		PFontLabel(PFont theFont, int theFontSize, int theLineHeight) {
 			pfont = theFont;
 			size = theFontSize;
 			txt = new ArrayList<String>();
 		}
 
-		@Override
-		public void init(Label theLabel) {
+
+		@Override public void init(Label theLabel) {
 			// when the font changes, init is called.
 			// width and height should be adjusted to the updated font here,
 			// but we need PApplet here to determine the width of the label.
@@ -382,62 +421,65 @@ public class ControlFont {
 			// might result in a 1-frame-flickr but doesnt necessarily need
 			// to happen.
 		}
-		
+
+
 		public void setSize(int theSize) {
 			size = theSize;
 		}
-		@Override
-		public int getSize() {
+
+
+		@Override public int getSize() {
 			/* quickfix http://code.google.com/p/controlp5/issues/detail?id=46 first check the pfont size then default back to size */
 			return size;
 		}
 
-		@Override
-		public int getOffset(int theIndex) {
+
+		@Override public int getOffset(int theIndex) {
 			return offset[theIndex];
 		}
 
-		@Override
-		public int getTextHeight() {
+
+		@Override public int getTextHeight() {
 			return _myTextHeight;
 		}
 
-		@Override
-		public int getWidth() {
+
+		@Override public int getWidth() {
 			return width;
 		}
 
-		@Override
-		public int getHeight() {
+
+		@Override public int getHeight() {
 			return height;
 		}
 
-		@Override
-		public int getCenter() {
+
+		@Override public int getCenter() {
 			return center;
 		}
 
-		@Override
-		public int getTop() {
+
+		@Override public int getTop() {
 			return top;
 		}
 
-		@Override
-		public int getBottom() {
+
+		@Override public int getBottom() {
 			return bottom;
 		}
 
-		@Override
-		public int getBaseline() {
+
+		@Override public int getBaseline() {
 			return baseline;
 		}
+
 
 		public PFont getFont() {
 			return pfont;
 		}
 
-		@Override
-		public void adjust(PApplet theApplet, Label theLabel) {
+
+		@Override public void adjust(PApplet theApplet, Label theLabel) {
 			if (theLabel.isChanged()) {
 				theApplet.textFont(pfont, size);
 				// the origin of a PFont Label is top left corner, therefore
@@ -461,6 +503,7 @@ public class ControlFont {
 			}
 		}
 
+
 		private void calculateHeight(PApplet theApplet, Label theLabel) {
 			txt.clear();
 			String myString = theLabel.getTextFormatted();
@@ -472,7 +515,8 @@ public class ControlFont {
 				for (String w : words) {
 					if (theApplet.textWidth(myString + w) < width) {
 						myString += w + " ";
-					} else {
+					}
+					else {
 						txt.add(myString.substring(0, PApplet.max(0, myString.length() - 1)));
 						myString = w + " ";
 					}
@@ -493,22 +537,29 @@ public class ControlFont {
 			}
 		}
 
-		@Override
-		public int getOverflow() {
+
+		@Override public int getOverflow() {
 			return (_myTextHeight - height);
 		}
 
-		@Override
-		public void draw(PApplet theApplet, Label theLabel) {
+
+		@Override public void draw(PApplet theApplet, Label theLabel) {
+			PFont loadedFont = theApplet.g.textFont;
+			float loadedSize = theApplet.g.textSize;
+			if (loadedFont == null) {
+				theApplet.textSize(loadedSize); //forces default font
+				loadedFont = theApplet.g.textFont;
+			}
+			int loadedAlign = theApplet.g.textAlign;
+
 			theApplet.textFont(pfont, size);
-			theApplet.fill(0xffff0000); //theLabel.getColor()
+			theApplet.fill(theLabel.getColor());
 			if (theLabel.isMultiline()) {
-				// theApplet.fill(255, 128, 0);
-				// theApplet.rect(0, 0, theLabel.getWidth(), theLabel.getHeight());
 				theApplet.fill(theLabel.getColor());
 				theApplet.textLeading(theLabel.getLineHeight());
 				theApplet.text(s, 0, 0, theLabel.getWidth(), theLabel.getHeight());
-			} else {
+			}
+			else {
 				theApplet.translate(0, -top + 1);
 				debug(theApplet, theLabel);
 				theApplet.fill(theLabel.getColor());
@@ -517,7 +568,11 @@ public class ControlFont {
 					theApplet.text(theLabel.getTextFormatted(), 0, 0);
 				}
 			}
+
+			theApplet.textFont(loadedFont, loadedSize);
+			theApplet.textAlign(loadedAlign);
 		}
+
 
 		private void debug(PApplet theApplet, Label theLabel) {
 			if (DEBUG) {

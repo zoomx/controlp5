@@ -1,3 +1,32 @@
+2012-08-25  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 0.7.6
+
+      * src controlP5.Textfield.java:
+      fixing special character issue with e.g. ã,é,ç,Ç, etc.
+      backspace, left arrow, right arrow now respond when pressed longer
+      added isFocus()
+      implemented issue 56 http://code.google.com/p/controlp5/issues/detail?id=56 , thanks jeff
+      
+      * src controlP5.ControllerAutomator.java:
+      fixed annotation mapping for methods
+      added list support for methods
+            
+      * src controlP5.CColor.java:
+      removing alpha masking
+      
+      * src controlP5.MultiList.java:
+      Conflict with moving a Multilist from one to another tab
+      removed field _myChildren. MultiListButtons are now store in the Controller's sublements filed.
+      
+      * src controlP5.ControllerInterface.java:      
+      adding getArrayValue(int), setArrayValue(int, float), setArrayValue(float[]);
+      
+      * src controlP5.ControlP5.java:
+      adding setBroadcast(boolean) to disable/enable broadcasting of value changes.
+	
+	
+	
 2012-05-30  Andreas Schlegel  <andi at sojamo.de>
 
       * version 0.7.5
@@ -6,7 +35,7 @@
       adding empty methods onPress(), onClick(), onRelease(), onReleaseOutside(), 
       onScroll(int),onMove(),onDrag() for input access when extending a controller.
       
-      * adding convenience constructor to Controllers when extending a Controller.
+      * adding convenience constructor to Controllers, convenient when extending a Controller.
       
       * adding example use/ControlP5extendController
       

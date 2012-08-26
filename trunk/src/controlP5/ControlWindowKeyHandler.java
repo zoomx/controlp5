@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -59,26 +60,33 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 
 	private int numOfActiveKeys = 0;
 
+
 	public ControlWindowKeyHandler(ControlP5 theControlP5) {
 		_myMasterControlWindow = theControlP5.controlWindow;
 	}
+
 
 	public void update(ControlWindow theControlWindow) {
 		_myMasterControlWindow = theControlWindow;
 	}
 
+
 	public boolean isAltDown() {
 		return isAltDown;
 	}
+
 
 	public void clear() {
 		keys = new boolean[525];
 		numOfActiveKeys = 0;
 	}
 
+
 	public void keyEvent(final KeyEvent theKeyEvent, final ControlWindow theControlWindow, final boolean isMasterWindow) {
 		if (theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
-			if (keys[theKeyEvent.getKeyCode()]) {
+			
+			// allow special keys such as backspace, arrow left, arrow right to pass test when active
+			if (keys[theKeyEvent.getKeyCode()] && theKeyEvent.getKeyCode() != 8 && theKeyEvent.getKeyCode() != 37 && theKeyEvent.getKeyCode() != 39) {
 				return;
 			}
 			keys[theKeyEvent.getKeyCode()] = true;
@@ -87,21 +95,24 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			case (KeyEvent.VK_SHIFT):
 				if (_myMasterControlWindow.controlP5.isShortcuts()) {
 					isShiftDown = true;
-				} else {
+				}
+				else {
 					isShiftDown = false;
 				}
 				break;
 			case (KeyEvent.VK_ALT):
 				if (_myMasterControlWindow.controlP5.isShortcuts()) {
 					isAltDown = true;
-				} else {
+				}
+				else {
 					isAltDown = false;
 				}
 				break;
 			case (157):
 				if (_myMasterControlWindow.controlP5.isShortcuts()) {
 					isCommandDown = true;
-				} else {
+				}
+				else {
 					isCommandDown = false;
 				}
 				break;
@@ -142,6 +153,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 				}
 			}
 			KeyCode code = new KeyCode(c);
+
 			if (keymap.containsKey(code)) {
 				for (ControlKey ck : keymap.get(code)) {
 					ck.keyEvent();
@@ -155,12 +167,14 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 
 	}
 
+
 	public void reset() {
 		isShiftDown = false;
 		isKeyDown = false;
 		isAltDown = false;
 		isCommandDown = false;
 	}
+
 
 	public void mapKeyFor(ControlKey theKey, char... theChar) {
 		KeyCode kc = new KeyCode(theChar);
@@ -170,6 +184,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 		keymap.get(kc).add(theKey);
 	}
 
+
 	public void removeKeyFor(ControlKey theKey, char... theChar) {
 		List<ControlKey> l = keymap.get(new KeyCode(theChar));
 		if (l != null) {
@@ -177,26 +192,32 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 		}
 	}
 
+
 	public void removeKeysFor(char... theChar) {
 		keymap.remove(new KeyCode(theChar));
 	}
 
+
 	class KeyCode {
 
 		final char[] chars;
+
 
 		KeyCode(char... theChars) {
 			chars = theChars;
 			Arrays.sort(chars);
 		}
 
+
 		public int size() {
 			return chars.length;
 		}
 
+
 		public char[] getChars() {
 			return chars;
 		}
+
 
 		public char get(int theIndex) {
 			if (theIndex >= 0 && theIndex < size()) {
@@ -204,6 +225,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			}
 			return 0;
 		}
+
 
 		public boolean equals(Object obj) {
 			if (!(obj instanceof KeyCode)) {
@@ -224,6 +246,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			return true;
 		}
 
+
 		boolean contains(char n) {
 			for (char c : chars) {
 				if (n == c) {
@@ -232,6 +255,7 @@ public class ControlWindowKeyHandler implements ControlP5Constants {
 			}
 			return false;
 		}
+
 
 		public int hashCode() {
 			int hashCode = 0;

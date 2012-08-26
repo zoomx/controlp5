@@ -45,7 +45,6 @@ import processing.core.PApplet;
  */
 public class ControlGroup<T> extends ControllerGroup<T> implements ControlListener {
 
-	protected Button _myCloseButton;
 
 	protected int _myBackgroundHeight = 0;
 
@@ -53,11 +52,7 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 
 	protected boolean isEventActive = false;
 
-	protected boolean isBarVisible = true;
-
 	protected List<ControlListener> _myControlListener;
-	
-	protected boolean isArrowVisible = true;
 	
 	/**
 	 * Convenience constructor to extend ControlGroup.
@@ -106,6 +101,13 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 		return me;
 	}
 
+	
+	public T setSize(int theWidth, int theHeight) {
+		super.setSize(theWidth, theHeight);
+		setBackgroundHeight(theHeight);
+		return me;
+	}
+	
 	/**
 	 * get the height of the controlGroup's background.
 	 * 
@@ -194,71 +196,6 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 				}
 			}
 		}
-	}
-
-	/**
-	 * TODO redesign or deprecate add a close button to the controlbar of this controlGroup.
-	 */
-	@ControlP5.Invisible
-	public T addCloseButton() {
-		if (_myCloseButton == null) {
-			_myCloseButton = new Button(cp5, this, getName() + "close", 1, _myWidth + 1, -10, 12, 9);
-			_myCloseButton.setCaptionLabel("X");
-			_myCloseButton.addListener(this);
-		}
-		return me;
-	}
-
-	/**
-	 * TODO redesign or deprecate remove the close button.
-	 */
-	@ControlP5.Invisible
-	public T removeCloseButton() {
-		if (_myCloseButton == null) {
-			_myCloseButton.remove();
-		}
-		_myCloseButton = null;
-		return me;
-	}
-
-	/**
-	 * @return ControlGroup
-	 */
-	public T hideBar() {
-		isBarVisible = false;
-		return me;
-	}
-
-	/**
-	 * @return ControlGroup
-	 */
-	public T showBar() {
-		isBarVisible = true;
-		return me;
-	}
-
-	/**
-	 * @return boolean
-	 */
-	public boolean isBarVisible() {
-		return isBarVisible;
-	}
-
-
-	/**
-	 * @return ControlGroup
-	 */
-	public T hideArrow() {
-		isArrowVisible = false;
-		return me;
-	}
-
-	/**
-	 * @return ControlGroup
-	 */
-	public T showArrow() {
-		isArrowVisible = true;
-		return me;
 	}
 
 	/*

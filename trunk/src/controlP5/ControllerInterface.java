@@ -55,7 +55,13 @@ public interface ControllerInterface<T> {
 	public String getStringValue();
 
 	public float[] getArrayValue();
-
+	
+	public float getArrayValue(int theIndex);
+	
+	public T setArrayValue(int theIndex, float theValue);
+	
+	public T setArrayValue(float[] theArray);
+	
 	public int getId();
 
 	public PVector getPosition();
@@ -176,6 +182,9 @@ public interface ControllerInterface<T> {
 	
 	public T setMouseOver(boolean theFlag);
 	
+	public T addListener(ControlListener theListener);
+	
+	public T setCaptionLabel(String theValue);
 	/**
 	 * @exclude
 	 * @deprecated

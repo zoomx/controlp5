@@ -45,8 +45,6 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 * MultiListButtons
 	 */
 	
-	private List<MultiListButton> _myChildren;
-	
 	protected Tab _myTab;
 
 	protected boolean isVisible = true;
@@ -89,22 +87,17 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	
 	public MultiList toUpperCase(boolean theValue) {
 		isUpperCase = theValue;
-		for(MultiListButton c:_myChildren) {
-			c.toUpperCase(isUpperCase);
+		for(Controller c:getSubelements()) {
+			c.getCaptionLabel().toUpperCase(isUpperCase);
 		}
 		return this;
 	}
 	
 	@ControlP5.Invisible
 	public void setup() {
-		_myChildren = new ArrayList<MultiListButton>();
 		mostRecent = this;
 		isVisible = true;
 		updateRect(position.x, position.y, width, _myDefaultButtonHeight);
-	}
-
-	public List<MultiListButton> getChildren() {
-		return _myChildren;
 	}
 	
 	
@@ -124,8 +117,8 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 */
 	void setDirection(int theDirection) {
 		_myDirection = (theDirection == LEFT) ? LEFT : RIGHT;
-		for (int i = 0; i < _myChildren.size(); i++) {
-			((MultiListButton) _myChildren.get(i)).setDirection(_myDirection);
+		for (int i = 0; i < getSubelements().size(); i++) {
+			((MultiListButton) getSubelements().get(i)).setDirection(_myDirection);
 		}
 	}
 
@@ -138,8 +131,8 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		position.x += theX;
 		position.y += theY;
 		updateRect(position.x, position.y, width, _myDefaultButtonHeight);
-		for (int i = 0; i < _myChildren.size(); i++) {
-			((MultiListInterface) _myChildren.get(i)).updateLocation(theX, theY);
+		for (int i = 0; i < getSubelements().size(); i++) {
+			((MultiListInterface) getSubelements().get(i)).updateLocation(theX, theY);
 		}
 
 	}
@@ -148,16 +141,10 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 * removes the multilist.
 	 */
 	public void remove() {
-
-		if (_myParent != null) {
-			_myParent.remove(this);
-		}
-		if (cp5 != null) {
-			cp5.remove(this);
-		}
-		for (int i = 0; i < _myChildren.size(); i++) {
-			((MultiListButton) _myChildren.get(i)).removeListener(this);
-			((MultiListButton) _myChildren.get(i)).remove();
+		super.remove();
+		for (int i = 0; i < getSubelements().size(); i++) {
+			getSubelements().get(i).removeListener(this);
+			getSubelements().get(i).remove();
 		}
 	}
 
@@ -171,7 +158,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	public MultiListButton add(String theName, int theValue) {
 		int x = (int) position.x;
 		int yy = 0;
-		for(MultiListButton c:_myChildren) {
+		for(Controller<?> c:getSubelements()) {
 			yy+=c.getHeight()+1;
 		}
 		int y = (int) position.y + yy;//(_myDefaultButtonHeight + 1) * _myChildren.size();
@@ -180,9 +167,9 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		b.isMoveable = false;
 		cp5.register(null, "", b);
 		b.addListener(this);
-		_myChildren.add(b);
+		getSubelements().add(b);
 		b.show();
-		updateRect(position.x, position.y, width, (_myDefaultButtonHeight + 1) * _myChildren.size());
+		updateRect(position.x, position.y, width, (_myDefaultButtonHeight + 1) * getSubelements().size());
 		return b;
 	}
 
@@ -205,6 +192,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	@Override
 	@ControlP5.Invisible
 	public void draw(PApplet theApplet) {
+		super.draw(theApplet);
 		update(theApplet);
 	}
 
@@ -260,9 +248,9 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 * @param theInterface MultiListInterface
 	 */
 	public void close(MultiListInterface theInterface) {
-		for (int i = 0; i < _myChildren.size(); i++) {
-			if (theInterface != (MultiListInterface) _myChildren.get(i)) {
-				((MultiListInterface) _myChildren.get(i)).close();
+		for (int i = 0; i < getSubelements().size(); i++) {
+			if (theInterface != (MultiListInterface) getSubelements().get(i)) {
+				((MultiListInterface) getSubelements().get(i)).close();
 			}
 		}
 
@@ -273,8 +261,8 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 */
 	@Override
 	public void close() {
-		for (int i = 0; i < _myChildren.size(); i++) {
-			((MultiListInterface) _myChildren.get(i)).close();
+		for (int i = 0; i < getSubelements().size(); i++) {
+			((MultiListInterface) getSubelements().get(i)).close();
 		}
 	}
 
@@ -283,8 +271,8 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 */
 	@Override
 	public void open() {
-		for (int i = 0; i < _myChildren.size(); i++) {
-			((MultiListInterface) _myChildren.get(i)).open();
+		for (int i = 0; i < getSubelements().size(); i++) {
+			((MultiListInterface) getSubelements().get(i)).open();
 		}
 	}
 
@@ -304,9 +292,17 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		return setValue(_myValue);
 	}
 
+
 	@Deprecated
 	public List<MultiListButton> subelements() {
-		return _myChildren;
+		System.out.println("controlP5.MultiList.subelements() is deprecated since 0.7.6, use getSubelements().\nFor convenience an empty List is returned here.");
+		return new ArrayList<MultiListButton>();
+	}
+
+	@Deprecated
+	public List<MultiListButton> getChildren() {
+		System.out.println("controlP5.MultiList.getChildren() is deprecated since 0.7.6, use getSubelements().\nFor convenience an empty List is returned here.");
+		return new ArrayList<MultiListButton>();
 	}
 
 }
