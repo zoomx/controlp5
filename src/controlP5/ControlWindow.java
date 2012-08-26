@@ -134,8 +134,10 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		_myApplet = theApplet;
 		_myApplet.registerMouseEvent(this);
 		_myApplet.addMouseWheelListener(this);
-		if (!_myApplet.online) {
+		try {
 			_myApplet.frame.addWindowFocusListener(this);
+		} catch (Exception e) {
+
 		}
 		isAutoDraw = true;
 		init();
@@ -180,18 +182,14 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		 * finished.
 		 */
 
-		if (_myApplet.g.getClass().getName().indexOf("PGraphics2D") > -1 || _myApplet.g.getClass().getName().indexOf("PGraphics3D") > -1) {
-			if (rendererNotification == false) {
-				ControlP5.logger().info(
-						"You are using renderer " + _myApplet.g.getClass().getName() + ".\n" + "In order to render controlP5 elements you need to call the ControlP5's draw() manually.\n"
-								+ "Suggestion is to put controlP5.draw(); at the bottom of the draw function of your sketch.");
-				rendererNotification = true;
-			}
-		} else {
-			if (isInit == false) {
-				_myApplet.registerPre(this);
-				_myApplet.registerDraw(this);
-			}
+		// processing pre 2.0 will not draw automatically if in P3D mode. in earlier versions of controlP5
+		// this had been checked here and the user had been informed to draw controlP5 manually by adding
+		// cp5.draw() to the sketch's draw function. with processing 2.0 and this version of controlP5
+		// this notification does no longer exist.
+		
+		if (isInit == false) {
+			_myApplet.registerPre(this);
+			_myApplet.registerDraw(this);
 		}
 		isInit = true;
 	}
@@ -370,6 +368,14 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 			mouseoverlist.get(i).setMouseOver(false);
 		}
 		mouseoverlist.clear();
+	}
+
+	public ControllerInterface<?> getFirstFromMouseOverList() {
+		if (getMouseOverList().isEmpty()) {
+			return null;
+		} else {
+			return getMouseOverList().get(0);
+		}
 	}
 
 	/**

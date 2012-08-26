@@ -25,9 +25,9 @@ package controlP5;
  */
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -225,14 +225,20 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		_myCaptionLabel = new Label(cp5, theName);
 		_myCaptionLabel.setColor(color.getCaptionLabel());
 		_myValueLabel = new Label(cp5, "valueLabel");
-		_myControllerPlugList = new Vector<ControllerPlug>();
-		_myControlListener = new Vector<ControlListener>();
-		subelements = new Vector<Controller<?>>();
+		_myControllerPlugList = new ArrayList<ControllerPlug>();
+		_myControlListener = new ArrayList<ControlListener>();
+		subelements = new ArrayList<Controller<?>>();
 		_myArrayValue = new float[0];
 		_myDebugView = new DebugView();
 		setView(_myDebugView);
 	}
 
+	
+	
+	List<Controller<?>> getSubelements() {
+		return subelements;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -484,7 +490,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 	/**
 	 * continuousUpdateEvents is used for internal updates of a controller. this method is final and
-	 * can't be overwritten.
+	 * can't be overridden.
 	 * 
 	 * @exclude
 	 */
@@ -502,20 +508,19 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	@ControlP5.Invisible public final T updateEvents() {
 		if (isInside) {
-
 			boolean moved = ((_myControlWindow.mouseX - _myControlWindow.pmouseX) != 0 || (_myControlWindow.mouseY - _myControlWindow.pmouseY) != 0);
-
 			if (isMousePressed) {
 				if (moved) {
 					onDrag();
 					dragged = true;
 				}
 			} else {
-				if (moved) {
+				if (moved && this.equals(_myControlWindow.getFirstFromMouseOverList())) {
 					onMove();
 				}
 			}
 		}
+
 		if (isVisible && (isMousePressed == _myControlWindow.mouselock)) {
 			if (isMousePressed && cp5.keyHandler.isAltDown() && isMoveable) {
 				if (!cp5.isMoveable) {
@@ -761,10 +766,10 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 			_myParent.bringToFront(theController);
 		}
 		if (theController != this) {
-			if (subelements.contains(theController)) {
+			if (getSubelements().contains(theController)) {
 				if (theController instanceof Controller<?>) {
-					subelements.remove(theController);
-					subelements.add((Controller<?>) theController);
+					getSubelements().remove(theController);
+					getSubelements().add((Controller<?>) theController);
 				}
 			}
 		}
@@ -790,7 +795,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T moveTo(final String theTabName) {
 		setTab(theTabName);
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.moveTo(theTabName);
 		}
 		return me;
@@ -804,7 +809,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T moveTo(final Tab theTab) {
 		setTab(theTab.getWindow(), theTab.getName());
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.moveTo(theTab);
 		}
 		return me;
@@ -818,7 +823,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T moveTo(final PApplet theApplet) {
 		setTab("default");
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.moveTo(theApplet);
 		}
 		return me;
@@ -832,7 +837,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T moveTo(final PApplet theApplet, final String theTabName) {
 		setTab(theTabName);
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.moveTo(theApplet, theTabName);
 		}
 		return me;
@@ -845,7 +850,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T moveTo(final ControlWindow theControlWindow) {
 		setTab(theControlWindow, "default");
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.moveTo(theControlWindow);
 		}
 		return me;
@@ -859,7 +864,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T moveTo(final ControlWindow theControlWindow, final String theTabName) {
 		setTab(theControlWindow, theTabName);
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.moveTo(theControlWindow, theTabName);
 		}
 		return me;
@@ -869,7 +874,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 * {@inheritDoc}
 	 */
 	public final T moveTo(final ControllerGroup<?> theGroup, final Tab theTab, ControlWindow theControlWindow) {
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.moveTo(theGroup, theTab, theControlWindow);
 		}
 
@@ -916,7 +921,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T setTab(final String theName) {
 		setParent(cp5.getTab(theName));
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.setTab(theName);
 		}
 		return me;
@@ -927,7 +932,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T setTab(final ControlWindow theWindow, final String theName) {
 		setParent(cp5.getTab(theWindow, theName));
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.setTab(theWindow, theName);
 		}
 		return me;
@@ -941,7 +946,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	public final T setGroup(final String theName) {
 		setParent(cp5.getGroup(theName));
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.setGroup(theName);
 		}
 		return me;
@@ -949,7 +954,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 	public final T setGroup(final ControllerGroup<?> theGroup) {
 		setParent(theGroup);
-		for (Controller<?> c : subelements) {
+		for (Controller<?> c : getSubelements()) {
 			c.setGroup(theGroup);
 		}
 		return me;
@@ -1589,13 +1594,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-	/**
-	 * @param theImageDefault
-	 * @param theImageOver
-	 * @param theImageActive
-	 * @param theImageHighlight
-	 * @return Controller
-	 */
 	public T setImages(PImage theImageDefault, PImage theImageOver, PImage theImageActive, PImage theImageHighlight) {
 		setImage(theImageDefault, DEFAULT);
 		setImage(theImageOver, OVER);
@@ -1615,11 +1613,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-	/**
-	 * @param theImage
-	 * @return PImage
-	 */
-	public PImage setImage(PImage theImage) {
+	public T setImage(PImage theImage) {
 		return setImage(theImage, DEFAULT);
 	}
 
@@ -1627,21 +1621,16 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 * @param theImage
 	 * @param theState use Controller.DEFAULT (background) Controller.OVER (foreground)
 	 *            Controller.ACTIVE (active)
-	 * @return PImage
 	 */
-	public PImage setImage(PImage theImage, int theState) {
+	public T setImage(PImage theImage, int theState) {
 		if (theImage != null) {
 			images[theState] = theImage;
 			availableImages[theState] = true;
 			updateDisplayMode(IMAGE);
-			return theImage;
 		}
-		return null;
+		return me;
 	}
 
-	/**
-	 * @return Controller
-	 */
 	public T updateSize() {
 		if (images[DEFAULT] != null) {
 			setSize(images[DEFAULT]);
@@ -1731,7 +1720,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	}
 
 	/**
-	 * returns the minimum value of the controller.
+	 * returns the maximum value of the controller.
 	 * 
 	 * @return float
 	 */
@@ -1740,7 +1729,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	}
 
 	/**
-	 * returns the maximum value of the controller.
+	 * returns the minimum value of the controller.
 	 * 
 	 * @return float
 	 */

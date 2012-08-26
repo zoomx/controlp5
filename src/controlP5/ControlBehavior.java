@@ -67,7 +67,7 @@ public abstract class ControlBehavior {
 	}
 
 	/**
-	 * When extending ControlBehavior, update() has to be overwritten.
+	 * When extending ControlBehavior, update() has to be overridden.
 	 */
 	public abstract void update();
 

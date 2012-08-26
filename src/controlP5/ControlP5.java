@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -62,43 +63,40 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public ControlWindow controlWindow;
+	@ControlP5.Invisible public ControlWindow controlWindow;
 
 	public final static CColor RETRO = new CColor(0xff00698c, 0xff003652, 0xff08a2cf, 0xffffffff, 0xffffffff);
+
 	public final static CColor CP5BLUE = new CColor(0xff016c9e, 0xff02344d, 0xff00b4ea, 0xffffffff, 0xffffffff);
+
 	public final static CColor RED = new CColor(0xffaa0000, 0xff660000, 0xffff0000, 0xffffffff, 0xffffffff);
+
 	public final static CColor WHITE = new CColor(0x99ffffff, 0x55ffffff, 0xffffffff, 0xffffffff, 0xffffffff);
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	static CColor color = new CColor(CP5BLUE);
+	@ControlP5.Invisible static CColor color = new CColor(CP5BLUE);
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public ControlWindowKeyHandler keyHandler;
+	@ControlP5.Invisible public ControlWindowKeyHandler keyHandler;
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public PApplet papplet;
+	@ControlP5.Invisible public PApplet papplet;
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public static final String VERSION = "0.7.5";// "##version##";
+	@ControlP5.Invisible public static final String VERSION = "0.7.6";// "##version##";
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public static boolean isApplet;
+	@ControlP5.Invisible public static boolean isApplet = false;
 
 	public static final int standard58 = 0;
 
@@ -116,8 +114,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public static final Logger logger = Logger.getLogger(ControlP5.class.getName());
+	@ControlP5.Invisible public static final Logger logger = Logger.getLogger(ControlP5.class.getName());
 
 	private Map<String, ControllerInterface<?>> _myControllerMap;
 
@@ -142,7 +139,7 @@ public class ControlP5 extends ControlP5Base {
 	protected ControlFont controlFont;
 
 	protected static int bitFont = standard58;
-	
+
 	/**
 	 * from version 0.7.2 onwards shortcuts are disabled by default. shortcuts can be enabled using
 	 * controlP5.enableShortcuts();
@@ -155,11 +152,12 @@ public class ControlP5 extends ControlP5Base {
 	 * use blockDraw to prevent controlp5 from drawing any elements. this is useful when using
 	 * clear() or load()
 	 */
-	protected boolean blockDraw;
+	public boolean blockDraw;
 
 	protected Tooltip _myTooltip;
-	
+
 	protected boolean isAnnotation;
+
 
 	/**
 	 * Create a new instance of controlP5.
@@ -171,11 +169,13 @@ public class ControlP5 extends ControlP5Base {
 		init();
 	}
 
+
 	public ControlP5(final PApplet theParent, ControlFont theControlFont) {
 		papplet = theParent;
 		setFont(theControlFont);
 		init();
 	}
+
 
 	protected void init() {
 		new BitFontRenderer(this);
@@ -189,43 +189,48 @@ public class ControlP5 extends ControlP5Base {
 		papplet.registerDispose(this);
 		_myControllerMap = new TreeMap<String, ControllerInterface<?>>();
 		controlWindowList.add(controlWindow);
-		isApplet = papplet.online;
 		_myTooltip = new Tooltip(this);
 		super.init(this);
 		if (welcome++ < 1) {
 			welcome();
 		}
-		
+
 		mapKeyFor(new ControlKey() {
+
 			public void keyEvent() {
 				saveProperties();
 			}
 		}, PApplet.ALT, PApplet.SHIFT, 's');
-		
+
 		mapKeyFor(new ControlKey() {
+
 			public void keyEvent() {
 				loadProperties();
 			}
 		}, PApplet.ALT, PApplet.SHIFT, 'l');
-		
+
 		mapKeyFor(new ControlKey() {
+
 			public void keyEvent() {
 				if (controlWindow.isVisible) {
 					hide();
-				} else {
+				}
+				else {
 					show();
 				}
 			}
 		}, PApplet.ALT, PApplet.SHIFT, 'h');
-		
-		
+
 	}
 
+
 	static int welcome = 0;
+
 
 	private void welcome() {
 		System.out.println("ControlP5 " + VERSION + " " + "infos, comments, questions at http://www.sojamo.de/libraries/controlP5");
 	}
+
 
 	/**
 	 * By default event originating from tabs are disabled, use setTabEventsActive(true) to receive
@@ -236,6 +241,7 @@ public class ControlP5 extends ControlP5Base {
 	public void setTabEventsActive(boolean theFlag) {
 		isTabEventsActive = theFlag;
 	}
+
 
 	/**
 	 * autoInitialization can be very handy when it comes to initializing values, e.g. you load a
@@ -248,6 +254,7 @@ public class ControlP5 extends ControlP5Base {
 	public void setAutoInitialization(boolean theFlag) {
 		isAutoInitialization = theFlag;
 	}
+
 
 	/**
 	 * by default controlP5 draws any controller on top of any drawing done in the draw() function
@@ -268,6 +275,7 @@ public class ControlP5 extends ControlP5Base {
 		controlWindow.isAutoDraw = theFlag;
 	}
 
+
 	/**
 	 * check if the autoDraw function for the main window is enabled(true) or disabled(false).
 	 * 
@@ -277,6 +285,7 @@ public class ControlP5 extends ControlP5Base {
 		return controlWindow.isAutoDraw;
 	}
 
+
 	/**
 	 * 
 	 * @see controlP5.ControlBroadcaster
@@ -284,6 +293,7 @@ public class ControlP5 extends ControlP5Base {
 	public ControlBroadcaster getControlBroadcaster() {
 		return _myControlBroadcaster;
 	}
+
 
 	/**
 	 * @see controlP5.ControlListener
@@ -293,6 +303,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * @see controlP5.ControlListener
 	 */
@@ -300,6 +311,7 @@ public class ControlP5 extends ControlP5Base {
 		getControlBroadcaster().removeListener(theListeners);
 		return this;
 	}
+
 
 	/**
 	 * @see controlP5.ControlListener
@@ -309,12 +321,14 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * @see controlP5.ControlListener
 	 */
 	public ControlListener getListener(int theIndex) {
 		return getControlBroadcaster().getListener(theIndex);
 	}
+
 
 	/**
 	 * @see controlP5.CallbackEvent
@@ -325,6 +339,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * @see controlP5.CallbackEvent
 	 * @see controlP5.CallbackListener
@@ -333,6 +348,7 @@ public class ControlP5 extends ControlP5Base {
 		getControlBroadcaster().addCallback(theListener);
 		return this;
 	}
+
 
 	/**
 	 * @see controlP5.CallbackEvent
@@ -343,6 +359,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * @see controlP5.CallbackEvent
 	 * @see controlP5.CallbackListener
@@ -351,6 +368,7 @@ public class ControlP5 extends ControlP5Base {
 		getControlBroadcaster().removeCallback(theListeners);
 		return this;
 	}
+
 
 	/**
 	 * @see controlP5.CallbackEvent
@@ -361,6 +379,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * @see controlP5.CallbackEvent
 	 * @see controlP5.CallbackListener
@@ -369,6 +388,7 @@ public class ControlP5 extends ControlP5Base {
 		getControlBroadcaster().removeCallback(theController);
 		return this;
 	}
+
 
 	/**
 	 * TODO
@@ -379,6 +399,7 @@ public class ControlP5 extends ControlP5Base {
 	public void addControlsFor(Object theObject) {
 
 	}
+
 
 	public Tab getTab(String theName) {
 		for (int j = 0; j < controlWindowList.size(); j++) {
@@ -392,6 +413,7 @@ public class ControlP5 extends ControlP5Base {
 		return myTab;
 	}
 
+
 	public Tab getTab(ControlWindow theWindow, String theName) {
 		for (int i = 0; i < theWindow.getTabs().size(); i++) {
 			if (((Tab) theWindow.getTabs().get(i)).getName().equals(theName)) {
@@ -401,6 +423,7 @@ public class ControlP5 extends ControlP5Base {
 		Tab myTab = theWindow.add(new Tab(this, theWindow, theName));
 		return myTab;
 	}
+
 
 	/**
 	 * registers a Controller with ControlP5, a Controller should/must be registered with a unique
@@ -415,7 +438,8 @@ public class ControlP5 extends ControlP5Base {
 		if (theObject == papplet) {
 			address = (theController.getName().startsWith("/")) ? "" : "/";
 			address += theController.getName();
-		} else {
+		}
+		else {
 			address = (((theIndex.length() == 0) || theIndex.startsWith("/")) ? "" : "/");
 			address += theIndex;
 			address += (theController.getName().startsWith("/") ? "" : "/");
@@ -456,13 +480,15 @@ public class ControlP5 extends ControlP5Base {
 				_myObjectToControllerMap.put(theObject, new ArrayList<ControllerInterface<?>>());
 			}
 			_myObjectToControllerMap.get(theObject).add(theController);
-		} else {
+		}
+		else {
 			/*
 			 * if theController is of type ControllerGroup, map accordingly here.
 			 */
 		}
 		return this;
 	}
+
 
 	/**
 	 * Returns a List of all controllers currently registered.
@@ -472,6 +498,7 @@ public class ControlP5 extends ControlP5Base {
 	public List<ControllerInterface<?>> getAll() {
 		return new ArrayList<ControllerInterface<?>>(_myControllerMap.values());
 	}
+
 
 	/**
 	 * Returns a list of controllers or groups of a particular type. The following example will
@@ -489,8 +516,7 @@ public class ControlP5 extends ControlP5Base {
 	 *            and ControllerGroups
 	 * @return List<T>
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> List<T> getAll(Class<T> theClass) {
+	@SuppressWarnings("unchecked") public <T> List<T> getAll(Class<T> theClass) {
 		ArrayList<T> l = new ArrayList<T>();
 		for (ControllerInterface ci : _myControllerMap.values()) {
 			if (ci.getClass() == theClass || ci.getClass().getSuperclass() == theClass) {
@@ -499,6 +525,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return l;
 	}
+
 
 	protected void deactivateControllers() {
 		if (getControllerList() != null) {
@@ -511,12 +538,14 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	private String checkAddress(String theName) {
 		if (!theName.startsWith("/")) {
 			return "/" + theName;
 		}
 		return theName;
 	}
+
 
 	/**
 	 * @excude
@@ -537,6 +566,7 @@ public class ControlP5 extends ControlP5Base {
 		System.out.println("============================================");
 	}
 
+
 	/**
 	 * removes a controlWindow and all its contained controllers.
 	 * 
@@ -547,6 +577,7 @@ public class ControlP5 extends ControlP5Base {
 		controlWindowList.remove(theWindow);
 		return this;
 	}
+
 
 	/**
 	 * removes a controller by instance.
@@ -559,6 +590,7 @@ public class ControlP5 extends ControlP5Base {
 	protected void remove(ControllerInterface<?> theController) {
 		_myControllerMap.remove(theController.getAddress());
 	}
+
 
 	/**
 	 * removes a controlP5 element such as a controller, group, or tab by name.
@@ -586,6 +618,7 @@ public class ControlP5 extends ControlP5Base {
 		_myControllerMap.remove(address);
 	}
 
+
 	public ControllerInterface<?> get(String theName) {
 		String address = checkAddress(theName);
 		if (_myControllerMap.containsKey(address)) {
@@ -593,6 +626,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return null;
 	}
+
 
 	public <C> C get(Class<C> theClass, String theName) {
 		for (ControllerInterface<?> ci : _myControllerMap.values()) {
@@ -603,13 +637,13 @@ public class ControlP5 extends ControlP5Base {
 		return null;
 	}
 
+
 	/**
 	 * @exclude
 	 * @see controlP5.ControlP5#getAll(Class)
 	 * @return List<ControllerInterface>
 	 */
-	@ControlP5.Invisible
-	public List<ControllerInterface<?>> getList() {
+	@ControlP5.Invisible public List<ControllerInterface<?>> getList() {
 		LinkedList<ControllerInterface<?>> l = new LinkedList<ControllerInterface<?>>();
 		for (ControlWindow c : controlWindowList) {
 			l.addAll(c.getTabs().get());
@@ -618,6 +652,7 @@ public class ControlP5 extends ControlP5Base {
 		l.addAll(getAll());
 		return l;
 	}
+
 
 	public Controller<?> getController(String theName) {
 		String address = checkAddress(theName);
@@ -629,6 +664,7 @@ public class ControlP5 extends ControlP5Base {
 		return null;
 	}
 
+
 	public ControllerGroup<?> getGroup(String theGroupName) {
 		String address = checkAddress(theGroupName);
 		if (_myControllerMap.containsKey(address)) {
@@ -639,6 +675,7 @@ public class ControlP5 extends ControlP5Base {
 		return null;
 	}
 
+
 	private boolean checkName(String theName) {
 		if (_myControllerMap.containsKey(checkAddress(theName))) {
 			ControlP5.logger().warning("Controller with name \"" + theName + "\" already exists. overwriting reference of existing controller.");
@@ -646,6 +683,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return false;
 	}
+
 
 	public void moveControllersForObject(Object theObject, ControllerGroup<?> theGroup) {
 		if (_myObjectToControllerMap.containsKey(theObject)) {
@@ -656,46 +694,51 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	public void move(Object theObject, ControllerGroup<?> theGroup) {
 		moveControllersForObject(theObject, theGroup);
 	}
 
+
 	protected void clear() {
-		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
-			controlWindowList.get(i).clear();
+		try {
+			for (int i = controlWindowList.size() - 1; i >= 0; i--) {
+				controlWindowList.get(i).clear();
+			}
+
+			for (int i = controlWindowList.size() - 1; i >= 0; i--) {
+				controlWindowList.remove(i);
+			}
+
+			_myControllerMap.clear();
+		} catch (Exception e) {
 		}
-
-		for (int i = controlWindowList.size() - 1; i >= 0; i--) {
-			controlWindowList.remove(i);
-		}
-
-		_myControllerMap.clear();
-
 		// controlWindow.init(); // TODO ??? remove or keep?
 	}
+
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public void pre() {
+	@ControlP5.Invisible public void pre() {
 		Iterator<FieldChangedListener> itr = _myFieldChangedListenerMap.values().iterator();
 		while (itr.hasNext()) {
 			itr.next().update();
 		}
 	}
 
+
 	/**
 	 * call draw() from your program when autoDraw is disabled.
 	 * 
 	 * @exclude
 	 */
-	@ControlP5.Invisible
-	public void draw() {
+	@ControlP5.Invisible public void draw() {
 		if (blockDraw == false) {
 			controlWindow.draw();
 		}
 	}
+
 
 	/**
 	 * convenience method to access the main window (ControlWindow class).
@@ -703,6 +746,7 @@ public class ControlP5 extends ControlP5Base {
 	public ControlWindow getWindow() {
 		return getWindow(papplet);
 	}
+
 
 	/**
 	 * disables the mouse wheel as input for the main window, by default the mouse wheel is enabled.
@@ -712,6 +756,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * enables the mouse wheel as input for the main window, by default the mouse wheel is enabled.
 	 */
@@ -720,6 +765,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * checks the status of the mouse wheel.
 	 */
@@ -727,12 +773,14 @@ public class ControlP5 extends ControlP5Base {
 		return getWindow().isMouseWheel();
 	}
 
+
 	/**
 	 * convenience method to access the pointer of the main control window.
 	 */
 	public Pointer getPointer() {
 		return getWindow(papplet).getPointer();
 	}
+
 
 	/**
 	 * convenience method to check if the mouse (or pointer) is hovering over any controller. only
@@ -743,6 +791,7 @@ public class ControlP5 extends ControlP5Base {
 		return getWindow(papplet).isMouseOver();
 	}
 
+
 	/**
 	 * convenience method to check if the mouse (or pointer) is hovering over a specific controller.
 	 * only applies to the main window. To receive the mouseover information for a ControlWindow use
@@ -751,6 +800,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean isMouseOver(ControllerInterface<?> theController) {
 		return getWindow(papplet).isMouseOver(theController);
 	}
+
 
 	/**
 	 * convenience method to check if the mouse (or pointer) is hovering over a specific controller.
@@ -761,6 +811,7 @@ public class ControlP5 extends ControlP5Base {
 		return getWindow(papplet).getMouseOverList();
 	}
 
+
 	public ControlWindow getWindow(PApplet theApplet) {
 		if (theApplet.equals(papplet)) {
 			return controlWindow;
@@ -769,6 +820,7 @@ public class ControlP5 extends ControlP5Base {
 		// PAppletWindow.
 		return controlWindow;
 	}
+
 
 	public ControlWindow getWindow(String theWindowName) {
 		for (int i = 0; i < controlWindowList.size(); i++) {
@@ -780,6 +832,7 @@ public class ControlP5 extends ControlP5Base {
 		return null;
 	}
 
+
 	/**
 	 * adds a ControlWindowCanvas to the default sketch window.
 	 * 
@@ -790,6 +843,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	public ControlP5 setColor(CColor theColor) {
 		setColorBackground(theColor.getBackground());
 		setColorForeground(theColor.getForeground());
@@ -799,9 +853,11 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	public static CColor getColor() {
 		return color;
 	}
+
 
 	/**
 	 * sets the active state color of tabs and controllers, this cascades down to all known
@@ -816,6 +872,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * sets the foreground color of tabs and controllers, this cascades down to all known
 	 * controllers.
@@ -828,6 +885,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return this;
 	}
+
 
 	/**
 	 * sets the background color of tabs and controllers, this cascades down to all known
@@ -842,6 +900,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * sets the label color of tabs and controllers, this cascades down to all known controllers.
 	 */
@@ -853,6 +912,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 		return this;
 	}
+
 
 	/**
 	 * sets the value color of controllers, this cascades down to all known controllers.
@@ -866,9 +926,11 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	protected Vector<ControlWindow> getControlWindows() {
 		return controlWindowList;
 	}
+
 
 	/**
 	 * Enables/disables Controllers to be moved around when ALT-key is down and mouse is dragged.
@@ -880,6 +942,7 @@ public class ControlP5 extends ControlP5Base {
 		return this;
 	}
 
+
 	/**
 	 * Checks if controllers are generally moveable
 	 * 
@@ -887,6 +950,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean isMoveable() {
 		return isMoveable;
 	}
+
 
 	/**
 	 * Saves the current values of controllers into a default properties file
@@ -896,6 +960,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean saveProperties() {
 		return _myProperties.save();
 	}
+
 
 	/**
 	 * Saves the current values of controllers into a file, the filepath is given by parameter
@@ -907,9 +972,11 @@ public class ControlP5 extends ControlP5Base {
 		return _myProperties.saveAs(theFilePath);
 	}
 
+
 	public boolean saveProperties(String theFilePath, String... theSets) {
 		return _myProperties.saveAs(theFilePath, theSets);
 	}
+
 
 	/**
 	 * Loads properties from a default properties file and changes values of controllers
@@ -921,6 +988,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean loadProperties() {
 		return _myProperties.load();
 	}
+
 
 	/**
 	 * Loads properties from a properties file and changes the values of controllers accordingly,
@@ -944,18 +1012,19 @@ public class ControlP5 extends ControlP5Base {
 		return false;
 	}
 
+
 	String checkPropertiesPath(String theFilePath) {
 		theFilePath = (theFilePath.startsWith("/") || theFilePath.startsWith(".")) ? theFilePath : papplet.sketchPath(theFilePath);
 		return theFilePath;
 	}
+
 
 	/**
 	 * @exclude
 	 * @param theFilePath
 	 * @return
 	 */
-	@ControlP5.Invisible
-	public boolean loadLayout(String theFilePath) {
+	@ControlP5.Invisible public boolean loadLayout(String theFilePath) {
 		theFilePath = checkPropertiesPath(theFilePath);
 		File f = new File(theFilePath);
 		if (f.exists()) {
@@ -966,6 +1035,7 @@ public class ControlP5 extends ControlP5Base {
 		return false;
 	}
 
+
 	/**
 	 * @exclude
 	 * @param theFilePath
@@ -973,6 +1043,7 @@ public class ControlP5 extends ControlP5Base {
 	public void saveLayout(String theFilePath) {
 		getLayout().save(theFilePath);
 	}
+
 
 	/**
 	 * Returns the current version of controlP5
@@ -982,6 +1053,7 @@ public class ControlP5 extends ControlP5Base {
 	public String version() {
 		return VERSION;
 	}
+
 
 	/**
 	 * shows all controllers and tabs in your sketch.
@@ -994,6 +1066,13 @@ public class ControlP5 extends ControlP5Base {
 		controlWindow.show();
 	}
 
+
+	public ControlP5 setBroadcast(boolean theValue) {
+		_myControlBroadcaster.broadcast = theValue;
+		return this;
+	}
+
+
 	/**
 	 * returns true or false according to the current visibility flag.
 	 * 
@@ -1004,6 +1083,7 @@ public class ControlP5 extends ControlP5Base {
 		return controlWindow.isVisible();
 	}
 
+
 	/**
 	 * hide all controllers and tabs inside your sketch window.
 	 * 
@@ -1013,6 +1093,7 @@ public class ControlP5 extends ControlP5Base {
 	public void hide() {
 		controlWindow.hide();
 	}
+
 
 	/**
 	 * forces all controllers to update.
@@ -1027,6 +1108,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	/**
 	 * checks if automatic updates are enabled. By default this is true.
 	 * 
@@ -1037,6 +1119,7 @@ public class ControlP5 extends ControlP5Base {
 	public boolean isUpdate() {
 		return isUpdate;
 	}
+
 
 	/**
 	 * changes the update behavior according to parameter theFlag
@@ -1053,6 +1136,7 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	public boolean setFont(int theBitFontIndex) {
 		if (!BitFontRenderer.fonts.containsKey(theBitFontIndex)) {
 			return false;
@@ -1063,12 +1147,14 @@ public class ControlP5 extends ControlP5Base {
 		return true;
 	}
 
+
 	public boolean setFont(ControlFont theControlFont) {
 		controlFont = theControlFont;
 		isControlFont = true;
 		updateFont(controlFont);
 		return isControlFont;
 	}
+
 
 	public boolean setFont(PFont thePFont, int theFontSize) {
 		controlFont = new ControlFont(thePFont, theFontSize);
@@ -1077,12 +1163,14 @@ public class ControlP5 extends ControlP5Base {
 		return isControlFont;
 	}
 
+
 	public boolean setFont(PFont thePFont) {
 		controlFont = new ControlFont(thePFont);
 		isControlFont = true;
 		updateFont(controlFont);
 		return isControlFont;
 	}
+
 
 	protected void updateFont(ControlFont theControlFont) {
 		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
@@ -1091,9 +1179,11 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	public ControlFont getFont() {
 		return controlFont;
 	}
+
 
 	/**
 	 * disables shortcuts such as alt-h for hiding/showing controllers
@@ -1103,9 +1193,11 @@ public class ControlP5 extends ControlP5Base {
 		isShortcuts = false;
 	}
 
+
 	public boolean isShortcuts() {
 		return isShortcuts;
 	}
+
 
 	/**
 	 * enables shortcuts.
@@ -1113,16 +1205,17 @@ public class ControlP5 extends ControlP5Base {
 	public void enableShortcuts() {
 		isShortcuts = true;
 	}
-	
-	
+
 
 	public Tooltip getTooltip() {
 		return _myTooltip;
 	}
 
+
 	public void setTooltip(Tooltip theTooltip) {
 		_myTooltip = theTooltip;
 	}
+
 
 	/**
 	 * cp5.begin() and cp5.end() are mechanisms to auto-layout controllers, see the
@@ -1134,16 +1227,19 @@ public class ControlP5 extends ControlP5Base {
 		return begin(controlWindow.getTab("default"));
 	}
 
+
 	public ControllerGroup<?> begin(ControllerGroup<?> theGroup) {
 		setCurrentPointer(theGroup);
 		return theGroup;
 	}
+
 
 	public ControllerGroup<?> begin(int theX, int theY) {
 		// TODO replace controlWindow.tab("default") with
 		// controlWindow.tabs().get(1);
 		return begin(controlWindow.getTab("default"), theX, theY);
 	}
+
 
 	public ControllerGroup<?> begin(ControllerGroup<?> theGroup, int theX, int theY) {
 		setCurrentPointer(theGroup);
@@ -1153,18 +1249,22 @@ public class ControlP5 extends ControlP5Base {
 		return theGroup;
 	}
 
+
 	public ControllerGroup<?> begin(ControlWindow theWindow) {
 		return begin(theWindow.getTab("default"));
 	}
+
 
 	public ControllerGroup<?> begin(ControlWindow theWindow, int theX, int theY) {
 		return begin(theWindow.getTab("default"), theX, theY);
 	}
 
+
 	public ControllerGroup<?> end(ControllerGroup<?> theGroup) {
 		releaseCurrentPointer(theGroup);
 		return theGroup;
 	}
+
 
 	/**
 	 * cp5.begin() and cp5.end() are mechanisms to auto-layout controllers, see the
@@ -1174,6 +1274,7 @@ public class ControlP5 extends ControlP5Base {
 		return end(controlWindow.getTab("default"));
 	}
 
+
 	public void addPositionTo(int theX, int theY, List<ControllerInterface<?>> theControllers) {
 		PVector v = new PVector(theX, theY);
 		for (ControllerInterface<?> c : theControllers) {
@@ -1181,9 +1282,11 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	public void addPositionTo(int theX, int theY, ControllerInterface<?>... theControllers) {
 		addPositionTo(theX, theY, Arrays.asList(theControllers));
 	}
+
 
 	/**
 	 * disposes and clears all controlP5 elements. When running in applet mode, opening new tabs or
@@ -1198,19 +1301,20 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	/* add Objects with Annotation */
 
 	public static Logger logger() {
 		return logger;
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@interface Invisible {
+
+	@Retention(RetentionPolicy.RUNTIME) @interface Invisible {
 	}
 
-	@Retention(RetentionPolicy.RUNTIME)
-	@interface Layout {
+	@Retention(RetentionPolicy.RUNTIME) @interface Layout {
 	}
+
 
 	/**
 	 * @exclude
@@ -1218,10 +1322,10 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theControlFont
 	 * @return
 	 */
-	@Deprecated
-	public boolean setControlFont(ControlFont theControlFont) {
+	@Deprecated public boolean setControlFont(ControlFont theControlFont) {
 		return setFont(theControlFont);
 	}
+
 
 	/**
 	 * @exclude
@@ -1230,10 +1334,10 @@ public class ControlP5 extends ControlP5Base {
 	 * @param theFontSize
 	 * @return
 	 */
-	@Deprecated
-	public boolean setControlFont(PFont thePFont, int theFontSize) {
+	@Deprecated public boolean setControlFont(PFont thePFont, int theFontSize) {
 		return setFont(thePFont, theFontSize);
 	}
+
 
 	/**
 	 * @exclude
@@ -1241,57 +1345,56 @@ public class ControlP5 extends ControlP5Base {
 	 * @param thePFont
 	 * @return
 	 */
-	@Deprecated
-	public boolean setControlFont(PFont thePFont) {
+	@Deprecated public boolean setControlFont(PFont thePFont) {
 		return setFont(thePFont);
 	}
+
 
 	/**
 	 * @exclude
 	 * @deprecated
 	 * @return
 	 */
-	@Deprecated
-	public ControlFont getControlFont() {
+	@Deprecated public ControlFont getControlFont() {
 		return getFont();
 	}
 
-	/**
-	 * @deprecated
-	 * @exclude
-	 */
-	@Deprecated
-	public boolean save(String theFilePath) {
-		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
-		return false;
-	}
 
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public boolean save() {
+	@Deprecated public boolean save(String theFilePath) {
 		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
 		return false;
 	}
+
 
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public boolean load(String theFileName) {
+	@Deprecated public boolean save() {
+		ControlP5.logger().info("Saving ControlP5 settings in XML format has been removed, have a look at controlP5's properties instead.");
+		return false;
+	}
+
+
+	/**
+	 * @deprecated
+	 * @exclude
+	 */
+	@Deprecated public boolean load(String theFileName) {
 		ControlP5.logger().info("Loading ControlP5 from an XML file has been removed, have a look at controlP5's properties instead.");
 		return false;
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public void trigger() {
+	@Deprecated public void trigger() {
 		Iterator<?> iter = _myControllerMap.keySet().iterator();
 		while (iter.hasNext()) {
 			Object key = iter.next();
@@ -1301,23 +1404,24 @@ public class ControlP5 extends ControlP5Base {
 		}
 	}
 
+
 	/**
 	 * @deprecated use disableShortcuts()
 	 * @exclude
 	 */
-	@Deprecated
-	public void disableKeys() {
+	@Deprecated public void disableKeys() {
 		isShortcuts = false;
 	}
+
 
 	/**
 	 * @deprecated use enableShortcuts()
 	 * @exclude
 	 */
-	@Deprecated
-	public void enableKeys() {
+	@Deprecated public void enableKeys() {
 		isShortcuts = true;
 	}
+
 
 	/**
 	 * lock ControlP5 to disable moving Controllers around. Other key events are still available
@@ -1327,10 +1431,10 @@ public class ControlP5 extends ControlP5Base {
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public void lock() {
+	@Deprecated public void lock() {
 		isMoveable = false;
 	}
+
 
 	/**
 	 * unlock ControlP5 to enable moving Controllers around. use setMoveable(true) instead
@@ -1339,91 +1443,91 @@ public class ControlP5 extends ControlP5Base {
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public void unlock() {
+	@Deprecated public void unlock() {
 		isMoveable = true;
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	protected Vector<ControlWindow> controlWindows() {
+	@Deprecated protected Vector<ControlWindow> controlWindows() {
 		return getControlWindows();
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public Controller<?> controller(String theName) {
+	@Deprecated public Controller<?> controller(String theName) {
 		return getController(theName);
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public ControllerGroup<?> group(String theGroupName) {
+	@Deprecated public ControllerGroup<?> group(String theGroupName) {
 		return getGroup(theGroupName);
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public ControlWindow window(String theWindowName) {
+	@Deprecated public ControlWindow window(String theWindowName) {
 		return getWindow(theWindowName);
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public ControlWindow window() {
+	@Deprecated public ControlWindow window() {
 		return getWindow();
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public Tab tab(ControlWindow theWindow, String theName) {
+	@Deprecated public Tab tab(ControlWindow theWindow, String theName) {
 		return getTab(theWindow, theName);
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public ControlWindow window(PApplet theApplet) {
+	@Deprecated public ControlWindow window(PApplet theApplet) {
 		return getWindow(theApplet);
 	}
 
-	/**
-	 * @exclude
-	 * @deprecated
-	 */
-	@Deprecated
-	public ControlBroadcaster controlbroadcaster() {
-		return _myControlBroadcaster;
-	}
 
 	/**
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public Tab tab(String theName) {
+	@Deprecated public ControlBroadcaster controlbroadcaster() {
+		return _myControlBroadcaster;
+	}
+
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated public Tab tab(String theName) {
 		return getTab(theName);
 	}
+
 
 	/**
 	 * returns a list of registered Controllers. Controllers with duplicated reference names will be
@@ -1435,28 +1539,27 @@ public class ControlP5 extends ControlP5Base {
 	 * @see controlP5.ControlP5#getAll(Class)
 	 * @return ControllerInterface[]
 	 */
-	@Deprecated
-	public ControllerInterface<?>[] getControllerList() {
+	@Deprecated public ControllerInterface<?>[] getControllerList() {
 		ControllerInterface<?>[] myControllerList = new ControllerInterface[_myControllerMap.size()];
 		_myControllerMap.values().toArray(myControllerList);
 		return myControllerList;
 	}
 
-	/**
-	 * @exclude
-	 * @deprecated
-	 */
-	@Deprecated
-	public ControlP5 setColorLabel(int theColor) {
-		return setColorCaptionLabel(theColor);
-	}
 
 	/**
 	 * @exclude
 	 * @deprecated
 	 */
-	@Deprecated
-	public ControlP5 setColorValue(int theColor) {
+	@Deprecated public ControlP5 setColorLabel(int theColor) {
+		return setColorCaptionLabel(theColor);
+	}
+
+
+	/**
+	 * @exclude
+	 * @deprecated
+	 */
+	@Deprecated public ControlP5 setColorValue(int theColor) {
 		return setColorValueLabel(theColor);
 	}
 

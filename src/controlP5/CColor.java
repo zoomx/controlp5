@@ -139,42 +139,58 @@ public class CColor implements Serializable {
 	 * @param theAlpha
 	 */
 	public CColor setAlpha(int theAlpha) {
-		alpha = theAlpha;
-		colorBackground = (colorBackground & maskA) | (int) (colorBackgroundAlpha * (alpha / 255.0f)) << 24;
-		colorForeground = (colorForeground & maskA) | (int) (colorForegroundAlpha * (alpha / 255.0f)) << 24;
-		colorActive = (colorActive & maskA) | (int) (colorActiveAlpha * (alpha / 255.0f)) << 24;
-		colorCaptionLabel = (colorCaptionLabel & maskA) | (int) (colorCaptionLabelAlpha * (alpha / 255.0f)) << 24;
-		colorValueLabel = (colorValueLabel & maskA) | (int) (colorValueLabel * (alpha / 255.0f)) << 24;
+		System.out.println("controlP5.CColor.setAlpha: setting alpha values disabled for this version of controlP5.");
+//		alpha = theAlpha;
+//		colorBackground = (colorBackground & maskA) | (int) (colorBackgroundAlpha * (alpha / 255.0f)) << 24;
+//		colorForeground = (colorForeground & maskA) | (int) (colorForegroundAlpha * (alpha / 255.0f)) << 24;
+//		colorActive = (colorActive & maskA) | (int) (colorActiveAlpha * (alpha / 255.0f)) << 24;
+//		colorCaptionLabel = (colorCaptionLabel & maskA) | (int) (colorCaptionLabelAlpha * (alpha / 255.0f)) << 24;
+//		colorValueLabel = (colorValueLabel & maskA) | (int) (colorValueLabel * (alpha / 255.0f)) << 24;
 		return this;
 	}
 
 	public CColor setForeground(int theColor) {
-		colorForegroundAlpha = theColor >> 24 & 0xff;
-		colorForeground = (theColor & maskA) | (colorForegroundAlpha & alpha) << 24;
+		if((theColor & 0xff000000) == 0) {
+			colorForeground = 0xff000000;
+		} else {
+			colorForeground = theColor;
+		}
 		return this;
 	}
 
 	public CColor setBackground(int theColor) {
-		colorBackgroundAlpha = theColor >> 24 & 0xff;
-		colorBackground = (theColor & maskA) | (colorBackgroundAlpha & alpha) << 24;
+		if((theColor & 0xff000000) == 0) {
+			colorBackground = 0xff000000;
+		} else {
+			colorBackground = theColor;
+		}
 		return this;
 	}
 
 	public CColor setActive(int theColor) {
-		colorActiveAlpha = theColor >> 24 & 0xff;
-		colorActive = (theColor & maskA) | (colorActiveAlpha & alpha) << 24;
+		if((theColor & 0xff000000) == 0) {
+			colorActive = 0xff000000;
+		} else {
+			colorActive = theColor;
+		}
 		return this;
 	}
 
 	public CColor setCaptionLabel(int theColor) {
-		colorCaptionLabelAlpha = theColor >> 24 & 0xff;
-		colorCaptionLabel = (theColor & maskA) | (colorCaptionLabelAlpha & alpha) << 24;
+		if((theColor & 0xff000000) == 0) {
+			colorCaptionLabel = 0xff000000;
+		} else {
+			colorCaptionLabel = theColor;
+		}
 		return this;
 	}
 
 	public CColor setValueLabel(int theColor) {
-		colorValueLabelAlpha = theColor >> 24 & 0xff;
-		colorValueLabel = (theColor & maskA) | (colorValueLabelAlpha & alpha) << 24;
+		if((theColor & 0xff000000) == 0) {
+			colorValueLabel = 0xff000000;
+		} else {
+			colorValueLabel = theColor;
+		}
 		return this;
 	}
 

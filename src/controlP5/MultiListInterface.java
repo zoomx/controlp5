@@ -46,8 +46,10 @@ interface MultiListInterface {
 	String name();
 
 	int getDirection();
-	
+
 	MultiListInterface toUpperCase(boolean theValue);
+
+	@Deprecated List<? extends MultiListInterface> getChildren();
 	
-	List<? extends MultiListInterface> getChildren();
+//	List<? extends MultiListInterface> getSubelements();
 }

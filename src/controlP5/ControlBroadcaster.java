@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -29,6 +30,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -62,6 +64,13 @@ public class ControlBroadcaster {
 
 	private static boolean ignoreErrorMessage = false;
 
+	private static Map<Class<?>, Field[]> fieldcache = new HashMap<Class<?>, Field[]>();
+
+	private static Map<Class<?>, Method[]> methodcache = new HashMap<Class<?>, Method[]>();
+	
+	boolean broadcast = true;
+	
+
 	protected ControlBroadcaster(ControlP5 theControlP5) {
 		cp5 = theControlP5;
 		_myControlListeners = new ArrayList<ControlListener>();
@@ -73,6 +82,7 @@ public class ControlBroadcaster {
 		}
 	}
 
+
 	public ControlBroadcaster addListener(ControlListener... theListeners) {
 		for (ControlListener l : theListeners) {
 			_myControlListeners.add(l);
@@ -80,12 +90,14 @@ public class ControlBroadcaster {
 		return this;
 	}
 
+
 	public ControlBroadcaster removeListener(ControlListener... theListeners) {
 		for (ControlListener l : theListeners) {
 			_myControlListeners.remove(l);
 		}
 		return this;
 	}
+
 
 	/**
 	 * Returns a ControlListener by index
@@ -100,6 +112,7 @@ public class ControlBroadcaster {
 		return _myControlListeners.get(theIndex);
 	}
 
+
 	/**
 	 * Returns the size of the ControlListener list
 	 * 
@@ -109,6 +122,7 @@ public class ControlBroadcaster {
 		return _myControlListeners.size();
 	}
 
+
 	public ControlBroadcaster addCallback(CallbackListener... theListeners) {
 		for (CallbackListener l : theListeners) {
 			_myControllerCallbackListeners.put(l, new EmptyController());
@@ -116,10 +130,12 @@ public class ControlBroadcaster {
 		return this;
 	}
 
+
 	public ControlBroadcaster addCallback(CallbackListener theListener) {
 		_myControllerCallbackListeners.put(theListener, new EmptyController());
 		return this;
 	}
+
 
 	/**
 	 * Adds a CallbackListener for a list of controllers.
@@ -133,6 +149,7 @@ public class ControlBroadcaster {
 		}
 	}
 
+
 	public ControlBroadcaster removeCallback(CallbackListener... theListeners) {
 		for (CallbackListener c : theListeners) {
 			_myControllerCallbackListeners.remove(c);
@@ -140,10 +157,12 @@ public class ControlBroadcaster {
 		return this;
 	}
 
+
 	public ControlBroadcaster removeCallback(CallbackListener theListener) {
 		_myControllerCallbackListeners.remove(theListener);
 		return this;
 	}
+
 
 	/**
 	 * Removes a CallbackListener for a particular controller
@@ -161,17 +180,20 @@ public class ControlBroadcaster {
 		return this;
 	}
 
+
 	public ControlBroadcaster plug(Object theObject, final String theControllerName, final String theTargetMethod) {
 		plug(theObject, cp5.getController(theControllerName), theTargetMethod);
 		return this;
 	}
+
 
 	public ControlBroadcaster plug(Object theObject, final Controller<?> theController, final String theTargetMethod) {
 		if (theController != null) {
 			ControllerPlug myControllerPlug = checkObject(theObject, theTargetMethod, ControlP5Constants.acceptClassList);
 			if (myControllerPlug == null) {
 				return this;
-			} else {
+			}
+			else {
 				if (theController.checkControllerPlug(myControllerPlug) == false) {
 					theController.addControllerPlug(myControllerPlug);
 				}
@@ -181,9 +203,29 @@ public class ControlBroadcaster {
 		return this;
 	}
 
+
+	static Field[] getFieldsFor(Class<?> theClass) {
+		if (!fieldcache.containsKey(theClass)) {
+			fieldcache.put(theClass, theClass.getDeclaredFields());
+		}
+		return fieldcache.get(theClass);
+	}
+
+
+	static Method[] getMethodFor(Class<?> theClass) {
+		if (!methodcache.containsKey(theClass)) {
+			methodcache.put(theClass, theClass.getDeclaredMethods());
+		}
+		return methodcache.get(theClass);
+	}
+
+
 	protected static ControllerPlug checkObject(final Object theObject, final String theTargetName, final Class<?>[] theAcceptClassList) {
+
 		Class<?> myClass = theObject.getClass();
-		Method[] myMethods = myClass.getDeclaredMethods();
+
+		Method[] myMethods = getMethodFor(myClass);
+
 		for (int i = 0; i < myMethods.length; i++) {
 			if ((myMethods[i].getName()).equals(theTargetName)) {
 				if (myMethods[i].getParameterTypes().length == 1) {
@@ -207,13 +249,16 @@ public class ControlBroadcaster {
 							return new ControllerPlug(theObject, theTargetName, ControlP5Constants.METHOD, j, theAcceptClassList);
 						}
 					}
-				} else if (myMethods[i].getParameterTypes().length == 0) {
+				}
+				else if (myMethods[i].getParameterTypes().length == 0) {
 					return new ControllerPlug(theObject, theTargetName, ControlP5Constants.METHOD, -1, theAcceptClassList);
 				}
 				break;
 			}
 		}
-		Field[] myFields = myClass.getDeclaredFields();
+
+		Field[] myFields = getFieldsFor(myClass);
+
 		for (int i = 0; i < myFields.length; i++) {
 			if ((myFields[i].getName()).equals(theTargetName)) {
 				for (int j = 0; j < theAcceptClassList.length; j++) {
@@ -227,51 +272,62 @@ public class ControlBroadcaster {
 		return null;
 	}
 
-	public ControlBroadcaster broadcast(final ControlEvent theControlEvent, final int theType) {
-		for (ControlListener cl : _myControlListeners) {
-			cl.controlEvent(theControlEvent);
-		}
-		if (theControlEvent.isTab() == false && theControlEvent.isGroup() == false) {
-			if (theControlEvent.getController().getControllerPlugList().size() > 0) {
-				if (theType == ControlP5Constants.STRING) {
-					for (ControllerPlug cp : theControlEvent.getController().getControllerPlugList()) {
-						callTarget(cp, theControlEvent.getStringValue());
-					}
-				} else if (theType == ControlP5Constants.ARRAY) {
 
-				} else {
-					for (ControllerPlug cp : theControlEvent.getController().getControllerPlugList()) {
-						if (cp.checkType(ControlP5Constants.EVENT)) {
-							invokeMethod(cp.getObject(), cp.getMethod(), new Object[] { theControlEvent });
-						} else {
-							callTarget(cp, theControlEvent.getValue());
+	public ControlBroadcaster broadcast(final ControlEvent theControlEvent, final int theType) {
+		if (broadcast) {
+			for (ControlListener cl : _myControlListeners) {
+				cl.controlEvent(theControlEvent);
+			}
+			if (theControlEvent.isTab() == false && theControlEvent.isGroup() == false) {
+				if (theControlEvent.getController().getControllerPlugList().size() > 0) {
+					if (theType == ControlP5Constants.STRING) {
+						for (ControllerPlug cp : theControlEvent.getController().getControllerPlugList()) {
+							callTarget(cp, theControlEvent.getStringValue());
+						}
+					}
+					else if (theType == ControlP5Constants.ARRAY) {
+
+					}
+					else {
+						for (ControllerPlug cp : theControlEvent.getController().getControllerPlugList()) {
+							if (cp.checkType(ControlP5Constants.EVENT)) {
+								invokeMethod(cp.getObject(), cp.getMethod(), new Object[] { theControlEvent });
+							}
+							else {
+								callTarget(cp, theControlEvent.getValue());
+							}
 						}
 					}
 				}
 			}
-		}
-		if (_myControlEventType == ControlP5Constants.METHOD) {
-			invokeMethod(_myControlEventPlug.getObject(), _myControlEventPlug.getMethod(), new Object[] { theControlEvent });
+			if (_myControlEventType == ControlP5Constants.METHOD) {
+				invokeMethod(_myControlEventPlug.getObject(), _myControlEventPlug.getMethod(), new Object[] { theControlEvent });
+			}
 		}
 		return this;
 	}
+
 
 	protected void callTarget(final ControllerPlug thePlug, final float theValue) {
 		if (thePlug.checkType(ControlP5Constants.METHOD)) {
 
 			invokeMethod(thePlug.getObject(), thePlug.getMethod(), thePlug.getMethodParameter(theValue));
-		} else if (thePlug.checkType(ControlP5Constants.FIELD)) {
+		}
+		else if (thePlug.checkType(ControlP5Constants.FIELD)) {
 			invokeField(thePlug.getObject(), thePlug.getField(), thePlug.getFieldParameter(theValue));
 		}
 	}
 
+
 	protected void callTarget(final ControllerPlug thePlug, final String theValue) {
 		if (thePlug.checkType(ControlP5Constants.METHOD)) {
 			invokeMethod(thePlug.getObject(), thePlug.getMethod(), new Object[] { theValue });
-		} else if (thePlug.checkType(ControlP5Constants.FIELD)) {
+		}
+		else if (thePlug.checkType(ControlP5Constants.FIELD)) {
 			invokeField(thePlug.getObject(), thePlug.getField(), theValue);
 		}
 	}
+
 
 	private void invokeField(final Object theObject, final Field theField, final Object theParam) {
 		try {
@@ -281,11 +337,13 @@ public class ControlBroadcaster {
 		}
 	}
 
+
 	private void invokeMethod(final Object theObject, final Method theMethod, final Object[] theParam) {
 		try {
 			if (theParam[0] == null) {
 				theMethod.invoke(theObject, new Object[0]);
-			} else {
+			}
+			else {
 				theMethod.invoke(theObject, theParam);
 			}
 		} catch (IllegalArgumentException e) {
@@ -303,9 +361,11 @@ public class ControlBroadcaster {
 
 	}
 
+
 	protected String getEventMethod() {
 		return _myEventMethod;
 	}
+
 
 	protected void invokeAction(CallbackEvent theEvent) {
 		boolean invoke;
@@ -321,24 +381,27 @@ public class ControlBroadcaster {
 		}
 	}
 
+
 	private void printMethodError(Method theMethod, Exception theException) {
 		if (!ignoreErrorMessage) {
 			ControlP5.logger().severe(
-					"An error occured while forwarding a Controller event, please check your code at " + theMethod.getName()
-							+ (!setPrintStackTrace ? " " + "exception:  " + theException : ""));
+					"An error occured while forwarding a Controller event, please check your code at " + theMethod.getName() + (!setPrintStackTrace ? " " + "exception:  " + theException : ""));
 			if (setPrintStackTrace) {
 				theException.printStackTrace();
 			}
 		}
 	}
 
+
 	public static void ignoreErrorMessage(boolean theFlag) {
 		ignoreErrorMessage = theFlag;
 	}
 
+
 	public static void setPrintStackTrace(boolean theFlag) {
 		setPrintStackTrace = theFlag;
 	}
+
 
 	private class EmptyController extends Controller<EmptyController> {
 
@@ -346,24 +409,25 @@ public class ControlBroadcaster {
 			this(0, 0);
 		}
 
+
 		protected EmptyController(int theX, int theY) {
 			super("empty" + ((int) (Math.random() * 1000000)), theX, theY);
 			// TODO Auto-generated constructor stub
 		}
 
-		@Override
-		public EmptyController setValue(float theValue) {
+
+		@Override public EmptyController setValue(float theValue) {
 			// TODO Auto-generated method stub
 			return this;
 		}
 
 	}
 
+
 	/**
 	 * @exclude
 	 */
-	@Deprecated
-	public void plug(final String theControllerName, final String theTargetMethod) {
+	@Deprecated public void plug(final String theControllerName, final String theTargetMethod) {
 		plug(cp5.papplet, theControllerName, theTargetMethod);
 	}
 }
