@@ -256,6 +256,7 @@ public class Button extends Controller<Button> {
 	private class ButtonView implements ControllerView<Button> {
 
 		public void display(PApplet theApplet, Button theController) {
+			theApplet.noStroke();
 			if (isOn && isSwitch) {
 				theApplet.fill(color.getActive());
 			} else {
