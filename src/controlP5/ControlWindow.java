@@ -511,7 +511,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 				_myApplet.rectMode(PConstants.CORNER);
 				_myApplet.ellipseMode(PConstants.CORNER);
 				_myApplet.imageMode(PConstants.CORNER);
-				// _myApplet.pushStyle();
+				_myApplet.noStroke();
 				// TODO next section conflicts with Android
 				if (_myApplet instanceof PAppletWindow) {
 					_myApplet.background(background);
@@ -569,7 +569,6 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 
 				// draw Tooltip here.
 				controlP5.getTooltip().draw(this);
-				// _myApplet.popStyle();
 				_myApplet.rectMode(myRectMode);
 				_myApplet.ellipseMode(myEllipseMode);
 				_myApplet.imageMode(myImageMode);
