@@ -553,7 +553,9 @@ public class ControlFont {
 			int loadedAlign = theApplet.g.textAlign;
 
 			theApplet.textFont(pfont, size);
+			theApplet.textAlign(theLabel.textAlign);
 			theApplet.fill(theLabel.getColor());
+
 			if (theLabel.isMultiline()) {
 				theApplet.fill(theLabel.getColor());
 				theApplet.textLeading(theLabel.getLineHeight());

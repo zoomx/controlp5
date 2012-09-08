@@ -161,6 +161,7 @@ class ControllerAutomator {
 
 								public void controlEvent(ControlEvent ev) {
 									try {
+										method.setAccessible(true);
 										method.invoke(t, new Object[] { (int) ev.getValue() });
 									} catch (Exception e) {
 										ControlP5.logger.severe(e.toString());
@@ -187,6 +188,7 @@ class ControllerAutomator {
 							if (method.getName().equals(k)) {
 								try {
 									Object[] os = getParameters(method.getParameterTypes(), v);
+									method.setAccessible(true);
 									method.invoke(cntr, os);
 								} catch (Exception e) {
 									ControlP5.logger.severe(e.toString());
@@ -281,6 +283,7 @@ class ControllerAutomator {
 							if (method.getName().equals(k)) {
 								try {
 									Object[] os = getParameters(method.getParameterTypes(), v);
+									method.setAccessible(true);
 									method.invoke(cntr, os);
 								} catch (Exception e) {
 									ControlP5.logger.severe(e.toString());

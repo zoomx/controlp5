@@ -246,9 +246,9 @@ public class Slider2D extends Controller<Slider2D> {
 				}
 				theApplet.line(0, getCursorY() + getCursorHeight() / 2, getWidth(), getCursorY() + getCursorHeight() / 2);
 				theApplet.line(getCursorX() + getCursorWidth() / 2, 0, getCursorX() + getCursorWidth() / 2, getHeight());
-				theApplet.noStroke();
 			}
-			
+
+			theApplet.noStroke();
 			theApplet.fill(theController.getColor().getActive());
 			theApplet.rect(getCursorX(), getCursorY(), getCursorWidth(), getCursorHeight());
 

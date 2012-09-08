@@ -1,8 +1,9 @@
 /**
  * ControlP5 DIY controller
  *
- * this example is not working with controlP5 version 0.7.2, 0.7.3
- *
+ * !!!
+ * this example is not broken with controlP5 version 0.7.2 and higher
+ * Do have a look at the use/ControlP5extendController example instead
  *
  * this example shows how to create your own controller by extending and
  * using the abstract class Controller, the base class for every controller.

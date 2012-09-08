@@ -118,7 +118,7 @@ class MyButton extends Controller<MyButton> {
   
   void onScroll(int n) {
     println("scrolling");
-    y += n;
+    y -= n;
     y = constrain(y,0,getHeight()-10);
   }
   
@@ -140,7 +140,7 @@ class MyButton extends Controller<MyButton> {
   }
   
   void onMove() {
-    println("moving");
+    println("moving "+this+" "+_myControlWindow.getMouseOverList());
   }
 
   void onDrag() {
