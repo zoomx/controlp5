@@ -20,15 +20,15 @@ void setup() {
 
   controlWindow = cp5.addControlWindow("controlP5window", 100, 100, 400, 200)
     .hideCoordinates()
-      .setBackground(color(40))
-        ;
+    .setBackground(color(40))
+    ;
 
   cp5.addSlider("sliderValue")
-    .setRange(0, 255)
-      .setPosition(40, 40)
-        .setSize(200, 29)
-          .setWindow(controlWindow)
-            ;
+     .setRange(0, 255)
+     .setPosition(40, 40)
+     .setSize(200, 29)
+     .moveTo(controlWindow)
+     ;
 }
 
 

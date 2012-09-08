@@ -73,7 +73,9 @@ public class Label implements CDrawable {
 	protected int alignX = ControlP5.LEFT;
 
 	protected int alignY = ControlP5.LEFT;
-
+	
+	protected int textAlign = ControlP5.LEFT;
+	
 	public static int paddingX = 4;
 
 	public static int paddingY = 4;

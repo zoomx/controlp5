@@ -115,6 +115,18 @@ public class Chart extends Controller<Chart> {
 		return addFirst(theSetIndex, theValue);
 	}
 
+	public Chart push(float theValue) {
+		return push(getFirstDataSetIndex(), theValue);
+	}
+
+	public Chart push(String theSetIndex, float theValue) {
+		if (getDataSet(theSetIndex).size() > (width / resolution)) {
+			removeFirst(theSetIndex);
+		}
+		return addLast(theSetIndex, theValue); 
+	}
+
+	
 	public Chart addFirst(float theValue) {
 		return addFirst(getFirstDataSetIndex(), theValue);
 	}
@@ -125,14 +137,35 @@ public class Chart extends Controller<Chart> {
 		return this;
 	}
 
+	
+	public Chart addLast(float theValue) {
+		return addLast(getFirstDataSetIndex(), theValue);
+	}
+
+	public Chart addLast(String theSetIndex, float theValue) {
+		ChartData cdi = new ChartData(theValue);
+		getDataSet(theSetIndex).add(cdi);
+		return this;
+	}
+	
+	
 	public Chart removeLast() {
 		return removeLast(getFirstDataSetIndex());
 	}
 
 	public Chart removeLast(String theSetIndex) {
-		return removeData(getDataSet(theSetIndex).size() - 1);
+		return removeData(theSetIndex, getDataSet(theSetIndex).size() - 1);
 	}
 
+	public Chart removeFirst() {
+		return removeFirst(getFirstDataSetIndex());
+	}
+
+	public Chart removeFirst(String theSetIndex) {
+		return removeData(theSetIndex, 0);
+	}
+
+	
 	public Chart removeData(ChartData theItem) {
 		removeData(getFirstDataSetIndex(), theItem);
 		return this;

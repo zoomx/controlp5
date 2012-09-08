@@ -369,14 +369,16 @@ public class Textfield extends Controller<Textfield> {
 		theApplet.pushStyle();
 		if (_myValueLabel.getFont().get() instanceof ControlFont.PFontLabel) {
 			if (_myTextBufferIndexPosition > len - offset) {
-				theApplet.textAlign(PApplet.RIGHT);
+				//theApplet.textAlign(PApplet.RIGHT);
+				_myValueLabel.textAlign = PApplet.RIGHT;
 				theApplet.translate(getWidth() - margin, 0);
 				if (isTexfieldActive) {
 					theApplet.rect(0, 0, cursorWidth, height);
 				}
 			}
 			else {
-				theApplet.textAlign(PApplet.LEFT);
+				//theApplet.textAlign(PApplet.LEFT);
+				_myValueLabel.textAlign = PApplet.LEFT;
 				theApplet.translate(margin, 0);
 				if (isTexfieldActive) {
 					theApplet.rect(PApplet.max(0, PApplet.min(_myTextBufferIndexPosition, getWidth() - margin)), 0, cursorWidth, height);
@@ -482,10 +484,17 @@ public class Textfield extends Controller<Textfield> {
 			}
 			t1 = "";
 			n = 0;
+			// this is messed up an occasionally throws ArrayIndexOutOfBounds Exceptions
+			// sometimes the beginning of the text is not in order when text length exceeds 
+			// length of textfield.
+			// needs fixing. TODO
 			for (int i = PApplet.max(mx, _myTextBufferIndex - 1); i >= 0; i--) {
-				n += theApplet.textWidth(c[i]);
+				try {
+					n += theApplet.textWidth(c[i]);
+				} catch (Exception e) {
+				}
 				t1 = c[i] + t1;
-				if (n >= _myValueLabel.getWidth() - off-4) {
+				if (n >= _myValueLabel.getWidth() - off - 4) {
 					_myTextBufferOverflow = str.indexOf(t1);
 					break;
 				}

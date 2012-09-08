@@ -43,9 +43,9 @@ void draw() {
 void slider(int theColor) {
   myColorBackground = color(theColor);
   println("a slider event. setting background to "+theColor);
-  controlP5.controller("sliderValue").setValue(theColor);
+  cp5.controller("sliderValue").setValue(theColor);
 }
 
 void keyPressed() {
-  controlP5.getController("sliderValue").setValue(150);
+  cp5.getController("sliderValue").setValue(150);
 }

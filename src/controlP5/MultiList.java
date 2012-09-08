@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -31,8 +32,7 @@ import java.util.List;
 import processing.core.PApplet;
 
 /**
- * A Multilist is a multi-menu-tree controller. see the example for more
- * information and how to 	use.
+ * A Multilist is a multi-menu-tree controller. see the example for more information and how to use.
  * 
  * @example controllers/ControlP5multiList
  * 
@@ -44,7 +44,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 * TODO reflection does not work properly. TODO add an option to remove
 	 * MultiListButtons
 	 */
-	
+
 	protected Tab _myTab;
 
 	protected boolean isVisible = true;
@@ -52,7 +52,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	private int cnt;
 
 	protected boolean isOccupied;
-	
+
 	protected boolean isUpdateLocation = false;
 
 	protected MultiListInterface mostRecent;
@@ -66,7 +66,8 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	protected int _myDefaultButtonHeight = 10;
 
 	protected boolean isUpperCase = true;
-	
+
+
 	/**
 	 * Convenience constructor to extend MultiList.
 	 * 
@@ -78,37 +79,40 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 99, 19);
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
-	
+
+
 	public MultiList(ControlP5 theControlP5, Tab theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, 0);
 		_myDefaultButtonHeight = theHeight;
 		setup();
 	}
-	
+
+
 	public MultiList toUpperCase(boolean theValue) {
 		isUpperCase = theValue;
-		for(Controller c:getSubelements()) {
+		for (Controller c : getSubelements()) {
 			c.getCaptionLabel().toUpperCase(isUpperCase);
 		}
 		return this;
 	}
-	
-	@ControlP5.Invisible
-	public void setup() {
+
+
+	@ControlP5.Invisible public void setup() {
 		mostRecent = this;
 		isVisible = true;
 		updateRect(position.x, position.y, width, _myDefaultButtonHeight);
 	}
-	
-	
+
+
 	protected void updateRect(float theX, float theY, float theW, float theH) {
 		_myRect = new CRect(theX, theY, theW, theH);
 	}
-	
-	
+
+
 	public int getDirection() {
 		return _myDirection;
 	}
+
 
 	/**
 	 * TODO does not work.
@@ -122,12 +126,12 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		}
 	}
 
+
 	/**
 	 * @param theX float
 	 * @param theY float
 	 */
-	@ControlP5.Invisible
-	public void updateLocation(float theX, float theY) {
+	@ControlP5.Invisible public void updateLocation(float theX, float theY) {
 		position.x += theX;
 		position.y += theY;
 		updateRect(position.x, position.y, width, _myDefaultButtonHeight);
@@ -136,6 +140,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		}
 
 	}
+
 
 	/**
 	 * removes the multilist.
@@ -148,6 +153,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		}
 	}
 
+
 	/**
 	 * adds multilist buttons to the multilist.
 	 * 
@@ -158,8 +164,8 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	public MultiListButton add(String theName, int theValue) {
 		int x = (int) position.x;
 		int yy = 0;
-		for(Controller<?> c:getSubelements()) {
-			yy+=c.getHeight()+1;
+		for (Controller<?> c : getSubelements()) {
+			yy += c.getHeight() + 1;
 		}
 		int y = (int) position.y + yy;//(_myDefaultButtonHeight + 1) * _myChildren.size();
 		MultiListButton b = new MultiListButton(cp5, theName, theValue, x, y, width, _myDefaultButtonHeight, this, this);
@@ -173,12 +179,11 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		return b;
 	}
 
+
 	/**
 	 * @param theEvent
 	 */
-	@Override
-	@ControlP5.Invisible
-	public void controlEvent(ControlEvent theEvent) {
+	@Override @ControlP5.Invisible public void controlEvent(ControlEvent theEvent) {
 		if (theEvent.getController() instanceof MultiListButton) {
 			_myValue = theEvent.getController().getValue();
 			ControlEvent myEvent = new ControlEvent(this);
@@ -186,23 +191,22 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		}
 	}
 
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	@ControlP5.Invisible
-	public void draw(PApplet theApplet) {
+	@Override @ControlP5.Invisible public void draw(PApplet theApplet) {
 		super.draw(theApplet);
 		update(theApplet);
 	}
+
 
 	/**
 	 * 
 	 * @param theApplet
 	 * @return boolean
 	 */
-	@ControlP5.Invisible
-	public boolean update(PApplet theApplet) {
+	@ControlP5.Invisible public boolean update(PApplet theApplet) {
 		if (!isOccupied) {
 			cnt++;
 			if (cnt == closeDelay) {
@@ -226,23 +230,24 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 		return false;
 	}
 
+
 	/**
 	 * 
 	 * @param theFlag boolean
 	 */
-	@ControlP5.Invisible
-	public void occupied(boolean theFlag) {
+	@ControlP5.Invisible public void occupied(boolean theFlag) {
 		isOccupied = theFlag;
 		cnt = 0;
 	}
 
+
 	/**
 	 * @return boolean
 	 */
-	@ControlP5.Invisible
-	public boolean observe() {
+	@ControlP5.Invisible public boolean observe() {
 		return CRect.inside(_myRect, _myControlWindow.mouseX, _myControlWindow.mouseY);
 	}
+
 
 	/**
 	 * @param theInterface MultiListInterface
@@ -256,51 +261,50 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 
 	}
 
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void close() {
+	@Override public void close() {
 		for (int i = 0; i < getSubelements().size(); i++) {
 			((MultiListInterface) getSubelements().get(i)).close();
 		}
 	}
 
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void open() {
+	@Override public void open() {
 		for (int i = 0; i < getSubelements().size(); i++) {
 			((MultiListInterface) getSubelements().get(i)).open();
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public MultiList setValue(float theValue) {
-		return this;
-	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public MultiList update() {
+	@Override public MultiList setValue(float theValue) {
+		return this;
+	}
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public MultiList update() {
 		return setValue(_myValue);
 	}
 
 
-	@Deprecated
-	public List<MultiListButton> subelements() {
+	@Deprecated public List<MultiListButton> subelements() {
 		System.out.println("controlP5.MultiList.subelements() is deprecated since 0.7.6, use getSubelements().\nFor convenience an empty List is returned here.");
 		return new ArrayList<MultiListButton>();
 	}
 
-	@Deprecated
-	public List<MultiListButton> getChildren() {
+
+	@Deprecated public List<MultiListButton> getChildren() {
 		System.out.println("controlP5.MultiList.getChildren() is deprecated since 0.7.6, use getSubelements().\nFor convenience an empty List is returned here.");
 		return new ArrayList<MultiListButton>();
 	}
