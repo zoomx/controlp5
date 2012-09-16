@@ -17,7 +17,7 @@
 		<fileset dir="${libraryClasspath}" >		
 <!-- #### (3) add the jar files that are required for compiling. edit name.
 		for more include files. duplicate <include name="" /> #### -->
-			<include name="core.jar"/>
+			<include name="two/core.jar"/>
 		</fileset>
 	</path>		
 	

@@ -57,7 +57,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 
 	protected MultiListInterface mostRecent;
 
-	protected CRect _myRect;
+	protected int[] _myRect = new int[4];
 
 	protected int _myDirection = ControlP5Constants.RIGHT;
 
@@ -105,7 +105,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 
 
 	protected void updateRect(float theX, float theY, float theW, float theH) {
-		_myRect = new CRect(theX, theY, theW, theH);
+		_myRect = new int[] { (int) theX, (int) theY, (int) theW, (int) theH };
 	}
 
 
@@ -245,7 +245,7 @@ public class MultiList extends Controller<MultiList> implements MultiListInterfa
 	 * @return boolean
 	 */
 	@ControlP5.Invisible public boolean observe() {
-		return CRect.inside(_myRect, _myControlWindow.mouseX, _myControlWindow.mouseY);
+		return CP.inside(_myRect, _myControlWindow.mouseX, _myControlWindow.mouseY);
 	}
 
 

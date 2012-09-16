@@ -25,8 +25,7 @@ package controlP5;
  *
  */
 
-import java.awt.event.KeyEvent;
-
+import processing.event.KeyEvent;
 import processing.core.PApplet;
 import processing.core.PVector;
 

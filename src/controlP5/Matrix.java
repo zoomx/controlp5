@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -77,6 +78,9 @@ public class Matrix extends Controller<Matrix> {
 
 	private String _myPlugName;
 
+	private boolean playing = true;
+
+
 	/**
 	 * Convenience constructor to extend Matrix.
 	 * 
@@ -88,8 +92,8 @@ public class Matrix extends Controller<Matrix> {
 		this(theControlP5, theControlP5.getDefaultTab(), theName, 10, 10, 0, 0, 100, 100);
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
-	
-	
+
+
 	public Matrix(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theCellX, int theCellY, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myInterval = 100;
@@ -101,6 +105,7 @@ public class Matrix extends Controller<Matrix> {
 		_myCaptionLabel.setPadding(0, 4);
 		runThread();
 	}
+
 
 	public Matrix setGrid(int theCellX, int theCellY) {
 		_myCellX = theCellX;
@@ -117,6 +122,7 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	/**
 	 * set the speed of intervals in millis iterating through the matrix.
 	 * 
@@ -129,12 +135,13 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	public int getInterval() {
 		return _myInterval;
 	}
 
-	@ControlP5.Invisible
-	public Matrix updateInternalEvents(PApplet theApplet) {
+
+	@ControlP5.Invisible public Matrix updateInternalEvents(PApplet theApplet) {
 		setIsInside(inside());
 
 		if (getIsInside()) {
@@ -172,28 +179,31 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	protected void onEnter() {
 		isActive = true;
 	}
+
 
 	protected void onLeave() {
 		isActive = false;
 	}
 
-	@ControlP5.Invisible
-	public void mousePressed() {
+
+	@ControlP5.Invisible public void mousePressed() {
 		isActive = getIsInside();
 		if (getIsInside()) {
 			isPressed = true;
 		}
 	}
 
+
 	protected void mouseReleasedOutside() {
 		mouseReleased();
 	}
 
-	@ControlP5.Invisible
-	public void mouseReleased() {
+
+	@ControlP5.Invisible public void mouseReleased() {
 		if (isActive) {
 			isActive = false;
 		}
@@ -202,17 +212,75 @@ public class Matrix extends Controller<Matrix> {
 		currentY = -1;
 	}
 
-	@Override
-	public Matrix setValue(float theValue) {
+
+	@Override public Matrix setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 		return this;
 	}
 
-	@Override
-	public Matrix update() {
+
+	public Matrix play() {
+		playing = true;
+		return this;
+	}
+
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+
+	public Matrix pause() {
+		playing = false;
+		return this;
+	}
+
+
+	public Matrix stop() {
+		playing = false;
+		cnt = 0;
+		return this;
+	}
+
+
+	
+	public Matrix trigger(int theColumn) {
+
+		if (theColumn < 0 || theColumn >= _myCells.length) {
+			return this;
+		}
+
+		for (int i = 0; i < _myCellY; i++) {
+			if (_myCells[theColumn][i] == 1) {
+				_myValue = 0;
+				_myValue = (theColumn << 0) + (i << 8);
+				setValue(_myValue);
+				try {
+					Method method = _myPlug.getClass().getMethod(_myPlugName, int.class, int.class);
+					method.setAccessible(true);
+					method.invoke(_myPlug, theColumn, i);
+				} catch (SecurityException ex) {
+					ex.printStackTrace();
+				} catch (NoSuchMethodException ex) {
+					ex.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					ex.printStackTrace();
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				} catch (InvocationTargetException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		return this;
+	}
+
+
+	@Override public Matrix update() {
 		return setValue(_myValue);
 	}
+
 
 	public Matrix setGap(int theX, int theY) {
 		gapX = theX;
@@ -220,16 +288,19 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	public Matrix plugTo(Object theObject) {
 		_myPlug = theObject;
 		return this;
 	}
+
 
 	public Matrix plugTo(Object theObject, String thePlugName) {
 		_myPlug = theObject;
 		_myPlugName = thePlugName;
 		return this;
 	}
+
 
 	/**
 	 * set the state of a particular cell inside a matrix. use true or false for parameter theValue
@@ -244,9 +315,11 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	public boolean get(int theX, int theY) {
 		return _myCells[theX][theY] == 1 ? true : false;
 	}
+
 
 	public Matrix clear() {
 		for (int x = 0; x < _myCells.length; x++) {
@@ -257,21 +330,26 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	public static int getX(int thePosition) {
 		return ((thePosition >> 0) & 0xff);
 	}
+
 
 	public static int getY(int thePosition) {
 		return ((thePosition >> 8) & 0xff);
 	}
 
+
 	public static int getX(float thePosition) {
 		return (((int) thePosition >> 0) & 0xff);
 	}
 
+
 	public static int getY(float thePosition) {
 		return (((int) thePosition >> 8) & 0xff);
 	}
+
 
 	public Matrix setCells(int[][] theCells) {
 		setGrid(theCells.length, theCells[0].length);
@@ -279,40 +357,25 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	public int[][] getCells() {
 		return _myCells;
 	}
 
+
 	private void triggerEventFromThread() {
-		cnt += 1;
-		cnt %= _myCellX;
-		for (int i = 0; i < _myCellY; i++) {
-			if (_myCells[cnt][i] == 1) {
-				_myValue = 0;
-				_myValue = (cnt << 0) + (i << 8);
-				setValue(_myValue);
-				try {
-					Method method = _myPlug.getClass().getMethod(_myPlugName, int.class, int.class);
-					method.setAccessible(true);
-					method.invoke(_myPlug, cnt, i);
-				} catch (SecurityException ex) {
-					ex.printStackTrace();
-				} catch (NoSuchMethodException ex) {
-					ex.printStackTrace();
-				} catch (IllegalArgumentException ex) {
-					ex.printStackTrace();
-				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
-				} catch (InvocationTargetException ex) {
-					ex.printStackTrace();
-				}
-			}
+		if (playing) {
+			cnt += 1;
+			cnt %= _myCellX;
+			trigger(cnt);
 		}
 	}
+
 
 	private void runThread() {
 		if (t == null) {
 			t = new Thread(getName()) {
+
 				public void run() {
 					while (true) {
 						triggerEventFromThread();
@@ -328,13 +391,14 @@ public class Matrix extends Controller<Matrix> {
 		}
 	}
 
-	@Override
-	public void remove() {
+
+	@Override public void remove() {
 		if (t != null) {
 			t.interrupt();
 		}
 		super.remove();
 	}
+
 
 	/**
 	 * use setMode to change the cell-activation which by default is ControlP5.SINGLE_ROW, 1 active
@@ -347,13 +411,13 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	public int getMode() {
 		return _myMode;
 	}
 
-	@Override
-	@ControlP5.Invisible
-	public Matrix updateDisplayMode(int theMode) {
+
+	@Override @ControlP5.Invisible public Matrix updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -368,7 +432,9 @@ public class Matrix extends Controller<Matrix> {
 		return this;
 	}
 
+
 	class MatrixView implements ControllerView<Matrix> {
+
 		public void display(PApplet theApplet, Matrix theController) {
 			theApplet.noStroke();
 			for (int x = 0; x < _myCellX; x++) {
@@ -377,7 +443,8 @@ public class Matrix extends Controller<Matrix> {
 					if (_myCells[x][y] == 1) {
 						theApplet.fill(color.getActive());
 						theApplet.rect(x * stepX, y * stepY, stepX - gapX, stepY - gapY);
-					} else {
+					}
+					else {
 						theApplet.fill(color.getBackground());
 						theApplet.rect(x * stepX, y * stepY, stepX - gapX, stepY - gapY);
 					}

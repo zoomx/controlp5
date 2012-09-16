@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -30,8 +31,7 @@ import java.io.Serializable;
  * active-, captionlabel- and valuelabel-colors.
  */
 
-@SuppressWarnings("serial")
-public class CColor implements Serializable {
+@SuppressWarnings("serial") public class CColor implements Serializable {
 
 	private int colorBackground = 0xff003652;
 
@@ -63,6 +63,7 @@ public class CColor implements Serializable {
 
 	int maskB = 0xffffff00;
 
+
 	protected CColor set(CColor theColor) {
 		colorBackground = theColor.colorBackground;
 		colorForeground = theColor.colorForeground;
@@ -77,6 +78,7 @@ public class CColor implements Serializable {
 		return this;
 	}
 
+
 	protected CColor copyTo(ControllerInterface<?> theControl) {
 		theControl.setColorBackground(colorBackground);
 		theControl.setColorForeground(colorForeground);
@@ -85,43 +87,24 @@ public class CColor implements Serializable {
 		return this;
 	}
 
+
 	/**
 	 * @exclude {@inheritDoc}
 	 */
 	public String toString() {
-		// return "{\"CColor\":[ "+
-		// "{\"colorBackground\":[" +
-		// (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff)
-		// +
-		// ","+ (colorBackground >> 0 & 0xff) +"]}, " +
-		// "{\"colorForeground\":[" +
-		// (colorForeground >> 16 & 0xff) + "," + (colorForeground >> 8 & 0xff)
-		// +
-		// ","+ (colorForeground >> 0 & 0xff) +"]}, " +
-		// "{\"colorActive\":[" +
-		// (colorActive >> 16 & 0xff) + "," + (colorActive >> 8 & 0xff) + ","+
-		// (colorActive >> 0 & 0xff) +"]}, " +
-		// "{\"colorCaptionLabel\":[" +
-		// (colorCaptionLabel >> 16 & 0xff) + "," + (colorCaptionLabel >> 8 &
-		// 0xff)
-		// + ","+ (colorCaptionLabel >> 0 & 0xff) +"]}, " +
-		// "{\"colorValueLabel\":[" +
-		// (colorValueLabel >> 16 & 0xff) + "," + (colorValueLabel >> 8 & 0xff)
-		// +
-		// ","+ (colorValueLabel >> 0 & 0xff) +"]}" +
-		// " ]}";
 
-		return ("bg (" + (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff) + "," + (colorBackground >> 0 & 0xff) + "), " + "fg ("
-				+ (colorForeground >> 16 & 0xff) + "," + (colorForeground >> 8 & 0xff) + "," + (colorForeground >> 0 & 0xff) + "), " + "active (" + (colorActive >> 16 & 0xff)
-				+ "," + (colorActive >> 8 & 0xff) + "," + (colorActive >> 0 & 0xff) + "), " + "captionlabel (" + (colorCaptionLabel >> 16 & 0xff) + ","
-				+ (colorCaptionLabel >> 8 & 0xff) + "," + (colorCaptionLabel >> 0 & 0xff) + "), " + "valuelabel (" + (colorValueLabel >> 16 & 0xff) + ","
-				+ (colorValueLabel >> 8 & 0xff) + "," + (colorValueLabel >> 0 & 0xff) + ")");
+		return ("bg (" + (colorBackground >> 16 & 0xff) + "," + (colorBackground >> 8 & 0xff) + "," + (colorBackground >> 0 & 0xff) + "), " + "fg (" + (colorForeground >> 16 & 0xff) + ","
+				+ (colorForeground >> 8 & 0xff) + "," + (colorForeground >> 0 & 0xff) + "), " + "active (" + (colorActive >> 16 & 0xff) + "," + (colorActive >> 8 & 0xff) + ","
+				+ (colorActive >> 0 & 0xff) + "), " + "captionlabel (" + (colorCaptionLabel >> 16 & 0xff) + "," + (colorCaptionLabel >> 8 & 0xff) + "," + (colorCaptionLabel >> 0 & 0xff) + "), "
+				+ "valuelabel (" + (colorValueLabel >> 16 & 0xff) + "," + (colorValueLabel >> 8 & 0xff) + "," + (colorValueLabel >> 0 & 0xff) + ")");
 	}
+
 
 	public CColor() {
 		set(ControlP5.getColor());
 	}
-	
+
+
 	public CColor(int cfg, int cbg, int cactive, int ccl, int cvl) {
 		setForeground(cfg);
 		setBackground(cbg);
@@ -130,9 +113,11 @@ public class CColor implements Serializable {
 		setValueLabel(cvl);
 	}
 
+
 	public CColor(CColor theColor) {
 		set(theColor);
 	}
+
 
 	/**
 	 * @exclude
@@ -140,83 +125,94 @@ public class CColor implements Serializable {
 	 */
 	public CColor setAlpha(int theAlpha) {
 		System.out.println("controlP5.CColor.setAlpha: setting alpha values disabled for this version of controlP5.");
-//		alpha = theAlpha;
-//		colorBackground = (colorBackground & maskA) | (int) (colorBackgroundAlpha * (alpha / 255.0f)) << 24;
-//		colorForeground = (colorForeground & maskA) | (int) (colorForegroundAlpha * (alpha / 255.0f)) << 24;
-//		colorActive = (colorActive & maskA) | (int) (colorActiveAlpha * (alpha / 255.0f)) << 24;
-//		colorCaptionLabel = (colorCaptionLabel & maskA) | (int) (colorCaptionLabelAlpha * (alpha / 255.0f)) << 24;
-//		colorValueLabel = (colorValueLabel & maskA) | (int) (colorValueLabel * (alpha / 255.0f)) << 24;
 		return this;
 	}
 
+
 	public CColor setForeground(int theColor) {
-		if((theColor & 0xff000000) == 0) {
+		if ((theColor & 0xff000000) == 0) {
 			colorForeground = 0xff000000;
-		} else {
+		}
+		else {
 			colorForeground = theColor;
 		}
 		return this;
 	}
 
+
 	public CColor setBackground(int theColor) {
-		if((theColor & 0xff000000) == 0) {
+		if ((theColor & 0xff000000) == 0) {
 			colorBackground = 0xff000000;
-		} else {
+		}
+		else {
 			colorBackground = theColor;
 		}
 		return this;
 	}
 
+
 	public CColor setActive(int theColor) {
-		if((theColor & 0xff000000) == 0) {
+		if ((theColor & 0xff000000) == 0) {
 			colorActive = 0xff000000;
-		} else {
+		}
+		else {
 			colorActive = theColor;
 		}
 		return this;
 	}
 
+
 	public CColor setCaptionLabel(int theColor) {
-		if((theColor & 0xff000000) == 0) {
+		if ((theColor & 0xff000000) == 0) {
 			colorCaptionLabel = 0xff000000;
-		} else {
+		}
+		else {
 			colorCaptionLabel = theColor;
 		}
 		return this;
 	}
 
+
 	public CColor setValueLabel(int theColor) {
-		if((theColor & 0xff000000) == 0) {
+		if ((theColor & 0xff000000) == 0) {
 			colorValueLabel = 0xff000000;
-		} else {
+		}
+		else {
 			colorValueLabel = theColor;
 		}
 		return this;
 	}
 
+
 	public int getAlpha() {
 		return alpha;
 	}
+
 
 	public int getForeground() {
 		return colorForeground;
 	}
 
+
 	public int getBackground() {
 		return colorBackground;
 	}
+
 
 	public int getActive() {
 		return colorActive;
 	}
 
+
 	public int getCaptionLabel() {
 		return colorCaptionLabel;
 	}
 
+
 	public int getValueLabel() {
 		return colorValueLabel;
 	}
+
 
 	/**
 	 * @exclude {@inheritDoc}
@@ -228,6 +224,7 @@ public class CColor implements Serializable {
 		result = 37 * result + colorActive;
 		return result;
 	}
+
 
 	/**
 	 * @exclude {@inheritDoc}

@@ -26,13 +26,12 @@ package controlP5;
  *
  */
 
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import processing.core.PApplet;
 import processing.core.PVector;
+import processing.event.KeyEvent;
 
 /**
  * ControllerGroup is an abstract class and is extended by class ControlGroup, Tab, or the ListBox.
@@ -50,7 +49,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 
 	protected List<ControlListener> _myControlListener;
 
-	protected ControlWindow _myControlWindow;
+	//	protected ControlWindow _myControlWindow;
 
 	protected ControlP5 cp5;
 
@@ -92,7 +91,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 
 	protected boolean isUpdate;
 
-	protected List<ControlWindowCanvas> _myControlCanvas;
+	protected List<Canvas> _myCanvas;
 
 	protected float _myValue;
 
@@ -146,7 +145,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		color.set((theParent == null) ? cp5.color : theParent.color);
 		_myName = theName;
 		controllers = new ControllerList();
-		_myControlCanvas = new ArrayList<ControlWindowCanvas>();
+		_myCanvas = new ArrayList<Canvas>();
 		_myControlListener = new ArrayList<ControlListener>();
 		_myLabel = new Label(cp5, _myName);
 		_myLabel.setColor(color.getCaptionLabel());
@@ -158,7 +157,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		position = new PVector(theX, theY, 0);
 		me = (T) this;
 		controllers = new ControllerList();
-		_myControlCanvas = new ArrayList<ControlWindowCanvas>();
+		_myCanvas = new ArrayList<Canvas>();
 	}
 
 
@@ -178,6 +177,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 
 
 	void setParent(ControllerGroup<?> theParent) {
+		
 		if (_myParent != null && _myParent != this) {
 			_myParent.remove(this);
 		}
@@ -187,26 +187,14 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		if (_myParent != this) {
 			_myParent.add(this);
 		}
+		
 		absolutePosition = new PVector(position.x, position.y);
 
 		absolutePosition.add(_myParent.absolutePosition);
 
 		positionBuffer = new PVector(position.x, position.y);
 
-		//		setWindow(_myParent.getWindow());
-		_myControlWindow = _myParent.getWindow();
-
-		for (int i = 0; i < controllers.size(); i++) {
-			if (controllers.get(i) instanceof Controller<?>) {
-				((Controller<?>) controllers.get(i))._myControlWindow = _myControlWindow;
-			}
-			else {
-				//				((ControllerGroup<?>) controllers.get(i)).setWindow(_myControlWindow);
-				((ControllerGroup<?>) controllers.get(i))._myControlWindow = _myControlWindow;
-			}
-		}
-
-		if (_myControlWindow != null) {
+		if (cp5.getWindow() != null) {
 			setMouseOver(false);
 		}
 	}
@@ -480,12 +468,12 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 			}
 		}
 		if (isVisible) {
-			if ((isMousePressed == _myControlWindow.mouselock)) {
-				if (isMousePressed && cp5.keyHandler.isAltDown() && isMoveable) {
+			if ((isMousePressed == cp5.getWindow().mouselock)) {
+				if (isMousePressed && cp5.isAltDown() && isMoveable) {
 					if (!cp5.isMoveable) {
-						positionBuffer.x += _myControlWindow.mouseX - _myControlWindow.pmouseX;
-						positionBuffer.y += _myControlWindow.mouseY - _myControlWindow.pmouseY;
-						if (cp5.keyHandler.isShiftDown) {
+						positionBuffer.x += cp5.getWindow().mouseX - cp5.getWindow().pmouseX;
+						positionBuffer.y += cp5.getWindow().mouseY - cp5.getWindow().pmouseY;
+						if (cp5.isShiftDown()) {
 							position.x = ((int) (positionBuffer.x) / 10) * 10;
 							position.y = ((int) (positionBuffer.y) / 10) * 10;
 						}
@@ -546,7 +534,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		if (!mouseover) {
 			isInside = false;
 			isInsideGroup = false;
-			_myControlWindow.removeMouseOverFor(this);
+			cp5.getWindow().removeMouseOverFor(this);
 			for (int i = controllers.size() - 1; i >= 0; i--) {
 				controllers.get(i).setMouseOver(false);
 			}
@@ -554,7 +542,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		else {
 			// TODO since inside can be either isInside or isInsideGroup, there are 2 options here,
 			// which i am not sure how to handle them yet.
-			_myControlWindow.setMouseOverController(this);
+			cp5.getWindow().setMouseOverController(this);
 		}
 		return me;
 	}
@@ -582,8 +570,8 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 	protected void drawControllers(PApplet theApplet) {
 		if (isOpen) {
 
-			for (ControlWindowCanvas cc : _myControlCanvas) {
-				if (cc.mode() == ControlWindowCanvas.PRE) {
+			for (Canvas cc : _myCanvas) {
+				if (cc.mode() == Canvas.PRE) {
 					cc.draw(theApplet);
 				}
 			}
@@ -598,8 +586,8 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 				cd.draw(theApplet);
 			}
 
-			for (ControlWindowCanvas cc : _myControlCanvas) {
-				if (cc.mode() == ControlWindowCanvas.POST) {
+			for (Canvas cc : _myCanvas) {
+				if (cc.mode() == Canvas.POST) {
 					cc.draw(theApplet);
 				}
 			}
@@ -620,10 +608,10 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 	 * add visual content.
 	 * 
 	 * @param theCanvas
-	 * @return ControlWindowCanvas
+	 * @return Canvas
 	 */
-	public ControlWindowCanvas addCanvas(ControlWindowCanvas theCanvas) {
-		_myControlCanvas.add(theCanvas);
+	public Canvas addCanvas(Canvas theCanvas) {
+		_myCanvas.add(theCanvas);
 		theCanvas.setup(cp5.papplet);
 		return theCanvas;
 	}
@@ -635,8 +623,8 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 	 * @param theCanvas
 	 * @return ControllerGroup
 	 */
-	public T removeCanvas(ControlWindowCanvas theCanvas) {
-		_myControlCanvas.remove(theCanvas);
+	public T removeCanvas(Canvas theCanvas) {
+		_myCanvas.remove(theCanvas);
 		return me;
 	}
 
@@ -715,7 +703,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 	 * removes the group from controlP5.
 	 */
 	public void remove() {
-		_myControlWindow.removeMouseOverFor(this);
+		cp5.getWindow().removeMouseOverFor(this);
 		if (_myParent != null) {
 			_myParent.remove(this);
 		}
@@ -730,7 +718,7 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		controllers.clearDrawable();
 		controllers = new ControllerList();
 		if (this instanceof Tab) {
-			_myControlWindow.removeTab((Tab) this);
+			cp5.getWindow().removeTab((Tab) this);
 		}
 	}
 
@@ -766,19 +754,9 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 	 * @return ControlWindow
 	 */
 	public ControlWindow getWindow() {
-		return _myControlWindow;
+		return cp5.getWindow();
 	}
 
-
-	//	public T setWindow(ControlWindow theWindow) {
-	//		_myControlWindow = theWindow;
-	//		for (ControllerInterface c : controllers.get()) {
-	//			if (c instanceof ControllerGroup) {
-	//				((ControllerGroup) c).setParent(this);
-	//			}
-	//		}
-	//		return me;
-	//	}
 
 	/**
 	 * @exclude
@@ -1277,8 +1255,8 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 
 
 	protected boolean inside() {
-		return (_myControlWindow.mouseX > position.x + _myParent.absolutePosition.x && _myControlWindow.mouseX < position.x + _myParent.absolutePosition.x + _myWidth
-				&& _myControlWindow.mouseY > position.y + _myParent.absolutePosition.y - _myHeight && _myControlWindow.mouseY < position.y + _myParent.absolutePosition.y);
+		return (cp5.getWindow().mouseX > position.x + _myParent.absolutePosition.x && cp5.getWindow().mouseX < position.x + _myParent.absolutePosition.x + _myWidth
+				&& cp5.getWindow().mouseY > position.y + _myParent.absolutePosition.y - _myHeight && cp5.getWindow().mouseY < position.y + _myParent.absolutePosition.y);
 	}
 
 
@@ -1375,8 +1353,8 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 
 	public String getInfo() {
 		return "type:\tControllerGroup" + "\nname:\t" + _myName + "\n" + "label:\t" + _myLabel.getText() + "\n" + "id:\t" + _myId + "\n" + "value:\t" + _myValue + "\n" + "arrayvalue:\t"
-				+ ControlP5IOHandler.arrayToString(_myArrayValue) + "\n" + "position:\t" + position + "\n" + "absolute:\t" + absolutePosition + "\n" + "width:\t" + getWidth() + "\n" + "height:\t"
-				+ getHeight() + "\n" + "color:\t" + getColor() + "\n" + "visible:\t" + isVisible + "\n" + "moveable:\t" + isMoveable + "\n";
+				+ CP.arrayToString(_myArrayValue) + "\n" + "position:\t" + position + "\n" + "absolute:\t" + absolutePosition + "\n" + "width:\t" + getWidth() + "\n" + "height:\t" + getHeight()
+				+ "\n" + "color:\t" + getColor() + "\n" + "visible:\t" + isVisible + "\n" + "moveable:\t" + isMoveable + "\n";
 	}
 
 

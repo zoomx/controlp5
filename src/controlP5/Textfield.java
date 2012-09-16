@@ -1,7 +1,7 @@
 
 package controlP5;
 
-import java.awt.event.KeyEvent;
+import processing.event.KeyEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -508,12 +508,12 @@ public class Textfield extends Controller<Textfield> {
 
 
 	public void keyEvent(KeyEvent theKeyEvent) {
-		if (isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
-			if (ignorelist.contains(cp5.keyHandler.keyCode)) {
+		if (isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getAction() == KeyEvent.PRESSED) {
+			if (ignorelist.contains(cp5.getKeyCode())) {
 				return;
 			}
-			if (keyMapping.containsKey(cp5.keyHandler.keyCode)) {
-				keyMapping.get(cp5.keyHandler.keyCode).execute();
+			if (keyMapping.containsKey(cp5.getKeyCode())) {
+				keyMapping.get(cp5.getKeyCode()).execute();
 			}
 			else {
 				keyMapping.get(DEFAULT).execute();
@@ -554,12 +554,12 @@ public class Textfield extends Controller<Textfield> {
 	class InsertCharacter implements TextfieldCommand {
 
 		public void execute() {
-			if ((int) (cp5.keyHandler.key) == 65535) {
+			if ((int) (cp5.getKey()) == 65535) {
 				return;
 			}
 
-			if (_myInputFilter.apply(cp5.keyHandler.key)) {
-				_myTextBuffer.insert(_myTextBufferIndex, (char) cp5.keyHandler.key);
+			if (_myInputFilter.apply(cp5.getKey())) {
+				_myTextBuffer.insert(_myTextBufferIndex, (char) cp5.getKey());
 				setIndex(_myTextBufferIndex + 1);
 			}
 		}
@@ -595,14 +595,14 @@ public class Textfield extends Controller<Textfield> {
 	class MoveLeft implements TextfieldCommand {
 
 		public void execute() {
-			setIndex((cp5.keyHandler.isCommandDown) ? 0 : PApplet.max(0, _myTextBufferIndex - 1));
+			setIndex((cp5.isMetaDown()) ? 0 : PApplet.max(0, _myTextBufferIndex - 1));
 		}
 	}
 
 	class MoveRight implements TextfieldCommand {
 
 		public void execute() {
-			setIndex((cp5.keyHandler.isCommandDown) ? _myTextBuffer.length() : PApplet.min(_myTextBuffer.length(), _myTextBufferIndex + 1));
+			setIndex((cp5.isMetaDown()) ? _myTextBuffer.length() : PApplet.min(_myTextBuffer.length(), _myTextBufferIndex + 1));
 		}
 	}
 

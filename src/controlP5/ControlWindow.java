@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -25,14 +26,6 @@ package controlP5;
  *
  */
 
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowFocusListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -40,6 +33,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
+import controlP5.ControlP5Base.KeyCode;
 
 /**
  * the purpose of a control window is to shift controllers from the main window into a separate
@@ -49,21 +45,9 @@ import processing.core.PVector;
  * 
  * @example controllers/ControlP5window
  */
-public class ControlWindow implements MouseWheelListener, WindowFocusListener {
+public final class ControlWindow {
 
-	protected ControlP5 controlP5;
-
-	protected int mouseX;
-
-	protected int mouseY;
-
-	protected int pmouseX;
-
-	protected int pmouseY;
-
-	protected boolean mousePressed;
-
-	protected boolean mouselock;
+	protected ControlP5 cp5;
 
 	protected Controller<?> isControllerActive;
 
@@ -74,8 +58,6 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	private String _myName = "main";
 
 	protected PApplet _myApplet;
-
-	private boolean isPAppletWindow;
 
 	protected ControllerList _myTabs;
 
@@ -91,21 +73,11 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 
 	protected boolean isUpdate;
 
-	public final static int NORMAL = PAppletWindow.NORMAL;
-
-	public final static int ECONOMIC = PAppletWindow.ECONOMIC;
-
-	protected List<ControlWindowCanvas> _myControlWindowCanvas;
-
-	private List<ControllerInterface<?>> mouseoverlist;
-
-	private boolean isMouseOver;
+	protected List<Canvas> _myCanvas;
 
 	protected boolean isDrawBackground = true;
 
 	protected boolean isUndecorated = false;
-
-	protected boolean is3D;
 
 	protected PVector autoPosition = new PVector(10, 30, 0);
 
@@ -115,65 +87,63 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 
 	protected PVector positionOfTabs = new PVector(0, 0, 0);
 
+	private int _myFrameCount = 0;
+
 	private boolean isMouse = true;
 
 	private Pointer _myPointer;
 
-	private boolean mousewheel = true;
-
-	private int _myFrameCount = 0;
-
 	private int mouseWheelMoved = 0;
+
+	private List<ControllerInterface<?>> mouseoverlist;
+
+	private boolean isMouseOver;
+
+	protected int mouseX;
+
+	protected int mouseY;
+
+	protected int pmouseX;
+
+	protected int pmouseY;
+
+	protected boolean mousePressed;
+
+	protected boolean mouselock;
+
+	protected char key;
+
+	protected int keyCode;
+
+	private boolean[] keys = new boolean[525];
+
+	private int numOfActiveKeys = 0;
+
+	private boolean focused = true;
+
 
 	/**
 	 * @exclude
 	 */
 	public ControlWindow(final ControlP5 theControlP5, final PApplet theApplet) {
 		mouseoverlist = new ArrayList<ControllerInterface<?>>();
-		controlP5 = theControlP5;
+		cp5 = theControlP5;
 		_myApplet = theApplet;
-		_myApplet.registerMouseEvent(this);
-		_myApplet.addMouseWheelListener(this);
-		try {
-			_myApplet.frame.addWindowFocusListener(this);
-		} catch (Exception e) {
-
-		}
 		isAutoDraw = true;
 		init();
 	}
 
+
 	protected void init() {
 		_myPointer = new Pointer();
 
-		String myRenderer = _myApplet.g.getClass().toString().toLowerCase();
-		is3D = (myRenderer.contains("gl") || myRenderer.contains("3d"));
+		_myCanvas = new ArrayList<Canvas>();
 
 		_myTabs = new ControllerList();
-		_myControlWindowCanvas = new ArrayList<ControlWindowCanvas>();
 
-		// TODO next section conflicts with Android
-		if (_myApplet instanceof PAppletWindow) {
-			_myName = ((PAppletWindow) _myApplet).name();
-			isPAppletWindow = true;
-			((PAppletWindow) _myApplet).setControlWindow(this);
-		}
+		_myTabs.add(new Tab(cp5, this, "global"));
 
-		if (_myApplet instanceof PAppletWindow) {
-			background = 0xff000000;
-		}
-
-		if (isInit == false) {
-			// TODO next section conflicts with Android
-			if (_myApplet instanceof PAppletWindow) {
-				_myApplet.registerKeyEvent(new ControlWindowKeyListener(this));
-			} else {
-				controlP5.keyHandler.update(this);
-			}
-		}
-
-		_myTabs.add(new Tab(controlP5, this, "global"));
-		_myTabs.add(new Tab(controlP5, this, "default"));
+		_myTabs.add(new Tab(cp5, this, "default"));
 
 		activateTab((Tab) _myTabs.get(1));
 
@@ -186,20 +156,18 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		// this had been checked here and the user had been informed to draw controlP5 manually by adding
 		// cp5.draw() to the sketch's draw function. with processing 2.0 and this version of controlP5
 		// this notification does no longer exist.
-		
+
 		if (isInit == false) {
-			_myApplet.registerPre(this);
-			_myApplet.registerDraw(this);
+			_myApplet.registerMethod("pre", this);
+			_myApplet.registerMethod("draw", this);
+			if (!cp5.isAndroid) {
+				_myApplet.registerMethod("keyEvent", this);
+				_myApplet.registerMethod("mouseEvent", this);
+			}
 		}
 		isInit = true;
 	}
 
-	@Override public void windowGainedFocus(WindowEvent e) {
-	}
-
-	@Override public void windowLostFocus(WindowEvent e) {
-		controlP5.keyHandler.clear();
-	}
 
 	public Tab getCurrentTab() {
 		for (int i = 1; i < _myTabs.size(); i++) {
@@ -209,6 +177,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 		return null;
 	}
+
 
 	public ControlWindow activateTab(String theTab) {
 
@@ -223,19 +192,23 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	public ControlWindow removeTab(Tab theTab) {
 		_myTabs.remove(theTab);
 		return this;
 	}
+
 
 	public Tab add(Tab theTab) {
 		_myTabs.add(theTab);
 		return theTab;
 	}
 
+
 	public Tab addTab(String theTab) {
 		return getTab(theTab);
 	}
+
 
 	protected ControlWindow activateTab(Tab theTab) {
 		for (int i = 1; i < _myTabs.size(); i++) {
@@ -244,20 +217,24 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 					resetMouseOver();
 				}
 				((Tab) _myTabs.get(i)).setActive(true);
-			} else {
+			}
+			else {
 				((Tab) _myTabs.get(i)).setActive(false);
 			}
 		}
 		return this;
 	}
 
+
 	public ControllerList getTabs() {
 		return _myTabs;
 	}
 
+
 	public Tab getTab(String theTabName) {
-		return controlP5.getTab(this, theTabName);
+		return cp5.getTab(this, theTabName);
 	}
+
 
 	/**
 	 * Sets the position of the tab bar which is set to 0,0 by default. to move the tabs to
@@ -270,10 +247,12 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	public ControlWindow setPositionOfTabs(int theX, int theY) {
 		positionOfTabs.set(theX, theY, positionOfTabs.z);
 		return this;
 	}
+
 
 	/**
 	 * Returns the position of the tab bar as PVector. to move the tabs to y-position 100, use
@@ -286,17 +265,21 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return positionOfTabs;
 	}
 
+
 	void setAllignmentOfTabs(int theValue, int theWidth) {
 		// TODO
 	}
+
 
 	void setAllignmentOfTabs(int theValue, int theWidth, int theHeight) {
 		// TODO
 	}
 
+
 	void setAllignmentOfTabs(int theValue) {
 		// TODO
 	}
+
 
 	public void remove() {
 		for (int i = _myTabs.size() - 1; i >= 0; i--) {
@@ -304,30 +287,24 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 		_myTabs.clear();
 		_myTabs.clearDrawable();
-		controlP5.controlWindowList.remove(this);
 	}
+
 
 	/**
 	 * clear the control window, delete all controllers from a control window.
 	 */
 	public ControlWindow clear() {
 		remove();
-		if (_myApplet instanceof PAppletWindow) {
-			_myApplet.unregisterMouseEvent(this);
-			_myApplet.removeMouseWheelListener(this);
-			_myApplet.stop();
-			((PAppletWindow) _myApplet).dispose();
-			_myApplet = null;
-			System.gc();
-		}
 		return this;
 	}
+
 
 	protected void updateFont(ControlFont theControlFont) {
 		for (int i = 0; i < _myTabs.size(); i++) {
 			((Tab) _myTabs.get(i)).updateFont(theControlFont);
 		}
 	}
+
 
 	/**
 	 * @exclude
@@ -347,6 +324,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 	}
 
+
 	/**
 	 * returns true if the mouse is inside a controller. !!! doesnt work for groups yet.
 	 */
@@ -358,9 +336,11 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return isVisible ? isMouseOver : false;
 	}
 
+
 	public boolean isMouseOver(ControllerInterface<?> theController) {
 		return mouseoverlist.contains(theController);
 	}
+
 
 	public void resetMouseOver() {
 		isMouseOver = false;
@@ -370,13 +350,16 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		mouseoverlist.clear();
 	}
 
+
 	public ControllerInterface<?> getFirstFromMouseOverList() {
 		if (getMouseOverList().isEmpty()) {
 			return null;
-		} else {
+		}
+		else {
 			return getMouseOverList().get(0);
 		}
 	}
+
 
 	/**
 	 * A list of controllers that are registered with a mouseover.
@@ -384,6 +367,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	public List<ControllerInterface<?>> getMouseOverList() {
 		return mouseoverlist;
 	}
+
 
 	private ControlWindow handleMouseOver() {
 		for (int i = mouseoverlist.size() - 1; i >= 0; i--) {
@@ -395,10 +379,12 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	public ControlWindow removeMouseOverFor(ControllerInterface<?> theController) {
 		mouseoverlist.remove(theController);
 		return this;
 	}
+
 
 	protected ControlWindow setMouseOverController(ControllerInterface<?> theController) {
 		if (!mouseoverlist.contains(theController) && isVisible && theController.isVisible()) {
@@ -407,6 +393,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		isMouseOver = true;
 		return this;
 	}
+
 
 	/**
 	 * updates all controllers inside the control window if update is enabled.
@@ -420,6 +407,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 	}
 
+
 	/**
 	 * enable or disable the update function of a control window.
 	 */
@@ -430,6 +418,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 	}
 
+
 	/**
 	 * check the update status of a control window.
 	 */
@@ -437,58 +426,167 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return isUpdate;
 	}
 
-	public ControlWindow addCanvas(ControlWindowCanvas theCanvas) {
-		_myControlWindowCanvas.add(theCanvas);
+
+	public ControlWindow addCanvas(Canvas theCanvas) {
+		_myCanvas.add(theCanvas);
 		theCanvas.setControlWindow(this);
 		theCanvas.setup(_myApplet);
 		return this;
 	}
 
-	public ControlWindow removeCanvas(ControlWindowCanvas theCanvas) {
-		_myControlWindowCanvas.remove(theCanvas);
+
+	public ControlWindow removeCanvas(Canvas theCanvas) {
+		_myCanvas.remove(theCanvas);
 		return this;
 	}
 
+
 	private boolean isReset = false;
 
+
 	public ControlWindow pre() {
+
 		if (_myFrameCount + 1 < _myApplet.frameCount) {
 			if (isReset) {
 				resetMouseOver();
 				isReset = false;
 			}
-		} else {
+		}
+		else {
 			isReset = true;
 		}
-		if (isVisible) {
-			if (isPAppletWindow) {
-				if (isDrawBackground) {
-					_myApplet.background(background);
+
+		if (papplet().focused != focused) {
+			clearKeys();
+			mousePressed = false;
+			focused = papplet().focused;
+		}
+
+		return this;
+	}
+
+
+	boolean pmouseReleased; // Android
+
+	boolean pmousePressed; // Android
+
+
+	/**
+	 * when in Android mode, call mouseEvent(int, int, boolean).
+	 * 
+	 * @param theX
+	 * @param theY
+	 * @param pressed
+	 */
+	public void mouseEvent(int theX, int theY, boolean pressed) {
+
+		mouseX = theX;
+		mouseY = theY;
+
+		if (pressed && !pmousePressed) {
+			updateEvents();
+			mousePressedEvent();
+			pmousePressed = true;
+			pmouseReleased = false;
+		}
+		else if (!pressed && !pmouseReleased) {
+			updateEvents();
+			mouseReleasedEvent();
+			for (ControllerInterface c : mouseoverlist) {
+				if (c instanceof Controller) {
+					((Controller) c).onLeave();
+					((Controller) c).onRelease();
+				}
+				else if (c instanceof ControllerGroup) {
+					((ControllerGroup) c).mouseReleased();
+				}
+			}
+			resetMouseOver();
+			pmousePressed = false;
+			pmouseReleased = true;
+
+		}
+	}
+
+
+	/**
+	 * @exclude
+	 * @param theMouseEvent MouseEvent
+	 */
+	public void mouseEvent(MouseEvent theMouseEvent) {
+		if (isMouse) {
+			mouseX = theMouseEvent.getX();
+			mouseY = theMouseEvent.getY();
+			if (theMouseEvent.getAction() == MouseEvent.PRESSED) {
+				mousePressedEvent();
+			}
+			if (theMouseEvent.getAction() == MouseEvent.RELEASED) {
+				mouseReleasedEvent();
+			}
+		}
+	}
+
+
+	public void keyEvent(KeyEvent theKeyEvent) {
+		if (theKeyEvent.getAction() == KeyEvent.PRESSED) {
+
+			// allow special keys such as backspace, arrow left, 
+			// arrow right to pass test when active
+			if (keys[theKeyEvent.getKeyCode()] && theKeyEvent.getKeyCode() != 8 && theKeyEvent.getKeyCode() != 37 && theKeyEvent.getKeyCode() != 39) {
+				return;
+			}
+
+			keys[theKeyEvent.getKeyCode()] = true;
+
+			numOfActiveKeys++;
+
+			cp5.modifiers = theKeyEvent.getModifiers();
+
+			key = theKeyEvent.getKey();
+
+			keyCode = theKeyEvent.getKeyCode();
+
+		}
+
+		if (theKeyEvent.getAction() == KeyEvent.RELEASED) {
+
+			keys[theKeyEvent.getKeyCode()] = false;
+
+			numOfActiveKeys--;
+
+			cp5.modifiers = theKeyEvent.getModifiers();
+
+		}
+
+		if (theKeyEvent.getAction() == KeyEvent.PRESSED && cp5.isShortcuts()) {
+			int n = 0;
+			for (boolean b : keys) {
+				n += b ? 1 : 0;
+			}
+			char[] c = new char[n];
+			n = 0;
+			for (int i = 0; i < keys.length; i++) {
+				if (keys[i]) {
+					c[n++] = ((char) i);
+				}
+			}
+			KeyCode code = new KeyCode(c);
+
+			if (cp5.keymap.containsKey(code)) {
+				for (ControlKey ck : cp5.keymap.get(code)) {
+					ck.keyEvent();
 				}
 			}
 		}
-		return this;
+		handleKeyEvent(theKeyEvent);
 	}
 
-	/**
-	 * enable smooth controlWindow rendering.
-	 */
-	public ControlWindow smooth() {
-		if (isPAppletWindow) {
-			_myApplet.smooth();
-		}
-		return this;
+
+	public void clearKeys() {
+		keys = new boolean[525];
+		numOfActiveKeys = 0;
 	}
 
-	/**
-	 * disable smooth controlWindow rendering.
-	 */
-	public ControlWindow noSmooth() {
-		if (isPAppletWindow) {
-			_myApplet.noSmooth();
-		}
-		return this;
-	}
 
 	/**
 	 * @exclude draw content.
@@ -496,34 +594,37 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	public void draw() {
 
 		_myFrameCount = _myApplet.frameCount;
-		if (controlP5.blockDraw == false) {
 
+		if (cp5.blockDraw == false) {
+			if (cp5.isAndroid) {
+				mouseEvent(cp5.papplet.mouseX, cp5.papplet.mouseY, cp5.papplet.mousePressed);
+			} else {
 			updateEvents();
+			}
 			if (isVisible) {
 
 				// TODO save stroke, noStroke, fill, noFill, strokeWeight
 				// parameters and restore after drawing controlP5 elements.
 
 				int myRectMode = _myApplet.g.rectMode;
+
 				int myEllipseMode = _myApplet.g.ellipseMode;
+
 				int myImageMode = _myApplet.g.imageMode;
+
 				_myApplet.pushStyle();
 				_myApplet.rectMode(PConstants.CORNER);
 				_myApplet.ellipseMode(PConstants.CORNER);
 				_myApplet.imageMode(PConstants.CORNER);
 				_myApplet.noStroke();
-				// TODO next section conflicts with Android
-				if (_myApplet instanceof PAppletWindow) {
-					_myApplet.background(background);
-				}
 
 				if (_myDrawable != null) {
 					_myDrawable.draw(_myApplet);
 				}
 
-				for (int i = 0; i < _myControlWindowCanvas.size(); i++) {
-					if ((_myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.PRE) {
-						(_myControlWindowCanvas.get(i)).draw(_myApplet);
+				for (int i = 0; i < _myCanvas.size(); i++) {
+					if ((_myCanvas.get(i)).mode() == Canvas.PRE) {
+						(_myCanvas.get(i)).draw(_myApplet);
 					}
 				}
 
@@ -538,11 +639,14 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 							if (myHeight < ((Tab) _myTabs.get(i)).height()) {
 								myHeight = ((Tab) _myTabs.get(i)).height();
 							}
-							if (myOffsetX > (component().getWidth()) - ((Tab) _myTabs.get(i)).width()) {
-								myOffsetY += myHeight + 1;
-								myOffsetX = (int) getPositionOfTabs().x;
-								myHeight = 0;
-							}
+
+							// conflicts with Android, getWidth not found TODO
+
+							//							if (myOffsetX > (papplet().getWidth()) - ((Tab) _myTabs.get(i)).width()) {
+							//								myOffsetY += myHeight + 1;
+							//								myOffsetX = (int) getPositionOfTabs().x;
+							//								myHeight = 0;
+							//							}
 
 							((Tab) _myTabs.get(i)).setOffset(myOffsetX, myOffsetY);
 
@@ -558,9 +662,9 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 					}
 					((ControllerInterface<?>) _myTabs.get(0)).draw(_myApplet);
 				}
-				for (int i = 0; i < _myControlWindowCanvas.size(); i++) {
-					if ((_myControlWindowCanvas.get(i)).mode() == ControlWindowCanvas.POST) {
-						(_myControlWindowCanvas.get(i)).draw(_myApplet);
+				for (int i = 0; i < _myCanvas.size(); i++) {
+					if ((_myCanvas.get(i)).mode() == Canvas.POST) {
+						(_myCanvas.get(i)).draw(_myApplet);
 					}
 				}
 
@@ -568,7 +672,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 				pmouseY = mouseY;
 
 				// draw Tooltip here.
-				controlP5.getTooltip().draw(this);
+				cp5.getTooltip().draw(this);
 				_myApplet.rectMode(myRectMode);
 				_myApplet.ellipseMode(myEllipseMode);
 				_myApplet.imageMode(myImageMode);
@@ -577,6 +681,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 
 	}
+
 
 	/**
 	 * Adds a custom context to a ControlWindow. Use a custom class which implements the CDrawable
@@ -590,6 +695,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	/**
 	 * returns the name of the control window.
 	 */
@@ -597,23 +703,6 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return _myName;
 	}
 
-	/**
-	 * @exclude
-	 * @param theMouseEvent MouseEvent
-	 */
-	public void mouseEvent(MouseEvent theMouseEvent) {
-		if (isMouse) {
-			mouseX = theMouseEvent.getX();
-			mouseY = theMouseEvent.getY();
-			if (theMouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
-				mousePressedEvent();
-
-			}
-			if (theMouseEvent.getID() == MouseEvent.MOUSE_RELEASED) {
-				mouseReleasedEvent();
-			}
-		}
-	}
 
 	private void mousePressedEvent() {
 		if (isVisible) {
@@ -627,6 +716,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 	}
 
+
 	private void mouseReleasedEvent() {
 		if (isVisible) {
 			mousePressed = false;
@@ -637,28 +727,13 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 	}
 
-	public ControlWindow disableMouseWheel() {
-		mousewheel = false;
-		return this;
-	}
 
-	public ControlWindow enableMouseWheel() {
-		mousewheel = true;
-		return this;
-	}
-
-	public boolean isMouseWheel() {
-		return mousewheel;
-	}
-
-	/**
-	 * @exclude {@inheritDoc}
-	 */
-	@ControlP5.Invisible public void mouseWheelMoved(MouseWheelEvent e) {
-		if (mousewheel && isMouseOver()) {
-			mouseWheelMoved = e.getWheelRotation();
+	void setMouseWheelRotation(int theRotation) {
+		if (isMouseOver()) {
+			mouseWheelMoved = theRotation;
 		}
 	}
+
 
 	@SuppressWarnings("unchecked") private void handleMouseWheelMoved() {
 		if (mouseWheelMoved != 0) {
@@ -673,16 +748,21 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 					}
 					if (c instanceof Slider) {
 						((Slider) c).scrolled(mouseWheelMoved);
-					} else if (c instanceof Knob) {
+					}
+					else if (c instanceof Knob) {
 						((Knob) c).scrolled(mouseWheelMoved);
-					} else if (c instanceof Numberbox) {
+					}
+					else if (c instanceof Numberbox) {
 						((Numberbox) c).scrolled(mouseWheelMoved);
-					} else if (c instanceof ListBox) {
+					}
+					else if (c instanceof ListBox) {
 						((ListBox) c).scrolled(mouseWheelMoved);
-					} else if (c instanceof DropdownList) {
+					}
+					else if (c instanceof DropdownList) {
 						((DropdownList) c).scrolled(mouseWheelMoved);
 
-					} else if (c instanceof Textarea) {
+					}
+					else if (c instanceof Textarea) {
 						((Textarea) c).scrolled(mouseWheelMoved);
 					}
 					break;
@@ -692,50 +772,22 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		mouseWheelMoved = 0;
 	}
 
-	/**
-	 * @exclude
-	 * @param theCoordinates
-	 */
-	@ControlP5.Invisible public void multitouch(int[][] theCoordinates) {
-		for (int n = 0; n < theCoordinates.length; n++) {
-			mouseX = theCoordinates[n][0];
-			mouseY = theCoordinates[n][1];
-			if (isVisible) {
-				if (theCoordinates[n][2] == MouseEvent.MOUSE_PRESSED) {
-					mousePressed = true;
-					for (int i = 0; i < _myTabs.size(); i++) {
-						if (((ControllerInterface<?>) _myTabs.get(i)).setMousePressed(true)) {
-							mouselock = true;
-							ControlP5.logger().finer(" mouselock = " + mouselock);
-							return;
-						}
-					}
-
-				}
-				if (theCoordinates[n][2] == MouseEvent.MOUSE_RELEASED) {
-					mousePressed = false;
-					mouselock = false;
-					for (int i = 0; i < _myTabs.size(); i++) {
-						((ControllerInterface<?>) _myTabs.get(i)).setMousePressed(false);
-					}
-				}
-			}
-		}
-	}
 
 	public boolean isMousePressed() {
 		return mousePressed;
 	}
 
+
 	/**
 	 * @exclude
 	 * @param theKeyEvent KeyEvent
 	 */
-	public void keyEvent(KeyEvent theKeyEvent) {
+	public void handleKeyEvent(KeyEvent theKeyEvent) {
 		for (int i = 0; i < _myTabs.size(); i++) {
 			((ControllerInterface<?>) _myTabs.get(i)).keyEvent(theKeyEvent);
 		}
 	}
+
 
 	/**
 	 * set the color for the controller while active.
@@ -748,6 +800,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	/**
 	 * set the foreground color of the controller.
 	 */
@@ -758,6 +811,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 		return this;
 	}
+
 
 	/**
 	 * set the background color of the controller.
@@ -770,6 +824,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	/**
 	 * set the color of the text label of the controller.
 	 */
@@ -780,6 +835,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		}
 		return this;
 	}
+
 
 	/**
 	 * set the color of the values.
@@ -792,6 +848,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	/**
 	 * set the background color of the control window.
 	 */
@@ -800,6 +857,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	/**
 	 * get the papplet instance of the ControlWindow.
 	 */
@@ -807,73 +865,6 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return _myApplet;
 	}
 
-	public Component component() {
-		return papplet();
-	}
-
-	/**
-	 * set the title of a control window. only applies to control windows of type PAppletWindow.
-	 */
-	public ControlWindow setTitle(String theTitle) {
-		if (_myApplet instanceof PAppletWindow) {
-			((PAppletWindow) _myApplet).setTitle(theTitle);
-		}
-		return this;
-	}
-
-	/**
-	 * shows the xy coordinates displayed in the title of a control window. only applies to control
-	 * windows of type PAppletWindow.
-	 * 
-	 * @param theFlag
-	 */
-	public ControlWindow showCoordinates() {
-		if (_myApplet instanceof PAppletWindow) {
-			((PAppletWindow) _myApplet).showCoordinates();
-		}
-		return this;
-	}
-
-	/**
-	 * hide the xy coordinates displayed in the title of a control window. only applies to control
-	 * windows of type PAppletWindow.
-	 * 
-	 * @param theFlag
-	 */
-	public ControlWindow hideCoordinates() {
-		if (_myApplet instanceof PAppletWindow) {
-			((PAppletWindow) _myApplet).hideCoordinates();
-		}
-		return this;
-	}
-
-	/**
-	 * hide the controllers and tabs of the ControlWindow.
-	 */
-	public ControlWindow hide() {
-		isVisible = false;
-		isMouseOver = false;
-		if (isPAppletWindow) {
-			((PAppletWindow) _myApplet).visible(false);
-		}
-		return this;
-	}
-
-	/**
-	 * set the draw mode of a control window. a separate control window is only updated when in
-	 * focus. to update the context of the window continuously, use
-	 * yourControlWindow.setUpdateMode(ControlWindow.NORMAL); otherwise use
-	 * yourControlWindow.setUpdateMode(ControlWindow.ECONOMIC); for an economic, less cpu intensive
-	 * update.
-	 * 
-	 * @param theMode
-	 */
-	public ControlWindow setUpdateMode(int theMode) {
-		if (isPAppletWindow) {
-			((PAppletWindow) _myApplet).setMode(theMode);
-		}
-		return this;
-	}
 
 	/**
 	 * sets the frame rate of the control window.
@@ -886,13 +877,12 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	public ControlWindow show() {
 		isVisible = true;
-		if (isPAppletWindow) {
-			((PAppletWindow) _myApplet).visible(true);
-		}
 		return this;
 	}
+
 
 	/**
 	 * by default the background of a controlWindow is filled with a background color every frame.
@@ -906,13 +896,16 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
+
 	public boolean isDrawBackground() {
 		return isDrawBackground;
 	}
 
+
 	public boolean isVisible() {
 		return isVisible;
 	}
+
 
 	protected boolean isControllerActive(Controller<?> theController) {
 		if (isControllerActive == null) {
@@ -921,15 +914,18 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return isControllerActive.equals(theController);
 	}
 
+
 	protected ControlWindow setControllerActive(Controller<?> theController) {
 		isControllerActive = theController;
 		return this;
 	}
 
+
 	public ControlWindow toggleUndecorated() {
 		setUndecorated(!isUndecorated());
 		return this;
 	}
+
 
 	public ControlWindow setUndecorated(boolean theFlag) {
 		if (theFlag != isUndecorated()) {
@@ -944,36 +940,39 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return this;
 	}
 
-	public Frame getFrame() {
-		return _myApplet.frame;
-	}
 
 	public boolean isUndecorated() {
 		return isUndecorated;
 	}
 
+
 	public ControlWindow setPosition(int theX, int theY) {
 		return setLocation(theX, theY);
 	}
+
 
 	public ControlWindow setLocation(int theX, int theY) {
 		_myApplet.frame.setLocation(theX, theY);
 		return this;
 	}
 
+
 	public Pointer getPointer() {
 		return _myPointer;
 	}
+
 
 	public ControlWindow disablePointer() {
 		_myPointer.disable();
 		return this;
 	}
 
+
 	public ControlWindow enablePointer() {
 		_myPointer.enable();
 		return this;
 	}
+
 
 	/**
 	 * A pointer by default is linked to the mouse and stores the x and y position as well as the
@@ -991,26 +990,32 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 			return this;
 		}
 
+
 		public Pointer setY(int theY) {
 			mouseY = theY;
 			return this;
 		}
 
+
 		public int getY() {
 			return mouseY;
 		}
+
 
 		public int getX() {
 			return mouseX;
 		}
 
+
 		public int getPreviousX() {
 			return pmouseX;
 		}
 
+
 		public int getPreviousY() {
 			return pmouseY;
 		}
+
 
 		public Pointer set(int theX, int theY) {
 			setX(theX);
@@ -1018,28 +1023,61 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 			return this;
 		}
 
+
+		public Pointer set(int theX, int theY, boolean pressed) {
+			setX(theX);
+			setY(theY);
+			if (pressed) {
+				if (!mousePressed) {
+					pressed();
+				}
+			}
+			else {
+				if (mousePressed) {
+					released();
+				}
+			}
+			return this;
+		}
+
+
 		public Pointer pressed() {
 			mousePressedEvent();
 			return this;
 		}
+
 
 		public Pointer released() {
 			mouseReleasedEvent();
 			return this;
 		}
 
+
 		public void enable() {
 			isMouse = false;
 		}
+
 
 		public void disable() {
 			isMouse = true;
 		}
 
+
 		public boolean isEnabled() {
 			return !isMouse;
 		}
 	}
+
+
+	/**
+	 * hide the controllers and tabs of the ControlWindow.
+	 */
+	public ControlWindow hide() {
+		isVisible = false;
+		isMouseOver = false;
+		return this;
+	}
+
 
 	/**
 	 * @exclude
@@ -1049,13 +1087,15 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return _myTabs;
 	}
 
+
 	/**
 	 * @exclude
 	 * @deprecated
 	 */
 	@Deprecated public Tab tab(String theTabName) {
-		return controlP5.getTab(this, theTabName);
+		return cp5.getTab(this, theTabName);
 	}
+
 
 	/**
 	 * @deprecated
@@ -1070,6 +1110,7 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 		return null;
 	}
 
+
 	/**
 	 * @exclude
 	 * @deprecated
@@ -1077,6 +1118,92 @@ public class ControlWindow implements MouseWheelListener, WindowFocusListener {
 	 */
 	@Deprecated public void setMode(int theMode) {
 		setUpdateMode(theMode);
+	}
+
+
+	/**
+	 * @deprecated
+	 * @exclude
+	 * @param theCoordinates
+	 */
+	@ControlP5.Invisible public void multitouch(int[][] theCoordinates) {
+		// removed
+	}
+
+
+	/**
+	 * @deprecated enable smooth controlWindow rendering.
+	 */
+	public ControlWindow smooth() {
+		return this;
+	}
+
+
+	/**
+	 * @deprecated disable smooth controlWindow rendering.
+	 */
+	public ControlWindow noSmooth() {
+		return this;
+	}
+
+
+	/**
+	 * @deprecated set the title of a control window. only applies to control windows of type
+	 *             PAppletWindow.
+	 */
+	public ControlWindow setTitle(String theTitle) {
+		return this;
+	}
+
+
+	/**
+	 * @deprecated shows the xy coordinates displayed in the title of a control window. only applies
+	 *             to control windows of type PAppletWindow.
+	 * 
+	 * @param theFlag
+	 */
+	public ControlWindow showCoordinates() {
+		return this;
+	}
+
+
+	/**
+	 * @deprecated hide the xy coordinates displayed in the title of a control window. only applies
+	 *             to control windows of type PAppletWindow.
+	 * 
+	 * @param theFlag
+	 */
+	public ControlWindow hideCoordinates() {
+		return this;
+	}
+
+
+	/**
+	 * @deprecated set the draw mode of a control window. a separate control window is only updated
+	 *             when in focus. to update the context of the window continuously, use
+	 *             yourControlWindow.setUpdateMode(ControlWindow.NORMAL); otherwise use
+	 *             yourControlWindow.setUpdateMode(ControlWindow.ECONOMIC); for an economic, less
+	 *             cpu intensive update.
+	 * 
+	 * @param theMode
+	 */
+	public ControlWindow setUpdateMode(int theMode) {
+		return this;
+	}
+
+
+	@Deprecated public ControlWindow disableMouseWheel() {
+		return this;
+	}
+
+
+	@Deprecated public ControlWindow enableMouseWheel() {
+		return this;
+	}
+
+
+	@Deprecated public boolean isMouseWheel() {
+		return false;
 	}
 
 }

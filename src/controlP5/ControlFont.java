@@ -56,6 +56,22 @@ public class ControlFont {
 	public static boolean RENDER_2X;
 
 
+	/**
+	 * renders a PFont twice for better and sharper readability
+	 */
+	public static void sharp() {
+		RENDER_2X = true;
+	}
+
+
+	/**
+	 * sets the rendering of a PFont back to normal and single rendering.
+	 */
+	public static void normal() {
+		RENDER_2X = false;
+	}
+
+
 	public ControlFont(PFont theFont) {
 		this(theFont, checkFontSize(theFont));
 
@@ -64,7 +80,8 @@ public class ControlFont {
 
 	static private int checkFontSize(PFont theFont) {
 		try {
-			return theFont.getFont().getSize();
+			// was: return theFont.getFont().getSize(); but disappeared with p5 2.0b1
+			return theFont.getSize();
 		} catch (NullPointerException e) {
 			System.out.println("ControlP5: could not find font-size details for font " + theFont.getName() + ", use constructor ControlFont(PFont theFont, int theFontSize) to specify the font size.");
 			return 10;

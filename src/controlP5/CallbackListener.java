@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -27,16 +28,15 @@ package controlP5;
 
 /**
  * <p>
- * Use a CallbackListener to listen for controller related actions such as
- * pressed, released, etc. Callbacks cn be added via the ControlP5.addCallback()
- * methods.
+ * Use a CallbackListener to listen for controller related actions such as pressed, released, etc.
+ * Callbacks cn be added via the ControlP5.addCallback() methods.
  * </p>
  * 
  * @example use/ControlP5callback
  * @see controlP5.ControlP5#addCallback(CallbackListener)
  */
 public interface CallbackListener {
-	
+
 	public void controlEvent(CallbackEvent theEvent);
 
 }
