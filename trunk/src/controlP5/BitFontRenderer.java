@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -75,26 +76,34 @@ public class BitFontRenderer {
 
 	public static final int grixel = ControlP5.grixel;
 
+	private final String standard56base64 = "AeYACQBgACAEAgQGBggHAgMDBgYDBQIFBgMGBgYGBgYGBgIDBAYEBggGBgYGBgYGBgIGBgUIBgYGBgYGBgYGCAYGBgMFAwYHAwUFBQUFAwUFAgMFAggFBQUFBAQEBQUIBQUFBAMEBQKgUgghRwoBAIAcOQ7yOZ/jAADAAXAe5/k+JwqKQlDkPM7jfFGUFEXfwghAQAAICIQUAgAAAAABAAAAQAkVqBSvJFJUEQCQaFHEBBEURQAAiDiiKIqCIIqCkjAWRVEURUQUJUURFCEFIBAAAgEBhAAAAABAAAAAAEikBIIvkFAQOQQAJBIEKU8ARVGiLyCRKAqiIAiioCJUTVEURQERRUmKgkQoAsAd40zcSambY447u5SSUnoSAYBAcRBMRNWHh4iEMAn0II4HBBAk6XuC6HmyL2gISVX0RI9DREoSQRAhAgBIKaW0lFIpKaWUIiSlpJRQhAAg+CCSFBFBACAiEdAHRUgEgfiIqIqiIAqCKAoqQlAWBVEBEZGSpBBCiAAAUgrpJaU0SkoppRBJKckkIxEAAJRHKkIEEACESEKERBERRUEAAVKiKIqCIIqKkhAURUGUREREJEVEECQAgJRSCkkplZJSSilIUkpKKUgEAAKFCHGhAIBAwdHnII5DOA4iIAiB6HGeL3CinOgFRU7gRA7hEDYR8QUJ+MEd40xcSqmkZI6LEWdsknsSAQAAAAAAAAAgAAAAAAAAAACAAACAAwAAAAAAAAAAAAAAQAAAAAAAAAADAwAAAAAABBAAAICAAAAAAIAAJQAAAAAAAAAABAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAACAAAgIAAAAAAYAAA=";
+
+	private final String standard58base64 = "AakACQBgACAEAgQGBggGAgMDBAYDBAIGBQMFBQUFBQUFBQICBAUEBQgFBQUFBQUFBQIFBQQGBQUFBQUFBAUGCAUGBQMFAwYGAwQEBAQEBAQEAgQEAgYEBAQEAwQEBAQGBAQEBAIEBQKgUgghIaUAAIiRMeiZZwwAAANgjjnvmRRKESVzzDGXoqQUvYURQCCAQCCSCAAAAAgAAABEqECleCVFkRAAiLSUWEgoJQAAiSOllEJIKVRiSymllCRFSSlCEVIAQQBBQAARAAAAEAAAACQpgeALJASiIwAQSQipE1BKRS+QSEohhRBSqES1UkopSIqSkkIiFAGwEZOwSaplZGx2VVXVSQIAgeIgSETy4RCSCEnoEONAgJCkd0I6p73QiKilk46RpCQZQoQIAFBVVVOVVFVVVUKqqiqKCACCDyKpiIoAICQJ9FAiCUE8ElUphRRCSqESUUohJSRJSUpECBEAoCrqoiqZqqqqiFRVUiIJAADKI5UQASEgSAoJpSRSCgECUlJKKYSUSiWilEJKSRKRlIgQJABAVVVEVVJVVVUhqaqqQhIACBQixEIBQFBg9AwyRhhDBEIIpGPOCyZl0kXJBJOMGMImEW9owAcbMQmrpKpKxjJiopQdFQAAAAAAAABAAAAAAAAAAIAAAOAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAQIAAAEAQAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAgAAAgCAAAAAgAA";
+
+	private final String grixelbase64 = "AnoADABgACAFAgQICAoIAgQEBgYDBQIKCQMICAgICAcICAIDBQYFBwkICAgIBwcICAYHCAcJCAgICAgICAgICggICAQKBAQHBAcHBwcHBQcHAgUHBAoHBwcHBgcGBwcKBwcHBQIFCAJAJeIjkENBAAAAQHzk4wPz5/Pz8QEAAB4ePj8+Pz6fX9AHCgoECvL58fnx+QsKiigo6C8CIAEIIAAAARwgEAoEAAAAAAAABAAAAAAAICIAAZVIUiERBQEAAIAIWlAQSkAQKCgIICCEhAQFBQUFAgFBBCgoMGwoKCgoKAghKCiioCCgEIAKQIAAAAQIgAAgEAAAAAAAABAAAAAAAICIsAUEfwlCRBCkEAAAIUhAQCQBAaCgIEAAAcoUFBQQFAgEBBGgoECpoqCgoKAAhKCgiEREQIIAAgAAAgAQIAACgEAAAAAAAABAAAAAAAAAIrIBEIgkgBBBEEEAAIIgAQGJ/ARAgoKS+AioVFBQQFAgEBBEgEICmZKCgoKCAhCCgiKioIAIBAgA4Pl4fJ7n+YRC8c7H8/F5ni8UiigU+okIAEAg4gOBA0HfhwcEguTDEwL0g/DxAwFAoFJ/PwFBv1/eHwH6CASKCgoKCvJBCAqKCAEBISAgAAAoFAqFQigUikREoVAoFISEUCgiSQgSQgAAgQgSAlEEEQQACAhSANAfUBAhCAiIj2BKBQUFBAUCQUEEKCQQKCzoJ+gHCCEoKCIKBIIAgQAAvlAg9AuhUOgREYVCoVBgEEKhiBghhIgAAAB/SITEEKQQABAgSAFAIEBBhCAgQABByBMUFBAUCAQFEaGgQKCgoICgECCEIJGIRBAEAggCAIRCgVAghEKhSEQUCoVCAUYIhSJihAgiAgAAiCQJFUMQAAgggCAFBIEEBRGCghACAkBAUFBQUCAQFESEggKBgoICkoKCEIIoIgpCCAhACAAQCoVCoRAKhUIRUSgUCgUhISSJSBISiAgAQCDiE4gTQQAgUAB89OcD4uND8PFJAAAEfkE/Pj++gF/Q5wn6BQryCfAJ8kHwQXAnCOEvACIAgM/j8XiCLxQKWUQhz8cXeDgPw52Q7yciAAAAAAIAANgAQAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAgAPg4AcAAAAAACAACAAAAAABEAAAAAAAACAAawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4ABgAAAAABEAAAAAAAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+
 	protected float height;
 
 	protected static Map<Integer, BitFont> fonts;
 
 	private final ControlP5 cp5;
 
+
 	protected BitFontRenderer(ControlP5 theControlP5) {
 		cp5 = theControlP5;
 		loadFonts();
 	}
 
+
 	private void loadFonts() {
 		if (fonts == null) {
 			fonts = new HashMap<Integer, BitFont>();
-			fonts.put(standard58, new BitFont(standard58).setSource("standard58.gif"));
-			fonts.put(standard56, new BitFont(standard56).setSource("standard56.gif"));
-			fonts.put(synt24, new BitFont(synt24).setSource("synt24.gif"));
-			fonts.put(grixel, new BitFont(grixel).setSource("GrixelKyrou9.gif"));
+			fonts.put(standard58, new BitFont(standard58, CP.decodeBase64(standard58base64)));
+			fonts.put(standard56, new BitFont(standard56, CP.decodeBase64(standard56base64)));
+			fonts.put(grixel, new BitFont(grixel, CP.decodeBase64(grixelbase64)));
 		}
 	}
+
 
 	/**
 	 * TODO implement addBitFont
@@ -108,9 +117,11 @@ public class BitFontRenderer {
 		return -1;
 	}
 
+
 	protected static BitFont getFont(int theIndex) {
 		return fonts.get(theIndex);
 	}
+
 
 	protected static int getPosition(Label theLabel, ControlFont.BitFontLabel theBitFont, int theX) {
 		BitFont f = fonts.get(theBitFont.getFontIndex());
@@ -129,40 +140,47 @@ public class BitFontRenderer {
 		return l;
 	}
 
+
 	public static int getWidth(Label theLabel, final ControlFont.BitFontLabel theBitFont, String theText) {
 		return getDimension(theLabel, theBitFont, -1, -1, theText, 0, theText.length())[0];
 	}
+
 
 	public static int getWidth(Label theLabel, final ControlFont.BitFontLabel theBitFont) {
 		return getWidth(theLabel, theBitFont, theLabel.getText().length());
 	}
 
+
 	protected static int getWidth(Label theLabel, final ControlFont.BitFontLabel theBitFont, int theLength) {
 		return getDimension(theLabel, theBitFont, -1, -1, theLabel.getTextFormatted(), 0, theLength)[0];
 	}
 
+
 	protected static int[] getDimension(Label theLabel, ControlFont.BitFontLabel theBitFont, String theText) {
 		return getDimension(theLabel, theBitFont, -1, -1, theText, 0, theText.length());
 	}
+
 
 	protected static int[] getDimension(Label theLabel, final ControlFont.BitFontLabel theBitFont, final int theWidth, final int theHeight, final String theText, final int theStart, int theEnd) {
 		int[] dim = { 0, theLabel.getLineHeight() };
 		int tx = 0;
 		BitFont f = fonts.get(theBitFont.getFontIndex());
 		// String s = theLabel.getTextFormatted();
-		theEnd = (int)PApplet.min(theText.length(),theEnd);
+		theEnd = (int) PApplet.min(theText.length(), theEnd);
 		for (int i = theStart; i < theEnd; i++) {
 			final int myIndex = ((int) theText.charAt(i) - 32);
 			if (myIndex >= 0 && myIndex <= 95) {
 				dim[0] += f.charWidth[myIndex] + theLabel.getLetterSpacing();
-			} else {
+			}
+			else {
 				int c = theText.charAt(i);
 				if (c != 9 && c != 10 && c != 13) {
 					// 9 = tab, 10 = new line, 13 = carriage return
 					ControlP5.logger().warning(
 							"You are using a character that is not supported by controlP5's BitFont-Renderer, you could use ControlFont instead (see the ControlP5controlFont example). ("
 									+ ((int) theText.charAt(i)) + "," + theText.charAt(i) + ")");
-				} else {
+				}
+				else {
 					if (dim[0] > tx) {
 						tx = dim[0];
 						dim[0] = 0;
@@ -177,13 +195,16 @@ public class BitFontRenderer {
 		return dim;
 	}
 
+
 	public static int getHeight(int theFontIndex) {
 		return fonts.get(theFontIndex).texture.height;
 	}
 
+
 	public static int getHeight(ControlFont.BitFontLabel theLabel) {
 		return fonts.get(theLabel.getFontIndex()).texture.height;
 	}
+
 
 	private static void putchar(final int theC, final int theX, final int theY, final int theColor, final PImage theImage, final PImage theMask, final BitFont theBitFont) {
 		final int myWH = theImage.width * theImage.height;
@@ -198,6 +219,7 @@ public class BitFontRenderer {
 			}
 		}
 	}
+
 
 	private static int writeCharacters(final ControlFont.BitFontLabel theBitFont, Label theLabel) {
 
@@ -263,7 +285,8 @@ public class BitFontRenderer {
 				letters_lineheight[i] = myY;
 
 				indent += f.charWidth[c - 32] + theLabel.getLetterSpacing();
-			} else {
+			}
+			else {
 				myY += theLabel.getLineHeight();
 				indent = 0;
 				letters_indent[i] = 0;
@@ -279,6 +302,7 @@ public class BitFontRenderer {
 		return myY - myOriginalY;
 	}
 
+
 	public static int write(final ControlFont.BitFontLabel theBitFont, Label theLabel) {
 		final int myWH = theBitFont.getImage().width * theBitFont.getImage().height;
 		for (int i = 0; i < myWH; i++) {
@@ -289,6 +313,7 @@ public class BitFontRenderer {
 		theBitFont.getImage().mask(theBitFont.getImageMask());
 		return myHeight;
 	}
+
 
 	class BitFont {
 
@@ -310,17 +335,62 @@ public class BitFontRenderer {
 
 		private String _mySource;
 
-		BitFont(int theId) {
+
+		BitFont(int theId, byte[] theBytes) {
 			id = theId;
+			texture = decodeBitFont(theBytes);
+			make();
 		}
+
+
+		PImage decodeBitFont(byte[] bytes) {
+
+			PImage tex;
+
+			// read width
+			int w = CP.byteArrayToInt(new byte[] { bytes[0], bytes[1] });
+
+			// read height
+			int h = CP.byteArrayToInt(new byte[] { bytes[2], bytes[3] });
+
+			// read size of chars 
+			int s = CP.byteArrayToInt(new byte[] { bytes[4], bytes[5] });
+
+			// read first ascii char
+			int c = CP.byteArrayToInt(new byte[] { bytes[6], bytes[7] });
+
+			tex = cp5.papplet.createImage(w, h, PApplet.RGB);
+
+			// read bytes and write pixels into image
+			int off = 8 + s;
+			for (int i = off; i < bytes.length; i++) {
+				for (int j = 0; j < 8; j++) {
+					tex.pixels[(i - off) * 8 + j] = CP.getBit(bytes[i], j) == 1 ? cp5.papplet.color(0) : cp5.papplet.color(255);
+				}
+			}
+
+			int cnt = 0;
+
+			int n = 0;
+			// add character seperators on top of the texture
+			for (int i = 0; i < s; i++) {
+				while (++cnt != bytes[i + 8]) {
+				}
+				n += cnt;
+				tex.pixels[n] = cp5.papplet.color(255, 0, 0);
+				cnt = 0;
+			}
+			return tex;
+		}
+
 
 		int getHeight() {
 			return texture.height;
 		}
 
-		BitFont setSource(String theSource) {
-			_mySource = theSource;
-			texture = cp5.papplet.loadImage(getClass().getResource(_mySource).toString());
+
+		BitFont make() {
+
 			charHeight = texture.height;
 			lineHeight = charHeight;
 			int currWidth = 0;
@@ -352,12 +422,12 @@ public class BitFontRenderer {
 
 	}
 
+
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public static int getWidth(ControlFont.BitFontLabel theLabel) {
+	@Deprecated public static int getWidth(ControlFont.BitFontLabel theLabel) {
 		return -1;
 	}
 }

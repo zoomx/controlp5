@@ -32,7 +32,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +43,8 @@ import java.util.logging.Logger;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PVector;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
 import controlP5.ControlWindow.Pointer;
 
 /**
@@ -81,17 +82,12 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible public ControlWindowKeyHandler keyHandler;
-
-	/**
-	 * @exclude
-	 */
 	@ControlP5.Invisible public PApplet papplet;
 
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible public static final String VERSION = "1.5.1";// "##version##";
+	@ControlP5.Invisible public static final String VERSION = "2.0.1";// "##version##";
 
 	/**
 	 * @exclude
@@ -120,15 +116,13 @@ public class ControlP5 extends ControlP5Base {
 
 	protected ControlBroadcaster _myControlBroadcaster;
 
-	protected Vector<ControlWindow> controlWindowList = new Vector<ControlWindow>();
+	protected ControlWindow window;
 
 	protected boolean isMoveable = false;
 
 	protected boolean isAutoInitialization = false;
 
 	protected boolean isGlobalControllersAlwaysVisible = true;
-
-	protected ControlP5IOHandler _myControlP5IOHandler;
 
 	protected boolean isTabEventsActive;
 
@@ -158,6 +152,8 @@ public class ControlP5 extends ControlP5Base {
 
 	protected boolean isAnnotation;
 
+	boolean isAndroid = false;
+
 
 	/**
 	 * Create a new instance of controlP5.
@@ -178,19 +174,36 @@ public class ControlP5 extends ControlP5Base {
 
 
 	protected void init() {
+
+		Class<?> check = papplet.getClass();
+		while (check != null) {
+			check = check.getSuperclass();
+			if (check != null) {
+				if (check.toString().toLowerCase().indexOf("android.app.") > -1) {
+					isAndroid = true;
+					break;
+				}
+			}
+		}
+
 		new BitFontRenderer(this);
+
 		isTabEventsActive = false;
-		_myControlP5IOHandler = new ControlP5IOHandler(this);
+
 		_myControlBroadcaster = new ControlBroadcaster(this);
-		keyHandler = new ControlWindowKeyHandler(this);
+
 		controlWindow = new ControlWindow(this, papplet);
-		papplet.registerPre(this);
-		papplet.registerKeyEvent(new ControlWindowKeyListener(this));
-		papplet.registerDispose(this);
+
+		papplet.registerMethod("pre", this);
+
+		papplet.registerMethod("dispose", this);
+
 		_myControllerMap = new TreeMap<String, ControllerInterface<?>>();
-		controlWindowList.add(controlWindow);
+
 		_myTooltip = new Tooltip(this);
+
 		super.init(this);
+
 		if (welcome++ < 1) {
 			welcome();
 		}
@@ -221,6 +234,7 @@ public class ControlP5 extends ControlP5Base {
 			}
 		}, PApplet.ALT, PApplet.SHIFT, 'h');
 
+		disableShortcuts();
 	}
 
 
@@ -267,10 +281,10 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public void setAutoDraw(boolean theFlag) {
 		if (isAutoDraw() && theFlag == false) {
-			controlWindow.papplet().unregisterDraw(controlWindow);
+			controlWindow.papplet().unregisterMethod("draw", controlWindow);
 		}
 		if (isAutoDraw() == false && theFlag == true) {
-			controlWindow.papplet().registerDraw(controlWindow);
+			controlWindow.papplet().registerMethod("draw", controlWindow);
 		}
 		controlWindow.isAutoDraw = theFlag;
 	}
@@ -402,11 +416,9 @@ public class ControlP5 extends ControlP5Base {
 
 
 	public Tab getTab(String theName) {
-		for (int j = 0; j < controlWindowList.size(); j++) {
-			for (int i = 0; i < controlWindowList.get(j).getTabs().size(); i++) {
-				if (((Tab) controlWindowList.get(j).getTabs().get(i)).getName().equals(theName)) {
-					return (Tab) (controlWindowList.get(j)).getTabs().get(i);
-				}
+		for (int i = 0; i < controlWindow.getTabs().size(); i++) {
+			if (((Tab) controlWindow.getTabs().get(i)).getName().equals(theName)) {
+				return (Tab) controlWindow.getTabs().get(i);
 			}
 		}
 		Tab myTab = addTab(theName);
@@ -528,13 +540,8 @@ public class ControlP5 extends ControlP5Base {
 
 
 	protected void deactivateControllers() {
-		if (getControllerList() != null) {
-			ControllerInterface<?>[] n = getControllerList();
-			for (int i = 0; i < n.length; i++) {
-				if (n[i] instanceof Textfield) {
-					((Textfield) n[i]).setFocus(false);
-				}
-			}
+		for (Textfield t : getAll(Textfield.class)) {
+			t.setFocus(false);
 		}
 	}
 
@@ -568,18 +575,6 @@ public class ControlP5 extends ControlP5Base {
 
 
 	/**
-	 * removes a controlWindow and all its contained controllers.
-	 * 
-	 * @param theWindow ControlWindow
-	 */
-	protected ControlP5 remove(ControlWindow theWindow) {
-		theWindow.remove();
-		controlWindowList.remove(theWindow);
-		return this;
-	}
-
-
-	/**
 	 * removes a controller by instance.
 	 * 
 	 * TODO Fix this. this only removes the reference to a controller from the controller map but
@@ -608,11 +603,9 @@ public class ControlP5 extends ControlP5Base {
 			getGroup(address).remove();
 		}
 
-		for (int j = 0; j < controlWindowList.size(); j++) {
-			for (int i = 0; i < controlWindowList.get(j).getTabs().size(); i++) {
-				if (((Tab) (controlWindowList.get(j)).getTabs().get(i)).getAddress().equals(address)) {
-					((Tab) (controlWindowList.get(j)).getTabs().get(i)).remove();
-				}
+		for (int i = 0; i < controlWindow.getTabs().size(); i++) {
+			if (controlWindow.getTabs().get(i).getAddress().equals(address)) {
+				controlWindow.getTabs().get(i).remove();
 			}
 		}
 		_myControllerMap.remove(address);
@@ -645,10 +638,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	@ControlP5.Invisible public List<ControllerInterface<?>> getList() {
 		LinkedList<ControllerInterface<?>> l = new LinkedList<ControllerInterface<?>>();
-		for (ControlWindow c : controlWindowList) {
-			l.addAll(c.getTabs().get());
-		}
-		// l.addAll(Arrays.asList(getControllerList()));
+		l.addAll(controlWindow.getTabs().get());
 		l.addAll(getAll());
 		return l;
 	}
@@ -701,19 +691,8 @@ public class ControlP5 extends ControlP5Base {
 
 
 	protected void clear() {
-		try {
-			for (int i = controlWindowList.size() - 1; i >= 0; i--) {
-				controlWindowList.get(i).clear();
-			}
-
-			for (int i = controlWindowList.size() - 1; i >= 0; i--) {
-				controlWindowList.remove(i);
-			}
-
-			_myControllerMap.clear();
-		} catch (Exception e) {
-		}
-		// controlWindow.init(); // TODO ??? remove or keep?
+		controlWindow.clear();
+		_myControllerMap.clear();
 	}
 
 
@@ -748,29 +727,13 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 
-	/**
-	 * disables the mouse wheel as input for the main window, by default the mouse wheel is enabled.
-	 */
-	public ControlP5 disableMouseWheel() {
-		getWindow().disableMouseWheel();
-		return this;
+	public void mouseEvent(MouseEvent theMouseEvent) {
+		getWindow().mouseEvent(theMouseEvent);
 	}
 
 
-	/**
-	 * enables the mouse wheel as input for the main window, by default the mouse wheel is enabled.
-	 */
-	public ControlP5 enableMouseWheel() {
-		getWindow().enableMouseWheel();
-		return this;
-	}
-
-
-	/**
-	 * checks the status of the mouse wheel.
-	 */
-	public boolean isMouseWheel() {
-		return getWindow().isMouseWheel();
+	public void keyEvent(KeyEvent theKeyEvent) {
+		getWindow().keyEvent(theKeyEvent);
 	}
 
 
@@ -822,24 +785,19 @@ public class ControlP5 extends ControlP5Base {
 	}
 
 
-	public ControlWindow getWindow(String theWindowName) {
-		for (int i = 0; i < controlWindowList.size(); i++) {
-			if (controlWindowList.get(i).name().equals(theWindowName)) {
-				return controlWindowList.get(i);
-			}
-		}
-		ControlP5.logger().warning("ControlWindow " + theWindowName + " does not exist. returning null.");
-		return null;
+	/**
+	 * adds a Canvas to the default sketch window.
+	 * 
+	 * @see controlP5.Canvas
+	 */
+	public ControlP5 addCanvas(Canvas theCanvas) {
+		getWindow().addCanvas(theCanvas);
+		return this;
 	}
 
 
-	/**
-	 * adds a ControlWindowCanvas to the default sketch window.
-	 * 
-	 * @see controlP5.ControlWindowCanvas
-	 */
-	public ControlP5 addCanvas(ControlWindowCanvas theCanvas) {
-		getWindow().addCanvas(theCanvas);
+	public ControlP5 removeCanvas(Canvas theCanvas) {
+		getWindow().removeCanvas(theCanvas);
 		return this;
 	}
 
@@ -865,10 +823,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public ControlP5 setColorActive(int theColor) {
 		color.setActive(theColor);
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.setColorActive(theColor);
-		}
+		controlWindow.setColorActive(theColor);
 		return this;
 	}
 
@@ -879,10 +834,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public ControlP5 setColorForeground(int theColor) {
 		color.setForeground(theColor);
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.setColorForeground(theColor);
-		}
+		controlWindow.setColorForeground(theColor);
 		return this;
 	}
 
@@ -893,10 +845,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public ControlP5 setColorBackground(int theColor) {
 		color.setBackground(theColor);
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.setColorBackground(theColor);
-		}
+		controlWindow.setColorBackground(theColor);
 		return this;
 	}
 
@@ -906,10 +855,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public ControlP5 setColorCaptionLabel(int theColor) {
 		color.setCaptionLabel(theColor);
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.setColorLabel(theColor);
-		}
+		controlWindow.setColorLabel(theColor);
 		return this;
 	}
 
@@ -919,16 +865,8 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public ControlP5 setColorValueLabel(int theColor) {
 		color.setValueLabel(theColor);
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.setColorValue(theColor);
-		}
+		controlWindow.setColorValue(theColor);
 		return this;
-	}
-
-
-	protected Vector<ControlWindow> getControlWindows() {
-		return controlWindowList;
 	}
 
 
@@ -1102,10 +1040,7 @@ public class ControlP5 extends ControlP5Base {
 	 * @see controlP5.ControlP5#setUpdate()
 	 */
 	public void update() {
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.update();
-		}
+		controlWindow.update();
 	}
 
 
@@ -1130,10 +1065,7 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	public void setUpdate(boolean theFlag) {
 		isUpdate = theFlag;
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.setUpdate(theFlag);
-		}
+		controlWindow.setUpdate(theFlag);
 	}
 
 
@@ -1173,10 +1105,7 @@ public class ControlP5 extends ControlP5Base {
 
 
 	protected void updateFont(ControlFont theControlFont) {
-		for (Enumeration<ControlWindow> e = controlWindowList.elements(); e.hasMoreElements();) {
-			ControlWindow myControlWindow = e.nextElement();
-			myControlWindow.updateFont(theControlFont);
-		}
+		controlWindow.updateFont(theControlFont);
 	}
 
 
@@ -1214,6 +1143,11 @@ public class ControlP5 extends ControlP5Base {
 
 	public void setTooltip(Tooltip theTooltip) {
 		_myTooltip = theTooltip;
+	}
+
+
+	public void setMouseWheelRotation(int theRotation) {
+		getWindow().setMouseWheelRotation(theRotation);
 	}
 
 
@@ -1561,6 +1495,66 @@ public class ControlP5 extends ControlP5Base {
 	 */
 	@Deprecated public ControlP5 setColorValue(int theColor) {
 		return setColorValueLabel(theColor);
+	}
+
+
+	/**
+	 * @deprecated disables the mouse wheel as input for the main window, by default the mouse wheel
+	 *             is enabled.
+	 */
+	@Deprecated public ControlP5 disableMouseWheel() {
+		getWindow().disableMouseWheel();
+		return this;
+	}
+
+
+	/**
+	 * @deprecated enables the mouse wheel as input for the main window, by default the mouse wheel
+	 *             is enabled.
+	 */
+	@Deprecated public ControlP5 enableMouseWheel() {
+		getWindow().enableMouseWheel();
+		return this;
+	}
+
+
+	/**
+	 * @deprecated checks the status of the mouse wheel.
+	 */
+	@Deprecated public boolean isMouseWheel() {
+		return getWindow().isMouseWheel();
+	}
+
+
+	/**
+	 * @deprecated removes a controlWindow and all its contained controllers.
+	 * 
+	 * @param theWindow ControlWindow
+	 */
+	@Deprecated protected ControlP5 remove(ControlWindow theWindow) {
+		theWindow.remove();
+		return this;
+	}
+
+
+	/**
+	 * @deprecated
+	 * @param theWindowName
+	 * @return
+	 */
+	@Deprecated public ControlWindow getWindow(String theWindowName) {
+		return controlWindow;
+	}
+
+
+	/**
+	 * @deprecated
+	 * @return
+	 */
+	@Deprecated protected Vector<ControlWindow> getControlWindows() {
+		Vector<ControlWindow> v = new Vector<ControlWindow>();
+		v.add(controlWindow);
+		return v;
 	}
 
 }

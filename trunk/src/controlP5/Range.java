@@ -187,7 +187,7 @@ public class Range extends Controller<Range> {
 			if (c == 0) {
 				return this;
 			}
-			if (isMousePressed && !cp5.keyHandler.isAltDown()) {
+			if (isMousePressed && !cp5.isAltDown()) {
 				switch (mode) {
 				case (LEFT):
 					minHandle = PApplet.max(handleSize, PApplet.min(maxHandle, minHandle + c));

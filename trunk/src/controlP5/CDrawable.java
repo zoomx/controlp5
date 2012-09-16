@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -28,8 +29,7 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * The CDrawable interface is used to draw controllers, primarily for internal
- * use.
+ * The CDrawable interface is used to draw controllers, primarily for internal use.
  */
 public interface CDrawable {
 

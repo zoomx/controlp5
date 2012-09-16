@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -25,7 +26,6 @@ package controlP5;
  *
  */
 
-
 /**
  * <p>
  * The Accordion is a list of ControlGroups which can be expanded and collapsed. Only one item can
@@ -36,7 +36,7 @@ package controlP5;
  * @see controlP5.ControlGroup
  * @example controllers/ControlP5accordion
  */
-public class Accordion extends ControlGroup<Accordion> {
+@SuppressWarnings("rawtypes") public class Accordion extends ControlGroup<Accordion> {
 
 	protected int spacing = 1;
 
@@ -45,6 +45,7 @@ public class Accordion extends ControlGroup<Accordion> {
 	protected int itemheight;
 
 	protected int _myMode = SINGLE;
+
 
 	/**
 	 * Convenience constructor to extend Accordion.
@@ -58,10 +59,12 @@ public class Accordion extends ControlGroup<Accordion> {
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
 
+
 	Accordion(ControlP5 theControlP5, Tab theTab, String theName, int theX, int theY, int theW) {
 		super(theControlP5, theTab, theName, theX, theY, theW, 9);
 		hideBar();
 	}
+
 
 	/**
 	 * Adds items of type ControlGroup to the Accordion, only ControlGroups can be added.
@@ -84,6 +87,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		return this;
 	}
 
+	
 	/**
 	 * Removes a ControlGroup from the accordion AND from controlP5 remove(ControllerInterface
 	 * theGroup) overwrites it's super method. if you want to remove a ControlGroup only from the
@@ -102,6 +106,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		return this;
 	}
 
+
 	/**
 	 * Removes a ControlGroup from the accordion and puts it back into the default tab of controlP5.
 	 * if you dont have access to a ControlGroup via a variable, use
@@ -119,6 +124,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		updateItems();
 		return this;
 	}
+
 
 	/**
 	 * UpdateItems is called when changes such as remove, change of height is performed on an
@@ -143,6 +149,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		return this;
 	}
 
+
 	/**
 	 * Sets the minimum height of a collapsed item, default value is 100.
 	 * 
@@ -162,9 +169,11 @@ public class Accordion extends ControlGroup<Accordion> {
 		return this;
 	}
 
+
 	public int getMinItemHeight() {
 		return minHeight;
 	}
+
 
 	public Accordion setItemHeight(int theHeight) {
 		itemheight = theHeight;
@@ -177,9 +186,11 @@ public class Accordion extends ControlGroup<Accordion> {
 		return this;
 	}
 
+
 	public int getItemHeight() {
 		return itemheight;
 	}
+
 
 	@Override public Accordion setWidth(int theWidth) {
 		super.setWidth(theWidth);
@@ -190,6 +201,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		}
 		return this;
 	}
+
 
 	/**
 	 * @exclude {@inheritDoc}
@@ -204,10 +216,12 @@ public class Accordion extends ControlGroup<Accordion> {
 					if (_myMode == SINGLE) {
 						if (cg == theEvent.getGroup() && ((ControlGroup) cg).isOpen()) {
 							n += ((ControlGroup) cg).getBackgroundHeight();
-						} else {
+						}
+						else {
 							((ControlGroup) cg).close();
 						}
-					} else {
+					}
+					else {
 						if (((ControlGroup) cg).isOpen()) {
 							n += ((ControlGroup) cg).getBackgroundHeight();
 						}
@@ -217,6 +231,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		}
 	}
 
+
 	public Accordion open() {
 		int[] n = new int[controllers.size()];
 		for (int i = 0; i < controllers.size(); i++) {
@@ -225,6 +240,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		return open(n);
 	}
 
+
 	public Accordion close() {
 		int[] n = new int[controllers.size()];
 		for (int i = 0; i < controllers.size(); i++) {
@@ -232,6 +248,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		}
 		return close(n);
 	}
+
 
 	public Accordion open(int... theId) {
 		if (theId[0] == -1) {
@@ -259,6 +276,7 @@ public class Accordion extends ControlGroup<Accordion> {
 		return this;
 	}
 
+
 	public Accordion close(int... theId) {
 		if (theId[0] == -1) {
 			return close();
@@ -278,7 +296,8 @@ public class Accordion extends ControlGroup<Accordion> {
 				((ControlGroup) cg).setPosition(0, n);
 				if (b) {
 					((ControlGroup) cg).close();
-				} else {
+				}
+				else {
 					n += ((ControlGroup) cg).getBackgroundHeight();
 				}
 			}
@@ -286,10 +305,12 @@ public class Accordion extends ControlGroup<Accordion> {
 		return this;
 	}
 
+
 	public Accordion setCollapseMode(int theMode) {
 		if (theMode == 0) {
 			_myMode = SINGLE;
-		} else {
+		}
+		else {
 			_myMode = MULTI;
 		}
 		return this;

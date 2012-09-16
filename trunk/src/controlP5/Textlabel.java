@@ -1,3 +1,4 @@
+
 package controlP5;
 
 /**
@@ -25,6 +26,9 @@ package controlP5;
  *
  */
 
+import java.util.Arrays;
+import java.util.List;
+
 import processing.core.PApplet;
 import processing.core.PFont;
 
@@ -45,6 +49,7 @@ public class Textlabel extends Controller<Textlabel> {
 
 	private boolean disabled;
 
+
 	/**
 	 * 
 	 * @param theControlP5 ControlP5
@@ -60,6 +65,7 @@ public class Textlabel extends Controller<Textlabel> {
 		setup();
 	}
 
+
 	/**
 	 * 
 	 * @param theValue String
@@ -72,6 +78,7 @@ public class Textlabel extends Controller<Textlabel> {
 		setup();
 	}
 
+
 	protected Textlabel(final String theValue, final int theX, final int theY, final int theW, final int theH, final int theColor) {
 		super("", theX, theY);
 		_myStringValue = theValue;
@@ -83,6 +90,7 @@ public class Textlabel extends Controller<Textlabel> {
 		_myValueLabel.toUpperCase(false);
 	}
 
+
 	public Textlabel(ControlP5 theControlP5, final String theValue, final int theX, final int theY, final int theW, final int theH, final int theColor, final int theFont) {
 		super("", theX, theY);
 		cp5 = theControlP5;
@@ -92,6 +100,7 @@ public class Textlabel extends Controller<Textlabel> {
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
 	}
+
 
 	/**
 	 * @param theControlP5
@@ -117,6 +126,7 @@ public class Textlabel extends Controller<Textlabel> {
 		_myValueLabel.toUpperCase(false);
 	}
 
+
 	/**
 	 * 
 	 * @param theComponent
@@ -138,6 +148,7 @@ public class Textlabel extends Controller<Textlabel> {
 		_myValueLabel.toUpperCase(false);
 	}
 
+
 	protected void setup() {
 		_myValueLabel = new Label(cp5, _myStringValue);
 		if (!cp5.isControlFont) {
@@ -147,15 +158,18 @@ public class Textlabel extends Controller<Textlabel> {
 		_myValueLabel.toUpperCase(false);
 	}
 
+
 	public Textlabel setWidth(int theValue) {
 		_myValueLabel.setWidth(theValue);
 		return this;
 	}
 
+
 	public Textlabel setHeight(int theValue) {
 		_myValueLabel.setHeight(theValue);
 		return this;
 	}
+
 
 	/**
 	 * draw the textlabel.
@@ -171,9 +185,11 @@ public class Textlabel extends Controller<Textlabel> {
 		}
 	}
 
+
 	public void draw() {
 		draw(cp5.papplet);
 	}
+
 
 	public void draw(int theX, int theY) {
 		cp5.papplet.pushMatrix();
@@ -181,6 +197,7 @@ public class Textlabel extends Controller<Textlabel> {
 		draw(cp5.papplet);
 		cp5.papplet.popMatrix();
 	}
+
 
 	/**
 	 * 
@@ -190,19 +207,34 @@ public class Textlabel extends Controller<Textlabel> {
 		return this;
 	}
 
+
 	public Textlabel setText(final String theText) {
 		return setValue(theText);
 	}
 
-	@Override
-	public Textlabel setStringValue(String theValue) {
+
+	public Textlabel append(String theText, int max) {
+		String str = _myStringValue + theText;
+
+		if (max == -1) {
+			return setText(str);
+		}
+
+		List<String> strs = Arrays.asList(str.split("\n"));
+		return setText(CP.join(strs.subList(Math.max(0, strs.size() - max), strs.size()), "\n"));
+	}
+
+
+	@Override public Textlabel setStringValue(String theValue) {
 		return setValue(theValue);
 	}
+
 
 	public Textlabel setMultiline(final boolean theFlag) {
 		_myValueLabel.setMultiline(true);
 		return this;
 	}
+
 
 	/**
 	 * set the text of the textlabel.
@@ -217,10 +249,12 @@ public class Textlabel extends Controller<Textlabel> {
 		return this;
 	}
 
+
 	public Textlabel setColor(int theColor) {
 		_myValueLabel.setColor(theColor, true);
 		return this;
 	}
+
 
 	/**
 	 * set the letter spacing of the font.
@@ -233,6 +267,7 @@ public class Textlabel extends Controller<Textlabel> {
 		_myValueLabel.setLetterSpacing(_myLetterSpacing);
 		return this;
 	}
+
 
 	/**
 	 * a textlabel is an image containing text rendered from a bitfont source image. available bit
@@ -249,67 +284,69 @@ public class Textlabel extends Controller<Textlabel> {
 		return this;
 	}
 
+
 	public Textlabel setFont(ControlFont theControlFont) {
 		getValueLabel().setFont(theControlFont);
 		return this;
 	}
-	
+
+
 	public Textlabel setFont(PFont thePFont) {
 		getValueLabel().setFont(thePFont);
 		return this;
 	}
 
+
 	protected boolean inside() {
-		return (_myControlWindow.mouseX > position.x + _myParent.getAbsolutePosition().x
-				&& _myControlWindow.mouseX < position.x + _myParent.getAbsolutePosition().x + _myValueLabel.getWidth()
-				&& _myControlWindow.mouseY > position.y + _myParent.getAbsolutePosition().y && _myControlWindow.mouseY < position.y + _myParent.getAbsolutePosition().y
-				+ _myValueLabel.getHeight());
+		return (_myControlWindow.mouseX > position.x + _myParent.getAbsolutePosition().x && _myControlWindow.mouseX < position.x + _myParent.getAbsolutePosition().x + _myValueLabel.getWidth()
+				&& _myControlWindow.mouseY > position.y + _myParent.getAbsolutePosition().y && _myControlWindow.mouseY < position.y + _myParent.getAbsolutePosition().y + _myValueLabel.getHeight());
 	}
+
 
 	public Label get() {
 		return _myValueLabel;
 	}
 
+
 	private void printConstructorError(String theValue) {
 		ControlP5
 				.logger()
-				.severe(
-						"The Textlabel constructor you are using has been deprecated, please use constructor\nnew Textlabel(ControlP5,String,int,int) or\nnew Textlabel(ControlP5,String,int,int,int,int) or\nnew Textlabel(ControlP5,String,int,int,int,int,int,int)\ninstead. The Textlabel with value '"
-								+ theValue + "' is disabled and will not be rendered.");
+				.severe("The Textlabel constructor you are using has been deprecated, please use constructor\nnew Textlabel(ControlP5,String,int,int) or\nnew Textlabel(ControlP5,String,int,int,int,int) or\nnew Textlabel(ControlP5,String,int,int,int,int,int,int)\ninstead. The Textlabel with value '"
+						+ theValue + "' is disabled and will not be rendered.");
 	}
 
-	@Deprecated
-	public Label valueLabel() {
+
+	@Deprecated public Label valueLabel() {
 		return _myValueLabel;
 	}
 
-	@Deprecated
-	public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY, final int theW, final int theH, final int theColor, final int theFont) {
+
+	@Deprecated public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY, final int theW, final int theH, final int theColor, final int theFont) {
 		super("", theX, theY);
 		disabled = true;
 		printConstructorError(theValue);
 	}
 
-	@Deprecated
-	public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY) {
+
+	@Deprecated public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY) {
 		super("", theX, theY);
 		disabled = true;
 		printConstructorError(theValue);
 	}
 
-	@Deprecated
-	public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY, final int theW, final int theH) {
+
+	@Deprecated public Textlabel(final PApplet theComponent, final String theValue, final int theX, final int theY, final int theW, final int theH) {
 		super("", theX, theY);
 		disabled = true;
 		printConstructorError(theValue);
 	}
+
 
 	/**
 	 * @deprecated
 	 * @exclude
 	 */
-	@Deprecated
-	public Textlabel setControlFont(ControlFont theControlFont) {
+	@Deprecated public Textlabel setControlFont(ControlFont theControlFont) {
 		return setFont(theControlFont);
 	}
 }
