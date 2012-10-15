@@ -1,4 +1,3 @@
-
 package controlP5;
 
 /**
@@ -46,7 +45,6 @@ package controlP5;
 
 	protected int _myMode = SINGLE;
 
-
 	/**
 	 * Convenience constructor to extend Accordion.
 	 * 
@@ -59,12 +57,10 @@ package controlP5;
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
 
-
 	Accordion(ControlP5 theControlP5, Tab theTab, String theName, int theX, int theY, int theW) {
 		super(theControlP5, theTab, theName, theX, theY, theW, 9);
 		hideBar();
 	}
-
 
 	/**
 	 * Adds items of type ControlGroup to the Accordion, only ControlGroups can be added.
@@ -87,7 +83,6 @@ package controlP5;
 		return this;
 	}
 
-	
 	/**
 	 * Removes a ControlGroup from the accordion AND from controlP5 remove(ControllerInterface
 	 * theGroup) overwrites it's super method. if you want to remove a ControlGroup only from the
@@ -106,7 +101,6 @@ package controlP5;
 		return this;
 	}
 
-
 	/**
 	 * Removes a ControlGroup from the accordion and puts it back into the default tab of controlP5.
 	 * if you dont have access to a ControlGroup via a variable, use
@@ -124,7 +118,6 @@ package controlP5;
 		updateItems();
 		return this;
 	}
-
 
 	/**
 	 * UpdateItems is called when changes such as remove, change of height is performed on an
@@ -149,7 +142,6 @@ package controlP5;
 		return this;
 	}
 
-
 	/**
 	 * Sets the minimum height of a collapsed item, default value is 100.
 	 * 
@@ -169,11 +161,9 @@ package controlP5;
 		return this;
 	}
 
-
 	public int getMinItemHeight() {
 		return minHeight;
 	}
-
 
 	public Accordion setItemHeight(int theHeight) {
 		itemheight = theHeight;
@@ -186,11 +176,9 @@ package controlP5;
 		return this;
 	}
 
-
 	public int getItemHeight() {
 		return itemheight;
 	}
-
 
 	@Override public Accordion setWidth(int theWidth) {
 		super.setWidth(theWidth);
@@ -201,7 +189,6 @@ package controlP5;
 		}
 		return this;
 	}
-
 
 	/**
 	 * @exclude {@inheritDoc}
@@ -216,12 +203,10 @@ package controlP5;
 					if (_myMode == SINGLE) {
 						if (cg == theEvent.getGroup() && ((ControlGroup) cg).isOpen()) {
 							n += ((ControlGroup) cg).getBackgroundHeight();
-						}
-						else {
+						} else {
 							((ControlGroup) cg).close();
 						}
-					}
-					else {
+					} else {
 						if (((ControlGroup) cg).isOpen()) {
 							n += ((ControlGroup) cg).getBackgroundHeight();
 						}
@@ -231,7 +216,6 @@ package controlP5;
 		}
 	}
 
-
 	public Accordion open() {
 		int[] n = new int[controllers.size()];
 		for (int i = 0; i < controllers.size(); i++) {
@@ -240,7 +224,6 @@ package controlP5;
 		return open(n);
 	}
 
-
 	public Accordion close() {
 		int[] n = new int[controllers.size()];
 		for (int i = 0; i < controllers.size(); i++) {
@@ -248,7 +231,6 @@ package controlP5;
 		}
 		return close(n);
 	}
-
 
 	public Accordion open(int... theId) {
 		if (theId[0] == -1) {
@@ -276,7 +258,6 @@ package controlP5;
 		return this;
 	}
 
-
 	public Accordion close(int... theId) {
 		if (theId[0] == -1) {
 			return close();
@@ -296,8 +277,7 @@ package controlP5;
 				((ControlGroup) cg).setPosition(0, n);
 				if (b) {
 					((ControlGroup) cg).close();
-				}
-				else {
+				} else {
 					n += ((ControlGroup) cg).getBackgroundHeight();
 				}
 			}
@@ -305,12 +285,10 @@ package controlP5;
 		return this;
 	}
 
-
 	public Accordion setCollapseMode(int theMode) {
 		if (theMode == 0) {
 			_myMode = SINGLE;
-		}
-		else {
+		} else {
 			_myMode = MULTI;
 		}
 		return this;

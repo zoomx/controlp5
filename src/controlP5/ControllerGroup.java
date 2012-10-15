@@ -148,7 +148,9 @@ public abstract class ControllerGroup<T> implements ControllerInterface<T>, Cont
 		_myCanvas = new ArrayList<Canvas>();
 		_myControlListener = new ArrayList<ControlListener>();
 		_myLabel = new Label(cp5, _myName);
+		_myLabel.setText(_myName);
 		_myLabel.setColor(color.getCaptionLabel());
+		_myLabel.align(LEFT,TOP);
 		setParent((theParent == null) ? this : theParent);
 	}
 

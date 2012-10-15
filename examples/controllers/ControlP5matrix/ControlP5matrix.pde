@@ -32,8 +32,12 @@ void setup() {
      .setGap(10, 1)
      .setInterval(200)
      .setMode(ControlP5.MULTIPLES)
+     .setColorBackground(color(120))
+     .setBackground(color(40))
      ;
-
+  
+  cp5.getController("myMatrix").getCaptionLabel().alignX(CENTER);
+  
   // use setMode to change the cell-activation which by 
   // default is ControlP5.SINGLE_ROW, 1 active cell per row, 
   // but can be changed to ControlP5.SINGLE_COLUMN or 

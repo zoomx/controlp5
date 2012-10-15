@@ -18,10 +18,22 @@ void setup() {
 
   cp5 = new ControlP5(this);
 
+
+// PLEASE READ
+// 
 // With controlP5 2.0 the ControlWindow has been removed, 
-// please see the changelog for details. 
+// please see the changelog.txt for details. 
 // Instead, see the extra/ControlP5frame example for 
 // a ControlWindow alternative.
+
+
+
+
+
+
+
+
+
 
 
 //  controlWindow = cp5.addControlWindow("controlP5window", 100, 100, 400, 200)

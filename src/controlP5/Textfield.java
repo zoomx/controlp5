@@ -1,4 +1,3 @@
-
 package controlP5;
 
 import processing.event.KeyEvent;
@@ -91,32 +90,30 @@ public class Textfield extends Controller<Textfield> {
 
 	protected int _myColorCursor = 0x88ffffff;
 
-
 	public enum InputFilter {
-		INTEGER(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')), FLOAT(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')), BITFONT(Arrays.asList('\n', '\r', ' ',
-				'!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D',
-				'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-				'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~')), DEFAULT(new LinkedList<Character>());
+		INTEGER(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')), FLOAT(Arrays.asList('0', '1', '2',
+				'3', '4', '5', '6', '7', '8', '9', '.')), BITFONT(Arrays.asList('\n', '\r', ' ', '!', '"', '#', '$',
+				'%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8',
+				'9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+				'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`',
+				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+				'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~')), DEFAULT(new LinkedList<Character>());
 
 		final List<Character> allowed;
-
 
 		InputFilter(List<Character> theList) {
 			allowed = theList;
 		}
 
-
 		protected boolean apply(char theCharater) {
 			if (allowed.isEmpty()) {
 				return true;
-			}
-			else {
+			} else {
 				return allowed.contains(theCharater);
 			}
 		}
 
 	}
-
 
 	/**
 	 * Convenience constructor to extend Textfield.
@@ -130,10 +127,13 @@ public class Textfield extends Controller<Textfield> {
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
 
-
-	public Textfield(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, String theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
+	public Textfield(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, String theDefaultValue,
+			int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel = new Label(cp5, theName.toUpperCase(), 0, 0, color.getCaptionLabel());
+
+		_myValueLabel.setFont(cp5.controlFont == cp5.defaultFont ? cp5.defaultFontForText : cp5.controlFont);
+
 		_myCaptionLabel.align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE);
 		_myCaptionLabel.setPaddingX(0);
 
@@ -145,10 +145,6 @@ public class Textfield extends Controller<Textfield> {
 		_myValueLabel.align(LEFT, CENTER);
 		_myValueLabel.setColor(color.getValueLabel());
 		_myValueLabel.toUpperCase(false);
-
-		if (_myValueLabel.getFont().get() instanceof ControlFont.BitFontLabel) {
-			_myValueLabel.setFont(ControlP5.standard56);
-		}
 
 		_myValueLabel.setLabeltype(_myValueLabel.new SinglelineTextfield());
 
@@ -172,30 +168,26 @@ public class Textfield extends Controller<Textfield> {
 		ignorelist.add(TAB);
 		ignorelist.add(COMMANDKEY);
 
-		setInputFilter((_myValueLabel.getFont().get() instanceof ControlFont.BitFontLabel) ? BITFONT : DEFAULT);
+		setInputFilter(DEFAULT);
 		changed = true;
 
 	}
-
 
 	@Override public Textfield setWidth(int theWidth) {
 		_myValueLabel.setWidth(theWidth);
 		return super.setWidth(theWidth);
 	}
 
-
 	@Override public Textfield setHeight(int theHeight) {
 		_myValueLabel.setHeight(theHeight);
 		return super.setHeight(theHeight);
 	}
-
 
 	public Textfield setFocus(boolean theValue) {
 		isTexfieldActive = isActive = theValue;
 		changed = true;
 		return this;
 	}
-
 
 	/**
 	 * check if the textfield is active and in focus.
@@ -206,7 +198,6 @@ public class Textfield extends Controller<Textfield> {
 		return isTexfieldActive;
 	}
 
-
 	public Textfield keepFocus(boolean theValue) {
 		isKeepFocus = theValue;
 		if (isKeepFocus) {
@@ -215,24 +206,20 @@ public class Textfield extends Controller<Textfield> {
 		return this;
 	}
 
-
 	public Textfield setFont(PFont thePFont) {
 		getValueLabel().setFont(thePFont);
 		return this;
 	}
-
 
 	public Textfield setFont(ControlFont theFont) {
 		getValueLabel().setFont(theFont);
 		return this;
 	}
 
-
 	public Textfield setFont(int theFont) {
 		getValueLabel().setFont(theFont);
 		return this;
 	}
-
 
 	/**
 	 * TODO set the mode of the textfield to password mode, each character is shown as a "*" like
@@ -245,7 +232,6 @@ public class Textfield extends Controller<Textfield> {
 		isPasswordMode = theFlag;
 		return this;
 	}
-
 
 	public Textfield setInputFilter(int theInputType) {
 		switch (theInputType) {
@@ -265,18 +251,15 @@ public class Textfield extends Controller<Textfield> {
 		return this;
 	}
 
-
 	@Override public Textfield setValue(float theValue) {
 		// use setText(String) instead
 		return this;
 	}
 
-
 	@Override protected void updateFont(ControlFont theControlFont) {
 		super.updateFont(theControlFont);
 		changed = true;
 	}
-
 
 	public Textfield setValue(String theText) {
 		_myTextBuffer = new StringBuffer(theText);
@@ -285,11 +268,9 @@ public class Textfield extends Controller<Textfield> {
 		return this;
 	}
 
-
 	public Textfield setText(String theText) {
 		return setValue(theText);
 	}
-
 
 	public Textfield clear() {
 		// create a new text buffer
@@ -299,17 +280,14 @@ public class Textfield extends Controller<Textfield> {
 		return this;
 	}
 
-
 	public Textfield setAutoClear(boolean theValue) {
 		autoclear = theValue;
 		return this;
 	}
 
-
 	public boolean isAutoClear() {
 		return autoclear;
 	}
-
 
 	@Override protected void mousePressed() {
 		if (isActive) {
@@ -322,35 +300,29 @@ public class Textfield extends Controller<Textfield> {
 		setFocus(true);
 	}
 
-
 	@Override protected void mouseReleasedOutside() {
 		if (isKeepFocus == false) {
 			isTexfieldActive = isActive = false;
 		}
 	}
 
-
 	public int getIndex() {
 		return _myTextBufferIndex;
 	}
 
-
 	public String getText() {
 		return _myTextBuffer.toString();
 	}
-
 
 	public Textfield setColor(int theColor) {
 		getValueLabel().setColor(theColor);
 		return this;
 	}
 
-
 	public Textfield setColorCursor(int theColor) {
 		_myColorCursor = theColor;
 		return this;
 	}
-
 
 	@Override public void draw(PApplet theApplet) {
 		if (changed) {
@@ -367,30 +339,24 @@ public class Textfield extends Controller<Textfield> {
 		theApplet.fill(_myColorCursor);
 		theApplet.pushMatrix();
 		theApplet.pushStyle();
-		if (_myValueLabel.getFont().get() instanceof ControlFont.PFontLabel) {
-			if (_myTextBufferIndexPosition > len - offset) {
-				//theApplet.textAlign(PApplet.RIGHT);
-				_myValueLabel.textAlign = PApplet.RIGHT;
-				theApplet.translate(getWidth() - margin, 0);
-				if (isTexfieldActive) {
-					theApplet.rect(0, 0, cursorWidth, height);
-				}
+
+		if (_myTextBufferIndexPosition > len - offset) {
+			// theApplet.textAlign(PApplet.RIGHT);
+			_myValueLabel.textAlign = PApplet.RIGHT;
+			theApplet.translate(getWidth() - margin, 0);
+			if (isTexfieldActive) {
+				theApplet.rect(0, 0, cursorWidth, height);
 			}
-			else {
-				//theApplet.textAlign(PApplet.LEFT);
-				_myValueLabel.textAlign = PApplet.LEFT;
-				theApplet.translate(margin, 0);
-				if (isTexfieldActive) {
-					theApplet.rect(PApplet.max(0, PApplet.min(_myTextBufferIndexPosition, getWidth() - margin)), 0, cursorWidth, height);
-				}
-			}
-		}
-		else {
+		} else {
+			// theApplet.textAlign(PApplet.LEFT);
+			_myValueLabel.textAlign = PApplet.LEFT;
 			theApplet.translate(margin, 0);
 			if (isTexfieldActive) {
-				theApplet.rect(PApplet.min(getWidth() - margin * 2, _myTextBufferIndexPosition), 0, cursorWidth, height);
+				theApplet.rect(PApplet.max(0, PApplet.min(_myTextBufferIndexPosition, getWidth() - margin)), 0,
+						cursorWidth, height);
 			}
 		}
+
 		_myValueLabel.draw(theApplet, 0, 0, this);
 		theApplet.popStyle();
 		theApplet.popMatrix();
@@ -405,60 +371,7 @@ public class Textfield extends Controller<Textfield> {
 		theApplet.popStyle();
 	}
 
-
 	private void updateLabel(PApplet theApplet) {
-		if (_myValueLabel.getFont().get() instanceof ControlFont.PFontLabel) {
-			updateLabelPFont(theApplet);
-		}
-		else {
-			updateLabelBitFont(theApplet);
-		}
-	}
-
-
-	private void updateLabelBitFont(PApplet theApplet) {
-		if (_myInputFilter == InputFilter.DEFAULT) {
-			setInputFilter(BITFONT);
-		}
-		String str = getText();
-		String t1 = str;
-		int ww = ControlFont.getWidthFor(getText(), _myValueLabel, theApplet);
-		if (ww < _myValueLabel.getWidth()) {
-			_myTextBufferIndexPosition = ControlFont.getWidthFor(getText().substring(0, _myTextBufferIndex), _myValueLabel, theApplet);
-			len = _myValueLabel.getWidth();
-		}
-		else {
-			char[] c = str.toCharArray();
-			int mx = 0;
-			int n = 0;
-			for (int i = 0; i < c.length; i++) {
-				n += ControlFont.getWidthFor(c[i] + "", _myValueLabel, theApplet);
-				if (n > _myValueLabel.getWidth() - offset) {
-					break;
-				}
-				len = n;
-				mx++;
-			}
-			t1 = "";
-			n = 0;
-			for (int i = PApplet.max(mx, _myTextBufferIndex - 1); i >= 0; i--) {
-				n += ControlFont.getWidthFor(c[i] + "", _myValueLabel, theApplet);
-				t1 = c[i] + t1;
-				if (n > _myValueLabel.getWidth() - offset) {
-					_myTextBufferOverflow = str.indexOf(t1);
-					break;
-				}
-			}
-			int strn = PApplet.max(0, PApplet.min(t1.length(), _myTextBufferIndex - _myTextBufferOverflow));
-			_myTextBufferIndexPosition = ControlFont.getWidthFor(t1.substring(0, strn), _myValueLabel, theApplet);
-		}
-
-		_myValueLabel.setText(t1);
-		changed = false;
-	}
-
-
-	private void updateLabelPFont(PApplet theApplet) {
 		if (_myInputFilter == InputFilter.BITFONT) {
 			setInputFilter(DEFAULT);
 		}
@@ -467,10 +380,10 @@ public class Textfield extends Controller<Textfield> {
 		int off = margin * 2;
 		int ww = ControlFont.getWidthFor(str, _myValueLabel, theApplet);
 		if ((ww < getWidth() - off)) {
-			_myTextBufferIndexPosition = ControlFont.getWidthFor(t1.substring(0, _myTextBufferIndex), _myValueLabel, theApplet);
+			_myTextBufferIndexPosition = ControlFont.getWidthFor(t1.substring(0, _myTextBufferIndex), _myValueLabel,
+					theApplet);
 			len = getWidth();
-		}
-		else {
+		} else {
 			char[] c = str.toCharArray();
 			int mx = 0;
 			int n = 0;
@@ -485,7 +398,7 @@ public class Textfield extends Controller<Textfield> {
 			t1 = "";
 			n = 0;
 			// this is messed up an occasionally throws ArrayIndexOutOfBounds Exceptions
-			// sometimes the beginning of the text is not in order when text length exceeds 
+			// sometimes the beginning of the text is not in order when text length exceeds
 			// length of textfield.
 			// needs fixing. TODO
 			for (int i = PApplet.max(mx, _myTextBufferIndex - 1); i >= 0; i--) {
@@ -506,7 +419,6 @@ public class Textfield extends Controller<Textfield> {
 		changed = false;
 	}
 
-
 	public void keyEvent(KeyEvent theKeyEvent) {
 		if (isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getAction() == KeyEvent.PRESSED) {
 			if (ignorelist.contains(cp5.getKeyCode())) {
@@ -514,13 +426,11 @@ public class Textfield extends Controller<Textfield> {
 			}
 			if (keyMapping.containsKey(cp5.getKeyCode())) {
 				keyMapping.get(cp5.getKeyCode()).execute();
-			}
-			else {
+			} else {
 				keyMapping.get(DEFAULT).execute();
 			}
 		}
 	}
-
 
 	/**
 	 * make the controller execute a return event. submit the current content of the texfield.
@@ -531,20 +441,17 @@ public class Textfield extends Controller<Textfield> {
 		return this;
 	}
 
-
 	public String[] getTextList() {
 		String[] s = new String[_myHistory.size()];
 		_myHistory.toArray(s);
 		return s;
 	}
 
-
 	private Textfield setIndex(int theIndex) {
 		_myTextBufferIndex = theIndex;
 		changed = true;
 		return this;
 	}
-
 
 	interface TextfieldCommand {
 
@@ -602,7 +509,8 @@ public class Textfield extends Controller<Textfield> {
 	class MoveRight implements TextfieldCommand {
 
 		public void execute() {
-			setIndex((cp5.isMetaDown()) ? _myTextBuffer.length() : PApplet.min(_myTextBuffer.length(), _myTextBufferIndex + 1));
+			setIndex((cp5.isMetaDown()) ? _myTextBuffer.length() : PApplet.min(_myTextBuffer.length(),
+					_myTextBufferIndex + 1));
 		}
 	}
 
