@@ -186,14 +186,17 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 		if (isBarVisible) {
 			theApplet.fill(isInside ? color.getForeground() : color.getBackground());
 			theApplet.rect(0, -1, _myWidth, -_myHeight);
-			_myLabel.draw(theApplet, 0, -_myHeight, this);
+			_myLabel.draw(theApplet, 0, -_myHeight-1, this);
 			if (isCollapse && isArrowVisible) {
 				theApplet.fill(_myLabel.getColor());
+				theApplet.pushMatrix();
+				theApplet.translate(2,0);
 				if (isOpen) {
 					theApplet.triangle(_myWidth - 10, -_myHeight / 2 - 3, _myWidth - 4, -_myHeight / 2 - 3, _myWidth - 7, -_myHeight / 2);
 				} else {
 					theApplet.triangle(_myWidth - 10, -_myHeight / 2, _myWidth - 4, -_myHeight / 2, _myWidth - 7, -_myHeight / 2 - 3);
 				}
+				theApplet.popMatrix();
 			}
 		}
 	}

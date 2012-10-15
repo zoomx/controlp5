@@ -1,4 +1,3 @@
-
 package controlP5;
 
 /**
@@ -36,22 +35,20 @@ import processing.event.KeyEvent;
 
 /**
  * <p>
- * Controller is an abstract class that is extended by any available controller within controlP5.
- * this is the full documentation list for all methods available for a controller. An event
- * triggered by a controller will be forwarded to the main program. If a void
+ * Controller is an abstract class that is extended by any available controller within controlP5. this is the full documentation list for
+ * all methods available for a controller. An event triggered by a controller will be forwarded to the main program. If a void
  * controlEvent(ControlEvent theEvent) {} method is available, this method will be called.
  * </p>
  * <p>
  * A Controller can notify the main program in 2 different ways:
  * </p>
  * <ul>
- * <li>(1) add method controlEvent(ControlEvent theEvent) to your sketch. ControlP5 will
- * automatically detect this method and will used it to forward any controlEvent triggered by a
- * controller - you can disable forwarding by using setBroadcast(false)
+ * <li>(1) add method controlEvent(ControlEvent theEvent) to your sketch. ControlP5 will automatically detect this method and will used it
+ * to forward any controlEvent triggered by a controller - you can disable forwarding by using setBroadcast(false)
  * {@link controlP5.Controller#setBroadcast(boolean)}</li>
- * <li>(2) each controller requires a unique name when being create. In case an existing name is
- * used for a newly created Controller, the existing one will be overwritten. each unique name can
- * be used to automatically link a controller to either a method or a field within your program.</li>
+ * <li>(2) each controller requires a unique name when being create. In case an existing name is used for a newly created Controller, the
+ * existing one will be overwritten. each unique name can be used to automatically link a controller to either a method or a field within
+ * your program.</li>
  * </ul>
  * 
  * @see controlP5.Bang
@@ -185,10 +182,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 
 	protected boolean dragged;
 
-
 	/**
-	 * TODO add distribution options for MOVE, RELEASE, and PRESSED. setDecimalPoints:
-	 * setDcimalPoints(6) does only show 2 digits after the point
+	 * TODO add distribution options for MOVE, RELEASE, and PRESSED. setDecimalPoints: setDcimalPoints(6) does only show 2 digits after the
+	 * point
 	 */
 
 	/**
@@ -202,7 +198,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, autoWidth, autoHeight);
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
-
 
 	protected Controller(final ControlP5 theControlP5, final ControllerGroup<?> theParent, final String theName, final float theX, final float theY, final int theWidth, final int theHeight) {
 		cp5 = theControlP5;
@@ -218,18 +213,17 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		setParent(theParent);
 		if (theParent != null) {
 			color.set(theParent.color);
-		}
-		else {
+		} else {
 			color.set(cp5.color);
 		}
 		width = theWidth;
 		height = theHeight;
-		
+
 		_myCaptionLabel = new Label(cp5, theName);
 		_myCaptionLabel.setColor(color.getCaptionLabel());
 		_myValueLabel = new Label(cp5, "-");
 		_myValueLabel.setColor(color.getCaptionLabel());
-		
+
 		_myControllerPlugList = new ArrayList<ControllerPlug>();
 		_myControlListener = new ArrayList<ControlListener>();
 		subelements = new ArrayList<Controller<?>>();
@@ -238,11 +232,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		setView(_myDebugView);
 	}
 
-
 	List<Controller<?>> getSubelements() {
 		return subelements;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -251,7 +243,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myAddress;
 	}
 
-
 	@Override @ControlP5.Invisible @ControlP5.Layout public T setAddress(String theAddress) {
 		if (_myAddress.length() == 0) {
 			_myAddress = theAddress;
@@ -259,17 +250,14 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	protected Controller(final ControlP5 theControlP5, final String theName, final float theX, final float theY, final int theWidth, final int theHeight) {
 		this(theControlP5, theControlP5.getTab("default"), theName, theX, theY, theWidth, theHeight);
 	}
-
 
 	protected Controller(final String theName, final int theX, final int theY) {
 		_myName = theName;
 		position = new PVector(theX, theY, 0);
 	}
-
 
 	@ControlP5.Invisible public void init() {
 		_myDefaultValue = _myValue;
@@ -285,35 +273,29 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		updateDisplayMode(DEFAULT);
 	}
 
-
 	protected final void initControllerValue() {
 		if (_myValue == getMin() || Float.isNaN(_myValue)) {
 			if (_myControllerPlugList.size() == 1) {
 				if (getControllerPlugList().get(0).getValue() == null) {
 					setDefaultValue(getMin());
-				}
-				else {
+				} else {
 					float myInitValue = 0;
 					if (getControllerPlugList().get(0).getValue() instanceof Boolean) {
 						final boolean myBoolean = new Boolean(getControllerPlugList().get(0).getValue().toString()).booleanValue();
 						myInitValue = (myBoolean == true) ? 1f : 0f;
 
-					}
-					else if (getControllerPlugList().get(0).getValue() instanceof Float) {
+					} else if (getControllerPlugList().get(0).getValue() instanceof Float) {
 						myInitValue = (new Float(getControllerPlugList().get(0).getValue().toString())).floatValue();
 
-					}
-					else if (getControllerPlugList().get(0).getValue() instanceof Integer) {
+					} else if (getControllerPlugList().get(0).getValue() instanceof Integer) {
 						myInitValue = (new Integer(getControllerPlugList().get(0).getValue().toString())).intValue();
 
-					}
-					else if (getControllerPlugList().get(0).getValue() instanceof String) {
+					} else if (getControllerPlugList().get(0).getValue() instanceof String) {
 						_myStringValue = getControllerPlugList().get(0).getValue().toString();
 					}
 					setDefaultValue(myInitValue);
 				}
-			}
-			else {
+			} else {
 				if (Float.isNaN(getDefaultValue())) {
 					setDefaultValue(getMin());
 				}
@@ -322,16 +304,14 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		_myValue = _myDefaultValue;
 	}
 
-
 	protected void updateFont(ControlFont theControlFont) {
 		_myCaptionLabel.updateFont(theControlFont);
 		_myValueLabel.updateFont(theControlFont);
 	}
 
-
 	/**
-	 * with setBehavior you can add a ControlBehavior to a controller. A ControlBehavior can be used
-	 * to e.g. automatically change state, function, position, etc.
+	 * with setBehavior you can add a ControlBehavior to a controller. A ControlBehavior can be used to e.g. automatically change state,
+	 * function, position, etc.
 	 * 
 	 * @example ControlP5behavior
 	 * @param theBehavior ControlBehavior
@@ -344,7 +324,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return Controller
 	 */
@@ -354,7 +333,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return ControlBehavior
 	 */
@@ -362,14 +340,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myBehavior;
 	}
 
-
 	/**
 	 * @return float
 	 */
 	@ControlP5.Layout public float getDefaultValue() {
 		return _myDefaultValue;
 	}
-
 
 	/**
 	 * set the default value.
@@ -382,7 +358,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * enable or prevent the controller to be moveable. By default a controller is moveable.
 	 * 
@@ -394,7 +369,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * checks if a controller is moveable.
 	 * 
@@ -403,7 +377,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@ControlP5.Layout public boolean isMoveable() {
 		return isMoveable;
 	}
-
 
 	/**
 	 * show or hide the labels of a controller.
@@ -416,7 +389,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -424,11 +396,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return isLabelVisible;
 	}
 
-
 	/**
-	 * Use setBroadcast to enable and disable the broadcasting of changes in a controller's value.
-	 * By default any value changes are forwarded to function controlEvent inside your program. use
-	 * setBroadcast(false) to disable forwarding.
+	 * Use setBroadcast to enable and disable the broadcasting of changes in a controller's value. By default any value changes are
+	 * forwarded to function controlEvent inside your program. use setBroadcast(false) to disable forwarding.
 	 * 
 	 * @param theFlag boolean
 	 * @return Controller
@@ -438,11 +408,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * check if broadcasting is enabled or disabled for a controller. Every event relevant for a
-	 * value change will be broadcasted to any of the value-listeners. By default broadcasting for a
-	 * controller is enabled.
+	 * check if broadcasting is enabled or disabled for a controller. Every event relevant for a value change will be broadcasted to any of
+	 * the value-listeners. By default broadcasting for a controller is enabled.
 	 * 
 	 * @return boolean
 	 */
@@ -450,14 +418,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return isBroadcast;
 	}
 
-
 	/**
 	 * get the position of a controller. e.g. Controller.getPosition().x; {@inheritDoc}
 	 */
 	@ControlP5.Layout public PVector getPosition() {
 		return position;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -471,7 +437,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		positionBuffer.z = thePVector.z;
 		return me;
 	}
-
 
 	/**
 	 * set the position of a controller. The position of a controller is relative.
@@ -488,7 +453,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return {@link PVector}
 	 */
@@ -498,7 +462,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		// its field values. PVector should have getter and setters for x,y,z
 		return absolutePosition;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -513,7 +476,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -521,10 +483,8 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * continuousUpdateEvents is used for internal updates of a controller. this method is final and
-	 * can't be overridden.
+	 * continuousUpdateEvents is used for internal updates of a controller. this method is final and can't be overridden.
 	 * 
 	 * @exclude
 	 */
@@ -536,10 +496,8 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 	}
 
-
 	/**
-	 * updateEvents is used for internal updates of a controller. this method is final and can't be
-	 * overwritten.
+	 * updateEvents is used for internal updates of a controller. this method is final and can't be overwritten.
 	 */
 	@ControlP5.Invisible public final T updateEvents() {
 		if (isInside) {
@@ -549,8 +507,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 					onDrag();
 					dragged = true;
 				}
-			}
-			else {
+			} else {
 				if (moved && this.equals(_myControlWindow.getFirstFromMouseOverList())) {
 					onMove();
 				}
@@ -565,13 +522,11 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 					if (cp5.isShiftDown()) {
 						position.x = ((int) (positionBuffer.x) / 10) * 10;
 						position.y = ((int) (positionBuffer.y) / 10) * 10;
-					}
-					else {
+					} else {
 						position.set(positionBuffer);
 					}
 				}
-			}
-			else {
+			} else {
 				if (!isLock) {
 					if (isInside) {
 						setMouseOver(true);
@@ -582,8 +537,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 							setIsInside(true);
 						}
 						setIsInside(true);
-					}
-					else {
+					} else {
 						if (isInside && !isMousePressed) {
 							onLeave();
 							setMouseOver(false);
@@ -610,7 +564,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	public final Pointer getPointer() {
 		return new Pointer() {
 
@@ -618,23 +571,19 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 				return (int) (_myControlWindow.mouseX - _myParent.getAbsolutePosition().x - position.x);
 			}
 
-
 			public int y() {
 				return (int) (_myControlWindow.mouseY - _myParent.getAbsolutePosition().y - position.y);
 			}
 
-
 			public int px() {
 				return (int) (_myControlWindow.pmouseX - _myParent.getAbsolutePosition().x - position.x);
 			}
-
 
 			public int py() {
 				return (int) (_myControlWindow.pmouseY - _myParent.getAbsolutePosition().y - position.y);
 			}
 		};
 	}
-
 
 	/**
 	 * @param theStatus boolean
@@ -654,8 +603,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 				}
 				return true;
 			}
-		}
-		else {
+		} else {
 			if (isMousePressed == true && inside()) {
 				isMousePressed = false;
 				if (!cp5.isAltDown()) {
@@ -685,10 +633,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return false;
 	}
 
-
 	/**
-	 * enables a controller to listen to changes made to the variable linked to the controller. Use
-	 * true to enable and false to disable a controller from listening to changes.
+	 * enables a controller to listen to changes made to the variable linked to the controller. Use true to enable and false to disable a
+	 * controller from listening to changes.
 	 * 
 	 * @param theFlag
 	 * @return Controller
@@ -700,13 +647,11 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		listening = theValue;
 		if (listening) {
 			cp5.listenTo(_myName, cp5.getObjectForController(this));
-		}
-		else {
+		} else {
 			cp5.stopListeningTo(_myName, cp5.getObjectForController(this));
 		}
 		return me;
 	}
-
 
 	/**
 	 * returns true or false for the current listening status. by default it is set to false
@@ -719,7 +664,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return listening;
 	}
 
-
 	/**
 	 * check if the mouse is within this particular controller.
 	 * 
@@ -728,7 +672,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public boolean isMouseOver() {
 		return mouseover;
 	}
-
 
 	public T setMouseOver(boolean theFlag) {
 		if (mouseover == theFlag) {
@@ -739,15 +682,13 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 			_myControlWindow.setMouseOverController(this);
 			cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_ENTER));
 			cp5.getTooltip().activate(this);
-		}
-		else {
+		} else {
 			cp5.getControlBroadcaster().invokeAction(new CallbackEvent(this, ControlP5.ACTION_LEAVE));
 			_myControlWindow.removeMouseOverFor(this);
 			cp5.getTooltip().deactivate();
 		}
 		return me;
 	}
-
 
 	/**
 	 * @see ControllerInterface.updateInternalEvents
@@ -756,11 +697,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * the default draw function for each controller extending superclass Controller. This draw
-	 * function will take care of default matrix operations and will call the display function of
-	 * the current ControllerView object active for this particular controller.
+	 * the default draw function for each controller extending superclass Controller. This draw function will take care of default matrix
+	 * operations and will call the display function of the current ControllerView object active for this particular controller.
 	 * 
 	 * @exclude
 	 * @see controlP5.ControllerView
@@ -781,7 +720,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		// theApplet.popMatrix();
 	}
 
-
 	/**
 	 * @param theElement ControllerInterface
 	 * @return Controller
@@ -791,7 +729,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @param theElement ControllerInterface
 	 * @return Controller
@@ -800,7 +737,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		ControlP5.logger().warning("remove() not supported.");
 		return me;
 	}
-
 
 	/**
 	 * removes a controller from controlP5.
@@ -815,17 +751,14 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 	}
 
-
 	@Override public T bringToFront() {
 		return bringToFront(this);
 	}
 
-
 	@Override public T bringToFront(ControllerInterface<?> theController) {
 		if (_myParent instanceof Tab) {
 			moveTo((Tab) _myParent);
-		}
-		else {
+		} else {
 			_myParent.bringToFront(theController);
 		}
 		if (theController != this) {
@@ -839,7 +772,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * returns the index name of the controller.
 	 * 
@@ -849,11 +781,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myName;
 	}
 
-
 	/**
-	 * moves the controller to another tab. The tab is defined by parameter theTabName. if controlP5
-	 * can't find a tab with given name, controlP5 will create this tab and add it to the main
-	 * window.
+	 * moves the controller to another tab. The tab is defined by parameter theTabName. if controlP5 can't find a tab with given name,
+	 * controlP5 will create this tab and add it to the main window.
 	 * 
 	 * @param theTabName String
 	 * @return Controller
@@ -865,7 +795,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * moves the controller to another tab.
@@ -881,7 +810,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * moves the controller to the default tab inside the main window.
 	 * 
@@ -895,7 +823,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * moves the controller to a tab inside the main window.
@@ -911,7 +838,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * moves the controller to the default tab of a control window - other than the main window.
 	 * 
@@ -924,7 +850,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * 
@@ -939,7 +864,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -962,7 +886,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * 
 	 * @param theGroup
@@ -975,7 +898,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -985,7 +907,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * sets the tab of the controller.
@@ -1001,7 +922,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * 
 	 */
@@ -1012,7 +932,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * sets the group of the controller.
@@ -1028,7 +947,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	public final T setGroup(final ControllerGroup<?> theGroup) {
 		setParent(theGroup);
 		for (Controller<?> c : getSubelements()) {
@@ -1036,7 +954,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * get the instance of the tab the controller belongs to.
@@ -1050,10 +967,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myParent.getTab();
 	}
 
-
 	/**
-	 * set the parent of a parent of a controller. this method is only meant for internal use. this
-	 * method is final and can't be overwritten.
+	 * set the parent of a parent of a controller. this method is only meant for internal use. this method is final and can't be
+	 * overwritten.
 	 * 
 	 * @param theParent ControllerInterface
 	 * @return Controller
@@ -1073,7 +989,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * returns the parent of a controller.
 	 * 
@@ -1084,7 +999,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myParent;
 	}
 
-
 	/**
 	 * returns the control window of the controller
 	 * 
@@ -1093,7 +1007,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public ControlWindow getWindow() {
 		return _myControlWindow;
 	}
-
 
 	/**
 	 * checks if the mouse is within the area of a controller.
@@ -1105,7 +1018,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 				&& _myControlWindow.mouseY > position.y + _myParent.getAbsolutePosition().y && _myControlWindow.mouseY < position.y + _myParent.getAbsolutePosition().y + height);
 	}
 
-
 	/**
 	 * returns true or false and indicates if the mouse is inside the area of a controller.
 	 * 
@@ -1114,7 +1026,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public boolean isInside() {
 		return isInside;
 	}
-
 
 	/**
 	 * checks if a controller is active.
@@ -1125,7 +1036,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return isActive;
 	}
 
-
 	/**
 	 * returns true or false if the mouse has is pressed.
 	 * 
@@ -1135,64 +1045,49 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return isMousePressed;
 	}
 
-
 	protected void onEnter() {
 	}
-
 
 	protected void onLeave() {
 	}
 
-
 	protected void onDrag() {
 	}
-
 
 	protected void onMove() {
 	}
 
-
 	protected void onClick() {
 	}
-
 
 	protected void onPress() {
 	}
 
-
 	protected void onRelease() {
 	}
-
 
 	protected void onScroll(int theAmount) {
 	}
 
-
 	protected void onReleaseOutside() {
 	}
-
 
 	protected void mousePressed() {
 	}
 
-
 	protected void mouseReleased() {
 	}
 
-
 	protected void mouseReleasedOutside() {
 	}
-
 
 	protected void setIsInside(boolean theFlag) {
 		isInside = theFlag;
 	}
 
-
 	protected boolean getIsInside() {
 		return isInside;
 	}
-
 
 	/**
 	 * 
@@ -1200,7 +1095,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 */
 	@ControlP5.Invisible public void keyEvent(final KeyEvent theEvent) {
 	}
-
 
 	/**
 	 * set the id of a controller.
@@ -1213,10 +1107,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * returns the id of a controller, by default the id is -1. Any int can be given to a controller
-	 * as its ID, controlP5 does not recognize duplicates, this has to be managed on the user site.
+	 * returns the id of a controller, by default the id is -1. Any int can be given to a controller as its ID, controlP5 does not recognize
+	 * duplicates, this has to be managed on the user site.
 	 * 
 	 * @return int
 	 */
@@ -1224,11 +1117,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myId;
 	}
 
-
 	protected ControllerPlug getControllerPlug(int theIndex) {
 		return _myControllerPlugList.get(theIndex);
 	}
-
 
 	/**
 	 * 
@@ -1237,7 +1128,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public List<ControllerPlug> getControllerPlugList() {
 		return _myControllerPlugList;
 	}
-
 
 	protected boolean checkControllerPlug(ControllerPlug thePlug) {
 		for (ControllerPlug cp : _myControllerPlugList) {
@@ -1248,18 +1138,15 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return false;
 	}
 
-
 	protected void addControllerPlug(final ControllerPlug thePlug) {
 		if (checkControllerPlug(thePlug))
 			return;
 		_myControllerPlugList.add(thePlug);
 	}
 
-
 	protected void removeControllerPlug(final ControllerPlug thePlug) {
 		_myControllerPlugList.remove(thePlug);
 	}
-
 
 	/**
 	 * plugs the controller to a list of objects
@@ -1274,7 +1161,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * 
 	 * @param theObjects
@@ -1288,7 +1174,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @param theObject
 	 * @return Controller
@@ -1296,7 +1181,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public T plugTo(Object theObject) {
 		return plugTo(theObject, _myName);
 	}
-
 
 	public T plugTo(Object theObject, String theName) {
 		if ((theObject instanceof PApplet)) {
@@ -1306,7 +1190,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		cp5.getControlBroadcaster().plug(theObject, this, cp5.getControlBroadcaster().getEventMethod());
 		return me;
 	}
-
 
 	/**
 	 * unplugs the controller from a list of objects
@@ -1320,7 +1203,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * unplugs the Controller for a single object
@@ -1337,7 +1219,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @param theValue float
 	 */
@@ -1346,7 +1227,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		broadcast(FLOAT);
 		return me;
 	}
-
 
 	/**
 	 * @see Controller#getStringValue()
@@ -1357,7 +1237,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myValue;
 	}
 
-
 	/**
 	 * @param theValue
 	 * @return Controller
@@ -1366,7 +1245,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		_myStringValue = theValue;
 		return me;
 	}
-
 
 	/**
 	 * @see Controller#getValue()
@@ -1377,7 +1255,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@ControlP5.Layout public String getStringValue() {
 		return _myStringValue;
 	}
-
 
 	/**
 	 * returns the current float array value of a controller.
@@ -1391,7 +1268,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myArrayValue;
 	}
 
-
 	/**
 	 * @param theIndex
 	 * @return float
@@ -1399,12 +1275,10 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public float getArrayValue(int theIndex) {
 		if (theIndex >= 0 && theIndex < _myArrayValue.length) {
 			return _myArrayValue[theIndex];
-		}
-		else {
+		} else {
 			return Float.NaN;
 		}
 	}
-
 
 	/**
 	 * 
@@ -1415,7 +1289,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		_myArrayValue = theArray;
 		return me;
 	}
-
 
 	/**
 	 * 
@@ -1429,7 +1302,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return me;
 	}
-
 
 	/**
 	 * sets the value of the controller without sending the broadcast event. this function is final.
@@ -1445,11 +1317,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * updates the value of the controller without having to set the value explicitly. update does
-	 * not visually update the controller. the updating status can be set with setUpdate(true/false)
-	 * and checked with isUpdate().
+	 * updates the value of the controller without having to set the value explicitly. update does not visually update the controller. the
+	 * updating status can be set with setUpdate(true/false) and checked with isUpdate().
 	 * 
 	 * @see Controller#setUpdate(boolean)
 	 * @see Controller#isUpdate()
@@ -1458,7 +1328,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public T update() {
 		return me;
 	}
-
 
 	/**
 	 * disables the update function for a controller.
@@ -1474,7 +1343,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * enables the update function for a controller.
 	 * 
@@ -1487,11 +1355,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return isUpdate;
 	}
 
-
 	@ControlP5.Invisible public int getPickingColor() {
 		return _myPickingColor;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -1499,7 +1365,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Override @ControlP5.Layout public CColor getColor() {
 		return color;
 	}
-
 
 	/**
 	 * sets the content of the caption label of a controller.
@@ -1512,10 +1377,8 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * set or change the value of the value label of a controller. (this is cheating, but maybe
-	 * useful for some cases.)
+	 * set or change the value of the value label of a controller. (this is cheating, but maybe useful for some cases.)
 	 * 
 	 * @param theLabel
 	 * @return Controller
@@ -1525,7 +1388,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * returns the controller's caption label text.
 	 * 
@@ -1534,7 +1396,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@ControlP5.Invisible public String getLabel() {
 		return _myCaptionLabel.getText();
 	}
-
 
 	/**
 	 * @see controlP5.ControlListener
@@ -1546,7 +1407,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @see controlP5.ControlListener
 	 * @param theListener ControlListener
@@ -1557,14 +1417,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return int
 	 */
 	public int listenerSize() {
 		return _myControlListener.size();
 	}
-
 
 	/**
 	 * @see CallbackListener
@@ -1576,7 +1434,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @see CallbackListener
 	 * @param theListener
@@ -1587,7 +1444,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return Controller
 	 */
@@ -1596,11 +1452,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	protected void broadcast() {
 		broadcast(_myBroadcastType);
 	}
-
 
 	protected void broadcast(int theType) {
 		theType = _myBroadcastType;
@@ -1615,7 +1469,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		isInit = true;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -1627,7 +1480,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		}
 		return isVisible;
 	}
-
 
 	/**
 	 * @param theFlag boolean
@@ -1641,7 +1493,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return Controller
 	 */
@@ -1652,7 +1503,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return Controller
 	 */
@@ -1660,7 +1510,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		isVisible = true;
 		return me;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -1672,7 +1521,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1680,7 +1528,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		color.setActive(theColor);
 		return me;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -1690,7 +1537,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1698,7 +1544,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		color.setBackground(theColor);
 		return me;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -1712,7 +1557,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @param theColor
 	 * @return Controller
@@ -1725,11 +1569,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * by default controllers use simple shapes, to replace these shapes with images, use
-	 * setImages(). This can be handy for buttons, toggles, bangs, for more complex controllers such
-	 * as sliders, range, dropdownlist this is not advisable.
+	 * by default controllers use simple shapes, to replace these shapes with images, use setImages(). This can be handy for buttons,
+	 * toggles, bangs, for more complex controllers such as sliders, range, dropdownlist this is not advisable.
 	 * 
 	 * @param theImageDefault
 	 * @param theImageOver
@@ -1744,7 +1586,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	public T setImages(PImage theImageDefault, PImage theImageOver, PImage theImageActive, PImage theImageHighlight) {
 		setImage(theImageDefault, DEFAULT);
 		setImage(theImageOver, OVER);
@@ -1752,7 +1593,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		setImage(theImageHighlight, HIGHLIGHT);
 		return me;
 	}
-
 
 	public T setImages(PImage... imgs) {
 		if (imgs.length < 3 || imgs.length > 4) {
@@ -1765,16 +1605,13 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	public T setImage(PImage theImage) {
 		return setImage(theImage, DEFAULT);
 	}
 
-
 	/**
 	 * @param theImage
-	 * @param theState use Controller.DEFAULT (background) Controller.OVER (foreground)
-	 *            Controller.ACTIVE (active)
+	 * @param theState use Controller.DEFAULT (background) Controller.OVER (foreground) Controller.ACTIVE (active)
 	 */
 	public T setImage(PImage theImage, int theState) {
 		if (theImage != null) {
@@ -1785,14 +1622,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	public T updateSize() {
 		if (images[DEFAULT] != null) {
 			setSize(images[DEFAULT]);
 		}
 		return me;
 	}
-
 
 	/**
 	 * auto-updates the size of a controller according to the dimensions of the PImage.
@@ -1807,7 +1642,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @param theWidth
 	 * @param theHeight
@@ -1819,7 +1653,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	protected T updateDisplayMode(int theMode) {
 		if (theMode != DEFAULT) {
 			ControlP5.logger().warning("Image-based or custom displays are not yet implemented for this type of controller. (" + this.getClass().getName() + ")");
@@ -1827,11 +1660,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
-	 * use setDisplay to customize your controller look. A new controller-display class required to
-	 * implement interface ControllerView. By default the display mode will be set to CUSTOM when
-	 * setting a new display.
+	 * use setDisplay to customize your controller look. A new controller-display class required to implement interface ControllerView. By
+	 * default the display mode will be set to CUSTOM when setting a new display.
 	 * 
 	 * @see controlP5.ControllerView
 	 * @param theDisplay
@@ -1842,12 +1673,10 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	public void setView(ControllerView<T> theDisplay, int theMode) {
 		_myDisplayMode = theMode;
 		_myControllerView = theDisplay;
 	}
-
 
 	/**
 	 * @deprecated
@@ -1857,7 +1686,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return setView(theDisplay);
 	}
 
-
 	/**
 	 * @deprecated
 	 * @exclude
@@ -1865,7 +1693,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@SuppressWarnings("unchecked") @Deprecated public void setDisplay(ControllerDisplay theDisplay, int theMode) {
 		setView(theDisplay, theMode);
 	}
-
 
 	/**
 	 * @see controlP5.Label
@@ -1875,14 +1702,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myCaptionLabel;
 	}
 
-
 	/**
 	 * @return Label
 	 */
 	@ControlP5.Layout public Label getValueLabel() {
 		return _myValueLabel;
 	}
-
 
 	/**
 	 * returns the maximum value of the controller.
@@ -1893,7 +1718,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myMax;
 	}
 
-
 	/**
 	 * returns the minimum value of the controller.
 	 * 
@@ -1902,7 +1726,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@ControlP5.Layout public float getMin() {
 		return _myMin;
 	}
-
 
 	/**
 	 * sets the minimum value of the Controller.
@@ -1916,7 +1739,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * sets the maximum value of the Controller.
 	 * 
@@ -1929,7 +1751,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @param theWidth
 	 * @return Controller
@@ -1938,7 +1759,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		width = theWidth;
 		return me;
 	}
-
 
 	/**
 	 * @param theHeight
@@ -1949,14 +1769,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return int
 	 */
 	@ControlP5.Layout public int getWidth() {
 		return width;
 	}
-
 
 	/**
 	 * @return int
@@ -1965,10 +1783,8 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return height;
 	}
 
-
 	/**
-	 * sets the decimal precision of a controller's float value displayed. the precision does not
-	 * apply to the returned float value.
+	 * sets the decimal precision of a controller's float value displayed. the precision does not apply to the returned float value.
 	 * 
 	 * @param theValue
 	 * @return Controller
@@ -1984,14 +1800,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return int
 	 */
 	@ControlP5.Layout public int getDecimalPrecision() {
 		return _myDecimalPoints;
 	}
-
 
 	/**
 	 * @param theValue float
@@ -2000,7 +1814,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	protected String adjustValue(final float theValue) {
 		return adjustValue(theValue, _myDecimalPoints);
 	}
-
 
 	/**
 	 * @param theValue
@@ -2032,8 +1845,7 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 					myLabelValue += "0";
 				}
 			}
-		}
-		else {
+		} else {
 			myLabelValue += ".";
 			for (int i = 0; i < myFloatNumberLength; i++) {
 				myLabelValue += "0";
@@ -2043,13 +1855,11 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return myLabelValue;
 	}
 
-
 	public T align(int theCaptionX, int theCaptionY, int theValueX, int theValueY) {
 		getCaptionLabel().align(theCaptionX, theCaptionY);
 		getCaptionLabel().align(theValueX, theValueY);
 		return me;
 	}
-
 
 	/**
 	 * @return ControlWindow
@@ -2057,7 +1867,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	public ControlWindow getControlWindow() {
 		return _myControlWindow;
 	}
-
 
 	/**
 	 * disables the controller to be moved, or changed or controlled by the user.
@@ -2069,7 +1878,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * enables the controller to be moved, changed and controlled by the user.
 	 * 
@@ -2080,14 +1888,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
 	@ControlP5.Layout public boolean isLock() {
 		return isLock;
 	}
-
 
 	/**
 	 * sets the lock status of the controller
@@ -2100,7 +1906,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @exclude TODO
 	 */
@@ -2108,7 +1913,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		isUserInteraction = theValue;
 		return me;
 	}
-
 
 	/**
 	 * @exclude
@@ -2118,11 +1922,9 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return isUserInteraction;
 	}
 
-
 	/**
-	 * adds a tooltip to a controller, by default the tooltip is disabled. A Tooltip is made visible
-	 * when entering a controller with the mouse, when the mouse is moved inside the controller, the
-	 * tooltip will hide.
+	 * adds a tooltip to a controller, by default the tooltip is disabled. A Tooltip is made visible when entering a controller with the
+	 * mouse, when the mouse is moved inside the controller, the tooltip will hide.
 	 * 
 	 * @param theText
 	 * @return Controller
@@ -2131,7 +1933,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		cp5.getTooltip().register(this, theText);
 		return me;
 	}
-
 
 	/**
 	 * @see controlP5.Controller#registerTooltip(String)
@@ -2142,17 +1943,14 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	protected T setTooltipEnabled(boolean theValue) {
 		tooltipEnabled = theValue;
 		return me;
 	}
 
-
 	protected boolean isTooltipEnabled() {
 		return tooltipEnabled;
 	}
-
 
 	/**
 	 * @return Controller
@@ -2162,26 +1960,23 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	class DebugView implements ControllerView<T> {
 
 		public void display(PApplet theApplet, T theController) {
 			if (inside()) {
 				theApplet.fill(255, 0, 0, 50);
 				theApplet.stroke(255, 0, 0);
-			}
-			else {
+			} else {
 				theApplet.fill(255, 50);
 				theApplet.stroke(255);
 			}
 
 			theApplet.pushMatrix();
-			//theApplet.translate(position.x, position.y);
+			// theApplet.translate(position.x, position.y);
 			theApplet.rect(0, 0, width, height);
 			theApplet.popMatrix();
 		}
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -2190,14 +1985,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return cp5.getProperties().getProperty(this, thePropertyName);
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override public ControllerProperty getProperty(String theSetter, String theGetter) {
 		return cp5.getProperties().getProperty(this, theSetter, theGetter);
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -2207,7 +2000,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2215,7 +2007,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		cp5.getProperties().register(this, theSetter, theGetter);
 		return me;
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -2225,7 +2016,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -2234,14 +2024,12 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @exclude {@inheritDoc}
 	 */
 	@Override public String toString() {
 		return getName() + " [" + getClass().getSimpleName() + "]";
 	}
-
 
 	/**
 	 * @exclude
@@ -2253,7 +2041,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 				+ "\n" + "color:\t" + getColor() + "\n" + "visible:\t" + isVisible + "\n" + "moveable:\t" + isMoveable + " ]";
 	}
 
-
 	/* Deprecated methods */
 
 	/**
@@ -2264,7 +2051,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return getPosition();
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2273,7 +2059,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return getAbsolutePosition();
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2281,7 +2066,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public void setWindow(final PApplet theApplet) {
 		moveTo(theApplet);
 	}
-
 
 	/**
 	 * @exclude
@@ -2292,7 +2076,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myControlWindow;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2300,7 +2083,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public void trigger() {
 		setValue(value());
 	}
-
 
 	/**
 	 * @exclude
@@ -2311,7 +2093,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2321,7 +2102,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2329,7 +2109,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public float value() {
 		return getValue();
 	}
-
 
 	/**
 	 * @exclude
@@ -2339,7 +2118,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return getStringValue();
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2347,7 +2125,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public float[] arrayValue() {
 		return getArrayValue();
 	}
-
 
 	/**
 	 * @exclude
@@ -2357,7 +2134,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return getMin();
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2365,7 +2141,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public float max() {
 		return getMax();
 	}
-
 
 	/**
 	 * @exclude
@@ -2375,7 +2150,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return color;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2383,7 +2157,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public ControlBehavior behavior() {
 		return getBehavior();
 	}
-
 
 	/**
 	 * @exclude
@@ -2393,7 +2166,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return getCaptionLabel();
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2401,7 +2173,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public float defaultValue() {
 		return getDefaultValue();
 	}
-
 
 	/**
 	 * @exclude
@@ -2411,7 +2182,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return _myControlWindow;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2419,7 +2189,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public String label() {
 		return _myCaptionLabel.toString();
 	}
-
 
 	/**
 	 * @exclude
@@ -2430,7 +2199,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2439,7 +2207,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return getName();
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2447,7 +2214,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public int id() {
 		return _myId;
 	}
-
 
 	/**
 	 * @exclude
@@ -2458,7 +2224,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2466,7 +2231,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated public Label valueLabel() {
 		return _myValueLabel;
 	}
-
 
 	/**
 	 * @exclude
@@ -2477,7 +2241,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 		return me;
 	}
 
-
 	/**
 	 * @exclude
 	 * @deprecated
@@ -2485,7 +2248,6 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	@Deprecated protected ControllerPlug controllerPlug(int theIndex) {
 		return _myControllerPlugList.get(theIndex);
 	}
-
 
 	/**
 	 * @exclude

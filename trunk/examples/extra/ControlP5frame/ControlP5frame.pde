@@ -29,11 +29,11 @@ void setup() {
   // new frame is created and an instance of class
   // ControlFrame is instanziated.
   cf = addControlFrame("extra");
+
+  // add Controllers to the 'extra' Frame inside 
+  // the ControlFrame class setup() method below.
   
-  // with the newly created controlFrame we can
-  // access the controlP5 object by calling cf.control()
-  // and proceed to create new controllers as usual. 
-  cf.control().addSlider("abc").plugTo(this, "def").setRange(0, 255);
+  
 }
 
 void draw() {
@@ -84,6 +84,7 @@ public class ControlFrame extends PApplet {
     size(w, h);
     frameRate(25);
     cp5 = new ControlP5(this);
+    cp5.addSlider("abc").plugTo(this, "def").setRange(0, 255);
   }
 
   public void draw() {

@@ -54,8 +54,9 @@ public class ControlTimer {
 	 */
 	public String toString() {
 		update();
-		return (((h < 10) ? "0" + h : "" + h) + " : " + ((m < 10) ? "0" + m : "" + m) + " : " + ((s < 10) ? "0" + s : ""
-				+ s) // + " : " +
+		return (((h < 10) ? "0" + h : "" + h) + " : " + ((m < 10) ? "0" + m : "" + m) + " : " + ((s < 10) ? "0" + s : "" + s) // +
+																																// " : "
+																																// +
 		// ((ms<100) ? "0" + ms: "" +ms)
 		);
 	}

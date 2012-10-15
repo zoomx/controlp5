@@ -119,7 +119,6 @@ public class Slider extends Controller<Slider> {
 
 		_myCaptionLabel = new Label(cp5, theName).setColor(color.getCaptionLabel());
 		_myValueLabel = new Label(cp5, "" + getValue()).setColor(color.getValueLabel());
-
 		setSliderMode(FIX);
 
 	}

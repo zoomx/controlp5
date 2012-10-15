@@ -6,7 +6,7 @@
 
 	
 <!-- #### (1) where are your processing libraries located? edit location. #### -->
-	<property name="processing" location="/Users/andreas/Documents/Processing/libraries"/>
+	<property name="processing" location="${user.home}/Documents/Processing/libraries"/>
 
 
 <!-- #### (2) where are the jar files located that are required for compiling 
@@ -17,7 +17,7 @@
 		<fileset dir="${libraryClasspath}" >		
 <!-- #### (3) add the jar files that are required for compiling. edit name.
 		for more include files. duplicate <include name="" /> #### -->
-			<include name="two/core.jar"/>
+			<include name="core.jar"/>
 		</fileset>
 	</path>		
 	
@@ -120,12 +120,7 @@
 			<classpath>
 				<path refid="library-classpath"/>
 			</classpath>
-		</javac>
-  		<!-- copy gif files to the bin -->
-  		<copy file="${src}/controlP5/standard56.gif" todir="${bin}/controlP5"/>
-  		 <copy file="${src}/controlP5/standard58.gif" todir="${bin}/controlP5"/>
-  		 <copy file="${src}/controlP5/synt24.gif" todir="${bin}/controlP5"/>
-  		 <copy file="${src}/controlP5/GrixelKyrou9.gif" todir="${bin}/controlP5"/>
+		</javac>  		
   </target>
 
 	<!-- build the distribution of the library -->
