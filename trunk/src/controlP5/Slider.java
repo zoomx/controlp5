@@ -128,7 +128,7 @@ public class Slider extends Controller<Slider> {
 		// normalized value here but _myDefaultValue needs to be absolute.
 		// by normalizing _myValue the range of values can be from 'big-to-small'
 		// as well as from 'small-to-big'
-		// in order not to break anything, init() will be overriden here.
+		// in order not to break anything, init() will be overwritten here.
 
 		_myDefaultValue = getValue();
 		cp5.getControlBroadcaster().plug(cp5.papplet, this, _myName);
@@ -137,6 +137,7 @@ public class Slider extends Controller<Slider> {
 		setValue(_myDefaultValue);
 		isInit = true;
 		updateDisplayMode(DEFAULT);
+		
 	}
 
 	/**

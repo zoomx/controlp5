@@ -2,7 +2,6 @@ package controlP5;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import processing.core.PApplet;
 import processing.core.PVector;
