@@ -85,7 +85,7 @@ public class ControlP5 extends ControlP5Base {
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible public static final String VERSION = "2.0.2";// "##version##";
+	@ControlP5.Invisible public static final String VERSION = "2.0.3";// "##version##";
 
 	/**
 	 * @exclude
@@ -171,10 +171,18 @@ public class ControlP5 extends ControlP5Base {
 		init();
 	}
 
+	
+	public ControlP5(final PApplet theParent, PFont thePFont) {
+		papplet = theParent;
+		init();
+		setFont(thePFont);
+	}
+	
+	
 	public ControlP5(final PApplet theParent, ControlFont theControlFont) {
 		papplet = theParent;
-		setFont(theControlFont);
 		init();
+		setFont(theControlFont);
 	}
 
 	protected void init() {
@@ -460,6 +468,7 @@ public class ControlP5 extends ControlP5Base {
 			}
 		}
 		/* initialize the controller */
+		
 		theController.init();
 
 		/*

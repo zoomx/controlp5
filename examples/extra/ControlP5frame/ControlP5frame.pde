@@ -21,14 +21,13 @@ ControlFrame cf;
 int def;
 
 void setup() {
-  size(200, 200);
+  size(400, 400);
   cp5 = new ControlP5(this);
-  cp5.addSlider("test");
   
   // by calling function addControlFrame() a
   // new frame is created and an instance of class
   // ControlFrame is instanziated.
-  cf = addControlFrame("extra");
+  cf = addControlFrame("extra", 200,200);
 
   // add Controllers to the 'extra' Frame inside 
   // the ControlFrame class setup() method below.
@@ -40,14 +39,14 @@ void draw() {
   background(def);
 }
 
-ControlFrame addControlFrame(String theName) {
+ControlFrame addControlFrame(String theName, int theWidth, int theHeight) {
   Frame f = new Frame(theName);
-  ControlFrame p = new ControlFrame(this, 400, 400);
+  ControlFrame p = new ControlFrame(this, theWidth, theHeight);
   f.add(p);
   p.init();
   f.setTitle(theName);
   f.setSize(p.w, p.h);
-  f.setLocation(120, 120);
+  f.setLocation(100, 100);
   f.setResizable(false);
   f.setVisible(true);
   return p;
@@ -59,18 +58,26 @@ ControlFrame addControlFrame(String theName) {
 // new frame with a controlP5 object loaded
 public class ControlFrame extends PApplet {
 
-  ControlP5 cp5;
-
-  Object parent;
-
   int w, h;
 
-  int abc;
+  int abc = 100;
+  
+  public void setup() {
+    size(w, h);
+    frameRate(25);
+    cp5 = new ControlP5(this);
+    cp5.addSlider("abc").setRange(0, 255).setPosition(10,10);
+    cp5.addSlider("def").plugTo(parent,"def").setRange(0, 255).setPosition(10,30);
+  }
 
+  public void draw() {
+      background(abc);
+  }
+  
   private ControlFrame() {
   }
 
-  ControlFrame(Object theParent, int theWidth, int theHeight) {
+  public ControlFrame(Object theParent, int theWidth, int theHeight) {
     parent = theParent;
     w = theWidth;
     h = theHeight;
@@ -80,15 +87,12 @@ public class ControlFrame extends PApplet {
   public ControlP5 control() {
     return cp5;
   }
-  public void setup() {
-    size(w, h);
-    frameRate(25);
-    cp5 = new ControlP5(this);
-    cp5.addSlider("abc").plugTo(this, "def").setRange(0, 255);
-  }
+  
+  
+  ControlP5 cp5;
 
-  public void draw() {
-      background(abc);
-  }
+  Object parent;
+
+  
 }
 
