@@ -64,6 +64,7 @@ public class Tab extends ControllerGroup<Tab> {
 	 */
 	public Tab(ControlP5 theControlP5, ControlWindow theControlWindow, String theName) {
 		super(theControlP5, null, theName, 0, 0);
+		_myControlWindow = theControlWindow;
 		position = new PVector();
 		absolutePosition = new PVector();
 		isMoveable = false;
@@ -84,7 +85,7 @@ public class Tab extends ControllerGroup<Tab> {
 
 	protected boolean updateLabel() {
 		isInside = inside();
-		return cp5.getWindow().getTabs().size() > 2;
+		return _myControlWindow.getTabs().size() > 2;
 	}
 
 	protected void drawLabel(PApplet theApplet) {
@@ -134,7 +135,7 @@ public class Tab extends ControllerGroup<Tab> {
 	}
 
 	protected boolean inside() {
-		return (cp5.getWindow().mouseX > _myOffsetX && cp5.getWindow().mouseX < _myOffsetX + _myWidth && cp5.getWindow().mouseY > _myOffsetY && cp5.getWindow().mouseY < _myOffsetY
+		return (_myControlWindow.mouseX > _myOffsetX && _myControlWindow.mouseX < _myOffsetX + _myWidth && _myControlWindow.mouseY > _myOffsetY && _myControlWindow.mouseY < _myOffsetY
 				+ _myHeight);
 	}
 
@@ -143,7 +144,7 @@ public class Tab extends ControllerGroup<Tab> {
 	 */
 	@ControlP5.Invisible
 	public void mousePressed() {
-		cp5.getWindow().activateTab(this);
+		_myControlWindow.activateTab(this);
 		if (isEventActive) {
 			cp5.getControlBroadcaster().broadcast(new ControlEvent(this), ControlP5Constants.METHOD);
 		}
@@ -179,7 +180,7 @@ public class Tab extends ControllerGroup<Tab> {
 
 	@Override
 	public Tab bringToFront() {
-		cp5.getWindow().activateTab(this);
+		_myControlWindow.activateTab(this);
 		return this;
 	}
 
@@ -188,7 +189,7 @@ public class Tab extends ControllerGroup<Tab> {
 	 */
 	@Override
 	public Tab moveTo(ControlWindow theWindow) {
-		cp5.getWindow().removeTab(this);
+		_myControlWindow.removeTab(this);
 		setTab(theWindow, getName());
 		return this;
 	}

@@ -21,7 +21,7 @@ DropdownList d1, d2;
 int cnt = 0;
 
 void setup() {
-  size(700, 400,P3D);
+  size(700, 400);
   
   cp5 = new ControlP5(this);
   // create a DropdownList

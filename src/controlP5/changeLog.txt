@@ -1,14 +1,9 @@
 2012-10-19  Andreas Schlegel  <andi at sojamo.de>
 
-      * version 2.0.3
+      * version 1.5.2
 	
       * src controlP5.Controller.java:
-      Automatic (PApplet) field recognition for Slider, Knob, Numberbox, Toggle.    
-      
-      
-2012-09-17  Andreas Schlegel  <andi at sojamo.de>
-
-      * version 2.0.2
+      Automatic (PApplet) field recognition for Slider, Knob, Numberbox, Toggle adjusted.    
       
       * major changes to controlP5's font handling. the BitFontRenderer has been removed and the BitFont class
       has been introduced. BitFont extends PFont and is the replacement for rendering controlP5's bitfont as
@@ -21,85 +16,7 @@
       * src controlP5.BitFont.java:
       added, see above.      
              
-      
-
-2012-09-07  Andreas Schlegel  <andi at sojamo.de>
-
-      * version 2.0.1
-      
-      * processing 2.0, time to make some changes, major revision in progress.
-      The goal should be to make 2.0+ desktop and android compatible, for that java.awt dependencies 
-      will be removed. 
-      starting to remove deprecated methods, fields and classes
-      
-      * removing all java.awt dependencies.
-      with each ControlP5 instance there will only be 1 ControlWindow since separate windows/frames have
-      been removed due to their java.awt dependency. There will be an example of how to make your own 
-      separate Frame when in desktop mode. 
-      
-      * versions starting with 2.0.1 will not be backwards compatible with 1.5.1 and earlier
-      from this version onwards Android is supported
-      
-      
-      * src controlP5.Println.java:
-      new class added
-      a console logger that captures the System.out stream and displays it using a Textarea
-      
-      
-      * src controlP5.FrameRate.java:
-      new class added
-      a Textlabel that displays the current or average framerate based on update interval 
-      
-      
-      * src controlP5.BitFontRenderer.java:
-      using Base64 encoded bitfont source instead of loading gif textures
-      
-      
-      * src controlP5.Knob.java:
-      adding value label, ARC is default view now.
-      
-      
-      * src controlP5.Matrix.java:
-      adding play(), pause(), stop(), isPlaying(), trigger(int)
-  
-  
-      * src controlP5.Controller.java:
-      all ControllerSprite references (previously deprecated) have been removed
-      
-      
-      * src controlP5.ControllerSprite.java:
-      removed
-		
-      
-      * src controlP5.ControlP5IOHandler.java:
-      obsolete, removed, all static method transfered to controlP5.CP.java which will handle static method
-  
-      
-      * src controlP5.ControlWindowKeyListener.java:
-      obsolete, removed
-  
-      
-      * src controlP5.PAppletWindow.java:
-      obsolete, removed, currently there is no support for separate frames other than the main window due to removing java.awt dependencies
-
-
-      * src controlP5.ControlWindow.java:
-			removed mouseWheelMoved(MouseWheelEvent e) due to removal of java.awt dependencies
-			how to use an extra window, see example extra/ControlP5frame
-
-			
-			* src controlP5.ControlWindowKeyHandler.java:
-			obsolete, removed, now handled by controlP5/ControlWindow.java
-
-			
-			* src controlP5.CRect.java:
-      obsolete, removed, was only used by MultiList and MultiListButton - replaced with int array.
-
-			       
-			* src controlP5.ControlCanvas.java:
-      obsolete, removed, use controlP5.Canvas.java instead.
-
-
+             
 2012-09-07  Andreas Schlegel  <andi at sojamo.de>
 
       * version 1.5.1

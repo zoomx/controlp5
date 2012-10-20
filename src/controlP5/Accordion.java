@@ -25,6 +25,7 @@ package controlP5;
  *
  */
 
+
 /**
  * <p>
  * The Accordion is a list of ControlGroups which can be expanded and collapsed. Only one item can
@@ -35,7 +36,7 @@ package controlP5;
  * @see controlP5.ControlGroup
  * @example controllers/ControlP5accordion
  */
-@SuppressWarnings("rawtypes") public class Accordion extends ControlGroup<Accordion> {
+public class Accordion extends ControlGroup<Accordion> {
 
 	protected int spacing = 1;
 

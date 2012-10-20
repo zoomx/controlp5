@@ -243,6 +243,9 @@ public class Textlabel extends Controller<Textlabel> {
 	}
 
 	protected boolean inside() {
+		if(_myControlWindow==null) {
+			return false;
+		}
 		return (_myControlWindow.mouseX > position.x + _myParent.getAbsolutePosition().x
 				&& _myControlWindow.mouseX < position.x + _myParent.getAbsolutePosition().x + _myValueLabel.getWidth()
 				&& _myControlWindow.mouseY > position.y + _myParent.getAbsolutePosition().y && _myControlWindow.mouseY < position.y
@@ -284,7 +287,9 @@ public class Textlabel extends Controller<Textlabel> {
 		_myStringValue = theValue;
 		_myValueLabel = new Label(cp5, _myStringValue, theW, theH, theColor);
 		// _myValueLabel.setFont(theFont);
+		
 		_myValueLabel.setFont(cp5.controlFont == cp5.defaultFont ? cp5.defaultFontForText : cp5.controlFont);
+		
 		_myValueLabel.setMultiline(false);
 		_myValueLabel.toUpperCase(false);
 	}

@@ -208,7 +208,8 @@ public class Label implements CDrawable {
 				theApplet.rect(0, 1, ww, hh);
 			}
 			theApplet.translate(_myControllerStyle.paddingLeft, _myControllerStyle.paddingTop);
-			_myFontLabel.draw(cp5, this);
+			
+			_myFontLabel.draw(theApplet, this);
 			theApplet.popMatrix();
 		}
 	}
@@ -497,7 +498,8 @@ public class Label implements CDrawable {
 		}
 
 		@Override public int getWidth() {
-			return isFixedSize ? _myWidth : _myFontLabel.getWidth();
+			// !!!
+			return isFixedSize ? _myWidth : _myFontLabel==null ? 100:_myFontLabel.getWidth();
 		}
 
 		@Override public int getHeight() {

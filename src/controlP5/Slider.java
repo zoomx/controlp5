@@ -30,11 +30,9 @@ import java.util.ArrayList;
 import processing.core.PApplet;
 
 /**
- * A slider is either used horizontally or vertically. when adding a slider to controlP5, the width
- * is compared against the height. if the width is bigger, you get a horizontal slider, is the
- * height bigger, you get a vertical slider. a slider can have a fixed slider handle (one end of the
- * slider is fixed to the left or bottom side of the controller), or a flexible slider handle (a
- * handle you can drag).
+ * A slider is either used horizontally or vertically. when adding a slider to controlP5, the width is compared against the height. if the
+ * width is bigger, you get a horizontal slider, is the height bigger, you get a vertical slider. a slider can have a fixed slider handle
+ * (one end of the slider is fixed to the left or bottom side of the controller), or a flexible slider handle (a handle you can drag).
  * 
  * 
  * @example controllers/ControlP5slider
@@ -110,7 +108,7 @@ public class Slider extends Controller<Slider> {
 		_myMin = 0;
 		_myMax = 1;
 
-		// with _myMinReal and _myMaxReal the range of values can now range 
+		// with _myMinReal and _myMaxReal the range of values can now range
 		// from big to small (e.g. 255 to 0) as well as from small to big (e.g. 0 to 255)
 		_myMinReal = theMin;
 		_myMaxReal = theMax;
@@ -119,16 +117,17 @@ public class Slider extends Controller<Slider> {
 
 		_myCaptionLabel = new Label(cp5, theName).setColor(color.getCaptionLabel());
 		_myValueLabel = new Label(cp5, "" + getValue()).setColor(color.getValueLabel());
+
 		setSliderMode(FIX);
 
 	}
 
 	@ControlP5.Invisible @Override public void init() {
-		// need to override init here since _myValue will only be a 
+		// need to override init here since _myValue will only be a
 		// normalized value here but _myDefaultValue needs to be absolute.
 		// by normalizing _myValue the range of values can be from 'big-to-small'
 		// as well as from 'small-to-big'
-		// in order not to break anything, init() will be overwritten here.
+		// in order not to break anything, init() will be overriden here.
 
 		_myDefaultValue = getValue();
 		cp5.getControlBroadcaster().plug(cp5.papplet, this, _myName);
@@ -137,12 +136,10 @@ public class Slider extends Controller<Slider> {
 		setValue(_myDefaultValue);
 		isInit = true;
 		updateDisplayMode(DEFAULT);
-		
 	}
 
 	/**
-	 * use the slider mode to set the mode of the slider bar, which can be Slider.FLEXIBLE or
-	 * Slider.FIX
+	 * use the slider mode to set the mode of the slider bar, which can be Slider.FLEXIBLE or Slider.FIX
 	 * 
 	 * @param theMode int
 	 */
@@ -165,8 +162,7 @@ public class Slider extends Controller<Slider> {
 	}
 
 	/**
-	 * sets the size of the Slider handle, by default it is set to either the width or height of the
-	 * slider.
+	 * sets the size of the Slider handle, by default it is set to either the width or height of the slider.
 	 * 
 	 * @param theSize
 	 */
@@ -186,7 +182,7 @@ public class Slider extends Controller<Slider> {
 	 */
 	@ControlP5.Invisible public Slider updateInternalEvents(PApplet theApplet) {
 		if (isVisible) {
-			if (isMousePressed && !cp5.isAltDown()) {
+			if (isMousePressed && !cp5.keyHandler.isAltDown()) {
 				_myView.updateInternalEvents(theApplet);
 			}
 		}
@@ -194,8 +190,8 @@ public class Slider extends Controller<Slider> {
 	}
 
 	/**
-	 * the trigger event is set to Slider.PRESSED by default but can be changed to Slider.RELEASE so
-	 * that events are triggered when the slider is released.
+	 * the trigger event is set to Slider.PRESSED by default but can be changed to Slider.RELEASE so that events are triggered when the
+	 * slider is released.
 	 * 
 	 * @param theEventID
 	 */
@@ -272,9 +268,8 @@ public class Slider extends Controller<Slider> {
 	}
 
 	/**
-	 * sets the sensitivity for the scroll behavior when using the mouse wheel or the scroll
-	 * function of a multi-touch track pad. The smaller the value (closer to 0) the higher the
-	 * sensitivity. by default this value is set to 0.1
+	 * sets the sensitivity for the scroll behavior when using the mouse wheel or the scroll function of a multi-touch track pad. The
+	 * smaller the value (closer to 0) the higher the sensitivity. by default this value is set to 0.1
 	 * 
 	 * @param theValue
 	 * @return Slider
@@ -285,8 +280,7 @@ public class Slider extends Controller<Slider> {
 	}
 
 	/**
-	 * changes the value of the slider when hovering and using the mouse wheel or the scroll
-	 * function of a multi-touch track pad.
+	 * changes the value of the slider when hovering and using the mouse wheel or the scroll function of a multi-touch track pad.
 	 * 
 	 * @param theRotationValue
 	 * @return Slider
@@ -379,11 +373,9 @@ public class Slider extends Controller<Slider> {
 		_myView = (width > height) ? new SliderViewH() : new SliderViewV();
 		return this;
 	}
-	
-		
+
 	/*
-	 * TODO new implementations follow: http://www.ibm.com/developerworks/java/library/j-dynui/ take
-	 * interface builder as reference
+	 * TODO new implementations follow: http://www.ibm.com/developerworks/java/library/j-dynui/ take interface builder as reference
 	 */
 	protected Slider setTickMarks() {
 		return this;

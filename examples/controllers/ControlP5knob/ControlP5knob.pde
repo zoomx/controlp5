@@ -33,6 +33,7 @@ void setup() {
                .setValue(50)
                .setPosition(100,70)
                .setRadius(50)
+               .setViewStyle(Knob.ARC)
                .setDragDirection(Knob.VERTICAL)
                ;
                      

@@ -3,8 +3,8 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * The Slider2D allows to control a handle within a 2D area. This controller returns an arrayValue with the current xy position of its
- * handle.
+ * The Slider2D allows to control a handle within a 2D area. This controller returns an arrayValue
+ * with the current xy position of its handle.
  * 
  * @author andreas schlegel
  * 
@@ -24,7 +24,7 @@ public class Slider2D extends Controller<Slider2D> {
 	public boolean isCrosshairs = true;
 
 	private String _myValueLabelSeparator = ",";
-
+	
 	/**
 	 * Convenience constructor to extend Slider2D.
 	 * 
@@ -37,6 +37,7 @@ public class Slider2D extends Controller<Slider2D> {
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
 
+	
 	protected Slider2D(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myArrayValue = new float[] { 0.0f, 0.0f };
@@ -55,7 +56,7 @@ public class Slider2D extends Controller<Slider2D> {
 	 */
 	@ControlP5.Invisible public Slider2D updateInternalEvents(PApplet theApplet) {
 		if (isInside()) {
-			if (!cp5.isAltDown()) {
+			if (!cp5.keyHandler.isAltDown()) {
 				float tX = PApplet.constrain(_myControlWindow.mouseX - (_myParent.getAbsolutePosition().x + position.x), 0, width - cursorWidth);
 				float tY = PApplet.constrain(_myControlWindow.mouseY - (_myParent.getAbsolutePosition().y + position.y), 0, height - cursorHeight);
 				if (isMousePressed) {
@@ -159,7 +160,8 @@ public class Slider2D extends Controller<Slider2D> {
 	}
 
 	/*
-	 * (non-Javadoc) TODO see https://forum.processing.org/topic/controlp5-slider2d-questions
+	 * (non-Javadoc)
+	 * TODO see https://forum.processing.org/topic/controlp5-slider2d-questions
 	 * 
 	 * @see controlP5.Controller#setArrayValue(float[])
 	 */

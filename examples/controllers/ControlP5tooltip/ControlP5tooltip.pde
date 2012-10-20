@@ -1,4 +1,4 @@
-  /**
+/**
 * ControlP5 Tooltip
 *
 * add a tooltip to a controller.

@@ -1,4 +1,3 @@
-
 package controlP5;
 
 /**
@@ -43,12 +42,11 @@ public class MultiListButton extends Button implements MultiListInterface {
 
 	private MultiList root;
 
-	private int[] _myRect = new int[4];
+	private CRect _myRect;
 
 	protected int _myDirection = ControlP5Constants.RIGHT;
 
 	private boolean isUpperCase = true;
-
 
 	/**
 	 * 
@@ -64,7 +62,6 @@ public class MultiListButton extends Button implements MultiListInterface {
 		_myCaptionLabel.align(LEFT, CENTER);
 	}
 
-
 	public MultiListButton toUpperCase(boolean theValue) {
 		isUpperCase = theValue;
 		for (Controller<?> c : getSubelements()) {
@@ -73,7 +70,6 @@ public class MultiListButton extends Button implements MultiListInterface {
 		_myCaptionLabel.toUpperCase(isUpperCase);
 		return this;
 	}
-
 
 	public void remove() {
 		int myYoffset = 0;
@@ -97,21 +93,17 @@ public class MultiListButton extends Button implements MultiListInterface {
 		}
 	}
 
-
 	public int getDirection() {
 		return _myDirection;
 	}
-
 
 	protected void setDirection(int theDirection) {
 		_myDirection = theDirection;
 	}
 
-
 	public void updateRect(float theX, float theY, float theW, float theH) {
-		_myRect = new int[] { (int) theX, (int) theY, (int) theW, (int) theH };
+		_myRect = new CRect(theX, theY, theW, theH);
 	}
-
 
 	public void updateLocation(float theX, float theY) {
 		position.x += theX;
@@ -121,7 +113,6 @@ public class MultiListButton extends Button implements MultiListInterface {
 			((MultiListInterface) getSubelements().get(i)).updateLocation(theX, theY);
 		}
 	}
-
 
 	/**
 	 * set the width of a multlist button.
@@ -135,7 +126,6 @@ public class MultiListButton extends Button implements MultiListInterface {
 		updateLocation(-dif, 0);
 		return this;
 	}
-
 
 	/**
 	 * set the height of a multlist button.
@@ -158,7 +148,6 @@ public class MultiListButton extends Button implements MultiListInterface {
 		updateLocation(0, 0);
 		return this;
 	}
-
 
 	/**
 	 * add a new button to the sublist of this multilist button.
@@ -187,7 +176,6 @@ public class MultiListButton extends Button implements MultiListInterface {
 		return b;
 	}
 
-
 	protected void onEnter() {
 		if (!root.isUpdateLocation) {
 			isActive = true;
@@ -200,7 +188,6 @@ public class MultiListButton extends Button implements MultiListInterface {
 		}
 	}
 
-
 	protected void onLeave() {
 		if (parent instanceof MultiListInterface) {
 			if (!((MultiListInterface) parent).observe() && !root.isUpdateLocation && root.mostRecent == this) {
@@ -210,17 +197,14 @@ public class MultiListButton extends Button implements MultiListInterface {
 		}
 	}
 
-
 	public void mouseReleasedOutside() {
 		// !!! other than in the Button class, calling mouseReleased here
 		// conflicts with mouseReleased();
 	}
 
-
 	public boolean observe() {
-		return CP.inside(_myRect, _myControlWindow.mouseX, _myControlWindow.mouseY);
+		return CRect.inside(_myRect, _myControlWindow.mouseX, _myControlWindow.mouseY);
 	}
-
 
 	public void close(MultiListInterface theInterface) {
 		for (int i = 0; i < getSubelements().size(); i++) {
@@ -231,14 +215,12 @@ public class MultiListButton extends Button implements MultiListInterface {
 
 	}
 
-
 	public void close() {
 		for (int i = 0; i < getSubelements().size(); i++) {
 			((MultiListButton) getSubelements().get(i)).close();
 			((MultiListButton) getSubelements().get(i)).hide();
 		}
 	}
-
 
 	public void open() {
 		for (int i = 0; i < getSubelements().size(); i++) {

@@ -1,4 +1,3 @@
-
 package controlP5;
 
 /**
@@ -52,7 +51,6 @@ public class Button extends Controller<Button> {
 
 	protected boolean isSwitch = false;
 
-
 	/**
 	 * Convenience constructor to extend Button.
 	 * 
@@ -65,13 +63,11 @@ public class Button extends Controller<Button> {
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
 
-
 	protected Button(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myValue = theDefaultValue;
 		_myCaptionLabel.align(LEFT, CENTER);
 	}
-
 
 	/**
 	 * @exclude
@@ -80,16 +76,13 @@ public class Button extends Controller<Button> {
 		super(null, null, null, 0, 0, 1, 1);
 	}
 
-
 	@Override protected void onEnter() {
 		isActive = true;
 	}
 
-
 	@Override protected void onLeave() {
 		isActive = false;
 	}
-
 
 	/**
 	 * @exclude
@@ -102,7 +95,6 @@ public class Button extends Controller<Button> {
 		}
 	}
 
-
 	/**
 	 * @exclude
 	 */
@@ -114,7 +106,6 @@ public class Button extends Controller<Button> {
 		isActive = false;
 	}
 
-
 	/**
 	 * A button can be activated by a mouse PRESSED or mouse RELEASE. Default value is RELEASE.
 	 * 
@@ -124,13 +115,11 @@ public class Button extends Controller<Button> {
 	public Button activateBy(int theValue) {
 		if (theValue == PRESSED) {
 			activateBy = PRESSED;
-		}
-		else {
+		} else {
 			activateBy = RELEASE;
 		}
 		return this;
 	}
-
 
 	protected void activate() {
 		if (isActive) {
@@ -144,14 +133,12 @@ public class Button extends Controller<Button> {
 		}
 	}
 
-
 	/**
 	 * @exclude
 	 */
 	@Override @ControlP5.Invisible public void mouseReleasedOutside() {
 		mouseReleased();
 	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -162,14 +149,12 @@ public class Button extends Controller<Button> {
 		return this;
 	}
 
-
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override public Button update() {
 		return setValue(_myValue);
 	}
-
 
 	/**
 	 * Turns a button into a switch, or use a Toggle instead.
@@ -182,7 +167,6 @@ public class Button extends Controller<Button> {
 		isSwitch = theFlag;
 		return this;
 	}
-
 
 	/**
 	 * If the button acts as a switch, setOn will turn on the switch. Use
@@ -199,7 +183,6 @@ public class Button extends Controller<Button> {
 		return this;
 	}
 
-
 	/**
 	 * If the button acts as a switch, setOff will turn off the switch. Use
 	 * {@link controlP5.Button#setSwitch(boolean) setSwitch} to turn a Button into a Switch.
@@ -215,7 +198,6 @@ public class Button extends Controller<Button> {
 		return this;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
@@ -223,14 +205,12 @@ public class Button extends Controller<Button> {
 		return isOn;
 	}
 
-
 	/**
 	 * @return boolean
 	 */
 	public boolean isPressed() {
 		return isPressed;
 	}
-
 
 	/**
 	 * Returns true or false and indicates the switch state of the button. {@link setSwitch(boolean)
@@ -243,14 +223,12 @@ public class Button extends Controller<Button> {
 		return isOn;
 	}
 
-
 	/**
 	 * @exclude
 	 */
 	@Override @ControlP5.Invisible public Button updateDisplayMode(int theMode) {
 		return updateViewMode(theMode);
 	}
-
 
 	/**
 	 * @exclude
@@ -264,6 +242,9 @@ public class Button extends Controller<Button> {
 		case (IMAGE):
 			_myControllerView = new ButtonImageView();
 			break;
+		case (SPRITE):
+			_myControllerView = new ButtonSpriteView();
+			break;
 		case (CUSTOM):
 		default:
 			break;
@@ -272,24 +253,20 @@ public class Button extends Controller<Button> {
 		return this;
 	}
 
-
 	private class ButtonView implements ControllerView<Button> {
 
 		public void display(PApplet theApplet, Button theController) {
 			theApplet.noStroke();
 			if (isOn && isSwitch) {
 				theApplet.fill(color.getActive());
-			}
-			else {
+			} else {
 				if (getIsInside()) {
 					if (isPressed) {
 						theApplet.fill(color.getActive());
-					}
-					else {
+					} else {
 						theApplet.fill(color.getForeground());
 					}
-				}
-				else {
+				} else {
 					theApplet.fill(color.getBackground());
 				}
 			}
@@ -310,17 +287,14 @@ public class Button extends Controller<Button> {
 			if (getIsInside()) {
 				if (isPressed) {
 					theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
-				}
-				else {
+				} else {
 					theApplet.image((availableImages[OVER] == true) ? images[OVER] : images[DEFAULT], 0, 0);
 				}
-			}
-			else {
+			} else {
 				theApplet.image(images[DEFAULT], 0, 0);
 			}
 		}
 	}
-
 
 	/**
 	 * @exclude
@@ -329,7 +303,6 @@ public class Button extends Controller<Button> {
 		return "type:\tButton\n" + super.getInfo();
 	}
 
-
 	/**
 	 * @exclude
 	 */
@@ -337,6 +310,25 @@ public class Button extends Controller<Button> {
 		return super.toString() + " [ " + getValue() + " ] " + "Button" + " (" + this.getClass().getSuperclass() + ")";
 	}
 
+	@Deprecated private class ButtonSpriteView implements ControllerView<Button> {
+		public void display(PApplet theApplet, Button theController) {
+			if (isOn && isSwitch) {
+				sprite.setState(2);
+			} else {
+				if (isActive) {
+					if (isPressed) {
+						sprite.setState(2);
+					} else {
+						sprite.setState(1);
+					}
+				} else {
+					sprite.setState(0);
+				}
+			}
+			theApplet.fill(0);
+			sprite.draw(theApplet);
+		}
+	}
 
 	/**
 	 * @deprecated

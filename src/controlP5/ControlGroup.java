@@ -77,7 +77,7 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 	@ControlP5.Invisible
 	public void mousePressed() {
 		if (isBarVisible && isCollapse) {
-			if (!cp5.isAltDown()) {
+			if (!cp5.keyHandler.isAltDown()) {
 				isOpen = !isOpen;
 				if (isEventActive) {
 					final ControlEvent myEvent = new ControlEvent(this);
@@ -160,7 +160,7 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 	@Override
 	public T updateInternalEvents(PApplet theApplet) {
 		if (isInside && isBarVisible) {
-			cp5.getWindow().setMouseOverController(this);
+			_myControlWindow.setMouseOverController(this);
 		}
 		return me;
 	}
@@ -190,7 +190,7 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 			if (isCollapse && isArrowVisible) {
 				theApplet.fill(_myLabel.getColor());
 				theApplet.pushMatrix();
-				theApplet.translate(2,0);
+				
 				if (isOpen) {
 					theApplet.triangle(_myWidth - 10, -_myHeight / 2 - 3, _myWidth - 4, -_myHeight / 2 - 3, _myWidth - 7, -_myHeight / 2);
 				} else {
@@ -200,6 +200,7 @@ public class ControlGroup<T> extends ControllerGroup<T> implements ControlListen
 			}
 		}
 	}
+
 
 	/*
 	 * (non-Javadoc)

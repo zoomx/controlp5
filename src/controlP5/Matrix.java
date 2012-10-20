@@ -31,9 +31,9 @@ import java.lang.reflect.Method;
 import processing.core.PApplet;
 
 /**
- * A matrix is a 2d array with a pointer that traverses through the matrix in a timed interval. if an item of a matrix-column is active, the
- * x and y position of the corresponding cell will trigger an event and notify the program. see the ControlP5matrix example for more
- * information.
+ * A matrix is a 2d array with a pointer that traverses through the matrix in a timed interval. if
+ * an item of a matrix-column is active, the x and y position of the corresponding cell will trigger
+ * an event and notify the program. see the ControlP5matrix example for more information.
  * 
  * @example controllers/ControlP5matrix
  */
@@ -77,10 +77,6 @@ public class Matrix extends Controller<Matrix> {
 
 	private String _myPlugName;
 
-	private boolean playing = true;
-
-	private int bg = 0x00000000;
-
 	/**
 	 * Convenience constructor to extend Matrix.
 	 * 
@@ -92,7 +88,8 @@ public class Matrix extends Controller<Matrix> {
 		this(theControlP5, theControlP5.getDefaultTab(), theName, 10, 10, 0, 0, 100, 100);
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
-
+	
+	
 	public Matrix(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, int theCellX, int theCellY, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myInterval = 100;
@@ -136,7 +133,8 @@ public class Matrix extends Controller<Matrix> {
 		return _myInterval;
 	}
 
-	@ControlP5.Invisible public Matrix updateInternalEvents(PApplet theApplet) {
+	@ControlP5.Invisible
+	public Matrix updateInternalEvents(PApplet theApplet) {
 		setIsInside(inside());
 
 		if (getIsInside()) {
@@ -182,7 +180,8 @@ public class Matrix extends Controller<Matrix> {
 		isActive = false;
 	}
 
-	@ControlP5.Invisible public void mousePressed() {
+	@ControlP5.Invisible
+	public void mousePressed() {
 		isActive = getIsInside();
 		if (getIsInside()) {
 			isPressed = true;
@@ -193,7 +192,8 @@ public class Matrix extends Controller<Matrix> {
 		mouseReleased();
 	}
 
-	@ControlP5.Invisible public void mouseReleased() {
+	@ControlP5.Invisible
+	public void mouseReleased() {
 		if (isActive) {
 			isActive = false;
 		}
@@ -202,64 +202,15 @@ public class Matrix extends Controller<Matrix> {
 		currentY = -1;
 	}
 
-	@Override public Matrix setValue(float theValue) {
+	@Override
+	public Matrix setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 		return this;
 	}
 
-	public Matrix play() {
-		playing = true;
-		return this;
-	}
-
-	public boolean isPlaying() {
-		return playing;
-	}
-
-	public Matrix pause() {
-		playing = false;
-		return this;
-	}
-
-	public Matrix stop() {
-		playing = false;
-		cnt = 0;
-		return this;
-	}
-
-	public Matrix trigger(int theColumn) {
-
-		if (theColumn < 0 || theColumn >= _myCells.length) {
-			return this;
-		}
-
-		for (int i = 0; i < _myCellY; i++) {
-			if (_myCells[theColumn][i] == 1) {
-				_myValue = 0;
-				_myValue = (theColumn << 0) + (i << 8);
-				setValue(_myValue);
-				try {
-					Method method = _myPlug.getClass().getMethod(_myPlugName, int.class, int.class);
-					method.setAccessible(true);
-					method.invoke(_myPlug, theColumn, i);
-				} catch (SecurityException ex) {
-					ex.printStackTrace();
-				} catch (NoSuchMethodException ex) {
-					ex.printStackTrace();
-				} catch (IllegalArgumentException ex) {
-					ex.printStackTrace();
-				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
-				} catch (InvocationTargetException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-		return this;
-	}
-
-	@Override public Matrix update() {
+	@Override
+	public Matrix update() {
 		return setValue(_myValue);
 	}
 
@@ -333,17 +284,35 @@ public class Matrix extends Controller<Matrix> {
 	}
 
 	private void triggerEventFromThread() {
-		if (playing) {
-			cnt += 1;
-			cnt %= _myCellX;
-			trigger(cnt);
+		cnt += 1;
+		cnt %= _myCellX;
+		for (int i = 0; i < _myCellY; i++) {
+			if (_myCells[cnt][i] == 1) {
+				_myValue = 0;
+				_myValue = (cnt << 0) + (i << 8);
+				setValue(_myValue);
+				try {
+					Method method = _myPlug.getClass().getMethod(_myPlugName, int.class, int.class);
+					method.setAccessible(true);
+					method.invoke(_myPlug, cnt, i);
+				} catch (SecurityException ex) {
+					ex.printStackTrace();
+				} catch (NoSuchMethodException ex) {
+					ex.printStackTrace();
+				} catch (IllegalArgumentException ex) {
+					ex.printStackTrace();
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				} catch (InvocationTargetException ex) {
+					ex.printStackTrace();
+				}
+			}
 		}
 	}
 
 	private void runThread() {
 		if (t == null) {
 			t = new Thread(getName()) {
-
 				public void run() {
 					while (true) {
 						triggerEventFromThread();
@@ -359,7 +328,8 @@ public class Matrix extends Controller<Matrix> {
 		}
 	}
 
-	@Override public void remove() {
+	@Override
+	public void remove() {
 		if (t != null) {
 			t.interrupt();
 		}
@@ -367,8 +337,8 @@ public class Matrix extends Controller<Matrix> {
 	}
 
 	/**
-	 * use setMode to change the cell-activation which by default is ControlP5.SINGLE_ROW, 1 active cell per row, but can be changed to
-	 * ControlP5.SINGLE_COLUMN or ControlP5.MULTIPLES
+	 * use setMode to change the cell-activation which by default is ControlP5.SINGLE_ROW, 1 active
+	 * cell per row, but can be changed to ControlP5.SINGLE_COLUMN or ControlP5.MULTIPLES
 	 * 
 	 * @param theMode return Matrix
 	 */
@@ -381,15 +351,9 @@ public class Matrix extends Controller<Matrix> {
 		return _myMode;
 	}
 
-	public Matrix setBackground(int c) {
-		bg = 0x00000000;
-		if ((c >> 24 & 0xff) > 0) {
-			bg = (c >> 24) << 24 | (c >> 16) << 16 | (c >> 8) << 8 | (c >> 0) << 0;
-		}
-		return this;
-	}
-
-	@Override @ControlP5.Invisible public Matrix updateDisplayMode(int theMode) {
+	@Override
+	@ControlP5.Invisible
+	public Matrix updateDisplayMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
@@ -405,11 +369,8 @@ public class Matrix extends Controller<Matrix> {
 	}
 
 	class MatrixView implements ControllerView<Matrix> {
-
 		public void display(PApplet theApplet, Matrix theController) {
 			theApplet.noStroke();
-			theApplet.fill(bg);
-			theApplet.rect(0, 0, width, height);
 			for (int x = 0; x < _myCellX; x++) {
 				for (int y = 0; y < _myCellY; y++) {
 

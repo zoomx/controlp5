@@ -1,8 +1,9 @@
 /**
  * ControlP5 DrawIntoCanvas
  *
- * this example demonstrates how to draw into a Canvas. 
- * Click and drag the mouse to show and draw into the Canvas.
+ * this example demonstrates how to draw into a ControlWindowCanvas 
+ * from another window. Click and drag the mouse inside each of one of the 
+ * windows to see its effect.
  *
  * by Andreas Schlegel, 2011
  * www.sojamo.de/libraries/controlp5
@@ -10,10 +11,9 @@
  */
  
 import controlP5.*;
-
-ControlP5 cp5;
-
-Canvas cc;
+ControlP5 controlP5;
+ControlWindow controlWindow;
+ControlWindowCanvas cc;
 
 // your controlWindowCanvas class
 class MyCanvas extends ControlWindowCanvas {
@@ -49,11 +49,14 @@ class MyCanvas extends ControlWindowCanvas {
 void setup() {
   size(400,400);
   frameRate(30);
-  cp5 = new ControlP5(this);
+  controlP5 = new ControlP5(this);
+
+  controlWindow = controlP5.addControlWindow("controlP5window",100,100,width,height,30);
+  controlWindow.setUpdateMode(ControlWindow.NORMAL);
 
   cc = new MyCanvas();
   cc.pre();
-  cp5.addCanvas(cc);
+  controlWindow.addCanvas(cc);
 
 }
 

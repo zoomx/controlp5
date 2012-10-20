@@ -30,8 +30,8 @@ import java.lang.reflect.Field;
 import java.security.AccessControlException;
 
 /**
- * The ControllerPlug is used to do all the reflection procedures to link a controller to a variable or function inside your main
- * application.
+ * The ControllerPlug is used to do all the reflection procedures to link a controller to a variable
+ * or function inside your main application.
  * 
  * @example use/ControlP5plugTo
  */
@@ -129,9 +129,9 @@ public class ControllerPlug {
 			}
 			/* check for fields */
 		} else if (_myType == ControlP5Constants.FIELD) {
-
+			
 			Field[] myFields = ControlBroadcaster.getFieldsFor(myClass);
-
+			
 			for (int i = 0; i < myFields.length; i++) {
 				if (myFields[i].getName().equals(_myName)) {
 					_myParameterClass = myFields[i].getType();
@@ -139,10 +139,10 @@ public class ControllerPlug {
 			}
 			if (_myParameterClass != null) {
 				/**
-				 * note. when running in applet mode. for some reason setAccessible(true) works for methods but not for fields.
-				 * theAccessControlException is thrown. therefore, make fields in your code public.
+				 * note. when running in applet mode. for some reason setAccessible(true) works for
+				 * methods but not for fields. theAccessControlException is thrown. therefore, make
+				 * fields in your code public.
 				 */
-
 				try {
 					_myField = myClass.getDeclaredField(_myName);
 					try {

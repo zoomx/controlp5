@@ -104,7 +104,6 @@ public class ControlFont {
 
 	static private int checkFontSize(PFont theFont) {
 		try {
-			// was: return theFont.getFont().getSize(); but disappeared with p5 2.0b1
 			return theFont.getSize();
 		} catch (NullPointerException e) {
 			System.out.println("ControlP5: could not find font-size details for font " + theFont.getName() + ", use constructor ControlFont(PFont theFont, int theFontSize) to specify the font size.");
@@ -228,35 +227,37 @@ public class ControlFont {
 		return (_myTextHeight - height);
 	}
 
-	public void draw(ControlP5 c, Label theLabel) {
-		PFont loadedFont = c.papplet.g.textFont;
-		float loadedSize = c.papplet.g.textSize;
+	public void draw(PApplet theApplet, Label theLabel) {
+		PFont loadedFont = theApplet.g.textFont;
+		float loadedSize = theApplet.g.textSize;
 		if (loadedFont == null) {
-			c.papplet.textSize(loadedSize); // forces default font
-			loadedFont = c.papplet.g.textFont;
+			theApplet.textSize(loadedSize); // forces default font
+			loadedFont = theApplet.g.textFont;
 		}
-		int loadedAlign = c.papplet.g.textAlign;
-
-		c.papplet.textFont(pfont, size);
-		c.papplet.textAlign(theLabel.textAlign);
-		c.papplet.fill(theLabel.getColor());
+		int loadedAlign = theApplet.g.textAlign;
+		
+		
+		theApplet.textFont(pfont, size);
+		theApplet.textAlign(theLabel.textAlign);
+		theApplet.fill(theLabel.getColor());
+		
 		if (theLabel.isMultiline()) {
-			c.papplet.fill(theLabel.getColor());
-			c.papplet.textLeading(theLabel.getLineHeight());
-			c.papplet.text(s, 0, 0, theLabel.getWidth(), theLabel.getHeight());
+			theApplet.fill(theLabel.getColor());
+			theApplet.textLeading(theLabel.getLineHeight());
+			theApplet.text(s, 0, 0, theLabel.getWidth(), theLabel.getHeight());
 		} else {
-			c.papplet.translate(0, -top + 1);
-			debug(c.papplet, theLabel);
-			c.papplet.fill(theLabel.getColor());
-			c.papplet.textLeading(theLabel.getLineHeight());
-			c.papplet.text(theLabel.getTextFormatted(), 0, 0);
+			theApplet.translate(0, -top + 1);
+			debug(theApplet, theLabel);
+			theApplet.fill(theLabel.getColor());
+			theApplet.textLeading(theLabel.getLineHeight());
+			theApplet.text(theLabel.getTextFormatted(), 0, 0);
 			if (RENDER_2X) {
-				c.papplet.text(theLabel.getTextFormatted(), 0, 0);
+				theApplet.text(theLabel.getTextFormatted(), 0, 0);
 			}
 		}
 
-		c.papplet.textFont(loadedFont, loadedSize);
-		c.papplet.textAlign(loadedAlign);
+		theApplet.textFont(loadedFont, loadedSize);
+		theApplet.textAlign(loadedAlign);
 	}
 
 	private void debug(PApplet theApplet, Label theLabel) {
