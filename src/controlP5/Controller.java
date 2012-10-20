@@ -277,7 +277,17 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	}
 
 	protected final void initControllerValue() {
-		if (_myValue == getMin() || Float.isNaN(_myValue)) {
+		// this is painful. deciding if the value has been set by parameter or by reading the current value of the corresponding field is
+		// very painful here due to too many ifs and thens. therefore this is done manually here - very ugly though.
+
+		boolean go = false;
+
+		if (getClass().equals(Numberbox.class)) {
+			go = _myDefaultValue == 0;
+		} else {
+			go = _myDefaultValue == getMin() || Float.isNaN(getValue());
+		}
+		if (go) {
 			if (_myControllerPlugList.size() == 1) {
 				if (getControllerPlugList().get(0).getValue() == null) {
 					setDefaultValue(getMin());
