@@ -88,11 +88,6 @@
 				<path refid="library-classpath"/>
 			</classpath>
 		</javac>
-  		<!-- copy gif files to the bin -->
-  		<copy file="${src}/controlP5/standard56.gif" todir="${bin}/controlP5"/>
-		<copy file="${src}/controlP5/standard58.gif" todir="${bin}/controlP5"/>
-		<copy file="${src}/controlP5/synt24.gif" todir="${bin}/controlP5"/>
-		<copy file="${src}/controlP5/GrixelKyrou9.gif" todir="${bin}/controlP5"/>
 	</target>
   
   
