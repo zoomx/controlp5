@@ -1,4 +1,3 @@
-
 package controlP5;
 
 /**
@@ -39,12 +38,10 @@ public class CallbackEvent {
 
 	private final Controller<?> _myController;
 
-
 	CallbackEvent(Controller<?> theController, int theAction) {
 		_myController = theController;
 		_myAction = theAction;
 	}
-
 
 	/**
 	 * 
@@ -56,7 +53,6 @@ public class CallbackEvent {
 	public int getAction() {
 		return _myAction;
 	}
-
 
 	/**
 	 * Returns the Controller that triggered the Callback Event.

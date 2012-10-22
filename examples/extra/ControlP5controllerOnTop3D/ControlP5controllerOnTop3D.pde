@@ -20,9 +20,9 @@ String messageBoxString = "";
 float t;
 
 void setup() {
-  size(640,480,P3D);
-  cp5 = new ControlP5(this);
+  size(640,480,OPENGL);
   noStroke();
+  cp5 = new ControlP5(this);
   createMessageBox();
   Button b = cp5.addButton("toggleBox",1,20,20,100,20);
   b.setLabel("Toggle Box");

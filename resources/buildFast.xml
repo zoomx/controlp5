@@ -120,7 +120,7 @@
 			<classpath>
 				<path refid="library-classpath"/>
 			</classpath>
-		</javac>  		
+		</javac>
   </target>
 
 	<!-- build the distribution of the library -->

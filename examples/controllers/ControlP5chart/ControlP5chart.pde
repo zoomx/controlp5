@@ -19,8 +19,9 @@ Chart myChart;
 void setup() {
   size(400, 700);
   smooth();
+  
   cp5 = new ControlP5(this);
-  cp5.printPublicMethodsFor(Chart.class);
+
   myChart = cp5.addChart("hello")
                .setPosition(50, 50)
                .setSize(200, 200)

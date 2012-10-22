@@ -28,44 +28,37 @@ package controlP5;
 import processing.core.PApplet;
 
 /**
- * Use a ControlWindowCanvas to draw custom graphics into a control window or
- * the default sketch window.
- * 
- * The ControlWindowCanvas is an abstract class and must be extended by your
- * custom ControlWindowCanvas class, see the ControlP5canvas example for
- * details.
- * 
- * @example controllers/ControlP5canvas
+ * use the Canvas class instead to draw your custom graphics into the
+ * default sketch or a ControlWindow.
  * 
  */
-public abstract class ControlWindowCanvas {
+@Deprecated
+public abstract class ControlCanvas {
 
-	protected ControlWindow _myControlWindow;
 	public final static int PRE = 0;
+	
 	public final static int POST = 1;
+	
 	protected int _myMode = PRE;
 
+	public ControlCanvas() {
+	}
+
+	/**
+	 * the setup method can be, but doesnt have to be overwritten by your custom
+	 * canvas class.
+	 * 
+	 * @param theApplet
+	 */
 	public void setup(PApplet theApplet) {
 	}
 
 	/**
-	 * controlWindowCanvas is an abstract class and therefore needs to be
-	 * extended by your class. draw(PApplet theApplet) is the only method that
-	 * needs to be overwritten.
+	 * controlCanvas is an abstract class and therefore needs to be extended by
+	 * your class. draw(PApplet theApplet) is the only method that needs to be
+	 * overwritten.
 	 */
 	public abstract void draw(PApplet theApplet);
-
-	/**
-	 * move a canvas to another controlWindow
-	 * 
-	 * @param theControlWindow
-	 */
-	public void moveTo(ControlWindow theControlWindow) {
-		if (_myControlWindow != null) {
-			_myControlWindow.removeCanvas(this);
-		}
-		theControlWindow.addCanvas(this);
-	}
 
 	/**
 	 * get the drawing mode of a ControlWindowCanvas. this can be PRE or POST.
@@ -100,14 +93,6 @@ public abstract class ControlWindowCanvas {
 		} else {
 			_myMode = POST;
 		}
-	}
-
-	protected final void setControlWindow(ControlWindow theControlWindow) {
-		_myControlWindow = theControlWindow;
-	}
-
-	public final ControlWindow window() {
-		return _myControlWindow;
 	}
 
 }

@@ -7,7 +7,7 @@
 
 import controlP5.*;
 
-ControlP5 cp5;
+ControlP5 controlP5;
 
 public int myColorRect = 200;
 
@@ -16,24 +16,12 @@ public int myColorBackground = 40;
 
 void setup() {
   size(400,400);
-  
-  noStroke();
-  
+  frameRate(25);
   /* new instance of ControlP5 */
-  cp5 = new ControlP5(this);
+  controlP5 = new ControlP5(this);
   /* add 2 controllers and give each of them a unique id. */
-  cp5.addNumberbox("numberbox1")
-     .setPosition(100,160)
-     .setSize(100,14)
-     .setId(1)
-     .setValue(myColorRect);
-     
-  cp5.addSlider("slider1")
-     .setRange(10,200)
-     .setValue(myColorBackground)
-     .setPosition(100,220)
-     .setSize(100,10)
-     .setId(2);
+  controlP5.addNumberbox("numberbox1",myColorRect,100,160,100,14).setId(1);
+  controlP5.addSlider("slider1",10,200,myColorBackground,100,220,100,10).setId(2);
 }
 
 void draw() {
@@ -48,15 +36,15 @@ void controlEvent(ControlEvent theEvent) {
      the controlEvent method. by checking the id of a controller one can distinguish
      which of the controllers has been changed.
   */
-  println("got a control event from controller with id "+theEvent.getController().getId());
-  switch(theEvent.getController().getId()) {
+  println("got a control event from controller with id "+theEvent.controller().id());
+  switch(theEvent.controller().id()) {
     case(1):
     /* controller numberbox1 with id 1 */
-    myColorRect = (int)theEvent.getValue();
+    myColorRect = (int)(theEvent.controller().value());
     break;
     case(2):
     /* controller slider1 with id 2 */
-    myColorBackground = (int)theEvent.getValue();
+    myColorBackground = (int)(theEvent.controller().value());
     break;  
   }
 }

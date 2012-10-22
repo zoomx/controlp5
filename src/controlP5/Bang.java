@@ -1,4 +1,3 @@
-
 package controlP5;
 
 /**
@@ -37,17 +36,17 @@ import processing.core.PApplet;
  * 
  * @example controllers/ControlP5bang
  */
-@ControlP5.Layout public class Bang extends Controller<Bang> {
+@ControlP5.Layout
+public class Bang extends Controller<Bang> {
 
 	protected int cnt;
 
 	protected int triggerId = PRESSED;
-
-
+	
 	/**
 	 * Convenience constructor to extend Bang.
 	 * 
-	 * @example use/ControlP5extendController
+	 * @example use/ControlP5extendController 
 	 * @param theControlP5
 	 * @param theName
 	 */
@@ -55,27 +54,26 @@ import processing.core.PApplet;
 		this(theControlP5, theControlP5.getDefaultTab(), theName, 0, 0, 20, 20);
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
-
-
+	
 	protected Bang(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, float theX, float theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
-		_myCaptionLabel.setPadding(0, Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
+		_myCaptionLabel.setPadding(0,Label.paddingY).align(LEFT, BOTTOM_OUTSIDE);
 		_myValue = 1;
 	}
 
-
-	@Override protected void onEnter() {
+	@Override
+	protected void onEnter() {
 		cnt = 0;
 		isActive = true;
 	}
 
-
-	@Override protected void onLeave() {
+	@Override
+	protected void onLeave() {
 		isActive = false;
 	}
 
-
-	@Override protected void mousePressed() {
+	@Override
+	protected void mousePressed() {
 		if (triggerId == PRESSED) {
 			cnt = -3;
 			isActive = true;
@@ -83,8 +81,8 @@ import processing.core.PApplet;
 		}
 	}
 
-
-	@Override protected void mouseReleased() {
+	@Override
+	protected void mouseReleased() {
 		if (triggerId == RELEASE) {
 			cnt = -3;
 			isActive = true;
@@ -92,11 +90,10 @@ import processing.core.PApplet;
 		}
 	}
 
-
-	@Override protected void mouseReleasedOutside() {
+	@Override
+	protected void mouseReleasedOutside() {
 		onLeave();
 	}
-
 
 	/**
 	 * By default a bang is triggered when the mouse is pressed. use setTriggerEvent(Bang.PRESSED)
@@ -106,16 +103,16 @@ import processing.core.PApplet;
 	 * @param theEventID
 	 * @return Bang
 	 */
-	@ControlP5.Layout public Bang setTriggerEvent(int theEventID) {
+	@ControlP5.Layout
+	public Bang setTriggerEvent(int theEventID) {
 		triggerId = theEventID;
 		return this;
 	}
 
-
-	@ControlP5.Layout public int getTriggerEvent() {
+	@ControlP5.Layout
+	public int getTriggerEvent() {
 		return triggerId;
 	}
-
 
 	/**
 	 * Sets the value of the bang controller. since bang can be true or false, false=0 and true=1
@@ -123,38 +120,43 @@ import processing.core.PApplet;
 	 * @param theValue float
 	 * @return Bang
 	 */
-	@Override public Bang setValue(float theValue) {
+	@Override
+	public Bang setValue(float theValue) {
 		_myValue = theValue;
 		broadcast(FLOAT);
 		return this;
 	}
 
-
 	/**
 	 * @exclude
 	 */
-	@Override public Bang update() {
+	@Override
+	public Bang update() {
 		return setValue(_myValue);
 	}
-
-
+	
 	/**
 	 * @exclude
 	 */
-	@Override @ControlP5.Invisible public Bang updateDisplayMode(int theMode) {
+	@Override
+	@ControlP5.Invisible
+	public Bang updateDisplayMode(int theMode) {
 		updateViewMode(theMode);
 		return this;
 	}
-
-
+	
 	/**
 	 * @exclude
 	 */
-	@ControlP5.Invisible public Bang updateViewMode(int theMode) {
+	@ControlP5.Invisible
+	public Bang updateViewMode(int theMode) {
 		_myDisplayMode = theMode;
 		switch (theMode) {
 		case (DEFAULT):
 			_myControllerView = new BangView();
+			break;
+		case (SPRITE):
+			_myControllerView = new BangSpriteView();
 			break;
 		case (IMAGE):
 			_myControllerView = new BangImageView();
@@ -166,14 +168,11 @@ import processing.core.PApplet;
 		return this;
 	}
 
-
 	private class BangView implements ControllerView<Bang> {
-
 		public void display(PApplet theApplet, Bang theController) {
 			if (isActive) {
 				theApplet.fill(color.getActive());
-			}
-			else {
+			} else {
 				theApplet.fill(color.getForeground());
 			}
 
@@ -189,12 +188,10 @@ import processing.core.PApplet;
 	}
 
 	private class BangImageView implements ControllerView<Bang> {
-
 		public void display(PApplet theApplet, Bang theController) {
 			if (isActive) {
 				theApplet.image((availableImages[ACTIVE] == true) ? images[ACTIVE] : images[DEFAULT], 0, 0);
-			}
-			else {
+			} else {
 				theApplet.image((availableImages[OVER] == true) ? images[OVER] : images[DEFAULT], 0, 0);
 			}
 			if (cnt < 0) {
@@ -207,22 +204,39 @@ import processing.core.PApplet;
 		}
 	}
 
-
 	/**
 	 * {@inheritDoc}
-	 * 
 	 * @exclude
 	 */
-	@Override public String getInfo() {
+	@Override
+	public String getInfo() {
 		return "type:\tBang\n" + super.getInfo();
 	}
-
-
+	
 	/**
-	 * @exclude {@inheritDoc}
+	 * @exclude
+	 * {@inheritDoc}
 	 */
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return super.toString() + " [ " + getValue() + " ] " + "Bang" + " (" + this.getClass().getSuperclass() + ")";
+	}
+
+	@Deprecated
+	private class BangSpriteView implements ControllerView<Bang> {
+		public void display(PApplet theApplet, Bang theController) {
+			if (isActive) {
+				sprite.setState(1);
+			} else {
+				sprite.setState(0);
+			}
+			if (cnt < 0) {
+				sprite.setState(0);
+				cnt++;
+			}
+			theApplet.fill(0);
+			sprite.draw(theApplet);
+		}
 	}
 
 }

@@ -1,4 +1,3 @@
-
 package controlP5;
 
 import java.util.ArrayList;
@@ -10,7 +9,8 @@ import processing.core.PGraphics;
 /**
  * Used by Chart, a chart data set is a container to store chart data.
  */
-@SuppressWarnings("serial") public class ChartDataSet extends ArrayList<ChartData> {
+@SuppressWarnings("serial")
+public class ChartDataSet extends ArrayList<ChartData> {
 
 	protected CColor _myColor;
 
@@ -20,28 +20,23 @@ import processing.core.PGraphics;
 
 	protected final String _myName;
 
-
 	public ChartDataSet(String theName) {
 		_myName = theName;
 		_myColor = new CColor();
 	}
 
-
 	public CColor getColor() {
 		return _myColor;
 	}
-
 
 	public ChartDataSet setColors(int... theColors) {
 		colors = theColors;
 		return this;
 	}
 
-
 	public int[] getColors() {
 		return colors;
 	}
-
 
 	public int getColor(int theIndex) {
 		if (colors.length == 0) {
@@ -56,17 +51,14 @@ import processing.core.PGraphics;
 		return getColor(0);
 	}
 
-
 	public ChartDataSet setStrokeWeight(float theStrokeWeight) {
 		_myStrokeWeight = theStrokeWeight;
 		return this;
 	}
 
-
 	public float getStrokeWeight() {
 		return _myStrokeWeight;
 	}
-
 
 	public float[] getValues() {
 		float[] v = new float[size()];

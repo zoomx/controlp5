@@ -22,8 +22,6 @@ int cnt = 0;
 
 void setup() {
   size(700, 400);
-  
-  ControlP5.printPublicMethodsFor(ListBox.class);
 
   cp5 = new ControlP5(this);
   l = cp5.addListBox("myList")
@@ -31,9 +29,8 @@ void setup() {
          .setSize(120, 120)
          .setItemHeight(15)
          .setBarHeight(15)
-         .setColorBackground(color(255, 128))
-         .setColorActive(color(0))
-         .setColorForeground(color(255, 100,0))
+         .setColorBackground(color(40, 128))
+         .setColorActive(color(255, 128))
          ;
 
   l.captionLabel().toUpperCase(true);

@@ -306,7 +306,7 @@ public class Knob extends Controller<Knob> {
 	 * @exclude
 	 */
 	@Override @ControlP5.Invisible public Knob updateInternalEvents(PApplet theApplet) {
-		if (isMousePressed && !cp5.isAltDown()) {
+		if (isMousePressed && !cp5.keyHandler.isAltDown()) {
 			if (isActive) {
 				float c = (_myDragDirection == HORIZONTAL) ? _myControlWindow.mouseX - _myControlWindow.pmouseX : _myControlWindow.mouseY - _myControlWindow.pmouseY;
 				currentValue += (c) / resolution;

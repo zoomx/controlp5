@@ -1,6 +1,6 @@
 package controlP5;
 
-import processing.event.KeyEvent;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -36,11 +36,11 @@ import processing.core.PFont;
  */
 
 /**
- * A singleline input textfield, use arrow keys to go back and forth, use backspace to delete
- * characters. Using the up and down arrows lets you cycle through the history of the textfield.
+ * A singleline input textfield, use arrow keys to go back and forth, use backspace to delete characters. Using the up and down arrows lets
+ * you cycle through the history of the textfield.
  * 
- * This is the best you can get. Font handling, font switching, measuring, left align, right align,
- * etc. was giving me a big headache. not perfect, i think this is a good compromise.
+ * This is the best you can get. Font handling, font switching, measuring, left align, right align, etc. was giving me a big headache. not
+ * perfect, i think this is a good compromise.
  * 
  * @example controllers/ControlP5textfield
  * @nosuperclasses Controller Controller
@@ -48,8 +48,7 @@ import processing.core.PFont;
 public class Textfield extends Controller<Textfield> {
 
 	/*
-	 * TODO textspacing does not work properly for bitfonts sometimes first row of pixels in a
-	 * bitfont texture gets cut off
+	 * TODO textspacing does not work properly for bitfonts sometimes first row of pixels in a bitfont texture gets cut off
 	 */
 
 	protected boolean isTexfieldActive;
@@ -91,13 +90,10 @@ public class Textfield extends Controller<Textfield> {
 	protected int _myColorCursor = 0x88ffffff;
 
 	public enum InputFilter {
-		INTEGER(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')), FLOAT(Arrays.asList('0', '1', '2',
-				'3', '4', '5', '6', '7', '8', '9', '.')), BITFONT(Arrays.asList('\n', '\r', ' ', '!', '"', '#', '$',
-				'%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8',
-				'9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-				'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`',
-				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-				'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~')), DEFAULT(new LinkedList<Character>());
+		INTEGER(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')), FLOAT(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')), BITFONT(Arrays.asList('\n', '\r', ' ',
+				'!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D',
+				'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+				'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~')), DEFAULT(new LinkedList<Character>());
 
 		final List<Character> allowed;
 
@@ -127,13 +123,10 @@ public class Textfield extends Controller<Textfield> {
 		theControlP5.register(theControlP5.papplet, theName, this);
 	}
 
-	public Textfield(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, String theDefaultValue,
-			int theX, int theY, int theWidth, int theHeight) {
+	public Textfield(ControlP5 theControlP5, ControllerGroup<?> theParent, String theName, String theDefaultValue, int theX, int theY, int theWidth, int theHeight) {
 		super(theControlP5, theParent, theName, theX, theY, theWidth, theHeight);
 		_myCaptionLabel = new Label(cp5, theName.toUpperCase(), 0, 0, color.getCaptionLabel());
-
 		_myValueLabel.setFont(cp5.controlFont == cp5.defaultFont ? cp5.defaultFontForText : cp5.controlFont);
-
 		_myCaptionLabel.align(ControlP5.LEFT, ControlP5.BOTTOM_OUTSIDE);
 		_myCaptionLabel.setPaddingX(0);
 
@@ -222,8 +215,7 @@ public class Textfield extends Controller<Textfield> {
 	}
 
 	/**
-	 * TODO set the mode of the textfield to password mode, each character is shown as a "*" like
-	 * e.g. in online password forms.
+	 * TODO set the mode of the textfield to password mode, each character is shown as a "*" like e.g. in online password forms.
 	 * 
 	 * @param theFlag boolean
 	 */
@@ -352,8 +344,7 @@ public class Textfield extends Controller<Textfield> {
 			_myValueLabel.textAlign = PApplet.LEFT;
 			theApplet.translate(margin, 0);
 			if (isTexfieldActive) {
-				theApplet.rect(PApplet.max(0, PApplet.min(_myTextBufferIndexPosition, getWidth() - margin)), 0,
-						cursorWidth, height);
+				theApplet.rect(PApplet.max(0, PApplet.min(_myTextBufferIndexPosition, getWidth() - margin)), 0, cursorWidth, height);
 			}
 		}
 
@@ -420,12 +411,12 @@ public class Textfield extends Controller<Textfield> {
 	}
 
 	public void keyEvent(KeyEvent theKeyEvent) {
-		if (isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getAction() == KeyEvent.PRESSED) {
-			if (ignorelist.contains(cp5.getKeyCode())) {
+		if (isUserInteraction && isTexfieldActive && isActive && theKeyEvent.getID() == KeyEvent.KEY_PRESSED) {
+			if (ignorelist.contains(cp5.keyHandler.keyCode)) {
 				return;
 			}
-			if (keyMapping.containsKey(cp5.getKeyCode())) {
-				keyMapping.get(cp5.getKeyCode()).execute();
+			if (keyMapping.containsKey(cp5.keyHandler.keyCode)) {
+				keyMapping.get(cp5.keyHandler.keyCode).execute();
 			} else {
 				keyMapping.get(DEFAULT).execute();
 			}
@@ -461,12 +452,12 @@ public class Textfield extends Controller<Textfield> {
 	class InsertCharacter implements TextfieldCommand {
 
 		public void execute() {
-			if ((int) (cp5.getKey()) == 65535) {
+			if ((int) (cp5.keyHandler.key) == 65535) {
 				return;
 			}
 
-			if (_myInputFilter.apply(cp5.getKey())) {
-				_myTextBuffer.insert(_myTextBufferIndex, (char) cp5.getKey());
+			if (_myInputFilter.apply(cp5.keyHandler.key)) {
+				_myTextBuffer.insert(_myTextBufferIndex, (char) cp5.keyHandler.key);
 				setIndex(_myTextBufferIndex + 1);
 			}
 		}
@@ -502,15 +493,14 @@ public class Textfield extends Controller<Textfield> {
 	class MoveLeft implements TextfieldCommand {
 
 		public void execute() {
-			setIndex((cp5.isMetaDown()) ? 0 : PApplet.max(0, _myTextBufferIndex - 1));
+			setIndex((cp5.keyHandler.isCommandDown) ? 0 : PApplet.max(0, _myTextBufferIndex - 1));
 		}
 	}
 
 	class MoveRight implements TextfieldCommand {
 
 		public void execute() {
-			setIndex((cp5.isMetaDown()) ? _myTextBuffer.length() : PApplet.min(_myTextBuffer.length(),
-					_myTextBufferIndex + 1));
+			setIndex((cp5.keyHandler.isCommandDown) ? _myTextBuffer.length() : PApplet.min(_myTextBuffer.length(), _myTextBufferIndex + 1));
 		}
 	}
 

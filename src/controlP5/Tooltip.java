@@ -117,7 +117,6 @@ public class Tooltip {
 	 * @param theWindow
 	 */
 	void draw(ControlWindow theWindow) {
-		// System.out.println(previousPosition+"\t"+currentPosition+"\t"+position);
 		if (enabled) {
 
 			if (_myMode >= ControlP5.WAIT) {

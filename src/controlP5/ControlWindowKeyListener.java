@@ -25,16 +25,29 @@ package controlP5;
  *
  */
 
-import processing.core.PApplet;
+import java.awt.event.KeyEvent;
 
 /**
- * The CDrawable interface is used to draw controllers, primarily for internal
- * use.
+ * Listens to key events.
+ * 
  */
-public interface CDrawable {
+public class ControlWindowKeyListener {
 
-	/**
-	 * @param theApplet PApplet
-	 */
-	public void draw(PApplet theApplet);
+	private final boolean isMasterWindow;
+
+	private final ControlWindow _myControlWindow;
+
+	public ControlWindowKeyListener(ControlWindow theControlWindow) {
+		_myControlWindow = theControlWindow;
+		isMasterWindow = false;
+	}
+
+	public ControlWindowKeyListener(ControlP5 theControlP5) {
+		_myControlWindow = theControlP5.controlWindow;
+		isMasterWindow = true;
+	}
+
+	public void keyEvent(KeyEvent theKeyEvent) {
+		_myControlWindow.controlP5.keyHandler.keyEvent(theKeyEvent, _myControlWindow, isMasterWindow);
+	}
 }
