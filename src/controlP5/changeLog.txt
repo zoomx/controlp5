@@ -7,7 +7,7 @@
       
       * major changes to controlP5's font handling. the BitFontRenderer has been removed and the BitFont class
       has been introduced. BitFont extends PFont and is the replacement for rendering controlP5's bitfont as
-      a pfont. this makes font handling way more easier and stable. if this has caused any font rendering 
+      a pfont. this makes font handling much easier and stable. if this has caused any font rendering 
       flaws, let me know. 
       
       * src controlP5.BitFontRenderer.java:

@@ -21,7 +21,7 @@ float t;
 
 void setup() {
   size(640,480,OPENGL);
-  frameRate(30);
+  noStroke();
   cp5 = new ControlP5(this);
   createMessageBox();
   Button b = cp5.addButton("toggleBox",1,20,20,100,20);
