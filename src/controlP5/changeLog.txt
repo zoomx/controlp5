@@ -1,9 +1,24 @@
+2012-12-23  Andreas Schlegel  <andi at sojamo.de>
+
+      * version 2.0.4
+	
+      * src controlP5.Textfield.java,controlP5.ListBox.java,
+      controlP5.DropdownList.java,controlP5.ControlWindow.java
+      controlP5.ControlP5Base.java:
+      adjusting to processing's KeyEvent final variable name changes     
+      see issue 69 https://code.google.com/p/controlp5/issues/detail?id=69 (thanks jeff)      
+      
+      * src controlP5.Textfield.java:
+      reimplemented password mode (thanks jeff)
+      
+       
+
 2012-10-19  Andreas Schlegel  <andi at sojamo.de>
 
       * version 2.0.3
 	
       * src controlP5.Controller.java:
-      Automatic (PApplet) field recognition for Slider, Knob, Numberbox, Toggle.    
+      Automatic (PApplet) field recognition for Slider, Knob, Numberbox, Toggle adjusted.    
       
       
 2012-09-17  Andreas Schlegel  <andi at sojamo.de>
