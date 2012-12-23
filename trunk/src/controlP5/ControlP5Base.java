@@ -1047,19 +1047,19 @@ public class ControlP5Base implements ControlP5Constants {
 	protected int modifiers;
 
 	public boolean isShiftDown() {
-		return (modifiers & Event.SHIFT_MASK & (cp5.isShortcuts() ? -1 : 1)) != 0;
+		return (modifiers & Event.SHIFT & (cp5.isShortcuts() ? -1 : 1)) != 0;
 	}
 
 	public boolean isControlDown() {
-		return (modifiers & Event.CTRL_MASK & (cp5.isShortcuts() ? -1 : 1)) != 0;
+		return (modifiers & Event.CTRL & (cp5.isShortcuts() ? -1 : 1)) != 0;
 	}
 
 	public boolean isMetaDown() {
-		return (modifiers & Event.META_MASK & (cp5.isShortcuts() ? -1 : 1)) != 0;
+		return (modifiers & Event.META & (cp5.isShortcuts() ? -1 : 1)) != 0;
 	}
 
 	public boolean isAltDown() {
-		return (modifiers & Event.ALT_MASK & (cp5.isShortcuts() ? -1 : 1)) != 0;
+		return (modifiers & Event.ALT & (cp5.isShortcuts() ? -1 : 1)) != 0;
 	}
 
 	static class KeyCode {

@@ -470,17 +470,17 @@ public final class ControlWindow {
 		if (isMouse) {
 			mouseX = theMouseEvent.getX();
 			mouseY = theMouseEvent.getY();
-			if (theMouseEvent.getAction() == MouseEvent.PRESSED) {
+			if (theMouseEvent.getAction() == MouseEvent.PRESS) {
 				mousePressedEvent();
 			}
-			if (theMouseEvent.getAction() == MouseEvent.RELEASED) {
+			if (theMouseEvent.getAction() == MouseEvent.RELEASE) {
 				mouseReleasedEvent();
 			}
 		}
 	}
 
 	public void keyEvent(KeyEvent theKeyEvent) {
-		if (theKeyEvent.getAction() == KeyEvent.PRESSED) {
+		if (theKeyEvent.getAction() == KeyEvent.PRESS) {
 
 			// allow special keys such as backspace, arrow left,
 			// arrow right to pass test when active
@@ -500,7 +500,7 @@ public final class ControlWindow {
 
 		}
 
-		if (theKeyEvent.getAction() == KeyEvent.RELEASED) {
+		if (theKeyEvent.getAction() == KeyEvent.RELEASE) {
 
 			keys[theKeyEvent.getKeyCode()] = false;
 
@@ -510,7 +510,7 @@ public final class ControlWindow {
 
 		}
 
-		if (theKeyEvent.getAction() == KeyEvent.PRESSED && cp5.isShortcuts()) {
+		if (theKeyEvent.getAction() == KeyEvent.PRESS && cp5.isShortcuts()) {
 			int n = 0;
 			for (boolean b : keys) {
 				n += b ? 1 : 0;

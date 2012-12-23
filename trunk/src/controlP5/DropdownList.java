@@ -505,7 +505,7 @@ public class DropdownList extends ControlGroup<DropdownList> {
 			} else if (cp5.isAltDown()) {
 				step = 1;
 			}
-			if (theEvent.getAction() == KeyEvent.PRESSED) {
+			if (theEvent.getAction() == KeyEvent.PRESS) {
 				switch (theEvent.getKeyCode()) {
 				case (PApplet.UP):
 					_myScrollbar.setValue(PApplet.constrain(_myScrollbar.getValue() + step, 0, 1));
